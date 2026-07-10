@@ -1,0 +1,235 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block extra_css %}
+<!-- DataTables CSS standard -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+  
+  <!-- Encabezado de Página -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <div>
+      <h1 class="h2 font-weight-bold text-gob-azul mb-1">Gestión de Usuarios y Perfiles</h1>
+      <p class="text-muted mb-0">Administración de operadores y personal administrativo - Hospital Marga Marga</p>
+    </div>
+    <div class="mt-3 mt-md-0">
+      <button class="btn btn-gob-primary" data-toggle="modal" data-target="#modalCrearUsuario">
+        <i class="fas fa-plus mr-2"></i>Nuevo Funcionario / Operador
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla de Resultados -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <div class="table-responsive">
+        <table id="tabla-usuarios" class="table table-hover w-100">
+          <thead>
+            <tr>
+              <th>RUT</th>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>Correo Electrónico</th>
+              <th>Unidad / Servicio</th>
+              <th>Cargo</th>
+              <th>Grado</th>
+              <th>Fecha Registro</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Cargado vía DataTables Server-Side -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: Crear Usuario -->
+<div class="modal fade" id="modalCrearUsuario" tabindex="-1" role="dialog" aria-labelledby="modalCrearUsuarioLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-gob-azul text-white">
+        <h5 class="modal-title font-weight-bold" id="modalCrearUsuarioLabel">Registrar Nuevo Funcionario</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="form-crear-usuario" novalidate>
+        <div class="modal-body">
+          <div id="crear-error-alert" class="alert alert-danger d-none border-0" role="alert"></div>
+          
+          <div class="row">
+            <!-- RUT -->
+            <div class="col-md-6 form-group">
+              <label for="crear-rut" class="font-weight-bold">RUT *</label>
+              <input type="text" id="crear-rut" class="form-control" placeholder="12345678-9" required>
+              <small class="form-text text-muted">Sin puntos, con guion y dígito verificador.</small>
+            </div>
+            <!-- Correo -->
+            <div class="col-md-6 form-group">
+              <label for="crear-email" class="font-weight-bold">Correo Electrónico *</label>
+              <input type="email" id="crear-email" class="form-control" placeholder="nombre.apellido@hospitalfricke.cl" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Nombres -->
+            <div class="col-md-6 form-group">
+              <label for="crear-nombres" class="font-weight-bold">Nombres *</label>
+              <input type="text" id="crear-nombres" class="form-control" placeholder="Ej: Pedro Juan" required>
+            </div>
+            <!-- Apellidos -->
+            <div class="col-md-6 form-group">
+              <label for="crear-apellidos" class="font-weight-bold">Apellidos *</label>
+              <input type="text" id="crear-apellidos" class="form-control" placeholder="Ej: Soto Muñoz" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Unidad / Servicio -->
+            <div class="col-md-4 form-group">
+              <label for="crear-unidad" class="font-weight-bold">Unidad / Servicio *</label>
+              <input type="text" id="crear-unidad" class="form-control" placeholder="Ej: Informática" required>
+            </div>
+            <!-- Cargo -->
+            <div class="col-md-4 form-group">
+              <label for="crear-cargo" class="font-weight-bold">Cargo *</label>
+              <input type="text" id="crear-cargo" class="form-control" placeholder="Ej: Operador TI" required>
+            </div>
+            <!-- Grado -->
+            <div class="col-md-4 form-group">
+              <label for="crear-grado" class="font-weight-bold">Grado *</label>
+              <input type="text" id="crear-grado" class="form-control" placeholder="Ej: 12" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Contraseña -->
+            <div class="col-md-6 form-group">
+              <label for="crear-contrasena" class="font-weight-bold">Contraseña *</label>
+              <input type="password" id="crear-contrasena" class="form-control" placeholder="Mínimo 8 caracteres" required>
+              <small class="form-text text-muted">Asegúrese de usar una clave robusta.</small>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-gob-outline" data-dismiss="modal">Cancelar</button>
+          <button type="submit" id="btn-crear-submit" class="btn btn-gob-primary">
+            <span>Crear Usuario</span>
+            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Editar Usuario -->
+<div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-gob-azul text-white">
+        <h5 class="modal-title font-weight-bold" id="modalEditarUsuarioLabel">Modificar Datos de Funcionario</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="form-editar-usuario" novalidate>
+        <input type="hidden" id="editar-id">
+        <div class="modal-body">
+          <div id="editar-error-alert" class="alert alert-danger d-none border-0" role="alert"></div>
+          
+          <div class="row">
+            <!-- RUT -->
+            <div class="col-md-6 form-group">
+              <label for="editar-rut" class="font-weight-bold">RUT *</label>
+              <input type="text" id="editar-rut" class="form-control" placeholder="12345678-9" required>
+              <div class="invalid-feedback">El RUT ingresado no es válido o es requerido.</div>
+            </div>
+            <!-- Correo -->
+            <div class="col-md-6 form-group">
+              <label for="editar-email" class="font-weight-bold">Correo Electrónico *</label>
+              <input type="email" id="editar-email" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Nombres -->
+            <div class="col-md-6 form-group">
+              <label for="editar-nombres" class="font-weight-bold">Nombres *</label>
+              <input type="text" id="editar-nombres" class="form-control" required>
+            </div>
+            <!-- Apellidos -->
+            <div class="col-md-6 form-group">
+              <label for="editar-apellidos" class="font-weight-bold">Apellidos *</label>
+              <input type="text" id="editar-apellidos" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Unidad / Servicio -->
+            <div class="col-md-4 form-group">
+              <label for="editar-unidad" class="font-weight-bold">Unidad / Servicio *</label>
+              <input type="text" id="editar-unidad" class="form-control" required>
+            </div>
+            <!-- Cargo -->
+            <div class="col-md-4 form-group">
+              <label for="editar-cargo" class="font-weight-bold">Cargo *</label>
+              <input type="text" id="editar-cargo" class="form-control" required>
+            </div>
+            <!-- Grado -->
+            <div class="col-md-4 form-group">
+              <label for="editar-grado" class="font-weight-bold">Grado *</label>
+              <input type="text" id="editar-grado" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Contraseña -->
+            <div class="col-md-6 form-group">
+              <label for="editar-contrasena" class="font-weight-bold">Nueva Contraseña</label>
+              <input type="password" id="editar-contrasena" class="form-control" placeholder="Dejar en blanco para no cambiar">
+              <small class="form-text text-muted">Sólo si desea actualizar la clave del funcionario.</small>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-gob-outline" data-dismiss="modal">Cancelar</button>
+          <button type="submit" id="btn-editar-submit" class="btn btn-gob-primary">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Plantillas HTML Ocultas para renderizado seguro en JS (DataTables) -->
+<div id="dt-templates" style="display: none;">
+  <!-- Botones de Acción para cada fila -->
+  <div class="btn-group tmpl-acciones" role="group">
+    <button class="btn btn-sm btn-light text-gob-azul btn-editar-usuario" title="Modificar Datos">
+      <i class="fas fa-edit"></i>
+    </button>
+    <button class="btn btn-sm btn-light text-danger btn-eliminar-usuario" title="Eliminar Funcionario">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- DataTables JS library -->
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
+<!-- SweetAlert2 para notificaciones premium -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<!-- JS Estático del módulo de gestión de usuarios -->
+<script src="/static/js/usuarios.js"></script>
+{% endblock %}

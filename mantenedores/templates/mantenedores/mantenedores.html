@@ -1,0 +1,418 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Mantenedores{% endblock %}
+{% block module_title %}Mantenedores{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+<style>
+/* ===== Layout de secciones ===== */
+.grupo-titulo {
+  font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;
+  color:#64748b; padding:6px 0 4px; margin-bottom:8px;
+  border-bottom:2px solid #e2e8f0;
+}
+.grupo-titulo i { margin-right:5px; }
+
+/* Cards */
+.card-modelo { cursor: pointer; border: 2px solid #e2e8f0 !important; border-radius: 10px; transition: all .2s; }
+.card-modelo:hover { border-color: #002a54 !important; background: #f8faff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,42,84,.1); }
+.card-modelo.active { border-color: #002a54 !important; background: #eef4ff; }
+.card-modelo .card-body { padding: 14px 10px !important; }
+.card-modelo i { display: block; margin-bottom: 6px; }
+.card-modelo .modelo-label { font-size: .78rem; font-weight: 600; color: #334155; }
+.card-modelo.active .modelo-label { color:#002a54; }
+
+/* Section title */
+.section-title { font-size: .85rem; font-weight: 700; color: #002a54; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+.section-title i { margin-right: 6px; }
+
+/* ===== Modern DataTable ===== */
+.dataTables_wrapper {
+  background: #fff; border-radius: 10px;
+  padding: 16px 16px 10px 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+}
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter { margin-bottom: 14px; }
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label {
+  font-size: .8rem; color: #475569; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.dataTables_wrapper .dataTables_length select {
+  border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 24px 4px 8px;
+  font-size: .8rem;
+  background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3e%3cpath fill='%2364748b' d='M0 0l5 6 5-6z'/%3e%3c/svg%3e") no-repeat right 8px center;
+  -webkit-appearance: none; appearance: none; cursor: pointer;
+}
+.dataTables_wrapper .dataTables_filter input {
+  border: 1px solid #e2e8f0; border-radius: 8px; padding: 5px 10px 5px 32px;
+  font-size: .8rem; min-width: 220px;
+  background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3e%3ccircle cx='11' cy='11' r='8'/%3e%3cpath d='M21 21l-4.35-4.35'/%3e%3c/svg%3e") no-repeat 10px center;
+  transition: border-color .15s, box-shadow .15s;
+}
+.dataTables_wrapper .dataTables_filter input:focus {
+  outline: none; border-color: #002a54; box-shadow: 0 0 0 2px rgba(0,42,84,.12);
+}
+#tabla-mantenedores {
+  font-size: .8rem; border-collapse: separate !important;
+  border-spacing: 0; width: 100% !important; margin-bottom: 0 !important;
+}
+#tabla-mantenedores thead th {
+  background: #f8fafc; padding: 10px 12px !important;
+  font-weight: 600; color: #334155; border-bottom: 2px solid #e2e8f0 !important;
+  border-top: none !important; white-space: nowrap; user-select: none;
+}
+#tabla-mantenedores tbody td {
+  padding: 8px 12px !important; vertical-align: middle;
+  border-top: 1px solid #f1f5f9 !important; color: #1e293b;
+}
+#tabla-mantenedores tbody tr:hover td { background: #f8fafc; }
+#tabla-mantenedores tbody tr:nth-child(even) td { background: #fcfcfd; }
+#tabla-mantenedores tbody tr:nth-child(even):hover td { background: #f1f5f9; }
+#tabla-mantenedores, #tabla-mantenedores th, #tabla-mantenedores td {
+  border-left: none !important; border-right: none !important;
+}
+.dataTables_wrapper .dataTables_info { font-size: .78rem; color: #94a3b8; padding-top: 14px; }
+.dataTables_wrapper .dataTables_paginate { font-size: .8rem; padding-top: 10px; }
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding: 5px 12px; border-radius: 8px; border: 1px solid #e2e8f0;
+  margin: 0 2px; background: #fff; color: #475569 !important; font-weight: 500; transition: all .15s;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: #002a54 !important; border-color: #002a54 !important;
+  color: #fff !important; box-shadow: 0 2px 4px rgba(0,42,84,.2);
+}
+
+/* KPI badge */
+.kpi-badge { display: inline-flex; align-items: center; background: #eef4ff; color: #002a54; border-radius: 20px; padding: 3px 14px; font-size: .78rem; font-weight: 600; }
+.kpi-badge i { margin-right: 5px; }
+
+/* ===== Modal ===== */
+#modalMantenedor .modal-body { padding: 1.5rem 1.5rem .5rem; }
+#modalMantenedor .form-group {
+  margin-bottom: 1.1rem; padding-left: 12px;
+  border-left: 3px solid #e2e8f0; transition: border-color .2s ease;
+}
+#modalMantenedor .form-group:focus-within, #modalMantenedor .form-group.focus { border-left-color: #0f766e; }
+#modalMantenedor .form-group label {
+  display: block; margin-bottom: 5px; font-size: .7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .4px; color: #64748b;
+}
+#modalMantenedor .form-control {
+  border-radius: 6px; border: 1.5px solid #e2e8f0; padding: .45rem .65rem;
+  font-size: .85rem; color: #1e293b; transition: border-color .2s, box-shadow .2s; height: auto;
+}
+#modalMantenedor .form-control:focus { border-color: #002a54; box-shadow: 0 0 0 3px rgba(0,42,84,.08); }
+#modalMantenedor .select2-container--bootstrap4 .select2-selection {
+  border-radius: 6px; border: 1.5px solid #e2e8f0; transition: border-color .2s, box-shadow .2s;
+}
+#modalMantenedor .select2-container--bootstrap4 .select2-selection--single {
+  height: calc(1.5em + .9rem + 3px); padding: .25rem .65rem;
+}
+#modalMantenedor .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+  line-height: 1.6; padding-left: 0; font-size: .85rem; color: #1e293b;
+}
+#modalMantenedor .select2-container--bootstrap4.select2-container--focus .select2-selection {
+  border-color: #002a54; box-shadow: 0 0 0 3px rgba(0,42,84,.08);
+}
+#modalMantenedor .form-check { padding-left: 12px; border-left: 3px solid #e2e8f0; margin-bottom: 0; padding-top: 6px; padding-bottom: 6px; }
+#modalMantenedor .modal-footer { padding: .75rem 1.5rem; border-top: 1px solid #f1f5f9; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-card">
+  <div class="dash-card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0" style="font-size:1rem;font-weight:700;"><i class="fas fa-cogs mr-2" style="color:#002a54;"></i>Catálogos</h5>
+  </div>
+  <div class="dash-card-body">
+
+    <!-- Cards grid divididas por sección -->
+    <div class="section-title"><i class="fas fa-th"></i>Seleccione un catálogo</div>
+
+    <!-- Grupo: Equipamiento Técnico -->
+    <div class="grupo-titulo"><i class="fas fa-tools text-secondary"></i>Equipamiento Técnico</div>
+    <div class="row mb-3" id="cards-grid">
+      {% for m in modelos %}{% if m.grupo == 'tecnico' %}
+      <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-2">
+        <div class="card card-modelo" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
+          <div class="card-body text-center">
+            <i class="fas fa-{{ m.icon }} fa-2x" style="color:#002a54;"></i>
+            <div class="modelo-label">{{ m.label }}</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}{% endfor %}
+    </div>
+
+    <!-- Grupo: Infraestructura Física -->
+    <div class="grupo-titulo"><i class="fas fa-building text-info"></i>Infraestructura Física</div>
+    <div class="row mb-3">
+      {% for m in modelos %}{% if m.grupo == 'fisica' %}
+      <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-2">
+        <div class="card card-modelo" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
+          <div class="card-body text-center">
+            <i class="fas fa-{{ m.icon }} fa-2x" style="color:#0ea5e9;"></i>
+            <div class="modelo-label">{{ m.label }}</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}{% endfor %}
+    </div>
+
+    <!-- Grupo: Infraestructura Hospitalaria -->
+    <div class="grupo-titulo"><i class="fas fa-hospital text-success"></i>Infraestructura Hospitalaria</div>
+    <div class="row mb-3">
+      {% for m in modelos %}{% if m.grupo == 'hospitalaria' %}
+      <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-2">
+        <div class="card card-modelo" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
+          <div class="card-body text-center">
+            <i class="fas fa-{{ m.icon }} fa-2x" style="color:#10b981;"></i>
+            <div class="modelo-label">{{ m.label }}</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}{% endfor %}
+    </div>
+
+    <!-- Table section -->
+    <div id="table-section" style="display:none;">
+      <hr class="my-3">
+      
+      <!-- Panel de información dinámica -->
+      <div class="alert mb-3 shadow-sm" id="catalogo-info-panel" style="background-color: #f8faff; border-left: 4px solid #002a54; border-radius: 8px;">
+        <h6 class="alert-heading" style="color: #002a54; font-weight: 700; font-size: 0.9rem; margin-bottom: 5px;">
+          <i class="fas fa-info-circle mr-2"></i><span id="info-title">Catálogo</span>
+        </h6>
+        <p class="mb-0" id="info-description" style="font-size: 0.8rem; color: #475569;"></p>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="section-title mb-0" id="tabla-titulo"><i class="fas fa-list"></i> Registros</div>
+        
+        <!-- Botón Nuevo y Contador movidos aquí abajo -->
+        <div class="d-flex align-items-center">
+          <span class="kpi-badge mr-3" id="kpi-total" style="background:#eef4ff; color:#002a54; border: 1px solid #cbd5e1;"><i class="fas fa-database"></i> <span class="ml-1">0</span> totales</span>
+          <button id="btn-nuevo"
+            style="background:#0f766e;color:#fff;font-weight:600;border:none;border-radius:8px;padding:6px 18px;font-size:0.85rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;box-shadow:0 2px 4px rgba(15,118,110,0.2);transition:all .15s;"
+            disabled>
+            <i class="fas fa-plus"></i> Nuevo Registro
+          </button>
+        </div>
+      </div>
+      
+      <table id="tabla-mantenedores" class="table table-bordered table-sm" style="width:100%;">
+        <thead><tr>
+          <th data-col="id">ID</th>
+          <th data-col="nombre">Nombre</th>
+          <th data-col="activo">Estado</th>
+          <th data-col="acciones">Acciones</th>
+        </tr></thead>
+      </table>
+    </div>
+
+    <div class="alert alert-info text-center" id="alert-seleccionar" style="border-radius:8px;border-left:4px solid #002a54;">
+      <i class="fas fa-hand-pointer mr-2"></i>Seleccione un catálogo de las tarjetas para comenzar.
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalMantenedor" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="border-radius:0; border:none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden;">
+      <form id="form-mantenedor">
+        <div class="modal-header" style="background:#002a54;color:#fff; border-bottom: none; border-radius:0;">
+          <h5 class="modal-title" id="modalMantenedorLabel" style="font-size:.95rem;"><i class="fas fa-edit mr-2"></i>Nuevo Registro</h5>
+          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+        </div>
+        <div class="modal-body" style="background-color: #f8fafc;">
+          <div id="mantenedor-error-alert" class="alert alert-danger d-none" style="font-size: 0.8rem;"></div>
+          <input type="hidden" id="mantenedor-id" value="">
+          <input type="hidden" id="mantenedor-modelo" value="">
+
+          <!-- SECCIÓN 1: UBICACIÓN Y RELACIONES (Jerarquía Padre) -->
+          <div id="section-relaciones" class="mb-3 p-3 bg-white shadow-sm" style="border-radius: 8px; border: 1px solid #e2e8f0; display: none;">
+            <h6 style="font-size: 0.75rem; font-weight: 700; color: #002a54; text-transform: uppercase; margin-bottom: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">
+              <i class="fas fa-sitemap mr-1"></i> Dependencias / Ubicación
+            </h6>
+            <div class="row">
+              <!-- Institución (Edificio) -->
+              <div class="col-md-6 form-group" id="field-institucion" style="display:none;">
+                <label>Institución a la que pertenece</label>
+                <select class="form-control form-control-sm" id="m-institucion">
+                  <option value="">-- Seleccione Institución --</option>
+                  {% for i in instituciones %}
+                  <option value="{{ i.id }}">{{ i.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Edificio (Piso) -->
+              <div class="col-md-6 form-group" id="field-edificio" style="display:none;">
+                <label>Edificio</label>
+                <select class="form-control form-control-sm" id="m-edificio">
+                  <option value="">-- Seleccione Edificio --</option>
+                  {% for e in edificios %}
+                  <option value="{{ e.id }}" data-institucion="{{ e.institucion__nombre }}">{{ e.nombre }}{% if e.institucion__nombre %} – {{ e.institucion__nombre }}{% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Marca (Modelo) -->
+              <div class="col-md-6 form-group" id="field-marca" style="display:none;">
+                <label>Marca del Equipo</label>
+                <select class="form-control form-control-sm" id="m-marca">
+                  <option value="">-- Seleccione Marca --</option>
+                  {% for ma in marcas %}
+                  <option value="{{ ma.id }}">{{ ma.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Piso (Sector / Recinto) -->
+              <div class="col-md-6 form-group" id="field-piso" style="display:none;">
+                <label>Piso Físico</label>
+                <select class="form-control form-control-sm" id="m-piso">
+                  <option value="">-- Seleccione Piso --</option>
+                  {% for p in pisos %}
+                  <option value="{{ p.id }}" data-edificio="{{ p.edificio__nombre }}">{{ p.edificio__nombre }} – Piso {{ p.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Sector (Recinto) -->
+              <div class="col-md-6 form-group" id="field-sector" style="display:none;">
+                <label>Sector / Ala</label>
+                <select class="form-control form-control-sm" id="m-sector">
+                  <option value="">-- Seleccione Sector --</option>
+                  {% for s in sectores %}
+                  <option value="{{ s.id }}" data-piso="{{ s.piso__nombre }}">{{ s.nombre }}{% if s.piso__nombre %} (Piso {{ s.piso__nombre }}){% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Área Hospitalaria (Unidad) -->
+              <div class="col-md-6 form-group" id="field-area_hospitalaria" style="display:none;">
+                <label>Área Hospitalaria</label>
+                <select class="form-control form-control-sm" id="m-area_hospitalaria">
+                  <option value="">-- Seleccione Área --</option>
+                  {% for a in areas %}
+                  <option value="{{ a.id }}">{{ a.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Unidad (Recinto) -->
+              <div class="col-md-6 form-group" id="field-unidad" style="display:none;">
+                <label>Unidad Clínica / Servicio</label>
+                <select class="form-control form-control-sm" id="m-unidad">
+                  <option value="">-- Seleccione Unidad --</option>
+                  {% for u in unidades %}
+                  <option value="{{ u.id }}" data-area="{{ u.area_hospitalaria__nombre }}">{{ u.nombre }}{% if u.area_hospitalaria__nombre %} – {{ u.area_hospitalaria__nombre }}{% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Recinto (PMA) -->
+              <div class="col-md-12 form-group" id="field-recinto" style="display:none;">
+                <label>Recinto Físico</label>
+                <select class="form-control form-control-sm" id="m-recinto">
+                  <option value="">-- Seleccione Recinto --</option>
+                  {% for r in recintos %}
+                  <option value="{{ r.id }}" data-unidad="{{ r.unidad__nombre }}" data-piso="{{ r.piso__nombre }}">{{ r.nombre }}{% if r.unidad__nombre %} – {{ r.unidad__nombre }}{% endif %}{% if r.piso__nombre %} [Piso {{ r.piso__nombre }}]{% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 2: DATOS DEL REGISTRO (Hijo) -->
+          <div class="p-3 bg-white shadow-sm" style="border-radius: 8px; border: 1px solid #e2e8f0;">
+            <h6 style="font-size: 0.75rem; font-weight: 700; color: #0f766e; text-transform: uppercase; margin-bottom: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">
+              <i class="fas fa-info-circle mr-1"></i> Identificación del Registro
+            </h6>
+            <div class="row">
+              <!-- Nombre (siempre visible) -->
+              <div class="col-md-12 form-group">
+                <label id="label-nombre" style="color: #0f766e;">Nombre</label>
+                <input type="text" class="form-control form-control-sm" id="m-nombre" required placeholder="Ingrese el nombre...">
+              </div>
+
+              <!-- Código (Institución) -->
+              <div class="col-md-6 form-group" id="field-codigo" style="display:none;">
+                <label>Código Interno</label>
+                <input type="text" class="form-control form-control-sm" id="m-codigo" maxlength="20">
+              </div>
+
+              <!-- Alias (Piso) -->
+              <div class="col-md-6 form-group" id="field-alias" style="display:none;">
+                <label>Alias / Nombre Corto</label>
+                <input type="text" class="form-control form-control-sm" id="m-alias" maxlength="50">
+              </div>
+
+              <!-- Tipo (Bitácora) -->
+              <div class="col-md-6 form-group" id="field-tipo" style="display:none;">
+                <label>Clasificación</label>
+                <select class="form-control form-control-sm" id="m-tipo">
+                  <option value="FALLA">Falla de Equipo</option>
+                  <option value="ACTIVIDAD">Actividad / Tarea</option>
+                </select>
+              </div>
+
+              <!-- Orden (Bitácora) -->
+              <div class="col-md-6 form-group" id="field-orden" style="display:none;">
+                <label>Orden de Prioridad</label>
+                <input type="number" class="form-control form-control-sm" id="m-orden" value="10" min="0">
+              </div>
+
+              <!-- Contacto (Proveedor) -->
+              <div class="col-md-6 form-group" id="field-contacto" style="display:none;">
+                <label>Persona de Contacto</label>
+                <input type="text" class="form-control form-control-sm" id="m-contacto" maxlength="100">
+              </div>
+              <div class="col-md-6 form-group" id="field-telefono" style="display:none;">
+                <label>Teléfono</label>
+                <input type="text" class="form-control form-control-sm" id="m-telefono" maxlength="50">
+              </div>
+              <div class="col-md-6 form-group" id="field-email" style="display:none;">
+                <label>Correo Electrónico</label>
+                <input type="email" class="form-control form-control-sm" id="m-email" maxlength="120">
+              </div>
+              <div class="col-md-12 form-group" id="field-direccion" style="display:none;">
+                <label>Dirección Comercial</label>
+                <input type="text" class="form-control form-control-sm" id="m-direccion" maxlength="255">
+              </div>
+
+              <!-- Activo -->
+              <div class="col-md-12 mt-2">
+                <div class="custom-control custom-switch" style="padding-left: 2.5rem;">
+                  <input type="checkbox" class="custom-control-input" id="m-activo" checked>
+                  <label class="custom-control-label" for="m-activo" style="font-size: 0.8rem; font-weight: 600; color: #334155;">Registro Activo y Visible</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="background:#f8f9fa;">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal" style="font-size:.8rem;">Cancelar</button>
+          <button type="submit" class="btn btn-sm" id="btn-guardar" style="background:#002a54;color:#fff;font-size:.8rem;">
+            <i class="fas fa-save mr-1"></i> Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="{% static 'js/mantenedores.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,48 @@
+# Variables de entorno y secretos (NUNCA versionar)
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Django
+*.log
+logs/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Media (subidas de usuarios: firmas, fotos, PDFs)
+media/
+
+# Static recolectado
+staticfiles/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDE / editores
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Archivos temporales y backups
+*.bak
+*.tmp
+*.rar

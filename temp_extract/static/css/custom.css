@@ -1,0 +1,448 @@
+/* Estilos Modernos - Portal de Gestión Hospital Dr. Gustavo Fricke */
+
+:root {
+  --primary-color: #002a54;     /* Azul profundo institucional */
+  --primary-hover: #001a35;     
+  --accent-color: #00a3e0;      /* Azul turquesa / Salud */
+  --accent-hover: #0082b3;
+  --bg-color: #f8fafc;          /* Fondo suave */
+  --card-bg: #ffffff;
+  --text-main: #334155;         /* Slate 700 */
+  --text-dark: #0f172a;         /* Slate 900 */
+  --text-muted: #64748b;        /* Slate 500 */
+  --border-color: #e2e8f0;      /* Slate 200 */
+  --sidebar-bg: #002a54;        /* Azul oscuro institucional para el sidebar */
+  --sidebar-hover: #003a70;
+  --sidebar-active: #004b87;
+}
+
+body {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header .navbar {
+  z-index: 1030;
+  height: 70px;
+  background-color: var(--primary-color) !important;
+  border-bottom: 2px solid var(--accent-color) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+/* --- SIDEBAR RESPONSIVO Y CONTENIDO --- */
+
+/* Estructura para escritorios */
+@media (min-width: 992px) {
+  .sidebar {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    bottom: 0;
+    width: 200px;
+    z-index: 1000;
+    background-color: var(--sidebar-bg);
+    padding-top: 25px;
+    overflow-y: auto;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  main.with-fixed-navbar {
+    margin-left: 200px;
+    margin-top: 70px;
+    padding: 35px 30px;
+    flex: 1 0 auto;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body.sidebar-collapsed .sidebar {
+    left: -200px;
+  }
+
+  body.sidebar-collapsed main.with-fixed-navbar {
+    margin-left: 0;
+  }
+
+  body.sidebar-collapsed footer#footer-main {
+    margin-left: 0 !important;
+  }
+}
+
+/* Estructura para dispositivos móviles y tablets */
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -200px;
+    bottom: 0;
+    width: 200px;
+    z-index: 1050;
+    background-color: var(--sidebar-bg);
+    padding-top: 80px;
+    overflow-y: auto;
+    transition: left 0.3s ease-in-out;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+  }
+
+  body.show-sidebar .sidebar {
+    left: 0;
+  }
+
+  main.with-fixed-navbar {
+    margin-left: 0;
+    margin-top: 70px;
+    padding: 20px 15px;
+    flex: 1 0 auto;
+  }
+
+  /* Backdrop */
+  .sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(15, 23, 42, 0.6);
+    z-index: 1040;
+    display: none;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.3s ease;
+  }
+
+  body.show-sidebar .sidebar-backdrop {
+    display: block;
+  }
+}
+
+/* --- ESTILOS DEL MENÚ DEL SIDEBAR --- */
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  margin: 4px 12px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  color: #cbd5e1; /* Gris claro legible */
+  font-weight: 500;
+  font-size: 0.78rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.sidebar-link i {
+  font-size: 1rem;
+  margin-right: 8px;
+  width: 16px;
+  text-align: center;
+  color: #94a3b8;
+  transition: color 0.25s;
+}
+
+.sidebar-link:hover {
+  background-color: var(--sidebar-hover);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.sidebar-link:hover i {
+  color: #ffffff;
+}
+
+/* Enlace Activo */
+.sidebar-link.active {
+  background-color: var(--sidebar-active);
+  color: #ffffff;
+  border-left: 4px solid var(--accent-color);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.sidebar-link.active i {
+  color: var(--accent-color);
+}
+
+/* Título de sección dentro del sidebar */
+.sidebar-heading {
+  padding: 10px 16px 4px 16px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.08em;
+}
+
+/* --- FOOTER DELGADO (DELGADITO) --- */
+footer#footer-main {
+  background-color: #ffffff !important;
+  border-top: 1px solid var(--border-color) !important;
+  padding: 12px 0 !important; /* Delgado */
+  font-size: 0.85rem;
+  height: auto;
+  min-height: auto !important;
+}
+
+footer#footer-main .footer-logo {
+  display: none !important; /* Quitar logos grandes */
+}
+
+/* --- ESTILOS GENERALES Y CARDS MODERNOS --- */
+.card-premium {
+  border: none;
+  border-radius: 12px; /* Más redondeado */
+  box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.04), 0 2px 8px -2px rgba(0, 0, 0, 0.02);
+  background-color: var(--card-bg);
+}
+
+/* Botones Premium */
+.btn-gob-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.55rem 1.6rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 42, 84, 0.15);
+  transition: all 0.25s ease;
+}
+
+.btn-gob-primary:hover, 
+.btn-gob-primary:focus {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: #ffffff;
+  box-shadow: 0 8px 12px -2px rgba(0, 42, 84, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-gob-outline {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.55rem 1.6rem;
+  transition: all 0.25s ease;
+}
+
+.btn-gob-outline:hover {
+  background-color: rgba(0, 42, 84, 0.04);
+  color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+/* Formulario de Login Moderno */
+.login-card {
+  border: none;
+  border-radius: 16px; /* Bordes premium y curvos */
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.06), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+  background-color: #ffffff;
+  padding: 30px 20px;
+}
+
+.login-title {
+  color: var(--primary-color);
+  font-weight: 800;
+  font-size: 1.65rem;
+  letter-spacing: -0.02em;
+}
+
+/* Inputs Modernos */
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  padding: 10px 14px;
+  height: auto;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  color: var(--text-dark);
+  background-color: #ffffff;
+  border-color: var(--accent-color);
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.15);
+}
+
+.input-group-text {
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+/* Badges de Estado */
+.badge-estado {
+  padding: 0.4rem 0.9rem;
+  font-weight: 600;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  display: inline-block;
+  letter-spacing: 0.02em;
+}
+
+.badge-estado-activo {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-estado-suspendido {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.badge-estado-inactivo {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* Cuotas */
+.progress-cuota {
+  height: 8px;
+  border-radius: 10px;
+  background-color: #e2e8f0;
+  overflow: hidden;
+}
+
+/* KPI Cards de Dashboard */
+.card-kpi {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 2px 4px -2px rgba(15, 23, 42, 0.02);
+  background-color: #ffffff;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  padding: 24px !important;
+}
+
+.card-kpi:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 20px -8px rgba(15, 23, 42, 0.08);
+}
+
+.card-kpi-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+
+.card-kpi-blue {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.card-kpi-green {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.card-kpi-orange {
+  background-color: #ffedd5;
+  color: #ea580c;
+}
+
+.card-kpi-purple {
+  background-color: #f3e8ff;
+  color: #9333ea;
+}
+
+/* Overrides para DataTables */
+.dataTables_wrapper {
+  font-size: 0.8rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding: 0.25em 0.7em !important;
+  font-size: 0.78rem;
+}
+
+body .dataTables_wrapper .dataTables_paginate .paginate_button.current, 
+body .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+  background: var(--primary-color) !important;
+  color: #ffffff !important;
+  border: 1px solid var(--primary-color) !important;
+  border-radius: 4px;
+}
+
+table.dataTable {
+  border-collapse: collapse !important;
+}
+
+table.dataTable thead th {
+  background-color: #f8fafc;
+  color: var(--primary-color);
+  font-weight: 700;
+  border-bottom: 2px solid var(--border-color) !important;
+  padding: 8px 10px !important;
+  font-size: 0.82rem;
+}
+
+table.dataTable tbody td {
+  padding: 8px 10px !important;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.82rem;
+}
+
+/* Transiciones */
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajustes para diseño sin sidebar (Pantalla de Login, etc.) */
+body.no-sidebar main.with-fixed-navbar {
+  margin-left: 0 !important;
+}
+
+body.no-sidebar footer#footer-main {
+  margin-left: 0 !important;
+}
+
+/* Toggler de menú (Sándwich) Blanco y Compacto */
+#sidebar-toggle {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-right: 12px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  z-index: 1050 !important;
+}
+
+#sidebar-toggle i {
+  color: #ffffff !important;
+  font-size: 0.95rem !important; /* Blanco y más chico */
+  transition: opacity 0.2s ease;
+}
+
+#sidebar-toggle:hover i {
+  opacity: 0.8;
+}
+

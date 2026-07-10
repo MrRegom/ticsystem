@@ -1,0 +1,17 @@
+[Unit]
+Description=Gunicorn daemon para ticsystem - Hospital Dr. Gustavo Fricke
+After=network.target
+
+[Service]
+User=hospitalfricke
+Group=www-data
+WorkingDirectory=/var/www/plantilla
+ExecStart=/var/www/plantilla/.venv/bin/gunicorn \
+          --access-logfile /var/www/plantilla/logs/gunicorn_access.log \
+          --error-logfile /var/www/plantilla/logs/gunicorn_error.log \
+          --workers 3 \
+          --bind unix:/var/www/plantilla/plantilla.sock \
+          config.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

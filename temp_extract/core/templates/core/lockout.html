@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Acceso Bloqueado{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center fade-in" style="min-height: 60vh;">
+  <div class="col-md-6 col-lg-5">
+    
+    <!-- Contenedor del Bloqueo -->
+    <div class="card border-0 shadow login-card p-4">
+      <div class="card-body text-center">
+        <!-- Icono de Advertencia -->
+        <div class="d-flex justify-content-center mb-4">
+          <div class="card-kpi-icon card-kpi-orange" style="width: 70px; height: 70px; font-size: 2.2rem; border-radius: 50%; background-color: #fee2e2;">
+            <i class="fas fa-user-shield text-danger"></i>
+          </div>
+        </div>
+
+        <h1 class="h3 font-weight-bold text-danger mb-3">Acceso Bloqueado</h1>
+        <p class="text-muted mb-4" style="line-height: 1.6;">
+          Esta cuenta o dirección IP ha sido temporalmente bloqueada debido a <strong>múltiples intentos fallidos</strong> de inicio de sesión.
+        </p>
+
+        <div class="alert alert-warning border-0 text-left small mb-4" style="background-color: #fffbeb; color: #b45309; border-radius: 8px;">
+          <i class="fas fa-info-circle mr-2"></i> Por motivos de seguridad (Normas OWASP), el acceso se suspende durante <strong>30 minutos</strong>.
+        </div>
+
+        <p class="text-muted small mb-4">
+          Si olvidó sus credenciales, contacte directamente a la <strong>Unidad de Informática</strong> del Hospital Dr. Gustavo Fricke o utilice los canales habilitados de soporte interno.
+        </p>
+
+        <!-- Botones de Acción -->
+        <a href="{% url 'login' %}" class="btn btn-gob-primary btn-block py-2">
+          <i class="fas fa-undo mr-2"></i>Volver a Intentar
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

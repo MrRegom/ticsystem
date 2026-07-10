@@ -1,0 +1,496 @@
+{% extends "core/base.html" %}
+
+{% block title %}Inventario General | Hospital Marga Marga{% endblock %}
+
+{% block extra_css %}
+<!-- Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<!-- Custom Styles: Marga Marga Enterprise (Referencia) -->
+<style>
+  body, .content-wrapper, .wrapper {
+      background-color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+  }
+
+  /* Header Superior */
+  .page-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e2e8f0;
+  }
+  .page-title {
+      font-weight: 800;
+      color: #0f172a;
+      font-size: 1.4rem;
+      margin-bottom: 2px;
+  }
+  .page-subtitle {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin: 0;
+  }
+
+  /* Botones Principales */
+  .btn-primary-action {
+      background: #0066cc; /* Azul vibrante estilo referencia */
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+  }
+  .btn-primary-action:hover { background: #0052a3; color: #fff; }
+
+  /* Toolbar de Búsqueda y Filtros */
+  .toolbar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 12px 16px;
+      border: 1px solid #e2e8f0;
+      border-bottom: none;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+  }
+  .search-wrapper {
+      position: relative;
+      width: 300px;
+  }
+  .search-wrapper i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+  }
+  .search-wrapper input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #334155;
+      outline: none;
+      transition: border-color 0.2s;
+  }
+  .search-wrapper input:focus { border-color: #0066cc; }
+  
+  .filter-wrapper { display: flex; gap: 8px; align-items: center; }
+  .select-filter {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #475569;
+      background: #fff;
+      outline: none;
+  }
+
+  /* Table Customization (Pro Style) */
+  .datagrid-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      overflow: hidden;
+  }
+  table.dataTable { border-collapse: collapse !important; margin-top: 0 !important; width: 100% !important; }
+  
+  /* Header Oscuro */
+  table.dataTable thead th {
+      background: #0f172a !important; /* Azul oscuro casi negro */
+      color: #ffffff !important;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border: none !important;
+  }
+  
+  /* Filas limpias */
+  table.dataTable tbody td {
+      padding: 12px 16px;
+      font-size: 0.8rem;
+      color: #334155;
+      vertical-align: middle;
+      border-bottom: 1px solid #f1f5f9;
+      border-top: none !important;
+  }
+  table.dataTable tbody tr:hover { background-color: #f8fafc !important; }
+  
+  /* Data Píldoras y Textos */
+  .cell-title { font-weight: 700; color: #1e293b; display: block; font-size: 0.8rem; }
+  .cell-subtitle { color: #64748b; font-size: 0.75rem; display: block; margin-top: 2px; }
+  
+  .pill-serial {
+      color: #0284c7;
+      font-weight: 600;
+      font-family: 'Inter', monospace;
+      font-size: 0.75rem;
+  }
+  
+  .pill-estado {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+  }
+  .pill-estado.status-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* Acciones en cuadrado gris con icono outline */
+  .action-btn-square {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #64748b;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      margin-left: 4px;
+      transition: all 0.2s;
+  }
+  .action-btn-square:hover { background: #f8fafc; color: #0f172a; border-color: #94a3b8; }
+  
+  /* Ocultar elementos por defecto de DataTables para usar los custom */
+  .dataTables_filter { display: none !important; }
+  .dataTables_length { margin: 15px 16px; }
+  .dataTables_info { margin: 15px 16px; font-size: 0.8rem; color: #64748b; }
+  .dataTables_paginate { margin: 15px 16px; }
+
+  /* Modal Enterprise Styling */
+  .modal-content { border: none; border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+  .modal-header-clean { padding: 24px 30px 16px; background: #ffffff; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+  .modal-header-clean h5 { font-family: 'Inter', sans-serif; font-weight: 800; color: #0f172a; font-size: 1.25rem; margin: 0; }
+  .modal-body-clean { padding: 30px; background: #ffffff; }
+  .modal-footer-clean { padding: 16px 30px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; }
+  
+  .section-label { font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  
+  .form-control-clean { border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; padding: 8px 12px; color: #334155; transition: border-color 0.2s; background: #f8fafc; }
+  .form-control-clean:focus { background: #fff; border-color: #002855; box-shadow: 0 0 0 3px rgba(0,40,85,0.1); outline: none; }
+  .form-label-clean { font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 6px; }
+  
+  /* Select2 overriding for clean look */
+  .select2-container--bootstrap4 .select2-selection { border-radius: 8px !important; border: 1px solid #cbd5e1 !important; background: #f8fafc !important; font-size: 0.85rem !important; min-height: 36px !important; }
+  .select2-container--bootstrap4.select2-container--focus .select2-selection { background: #fff !important; border-color: #002855 !important; box-shadow: 0 0 0 3px rgba(0,40,85,0.1) !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid pb-4" style="padding-left: 20px; padding-right: 20px; margin-top: -24px;">
+  
+  <!-- Header -->
+  <div class="page-header-top" style="margin-bottom: 8px; padding-bottom: 6px;">
+    <div>
+      <h1 class="page-title">Inventario de Equipos</h1>
+      <p class="page-subtitle">Gestión centralizada de activos TI</p>
+    </div>
+    <button id="btn-nuevo" class="btn-primary-action">
+      <i class="fas fa-plus"></i> Nuevo Equipo
+    </button>
+  </div>
+
+  <!-- Barra de Herramientas Superior -->
+  <div class="toolbar-container">
+    <div class="search-wrapper">
+      <i class="fas fa-search"></i>
+      <input type="text" id="custom-search-input" placeholder="Buscar por serie, modelo, usuario...">
+    </div>
+    <div class="filter-wrapper">
+      <select class="select-filter" id="custom-status-filter">
+        <option value="">Todos los Estados</option>
+        {% for es in estados %}<option value="{{ es.nombre }}">{{ es.nombre }}</option>{% endfor %}
+      </select>
+      <button class="action-btn-square" style="color:#0066cc; border-color:#cbd5e1;" title="Más filtros">
+        <i class="fas fa-filter"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- DataGrid -->
+  <div class="datagrid-container">
+    <div class="table-responsive">
+      <table id="tabla-equipos" class="table" style="width:100%;">
+        <thead>
+          <tr>
+            <th data-col="id" style="width:30px; text-align:center;">#</th>
+            <th data-col="articulo">ARTÍCULO / MODELO</th>
+            <th data-col="piso">UBICACIÓN</th>
+            <th data-col="pma">PMA</th>
+            <th data-col="piso_num">PISO</th>
+            <th data-col="serial_number">N° SERIE</th>
+            <th data-col="ip">IP / RED</th>
+            <th data-col="estado">ESTADO</th>
+            <th data-col="acciones" style="width:120px; text-align:right;">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Ajax Data -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Detalles del Equipo (Split Layout) -->
+<div class="modal fade" id="modalVerEquipo" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 900px;">
+    <div class="modal-content" style="border-radius: 12px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+      
+      <!-- Cabecera Oscura -->
+      <div style="background: #1f2937; color: white; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;">
+        <h5 style="margin: 0; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+          <i class="far fa-window-maximize"></i> Detalles del Equipo
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 0.8; text-shadow: none;">&times;</button>
+      </div>
+
+      <!-- Cuerpo Split -->
+      <div style="display: flex; background: #ffffff; min-height: 400px;">
+        
+        <!-- Panel Izquierdo (Imagen y Resumen) -->
+        <div style="width: 300px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+            <img id="v-imagen" src="/static/img/placeholder_equipo.png" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+          </div>
+          
+          <h3 id="v-articulo" style="font-weight: 800; color: #0f172a; margin-bottom: 12px; font-size: 1.5rem;">Cargando...</h3>
+          <div id="v-serial" style="background: #dcfce7; color: #166534; font-family: monospace; font-weight: 700; padding: 6px 20px; border-radius: 6px; border: 1px solid #bbf7d0; font-size: 1rem; margin-bottom: 24px;"></div>
+          
+          <div style="background: white; width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+            <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px;">ESTADO DEL ACTIVO</div>
+            <div id="v-estado" style="font-size: 1.1rem; font-weight: 600; color: #334155;">-</div>
+          </div>
+        </div>
+
+        <!-- Panel Derecho (Detalles Técnicos) -->
+        <div style="flex: 1; padding: 30px 40px;">
+          
+          <!-- Ubicación -->
+          <h6 style="color: #2563eb; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-map-marker-alt"></i> Ubicación y Asignación
+          </h6>
+          <div style="border-top: 1px solid #e2e8f0; margin-bottom: 16px;"></div>
+          
+          <div class="row mb-3">
+            <div class="col-6">
+              <span class="cell-subtitle"><i class="far fa-building mr-1"></i> Edificio</span>
+              <span id="v-edificio" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
+            </div>
+            <div class="col-6">
+              <span class="cell-subtitle"><i class="fas fa-layer-group mr-1"></i> Piso</span>
+              <span id="v-piso" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              <span class="cell-subtitle"><i class="far fa-hospital mr-1"></i> Servicio / Unidad</span>
+              <span id="v-unidad" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-12">
+              <span class="cell-subtitle"><i class="fas fa-plug mr-1"></i> PMA / Lugar</span>
+              <span id="v-pma" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
+            </div>
+          </div>
+
+          <!-- Especificaciones -->
+          <h6 style="color: #2563eb; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-microchip"></i> Especificaciones Técnicas
+          </h6>
+          <div style="border-top: 1px solid #e2e8f0; margin-bottom: 16px;"></div>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <span class="cell-subtitle"><i class="fas fa-tag mr-1"></i> Marca / Modelo</span>
+              <span id="v-marca-modelo" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
+            </div>
+            <div class="col-6">
+              <span class="cell-subtitle"><i class="fas fa-network-wired mr-1"></i> Dirección IP</span>
+              <span id="v-ip" class="cell-title mt-1" style="font-size: 0.9rem; font-family: monospace;">-</span>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-6">
+              <span class="cell-subtitle"><i class="fab fa-windows mr-1"></i> S. Operativo</span>
+              <span id="v-so" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
+            </div>
+            <div class="col-6">
+              <span class="cell-subtitle"><i class="fas fa-file-contract mr-1"></i> Proveedor</span>
+              <span id="v-proveedor" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footer Oscuro (Auditoría) -->
+      <div style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 0.75rem; color: #64748b;">
+          ID Sistema: <strong id="v-sysid">#</strong> | Última mod: <strong id="v-fecha">-</strong>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" style="font-weight: 600; background: #64748b; border: none;">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal Formulario Enterprise -->
+<div class="modal fade" id="modalEquipo" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 850px;">
+    <div class="modal-content">
+      <form id="form-equipo">
+        
+        <div class="modal-header-clean">
+          <h5 id="modalEquipoLabel">Registrar Activo Físico</h5>
+          <button type="button" class="close" data-dismiss="modal" style="opacity: 0.5; outline:none;">&times;</button>
+        </div>
+        
+        <div class="modal-body-clean">
+          <div id="equipo-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 8px;"></div>
+          <input type="hidden" id="e-id" value="">
+
+          <!-- SECCIÓN 1 -->
+          <div class="section-label"><i class="fas fa-barcode"></i> Identidad del Hardware</div>
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+              <label class="form-label-clean">Artículo</label>
+              <select class="form-control-clean select2" id="e-articulo" required>
+                <option value="">-- Seleccionar --</option>
+                {% for a in articulos %}<option value="{{ a.id }}">{{ a.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label-clean">Número de Serie (S/N)</label>
+              <input type="text" class="form-control-clean w-100" id="e-serial_number" required placeholder="Ej: 5CG01234...">
+            </div>
+            
+            <div class="col-md-4 mb-3">
+              <label class="form-label-clean">Marca</label>
+              <select class="form-control-clean select2" id="e-marca" required>
+                <option value="">-- Seleccionar --</option>
+                {% for m in marcas %}<option value="{{ m.id }}">{{ m.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label-clean">Modelo</label>
+              <select class="form-control-clean select2" id="e-modelo" required disabled>
+                <option value="">-- Marca Primero --</option>
+                {% for mo in modelos %}<option value="{{ mo.id }}" data-marca="{{ mo.marca_id }}">{{ mo.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label-clean">Correlativo Interno</label>
+              <input type="text" class="form-control-clean w-100" id="e-correlativo" placeholder="Opcional">
+            </div>
+            
+            <div class="col-md-6 mb-0">
+              <label class="form-label-clean">Sistema Operativo</label>
+              <select class="form-control-clean select2" id="e-so">
+                <option value="">-- No Aplica --</option>
+                {% for so in sos %}<option value="{{ so.id }}">{{ so.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 mb-0">
+              <label class="form-label-clean">Dirección IPv4</label>
+              <input type="text" class="form-control-clean w-100" id="e-ip" placeholder="10.x.x.x">
+            </div>
+          </div>
+
+          <!-- SECCIÓN 2 -->
+          <div class="section-label mt-2"><i class="fas fa-map-marker-alt"></i> Ubicación Topológica</div>
+          <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+              <label class="form-label-clean">Edificio / Piso (Filtro)</label>
+              <select class="form-control-clean select2" id="e-piso">
+                <option value="">Todos</option>
+                {% for p in pisos %}<option value="{{ p.id }}">{{ p.edificio__nombre }} - P{{ p.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label-clean">Unidad Clínica (Filtro)</label>
+              <select class="form-control-clean select2" id="e-unidad">
+                <option value="">Todas</option>
+                {% for u in unidades %}<option value="{{ u.id }}">{{ u.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label-clean">Recinto (Filtro)</label>
+              <select class="form-control-clean select2" id="e-recinto">
+                <option value="">Todos</option>
+                {% for r in recintos %}<option value="{{ r.id }}" data-piso="{{ r.piso_id }}" data-unidad="{{ r.unidad_id }}">{{ r.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-md-12 mb-0">
+              <label class="form-label-clean">Punto de Montaje (PMA) <span style="color:#ef4444;">*</span></label>
+              <select class="form-control-clean select2" id="e-pma" required>
+                <option value="">-- Seleccionar el conector exacto --</option>
+                {% for pma in pmas %}<option value="{{ pma.id }}" data-recinto="{{ pma.recinto_id }}">{{ pma.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 3 -->
+          <div class="section-label mt-2"><i class="fas fa-shield-alt"></i> Estado Operativo</div>
+          <div class="row">
+            <div class="col-md-6 mb-0">
+              <label class="form-label-clean">Disponibilidad <span style="color:#ef4444;">*</span></label>
+              <select class="form-control-clean select2" id="e-estado" required>
+                <option value="">-- Seleccionar --</option>
+                {% for es in estados %}<option value="{{ es.id }}">{{ es.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 mb-0">
+              <label class="form-label-clean">Proveedor</label>
+              <select class="form-control-clean select2" id="e-proveedor">
+                <option value="">-- No Asignado --</option>
+                {% for prov in proveedores %}<option value="{{ prov.id }}">{{ prov.nombre }}</option>{% endfor %}
+              </select>
+            </div>
+          </div>
+
+        </div>
+        
+        <div class="modal-footer-clean">
+          <button type="button" class="btn" data-dismiss="modal" style="font-weight:600; color:#64748b; background:transparent;">Descartar</button>
+          <button type="submit" class="btn-primary-action" id="btn-guardar">
+            Confirmar Registro
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<!-- Logic -->
+<script src="/static/js/equipos.js?v=3"></script>
+{% endblock %}

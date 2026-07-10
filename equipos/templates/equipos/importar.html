@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-file-excel text-success me-2"></i> Importación Marga Marga
+            </h1>
+            <p class="text-muted mt-2">Sube el archivo Excel oficial para actualizar el inventario y catálogo de pisos/sectores del nuevo Hospital Marga Marga.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <div class="card shadow border-0">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                    <h5 class="mb-0 text-primary fw-bold">Cargar Archivo</h5>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form action="{% url 'equipos:importar_marga_marga' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="archivo_excel" class="form-label fw-bold text-secondary">Archivo .xlsx</label>
+                            <input class="form-control" type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx" required>
+                            <div class="form-text mt-2 text-muted">
+                                <i class="fas fa-info-circle"></i> El sistema procesará automáticamente las hojas válidas e ignorará gráficos o históricos.
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-upload me-2"></i> Procesar Inventario
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
