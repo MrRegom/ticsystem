@@ -166,8 +166,7 @@
   .dataTables_paginate { margin: 15px 16px; }
   
   /* Fix Length Menu saltos de linea */
-  #custom-length-wrapper .dataTables_length { margin: 0 !important; padding: 0 !important; }
-  #custom-length-wrapper .dataTables_length label {
+  .dataTables_length label {
       display: flex !important;
       flex-direction: row !important;
       align-items: center !important;
@@ -177,10 +176,11 @@
       font-size: 0.85rem;
       color: #475569;
   }
-  #custom-length-wrapper .dataTables_length select {
+  .dataTables_length select {
       width: auto !important;
+      min-width: 65px !important;
       display: inline-block !important;
-      padding: 2px 24px 2px 8px !important;
+      padding: 2px 30px 2px 8px !important;
       margin: 0 4px;
       border: 1px solid #cbd5e1;
       border-radius: 0 !important;
