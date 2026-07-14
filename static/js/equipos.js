@@ -54,6 +54,7 @@ var EquiposApp = (function($) {
 
     function initDataTable() {
         dtEquipos = $(el.table).DataTable({
+            responsive: true,
             serverSide: true,
             processing: true,
             ajax: {
@@ -155,10 +156,52 @@ var EquiposApp = (function($) {
 
     function initSelect2() {
         if ($.fn.select2) {
-            $('.select2').select2({
+            // Inicializar selects de Equipo
+            $(el.modal + ' .select2').select2({
                 theme: 'bootstrap4',
                 width: '100%',
                 dropdownParent: $(el.modal)
+            });
+            
+            // Inicializar selects de Bitacora
+            $('#modalBitacora .select2:not(.select2-ajax)').select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                dropdownParent: $('#modalBitacora')
+            });
+            
+            // Inicializar Select2 con AJAX para Funcionario (Solicitante)
+            $('#b-solicitante').select2({
+                theme: 'bootstrap4',
+                dropdownParent: $('#modalBitacora'),
+                width: '100%',
+                ajax: {
+                    url: '/api/funcionarios/search/',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { q: params.term };
+                    },
+                    processResults: function (data) {
+                        return { results: data.results };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 2,
+                placeholder: '-- Buscar por RUT o Nombre --',
+                allowClear: true,
+                language: {
+                    noResults: function() {
+                        return '<div style="padding:10px; text-align:center;">' +
+                            '<div style="color:#64748b; font-size:0.85rem; margin-bottom:8px;">No se encontraron resultados</div>' +
+                            '<button type="button" class="btn btn-sm btn-primary btn-add-funcionario-inline">' +
+                            '<i class="fas fa-plus"></i> Registrar Nuevo Funcionario</button>' +
+                            '</div>';
+                    },
+                    inputTooShort: function() { return 'Escribe 2 o más caracteres...'; },
+                    searching: function() { return 'Buscando...'; }
+                },
+                escapeMarkup: function (markup) { return markup; }
             });
         }
     }
@@ -232,16 +275,28 @@ var EquiposApp = (function($) {
 
         // Cascadas de Ubicación (Filtros visuales en el modal)
         
-        // Área -> Unidad
-        $(f.area).on('change', function() {
-            var a_id = $(this).val();
+        // Piso -> Unidad (A través de los Recintos que comparten ese piso)
+        $(f.piso).on('change', function() {
+            var p_id = $(this).val();
             var $uni = $(f.unidad);
             
             if ($uni.data('select2')) $uni.select2('destroy');
-            $uni.prop('disabled', !a_id).val('');
+            $uni.prop('disabled', !p_id).val('');
+            
+            // Encontrar qué unidades tienen recintos en este piso
+            var validUnidades = {};
+            $(f.recinto).find('option').each(function() {
+                var v = $(this).val();
+                if (!v) return;
+                if (!p_id || $(this).data('piso') == p_id) {
+                    var u_id = $(this).data('unidad');
+                    if (u_id) validUnidades[u_id] = true;
+                }
+            });
             
             $uni.find('option').each(function() {
-                if (!$(this).val() || $(this).data('area') == a_id) {
+                var v = $(this).val();
+                if (!v || validUnidades[v]) {
                     $(this).show();
                     $(this).prop('disabled', false);
                 } else {
@@ -252,36 +307,12 @@ var EquiposApp = (function($) {
             
             $uni.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
             $uni.trigger('change');
-        });
-
-        // Piso -> Sector
-        $(f.piso).on('change', function() {
-            var p_id = $(this).val();
-            var $sec = $(f.sector);
             
-            if ($sec.data('select2')) $sec.select2('destroy');
-            $sec.prop('disabled', !p_id).val('');
-            
-            $sec.find('option').each(function() {
-                if (!$(this).val() || $(this).data('piso') == p_id) {
-                    $(this).show();
-                    $(this).prop('disabled', false);
-                } else {
-                    $(this).hide();
-                    $(this).prop('disabled', true);
-                }
-            });
-            
-            $sec.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
-            $sec.trigger('change');
-            
-            // También disparamos el filtro de recintos manualmente
             filterRecintos();
         });
 
         function filterRecintos() {
             var p_id = $(f.piso).val();
-            var s_id = $(f.sector).val();
             var u_id = $(f.unidad).val();
             var $rec = $(f.recinto);
             
@@ -296,7 +327,6 @@ var EquiposApp = (function($) {
                 if (!v) return;
                 var show = true;
                 if (p_id && $(this).data('piso') != p_id) show = false;
-                if (s_id && $(this).data('sector') != s_id) show = false;
                 if (u_id && $(this).data('unidad') != u_id) show = false;
                 
                 if(show) {
@@ -334,7 +364,6 @@ var EquiposApp = (function($) {
             $pma.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
         }
 
-        $(f.sector).on('change', filterRecintos);
         $(f.unidad).on('change', filterRecintos);
         $(f.recinto).on('change', filterPmas);
     }
@@ -492,44 +521,103 @@ var EquiposApp = (function($) {
                 $(f.serial).val(eq.serial_number);
                 $(f.ip).val(eq.ip);
                 
-                // Set selects y trigger (cuidado con el orden por las cascadas)
+                // Set selects simples (no cascada)
                 $(f.articulo).val(eq.articulo).trigger('change');
                 $(f.so).val(eq.so).trigger('change');
                 $(f.estado).val(eq.estado).trigger('change');
                 $(f.proveedor).val(eq.proveedor).trigger('change');
                 
-                // Marca -> Modelo -> Imagen Preview
+                // Marca -> habilitar modelos -> setear modelo -> actualizar imagen
                 $(f.marca).val(eq.marca).trigger('change');
                 setTimeout(function() {
                     $(f.modelo).val(eq.modelo).trigger('change');
-                    // Forzar actualizacion de imagen con el modelo ya seleccionado
-                    setTimeout(actualizarImagenPreview, 50);
+                    // Forzar previsualización de imagen tras setear modelo
+                    setTimeout(function() {
+                        actualizarImagenPreview();
+                        // Además: si la imagen viene de la API, mostrarla directamente
+                        if (resp.data.imagen) {
+                            $('#e-imagen-preview').attr('src', resp.data.imagen);
+                        }
+                    }, 100);
                 }, 150);
 
-                // Ubicacion: Piso -> Recinto -> PMA
-                // Tambien seteamos unidad directamente ya que no usamos el filtro de area
-                $(f.piso).val(eq.piso).trigger('change');
+                // =============================================================
+                // UBICACIÓN: carga silenciosa sin trigger para evitar race conditions
+                // Paso 1: Setear Piso de forma silenciosa (sin trigger)
+                // =============================================================
+                if (eq.piso) {
+                    $(f.piso).val(eq.piso);
+                    // Re-init select2 para reflejar el valor
+                    if ($(f.piso).data('select2')) $(f.piso).select2('destroy');
+                    $(f.piso).select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+                }
+                
+                // Paso 2: Setear Unidad de forma silenciosa (habilitar y setear)
+                if (eq.unidad) {
+                    var $uni = $(f.unidad);
+                    if ($uni.data('select2')) $uni.select2('destroy');
+                    $uni.prop('disabled', false);
+                    $uni.val(eq.unidad);
+                    $uni.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+                }
+                
+                // Paso 3: Filtrar recintos con piso+unidad ya seteados, luego setear el recinto correcto
                 setTimeout(function() {
-                    // Setear unidad directamente (sin necesidad de area)
-                    if ($(f.unidad).length) {
-                        if ($(f.unidad).data('select2')) $(f.unidad).select2('destroy');
-                        $(f.unidad).prop('disabled', false);
-                        $(f.unidad).val(eq.unidad);
-                        $(f.unidad).select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
-                        // Disparar filtro de recintos
-                        filterRecintos();
-                    }
+                    // Ejecutar filterRecintos pero SIN resetear el valor (version silenciosa)
+                    var p_id = $(f.piso).val();
+                    var u_id = $(f.unidad).val();
+                    var $rec = $(f.recinto);
+                    
+                    if ($rec.data('select2')) $rec.select2('destroy');
+                    $rec.prop('disabled', false);
+                    
+                    // Filtrar opciones del recinto segun piso y unidad
+                    $rec.find('option').each(function() {
+                        var v = $(this).val();
+                        if (!v) return;
+                        var show = true;
+                        if (p_id && $(this).data('piso') != p_id) show = false;
+                        if (u_id && $(this).data('unidad') != u_id) show = false;
+                        if (show) {
+                            $(this).show().prop('disabled', false);
+                        } else {
+                            $(this).hide().prop('disabled', true);
+                        }
+                    });
+                    
+                    // Ahora setear el recinto real del equipo
+                    $rec.val(eq.recinto);
+                    $rec.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+                    
+                    // Paso 4: Filtrar PMAs segun el recinto seteado, luego setear el PMA
                     setTimeout(function() {
-                        $(f.recinto).val(eq.recinto).trigger('change');
-                        setTimeout(function() {
-                            $(f.pma).val(eq.pma).trigger('change');
-                        }, 50);
-                    }, 50);
-                }, 50);
+                        var r_id = eq.recinto;
+                        var $pma = $(f.pma);
+                        
+                        if ($pma.data('select2')) $pma.select2('destroy');
+                        $pma.prop('disabled', false);
+                        
+                        // Filtrar opciones del PMA segun recinto
+                        $pma.find('option').each(function() {
+                            var v = $(this).val();
+                            if (!v) return;
+                            if (r_id && $(this).data('recinto') != r_id) {
+                                $(this).hide().prop('disabled', true);
+                            } else {
+                                $(this).show().prop('disabled', false);
+                            }
+                        });
+                        
+                        // Setear el PMA real del equipo
+                        $pma.val(eq.pma);
+                        $pma.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+                        
+                    }, 100);
+                }, 100);
                 
             },
             error: function() {
-                alert("No se pudo cargar la informaci\u00f3n del equipo.");
+                alert('No se pudo cargar la información del equipo.');
             }
         });
     }
@@ -556,16 +644,33 @@ var EquiposApp = (function($) {
                             html += '<div style="font-size: 0.85rem; color: #475569; margin-bottom: 3px;"><i class="fas fa-microchip text-secondary mr-1"></i><b>Acción:</b> ' + b.accion + '</div>';
                             html += '<div style="font-size: 0.85rem; color: #475569; padding: 6px; background: #f1f5f9; border-radius: 4px; border: 1px dashed #cbd5e1;"><i class="fas fa-tools text-secondary mr-1"></i><b>Detalles:</b> ' + b.detalles + '</div>';
                         } else {
+                            var isMantencion = (b.tipo_registro === 'Mantención');
+                            var displayTipo = isMantencion ? 'Soporte' : b.tipo_registro;
+                            var badgeClass = isMantencion ? 'badge-warning' : 'badge-primary';
                             html += '<div style="display:flex; justify-content:space-between; align-items:center;">';
-                            html += '  <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">Registro #' + b.id + ' <span class="badge badge-primary" style="margin-left:10px;">' + b.tipo_registro + '</span></div>';
-                            html += '  <div style="font-size: 0.75rem; color: #64748b;">Ingreso: ' + b.fecha_mantenimiento + ' | Entrega: ' + (b.fecha_devolucion || 'En mantención') + '</div>';
+                            html += '  <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">Registro #' + b.id + ' <span class="badge ' + badgeClass + '" style="margin-left:10px;">' + displayTipo + '</span></div>';
+                            var entregaText = '';
+                            if (isMantencion) {
+                                entregaText = ' | Entrega: ' + (b.fecha_devolucion || '<span class="text-danger font-weight-bold"><i class="fas fa-clock mr-1"></i>Pendiente</span>');
+                            }
+                            html += '  <div style="font-size: 0.75rem; color: #64748b;">Ingreso: ' + b.fecha_mantenimiento + entregaText + '</div>';
                             html += '</div>';
                             html += '<div style="font-size: 0.8rem; color: #64748b; margin-top:5px; margin-bottom: 8px;">Técnico: ' + b.tecnico + ' | Solicitante: ' + b.solicitante + ' | Unidad: ' + b.servicio_unidad + '</div>';
                             if(b.falla_reportada) {
                                 html += '<div style="font-size: 0.85rem; color: #475569; margin-bottom: 3px;"><i class="fas fa-exclamation-triangle text-warning mr-1"></i><b>Falla/Motivo:</b> ' + b.falla_reportada + '</div>';
                             }
                             if(b.actividades_realizadas) {
-                                html += '<div style="font-size: 0.85rem; color: #475569; padding: 6px; background: #f0fdf4; border-radius: 4px; border: 1px dashed #bbf7d0;"><i class="fas fa-tools text-success mr-1"></i><b>Acción Realizada:</b> ' + b.actividades_realizadas + '</div>';
+                                var actHtml = b.actividades_realizadas.replace(/\[Cierre\]/g, '<strong>[Cierre]</strong>');
+                                html += '<div style="font-size: 0.85rem; color: #475569; padding: 6px; background: #f0fdf4; border-radius: 4px; border: 1px dashed #bbf7d0;"><i class="fas fa-tools text-success mr-1"></i><b>Acción Realizada:</b> ' + actHtml + '</div>';
+                            }
+                            
+                            // Boton para cerrar mantención pendiente
+                            if (b.tipo_registro === 'Mantención' && !b.fecha_devolucion) {
+                                html += '<div class="mt-2 text-right">';
+                                html += '  <button type="button" class="btn btn-sm btn-outline-success btn-cerrar-mantencion" data-id="' + b.id + '" data-eq="' + id + '">';
+                                html += '    <i class="fas fa-check-circle mr-1"></i> Cerrar Mantención';
+                                html += '  </button>';
+                                html += '</div>';
                             }
                         }
                         html += '</div>';
@@ -584,57 +689,16 @@ var EquiposApp = (function($) {
     function abrirBitacora(id, sn) {
         $('#b-equipo-id').val(id);
         
-        // Actualizar titulo del modal y header
+        // Actualizar titulo del modal y header card
         $('#b-equipo-sn').text(sn);
         $('#b-equipo-sn-header').text(sn);
         $('#b-equipo-estado').text('-');
         $('#b-equipo-ubicacion').text('-');
         $('#b-imagen').attr('src', '/static/img/placeholder_equipo.png');
         
-        // Inicializar select2 dentro del modal para evitar problemas de z-index
-        $('#modalBitacora .select2').not('.select2-ajax').each(function() {
-            if ($(this).data('select2')) return; // ya inicializado
-            $(this).select2({
-                dropdownParent: $('#modalBitacora'),
-                width: '100%'
-            });
-        });
-        
-        // Inicializar Select2 con AJAX para Funcionario (Solicitante)
-        var $solicitante = $('#b-solicitante');
-        if ($solicitante.data('select2')) $solicitante.select2('destroy');
-        $solicitante.select2({
-            dropdownParent: $('#modalBitacora'),
-            width: '100%',
-            ajax: {
-                url: '/api/funcionarios/search/',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return { q: params.term };
-                },
-                processResults: function (data) {
-                    return { results: data.results };
-                },
-                cache: true
-            },
-            minimumInputLength: 2,
-            placeholder: '-- Buscar por RUT o Nombre --',
-            allowClear: true,
-            language: {
-                noResults: function() {
-                    return '<div style="text-align:center; padding: 10px;">' +
-                        '<span style="color:#64748b; font-size:0.85rem; display:block; margin-bottom:8px;">No se encontraron resultados</span>' +
-                        '<button type="button" class="btn btn-sm btn-outline-primary" onclick="$(\"#b-solicitante\").select2(\'close\'); $(\"#modalFuncionario\").modal(\'show\');">' +
-                            '<i class="fas fa-plus"></i> Registrar Nuevo Funcionario' +
-                        '</button>' +
-                    '</div>';
-                },
-                inputTooShort: function() { return 'Escribe 2 o m\u00e1s caracteres...'; },
-                searching: function() { return 'Buscando...'; }
-            },
-            escapeMarkup: function (markup) { return markup; }
-        });
+        // Resetear formulario primero para limpiar selects
+        $('#form-bitacora')[0].reset();
+        $('#b-falla, #b-unidad, #b-solicitante').val(null).trigger('change');
         
         // Fetch equipo details for the header card
         $.ajax({
@@ -653,22 +717,18 @@ var EquiposApp = (function($) {
                 // Preseleccionar unidad en el select de la bitacora
                 if (eq.unidad) {
                     var $bUnidad = $('#b-unidad');
-                    if ($bUnidad.data('select2')) $bUnidad.select2('destroy');
-                    $bUnidad.val(eq.unidad);
-                    $bUnidad.select2({ dropdownParent: $('#modalBitacora'), width: '100%' });
+                    var match = $bUnidad.find('option').filter(function() {
+                        return $(this).text() === eq.unidad;
+                    }).val();
+                    if (match) {
+                        $bUnidad.val(match).trigger('change');
+                    }
                 }
             }
         });
         
-        // Resetear formulario
-        $('#form-bitacora')[0].reset();
-        if ($('#b-tipo').data('select2')) $('#b-tipo').select2('destroy');
-        $('#b-tipo').select2({ dropdownParent: $('#modalBitacora'), width: '100%' });
-        if ($('#b-falla').data('select2')) $('#b-falla').select2('destroy');
-        $('#b-falla').select2({ dropdownParent: $('#modalBitacora'), width: '100%' });
-        
         // Set default date to today
-        var today = new Date().toISOString().split('T')[0];
+        var today = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
         $('#b-fecha-mtto').val(today);
         
         $('#modalBitacora').modal('show');
@@ -756,6 +816,86 @@ var EquiposApp = (function($) {
                 abrirBitacora($(this).data('id'), $(this).data('sn'));
             });
             
+            // ============================================================
+            // Event delegation para el botón "Registrar Nuevo Funcionario"
+            // dentro del dropdown de Select2 (no puede usar onclick inline
+            // porque Select2 lo destruye al renderizar).
+            // ============================================================
+            $(document).on('click', '.btn-add-funcionario-inline', function(e) {
+                e.stopPropagation(); // Evitar que Select2 cierre el dropdown con el click
+                $('#b-solicitante').select2('close');
+                // Fix de z-index para modal apilado sobre otro modal
+                $('#modalFuncionario').modal('show');
+            });
+            
+            // Fix z-index para Bootstrap modales apilados (Bitácora > Funcionario)
+            $('#modalFuncionario').on('shown.bs.modal', function() {
+                var zIndex = 1050 + 10 * $('.modal:visible').length;
+                $(this).css('z-index', zIndex);
+                $('.modal-backdrop').not('.modal-stack').last().css('z-index', zIndex - 1).addClass('modal-stack');
+            });
+            
+            // Accion: Cerrar Mantención pendiente
+            $(document).on('click', '.btn-cerrar-mantencion', function(e) {
+                e.preventDefault();
+                var bitacoraId = $(this).data('id');
+                var eqId = $(this).data('eq');
+                
+                Swal.fire({
+                    title: 'Cerrar Mantención',
+                    target: document.getElementById('modalBitacora'),
+                    html: `
+                        <div class="text-left mt-2">
+                            <label style="font-size:0.85rem; font-weight:bold;">Nuevas Actividades / Resolución (Opcional)</label>
+                            <textarea id="swal-actividades" class="form-control-clean w-100" rows="3" placeholder="Detalles de la entrega o resolución técnica..."></textarea>
+                            <small class="text-muted">Este texto se añadirá a las actividades que ya existen en el registro.</small>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-check-circle mr-1"></i> Confirmar Cierre',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#10b981',
+                    preConfirm: () => {
+                        return {
+                            actividades: document.getElementById('swal-actividades').value
+                        };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Obtener el registro actual para saber si hay que concatenar texto (el backend no concatena)
+                        // Para simplificar, haremos un PUT enviando solo lo necesario, el backend reemplaza si enviamos actividades.
+                        // Wait, backend reemplaza. Necesito enviar actividades antiguas + nuevas.
+                        // Pero no tengo las antiguas crudas aqui (puedo obtenerlas si hago GET primero, o pasar un endpoint especial).
+                        // Para no complicar, enviaremos la peticion al backend pero con "append_actividades: true" no existe en la API.
+                        // Lo mejor es hacer un GET rapido o simplemente guardar la fecha si no escriben actividades.
+                        
+                        $.ajax({
+                            url: '/equipos/api/bitacora/' + bitacoraId + '/',
+                            type: 'PUT',
+                            data: JSON.stringify({
+                                cierre_automatico: true,
+                                extra_actividades: result.value.actividades
+                            }),
+                            contentType: 'application/json',
+                            headers: { 'X-CSRFToken': csrfToken() },
+                            success: function(resp) {
+                                if (resp.success) {
+                                    Swal.fire('Guardado', 'Mantención cerrada correctamente.', 'success');
+                                    cargarBitacora(eqId);
+                                } else {
+                                    Swal.fire('Error', resp.message, 'error');
+                                }
+                            },
+                            error: function(err) {
+                                var msg = 'Error al cerrar la mantención';
+                                if (err.responseJSON && err.responseJSON.message) msg = err.responseJSON.message;
+                                Swal.fire('Error', msg, 'error');
+                            }
+                        });
+                    }
+                });
+            });
+            
             $('#form-bitacora').on('submit', function(e) {
                 e.preventDefault();
                 var btn = $('#btn-guardar-bitacora');
@@ -764,7 +904,6 @@ var EquiposApp = (function($) {
                 var data = {
                     tipo_registro: $('#b-tipo').val(),
                     fecha_mantenimiento: $('#b-fecha-mtto').val(),
-                    fecha_devolucion: $('#b-fecha-dev').val(),
                     falla_reportada: $('#b-falla').val(),
                     actividades_realizadas: $('#b-actividades').val(),
                     solicitante: $('#b-solicitante').val(),
@@ -782,18 +921,20 @@ var EquiposApp = (function($) {
                     success: function(resp) {
                         btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Registro');
                         if(resp.success) {
+                            Swal.fire('Guardado', 'Registro de bitácora creado correctamente.', 'success');
+                            $('#collapseFormBitacora').slideUp(250);
                             $('#form-bitacora')[0].reset();
-                            $('#b-tipo').val('').trigger('change');
+                            $('#b-falla, #b-unidad, #b-solicitante').val(null).trigger('change');
                             cargarBitacora(eq_id); // Recargar timeline
                         } else {
-                            alert(resp.message);
+                            Swal.fire('Error', resp.message, 'error');
                         }
                     },
                     error: function(err) {
                         btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Registro');
                         var msg = "Error al guardar.";
                         if(err.responseJSON && err.responseJSON.message) msg = err.responseJSON.message;
-                        alert(msg);
+                        Swal.fire('Error', msg, 'error');
                     }
                 });
             });

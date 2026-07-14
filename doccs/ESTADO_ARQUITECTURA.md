@@ -3,6 +3,24 @@
 > **Última actualización:** 2026-07-13
 > **Entorno:** Desarrollo local (SQLite). Listo para escalar a PostgreSQL.
 
+# Estado y Arquitectura del Proyecto "TicSystem"
+
+## Flujo de Trabajo (Git + VPS)
+1. **Desarrollo Local:** Los cambios se realizan en el entorno local (Windows).
+2. **Control de Versiones:** Se realiza `git commit` y `git push` hacia la rama `main` en GitHub (https://github.com/MrRegom/ticsystem.git).
+3. **Despliegue (Producción):** Se accede al servidor VPS mediante SSH y se ejecuta `git pull` para actualizar el código.
+
+## Entorno de Producción (DigitalOcean)
+- **IP del Servidor:** `157.245.131.99`
+- **OS:** Ubuntu 24.04 LTS (x64)
+- **Acceso SSH:** `ssh root@157.245.131.99` (Configurado con llave SSH local "Mi PC Windows")
+- **Directorio de la App:** `/var/www/ticsystem`
+- **Pila Tecnológica:**
+  - **Servidor Web / Proxy:** Nginx (Puerto 80)
+  - **Servidor de Aplicaciones:** Gunicorn (Systemd Service `ticsystem.service`)
+  - **Base de Datos:** PostgreSQL (BD: `ticsystem_db`, Usuario local postgres)
+  - **Entorno de Ejecución:** Python 3.12 (venv local en `/var/www/ticsystem/venv`)
+
 ---
 
 ## Arquitectura y Patrones (Reglas Estrictas)

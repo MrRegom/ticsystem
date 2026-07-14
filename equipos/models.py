@@ -293,10 +293,10 @@ class BitacoraEquipo(models.Model):
         related_name='bitacoras_realizadas',
         verbose_name="Técnico"
     )
-    fecha_mantenimiento = models.DateField(
+    fecha_mantenimiento = models.DateTimeField(
         verbose_name="Fecha de Mantención"
     )
-    fecha_devolucion = models.DateField(
+    fecha_devolucion = models.DateTimeField(
         null=True,
         blank=True,
         verbose_name="Fecha de Devolución",
@@ -352,7 +352,7 @@ class BitacoraEquipo(models.Model):
 
     def clean(self):
         super().clean()
-        hoy = timezone.localdate()
+        hoy = timezone.localtime()
 
         # Regla 2: fecha_devolucion no futura ni anterior a fecha_mantenimiento
         if self.fecha_devolucion is not None:

@@ -91,3 +91,21 @@
         }
       });
     });
+
+// Utilidad global para formatear RUT
+function formatearRut(input) {
+    // Eliminar caracteres inválidos (deja solo números y K)
+    let value = input.value.replace(/[^0-9kK]/g, '').toUpperCase();
+    
+    if (value.length > 1) {
+        let cuerpo = value.slice(0, -1);
+        let dv = value.slice(-1);
+        // Limitar largo máximo del cuerpo a 8 dígitos (ej: 30.000.000 -> 8 chars)
+        if (cuerpo.length > 8) {
+            cuerpo = cuerpo.slice(0, 8);
+        }
+        input.value = cuerpo + '-' + dv;
+    } else {
+        input.value = value;
+    }
+}

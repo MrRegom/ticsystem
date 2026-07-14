@@ -357,16 +357,19 @@ class EquipoBitacoraView(LoginRequiredMixin, View):
         if not fecha_mtto:
             return JsonResponse({'success': False, 'message': 'Fecha de mantención requerida.'}, status=400)
 
+        from django.utils.dateparse import parse_datetime
         try:
-            fecha_mtto = datetime.strptime(fecha_mtto, '%Y-%m-%d').date()
-        except ValueError:
-            return JsonResponse({'success': False, 'message': 'Formato de fecha inválido (YYYY-MM-DD).'}, status=400)
+            fecha_mtto = parse_datetime(fecha_mtto)
+            if not fecha_mtto:
+                raise ValueError
+        except (ValueError, TypeError):
+            return JsonResponse({'success': False, 'message': 'Formato de fecha inválido. Utilice formato datetime-local.'}, status=400)
 
         fecha_dev = body.get('fecha_devolucion')
         if fecha_dev:
             try:
-                fecha_dev = datetime.strptime(fecha_dev, '%Y-%m-%d').date()
-            except ValueError:
+                fecha_dev = parse_datetime(fecha_dev)
+            except (ValueError, TypeError):
                 fecha_dev = None
 
         falla_reportada = body.get('falla_reportada', '')
@@ -413,11 +416,12 @@ class EquipoBitacoraView(LoginRequiredMixin, View):
             'tecnico': b.tecnico.username if b.tecnico else '',
             'tipo_registro': b.tipo_registro,
             'tipo_registro_display': b.get_tipo_registro_display(),
-            'fecha_mantenimiento': b.fecha_mantenimiento.strftime('%d/%m/%Y') if b.fecha_mantenimiento else '',
+            'fecha_mantenimiento': b.fecha_mantenimiento.strftime('%d/%m/%Y %H:%M') if b.fecha_mantenimiento else '',
             'fecha_mantenimiento_iso': b.fecha_mantenimiento.isoformat() if b.fecha_mantenimiento else '',
-            'fecha_devolucion': b.fecha_devolucion.strftime('%d/%m/%Y') if b.fecha_devolucion else '',
+            'fecha_devolucion': b.fecha_devolucion.strftime('%d/%m/%Y %H:%M') if b.fecha_devolucion else '',
             'fecha_devolucion_iso': b.fecha_devolucion.isoformat() if b.fecha_devolucion else '',
-            'solicitante': b.solicitante or '',
+            'solicitante': f"{b.solicitante.nombres} {b.solicitante.apellidos} ({b.solicitante.rut})" if b.solicitante else '',
+            'solicitante_id': b.solicitante_id,
             'falla_reportada': b.falla_reportada or '',
             'actividades_realizadas': b.actividades_realizadas or '',
             'servicio_unidad': b.servicio_unidad or '',
@@ -439,20 +443,42 @@ class BitacoraRegistroView(LoginRequiredMixin, View):
         except (json.JSONDecodeError, TypeError):
             return JsonResponse({'success': False, 'message': 'JSON inválido.'}, status=400)
 
-        fecha_dev = body.get('fecha_devolucion')
-        if fecha_dev:
-            try:
-                fecha_dev = datetime.strptime(fecha_dev, '%Y-%m-%d').date()
-            except ValueError:
-                return JsonResponse({'success': False, 'message': 'Formato de fecha inválido (YYYY-MM-DD).'}, status=400)
-            registro.fecha_devolucion = fecha_dev
-        elif 'fecha_devolucion' in body and not fecha_dev:
-            registro.fecha_devolucion = None
+        from django.utils import timezone
+        from django.utils import timezone
+        if body.get('cierre_automatico'):
+            # Garantizar que la fecha de cierre nunca sea anterior a la de creación
+            ahora = timezone.localtime()
+            if registro.fecha_mantenimiento and ahora < registro.fecha_mantenimiento:
+                registro.fecha_devolucion = registro.fecha_mantenimiento
+            else:
+                registro.fecha_devolucion = ahora
+        else:
+            fecha_dev = body.get('fecha_devolucion')
+            if fecha_dev:
+                from django.utils.dateparse import parse_datetime
+                try:
+                    fecha_dev = parse_datetime(fecha_dev)
+                    if not fecha_dev:
+                        raise ValueError
+                except (ValueError, TypeError):
+                    return JsonResponse({'success': False, 'message': 'Formato de fecha inválido. Utilice formato datetime-local.'}, status=400)
+                registro.fecha_devolucion = fecha_dev
+            elif 'fecha_devolucion' in body and not fecha_dev:
+                registro.fecha_devolucion = None
 
         if 'solicitante' in body:
             registro.solicitante = body['solicitante'][:150] or None
         if 'falla_reportada' in body:
             registro.falla_reportada = body['falla_reportada'] or None
+            
+        if 'extra_actividades' in body and body['extra_actividades']:
+            extra = body['extra_actividades'].strip()
+            if extra:
+                if registro.actividades_realizadas:
+                    registro.actividades_realizadas = f"{registro.actividades_realizadas}\n\n[Cierre] {extra}"
+                else:
+                    registro.actividades_realizadas = f"[Cierre] {extra}"
+                    
         if 'actividades_realizadas' in body:
             registro.actividades_realizadas = body['actividades_realizadas'] or None
         if 'servicio_unidad' in body:

@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <!-- DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
 <!-- Custom Styles: Marga Marga Enterprise (Referencia) -->
 <style>
   body, .content-wrapper, .wrapper {
@@ -389,7 +390,7 @@
                       <label class="form-label-clean">Artículo</label>
                       <select class="form-control-clean select2" id="e-articulo" required>
                         <option value="">-- Seleccionar --</option>
-                        {% for a in articulos %}<option value="{{ a.id }}">{{ a.nombre }}</option>{% endfor %}
+                        {% for a in articulos %}<option value="{{ a.id }}" data-imagen="{{ a.imagen }}">{{ a.nombre }}</option>{% endfor %}
                       </select>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -408,7 +409,7 @@
                       <label class="form-label-clean">Modelo</label>
                       <select class="form-control-clean select2" id="e-modelo" required disabled>
                         <option value="">-- Marca Primero --</option>
-                        {% for mo in modelos %}<option value="{{ mo.id }}" data-marca="{{ mo.marca_id }}">{{ mo.nombre }}</option>{% endfor %}
+                        {% for mo in modelos %}<option value="{{ mo.id }}" data-marca="{{ mo.marca_id }}" data-imagen="{{ mo.imagen }}">{{ mo.nombre }}</option>{% endfor %}
                       </select>
                     </div>
                     <div class="col-md-4 mb-3">
@@ -551,20 +552,16 @@
                   <div class="row">
                     <div class="col-md-3 mb-3">
                       <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Tipo de Registro <span class="text-danger">*</span></label>
-                      <select class="form-control-clean select2 w-100" id="b-tipo" required>
-                        <option value="">-- Seleccionar --</option>
-                        {% for tr in tipos_registro_bitacora %}<option value="{{ tr.id }}">{{ tr.nombre }}</option>{% endfor %}
+                      <select class="form-control-clean w-100" id="b-tipo" style="background-color: #f1f5f9; pointer-events: none;" readonly>
+                        <option value="MANTENCION" selected>Soporte / Intervención Técnica</option>
                       </select>
                     </div>
-                    <div class="col-md-2 mb-3">
+                    <div class="col-md-3 mb-3">
                       <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Fecha Ingreso <span class="text-danger">*</span></label>
-                      <input type="date" class="form-control-clean w-100" id="b-fecha-mtto" required>
+                      <input type="datetime-local" class="form-control-clean w-100" id="b-fecha-mtto" required>
                     </div>
-                    <div class="col-md-2 mb-3">
-                      <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase; color:#64748b;">Fecha Devolución</label>
-                      <input type="date" class="form-control-clean w-100" id="b-fecha-dev">
-                    </div>
-                    <div class="col-md-5 mb-3">
+                    <!-- Fecha Devolución removida, ahora se setea solo al Cerrar Mantención -->
+                    <div class="col-md-6 mb-3">
                       <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Servicio / Unidad</label>
                       <select class="form-control-clean select2 w-100" id="b-unidad">
                         <option value="">-- Seleccionar unidad --</option>
@@ -694,9 +691,11 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- DataTables -->
+<!-- DataTables & Plugins -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
 <!-- Logic -->
-<script src="/static/js/equipos.js?v=16"></script>
+<script src="/static/js/equipos.js?v=30"></script>
 {% endblock %}

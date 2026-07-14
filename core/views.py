@@ -403,11 +403,14 @@ class FuncionarioSearchAPIView(LoginRequiredMixin, View):
         qs = Funcionario.objects.all()
         
         if q:
-            qs = qs.filter(
-                Q(rut__icontains=q) | 
-                Q(nombres__icontains=q) | 
-                Q(apellidos__icontains=q)
-            )
+            # Separar términos para permitir búsquedas por nombre + apellido
+            terms = q.split()
+            for term in terms:
+                qs = qs.filter(
+                    Q(rut__icontains=term) | 
+                    Q(nombres__icontains=term) | 
+                    Q(apellidos__icontains=term)
+                )
             
         qs = qs[:20]  # Limitar a 20 resultados para performance
         

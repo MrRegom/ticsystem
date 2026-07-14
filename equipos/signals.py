@@ -144,8 +144,8 @@ def recalcular_estado_equipo(sender, instance, created, **kwargs):
     equipo = instance.equipo
 
     if instance.fecha_devolucion is None:
-        # Mantención abierta → Mantenimiento
-        estado_mant = EstadoEquipo.objects.filter(nombre='Mantenimiento').first()
+        # Mantención abierta → Soporte
+        estado_mant = EstadoEquipo.objects.filter(nombre='Soporte').first()
         if estado_mant and equipo.estado_id != estado_mant.pk:
             equipo._skip_audit = True
             equipo.estado = estado_mant
