@@ -41,15 +41,24 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
         context['prioridades'] = list(Prioridad.objects.all().values('id', 'nombre', 'color_hex'))
         context['categorias'] = list(Categoria.objects.filter(activa=True).values('id', 'nombre'))
         context['grupos_resolutores'] = list(GrupoResolutor.objects.filter(activo=True).values('id', 'nombre'))
-        # Filtrar técnicos para que solo salgan los del mismo grupo del usuario actual
-        if hasattr(self.request.user, 'grupos_resolutores'):
-            user_grupos = self.request.user.grupos_resolutores.all()
-            if user_grupos.exists():
-                tecnicos_qs = User.objects.filter(grupos_resolutores__in=user_grupos, is_active=True).distinct()
+        # Filtrar técnicos para asignar
+        is_dispatcher = False
+        if hasattr(self.request.user, 'perfil') and self.request.user.perfil.rol:
+            rol_nombre = self.request.user.perfil.rol.nombre
+            if rol_nombre in ['Super Administrador', 'Operador de Mesa de Ayuda', 'Mesa de Ayuda']:
+                is_dispatcher = True
+
+        if is_dispatcher:
+            tecnicos_qs = User.objects.filter(is_active=True, perfil__rol__isnull=False).distinct()
+        else:
+            if hasattr(self.request.user, 'grupos_resolutores'):
+                user_grupos = self.request.user.grupos_resolutores.all()
+                if user_grupos.exists():
+                    tecnicos_qs = User.objects.filter(grupos_resolutores__in=user_grupos, is_active=True).distinct()
+                else:
+                    tecnicos_qs = User.objects.none()
             else:
                 tecnicos_qs = User.objects.none()
-        else:
-            tecnicos_qs = User.objects.none()
             
         tecnicos_list = []
         for u in tecnicos_qs.select_related('perfil__rol').exclude(first_name=''):
