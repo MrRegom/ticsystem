@@ -1,0 +1,223 @@
+{% extends 'core/base.html' %}
+{% block title %}Dashboard - Helpdesk Enterprise{% endblock %}
+
+{% block extra_css %}
+<style>
+  .dashboard-wrapper {
+    padding: 24px;
+    background: #f1f5f9;
+    min-height: calc(100vh - 56px);
+  }
+  .dashboard-header {
+    margin-bottom: 24px;
+  }
+  .dashboard-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+  }
+  .dashboard-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+  }
+  
+  .chart-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .chart-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Distribución de la grilla */
+  .card-sla { grid-column: span 4; }
+  .card-categoria { grid-column: span 8; }
+  .card-tendencia { grid-column: span 8; }
+  .card-top { grid-column: span 4; }
+
+  /* Lista Top Equipos */
+  .top-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .top-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .top-item:last-child {
+    border-bottom: none;
+  }
+  .top-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #334155;
+  }
+  .top-meta {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+  .top-badge {
+    background: #fee2e2;
+    color: #ef4444;
+    font-weight: 800;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* Responsivo */
+  @media (max-width: 1024px) {
+    .card-sla, .card-categoria, .card-tendencia, .card-top {
+      grid-column: span 12;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title"><i class="fas fa-chart-pie text-primary"></i> Dashboard Gerencial</h1>
+    <p class="dashboard-subtitle">Indicadores de Rendimiento (KPI) y BI</p>
+  </div>
+
+  <div class="grid-container">
+    
+    <!-- SLA Donut -->
+    <div class="chart-card card-sla">
+      <h3 class="chart-title"><i class="fas fa-stopwatch text-warning"></i> Cumplimiento SLA</h3>
+      <div style="position: relative; height: 250px;">
+        <canvas id="chartSla"></canvas>
+      </div>
+    </div>
+
+    <!-- Carga por Categoría Bar -->
+    <div class="chart-card card-categoria">
+      <h3 class="chart-title"><i class="fas fa-layer-group text-primary"></i> Demanda por Categoría</h3>
+      <div style="position: relative; height: 250px;">
+        <canvas id="chartCategoria"></canvas>
+      </div>
+    </div>
+
+    <!-- Tendencia Line -->
+    <div class="chart-card card-tendencia">
+      <h3 class="chart-title"><i class="fas fa-chart-line text-success"></i> Tendencia de Incidentes (6 Meses)</h3>
+      <div style="position: relative; height: 280px;">
+        <canvas id="chartTendencia"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Equipos List -->
+    <div class="chart-card card-top">
+      <h3 class="chart-title"><i class="fas fa-desktop text-danger"></i> Top 5: Activos Críticos</h3>
+      <ul class="top-list">
+        {% for equipo in top_equipos %}
+        <li class="top-item">
+          <div>
+            <div class="top-name">{{ equipo.nombre }}</div>
+            <div class="top-meta">Serie: {{ equipo.serie }}</div>
+          </div>
+          <span class="top-badge">{{ equipo.fallas }} Fallas</span>
+        </li>
+        {% empty %}
+        <li class="top-item">
+          <div class="top-meta">No hay historial de fallas registradas.</div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Importar Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Cargar datos inyectados por Django
+  const slaData = {{ sla_data|safe }};
+  const categoriaData = {{ categoria_data|safe }};
+  const tendenciaData = {{ tendencia_data|safe }};
+
+  // Configuración global de fuentes para un look Enterprise
+  Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+  Chart.defaults.color = '#64748b';
+
+  // 1. Gráfico SLA (Doughnut)
+  new Chart(document.getElementById('chartSla'), {
+    type: 'doughnut',
+    data: slaData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '70%', // Hacer el anillo más delgado y moderno
+      plugins: {
+        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
+      }
+    }
+  });
+
+  // 2. Gráfico Categoría (Bar)
+  new Chart(document.getElementById('chartCategoria'), {
+    type: 'bar',
+    data: categoriaData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false } // No necesitamos leyenda si hay colores
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { borderDash: [4, 4] } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  // 3. Gráfico Tendencia (Line)
+  new Chart(document.getElementById('chartTendencia'), {
+    type: 'line',
+    data: tendenciaData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { borderDash: [4, 4] } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+</script>
+{% endblock %}

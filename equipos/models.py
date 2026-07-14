@@ -277,6 +277,9 @@ class BitacoraEquipo(models.Model):
         ACTUALIZACION_SISTEMA = 'ACTUALIZACION_SISTEMA', 'Actualización de Sistema'
         REEMPLAZO = 'REEMPLAZO', 'Reemplazo'
         REVISION_PREVENTIVA = 'REVISION_PREVENTIVA', 'Revisión Preventiva'
+        INSTALACION = 'INSTALACION', 'Instalación'
+        TRASLADO = 'TRASLADO', 'Traslado'
+        AISLAMIENTO_MINSAL = 'AISLAMIENTO_MINSAL', 'Aislamiento MINSAL'
 
     equipo = models.ForeignKey(
         Equipo,
@@ -299,10 +302,12 @@ class BitacoraEquipo(models.Model):
         verbose_name="Fecha de Devolución",
         help_text="Fecha en que el equipo fue devuelto al usuario tras atención"
     )
-    solicitante = models.CharField(
-        max_length=150,
+    solicitante = models.ForeignKey(
+        'core.Funcionario',
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
+        related_name='bitacoras_solicitadas',
         verbose_name="Solicitante"
     )
     falla_reportada = models.TextField(

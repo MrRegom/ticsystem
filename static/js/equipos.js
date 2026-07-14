@@ -27,8 +27,10 @@ var EquiposApp = (function($) {
         correlativo: '#e-correlativo',
         so: '#e-so',
         ip: '#e-ip',
-        piso: '#e-piso',
+        area: '#e-area',
         unidad: '#e-unidad',
+        piso: '#e-piso',
+        sector: '#e-sector',
         recinto: '#e-recinto',
         pma: '#e-pma',
         estado: '#e-estado',
@@ -139,9 +141,12 @@ var EquiposApp = (function($) {
                     searchable: false,
                     className: 'text-right',
                     render: function(data, type, row) {
-                        return '<button type="button" class="action-btn-square ic-view mr-1" data-id="'+row.id+'" title="Ver Detalles"><i class="fas fa-eye"></i></button>' +
-                               '<button type="button" class="action-btn-square ic-edit mr-1" data-id="'+row.id+'" title="Editar"><i class="fas fa-edit"></i></button>' +
-                               '<button type="button" class="action-btn-square ic-delete delete" data-id="'+row.id+'" title="Eliminar"><i class="fas fa-trash-alt"></i></button>';
+                        return '<div class="actions-cell">' +
+                               '<a href="#" class="action-icon ic-view" data-id="'+row.id+'" title="Ver Detalles"><i class="fas fa-eye"></i></a>' +
+                               '<a href="#" class="action-icon ic-bitacora" data-id="'+row.id+'" data-sn="'+(row.serial_number||'S/N')+'" title="Bitácora / Historial"><i class="fas fa-history"></i></a>' +
+                               '<a href="#" class="action-icon ic-edit" data-id="'+row.id+'" title="Editar"><i class="fas fa-pencil-alt"></i></a>' +
+                               '<a href="#" class="action-icon ic-delete delete" data-id="'+row.id+'" title="Eliminar"><i class="fas fa-trash-alt"></i></a>' +
+                               '</div>';
                     }
                 }
             ]
@@ -159,57 +164,178 @@ var EquiposApp = (function($) {
     }
 
     function initCascades() {
-        // Marca -> Modelo
         $(f.marca).on('change', function() {
             var m_id = $(this).val();
             var $mod = $(f.modelo);
-            $mod.prop('disabled', !m_id).val('').trigger('change');
+            
+            if ($mod.data('select2')) {
+                $mod.select2('destroy');
+            }
+            
+            $mod.prop('disabled', !m_id).val('');
+            var countOptions = 0;
+            var lastOptionVal = '';
+            
             $mod.find('option').each(function() {
-                if (!$(this).val() || $(this).data('marca') == m_id) {
+                if (!$(this).val()) return; // skip default
+                if ($(this).data('marca') == m_id) {
                     $(this).show();
+                    $(this).prop('disabled', false);
+                    countOptions++;
+                    lastOptionVal = $(this).val();
                 } else {
                     $(this).hide();
+                    $(this).prop('disabled', true);
                 }
             });
+            
+            // Auto-seleccionar si solo hay 1 modelo
+            if (countOptions === 1) {
+                $mod.val(lastOptionVal);
+            }
+            
+            $mod.select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                dropdownParent: $(el.modal)
+            });
+            
+            // Forzamos el change para que se actualice la foto
+            $mod.trigger('change');
         });
 
+        // Modelo -> Imagen (o Articulo -> Imagen)
+        function actualizarImagenPreview() {
+            var $modSelected = $(f.modelo).find('option:selected');
+            var imgMod = $modSelected.attr('data-imagen');
+            var $artSelected = $(f.articulo).find('option:selected');
+            var imgArt = $artSelected.attr('data-imagen');
+            
+            var img = '';
+            if (imgMod && imgMod.trim() !== '' && imgMod !== 'None') {
+                img = imgMod;
+            } else if (imgArt && imgArt.trim() !== '' && imgArt !== 'None') {
+                img = imgArt;
+            }
+            
+            if (img) {
+                $('#e-imagen-preview').attr('src', img);
+            } else {
+                // FontAwesome fallback icon inside HTML if we don't have a reliable placeholder image,
+                // but for now we rely on the placeholder.
+                $('#e-imagen-preview').attr('src', '/static/img/placeholder_equipo.png');
+            }
+        }
+
+        $(f.articulo).on('change', actualizarImagenPreview);
+        $(f.modelo).on('change', actualizarImagenPreview);
+
         // Cascadas de Ubicación (Filtros visuales en el modal)
-        function filterRecintosYPmas() {
+        
+        // Área -> Unidad
+        $(f.area).on('change', function() {
+            var a_id = $(this).val();
+            var $uni = $(f.unidad);
+            
+            if ($uni.data('select2')) $uni.select2('destroy');
+            $uni.prop('disabled', !a_id).val('');
+            
+            $uni.find('option').each(function() {
+                if (!$(this).val() || $(this).data('area') == a_id) {
+                    $(this).show();
+                    $(this).prop('disabled', false);
+                } else {
+                    $(this).hide();
+                    $(this).prop('disabled', true);
+                }
+            });
+            
+            $uni.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+            $uni.trigger('change');
+        });
+
+        // Piso -> Sector
+        $(f.piso).on('change', function() {
+            var p_id = $(this).val();
+            var $sec = $(f.sector);
+            
+            if ($sec.data('select2')) $sec.select2('destroy');
+            $sec.prop('disabled', !p_id).val('');
+            
+            $sec.find('option').each(function() {
+                if (!$(this).val() || $(this).data('piso') == p_id) {
+                    $(this).show();
+                    $(this).prop('disabled', false);
+                } else {
+                    $(this).hide();
+                    $(this).prop('disabled', true);
+                }
+            });
+            
+            $sec.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+            $sec.trigger('change');
+            
+            // También disparamos el filtro de recintos manualmente
+            filterRecintos();
+        });
+
+        function filterRecintos() {
             var p_id = $(f.piso).val();
+            var s_id = $(f.sector).val();
             var u_id = $(f.unidad).val();
             var $rec = $(f.recinto);
             
-            // Filtro visual rápido: ocultamos opciones que no hagan match
-            $rec.val('').trigger('change');
+            if ($rec.data('select2')) $rec.select2('destroy');
+            
+            // Habilitar si hay al menos piso o unidad
+            var enable = (p_id || u_id);
+            $rec.prop('disabled', !enable).val('');
+            
             $rec.find('option').each(function() {
                 var v = $(this).val();
                 if (!v) return;
                 var show = true;
                 if (p_id && $(this).data('piso') != p_id) show = false;
+                if (s_id && $(this).data('sector') != s_id) show = false;
                 if (u_id && $(this).data('unidad') != u_id) show = false;
                 
-                if(show) $(this).show(); else $(this).hide();
+                if(show) {
+                    $(this).show();
+                    $(this).prop('disabled', false);
+                } else {
+                    $(this).hide();
+                    $(this).prop('disabled', true);
+                }
             });
+            
+            $rec.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+            $rec.trigger('change');
         }
 
         function filterPmas() {
             var r_id = $(f.recinto).val();
             var $pma = $(f.pma);
             
-            $pma.val('').trigger('change');
+            if ($pma.data('select2')) $pma.select2('destroy');
+            
+            $pma.prop('disabled', !r_id).val('');
             $pma.find('option').each(function() {
                 var v = $(this).val();
                 if (!v) return;
                 if (r_id && $(this).data('recinto') != r_id) {
                     $(this).hide();
+                    $(this).prop('disabled', true);
                 } else {
                     $(this).show();
+                    $(this).prop('disabled', false);
                 }
             });
+            
+            $pma.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
         }
 
-        $(f.piso).on('change', filterRecintosYPmas);
-        $(f.unidad).on('change', filterRecintosYPmas);
+        $(f.sector).on('change', filterRecintos);
+        $(f.unidad).on('change', filterRecintos);
         $(f.recinto).on('change', filterPmas);
     }
 
@@ -252,9 +378,14 @@ var EquiposApp = (function($) {
         
         // Reset select2
         $('.select2').val('').trigger('change.select2');
+        $('#e-imagen-preview').show().attr('src', '/static/img/placeholder_equipo.png');
         
         // Disable dependientes
         $(f.modelo).prop('disabled', true);
+        $(f.unidad).prop('disabled', true);
+        $(f.sector).prop('disabled', true);
+        $(f.recinto).prop('disabled', true);
+        $(f.pma).prop('disabled', true);
         
         $(el.modal).modal('show');
     }
@@ -266,7 +397,6 @@ var EquiposApp = (function($) {
             marca_id: $(f.marca).val(),
             modelo_id: $(f.modelo).val(),
             serial_number: $(f.serial).val(),
-            correlativo: $(f.correlativo).val(),
             so_id: $(f.so).val(),
             ip: $(f.ip).val(),
             pma_id: $(f.pma).val(),
@@ -276,63 +406,273 @@ var EquiposApp = (function($) {
 
         $(el.alert).addClass('d-none');
 
-        $.ajax({
-            url: '/equipos/api/action/',
-            type: 'POST',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            headers: { 'X-CSRFToken': csrfToken() },
-            success: function(resp) {
-                if(resp.success) {
-                    $(el.modal).modal('hide');
-                    dtEquipos.ajax.reload(null, false);
-                } else {
-                    $(el.alert).removeClass('d-none').text(resp.message || 'Error al guardar.');
+        var isUpdate = data.id ? true : false;
+
+        var doSaveAjax = function(finalData) {
+            $.ajax({
+                url: '/equipos/api/action/',
+                type: isUpdate ? 'PUT' : 'POST',
+                data: JSON.stringify(finalData),
+                contentType: 'application/json',
+                headers: { 'X-CSRFToken': csrfToken() },
+                success: function(resp) {
+                    if(resp.success) {
+                        $(el.modal).modal('hide');
+                        dtEquipos.ajax.reload(null, false);
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: resp.message || 'Registro guardado con éxito',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else {
+                        $(el.alert).removeClass('d-none').text(resp.message || 'Error al guardar.');
+                    }
+                },
+                error: function(err) {
+                    var msg = "Error de conexión o validación.";
+                    if (err.responseJSON && err.responseJSON.message) {
+                        msg = err.responseJSON.message;
+                    }
+                    $(el.alert).removeClass('d-none').text(msg);
                 }
-            },
-            error: function(err) {
-                var msg = "Error de conexión o validación.";
-                if (err.responseJSON && err.responseJSON.message) {
-                    msg = err.responseJSON.message;
+            });
+        };
+
+        // Si es una actualización y cambió el PMA (Ubicación Física)
+        var currentPma = data.pma_id ? String(data.pma_id) : '';
+        var originalPma = window.original_pma_id ? String(window.original_pma_id) : '';
+        
+        if (isUpdate && currentPma !== originalPma && currentPma !== '') {
+            Swal.fire({
+                title: 'Motivo del Cambio de Ubicación',
+                text: 'El sistema ha detectado que cambiaste el Punto de Montaje (Ubicación) de este equipo. Por favor clasifica este cambio:',
+                icon: 'question',
+                input: 'radio',
+                inputOptions: {
+                    'MOVIMIENTO': 'Movimiento Real (Traslado de equipo)',
+                    'CORRECCION': 'Corrección de dato (Error de tipeo previo)'
+                },
+                inputValue: 'MOVIMIENTO', // default
+                showCancelButton: true,
+                confirmButtonText: 'Guardar Equipo',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#002a54',
+                inputValidator: function(value) {
+                    if (!value) {
+                        return 'Debes seleccionar el motivo para continuar.';
+                    }
                 }
-                $(el.alert).removeClass('d-none').text(msg);
-            }
-        });
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    data.motivo_edicion_pma = result.value;
+                    doSaveAjax(data);
+                }
+            });
+        } else {
+            // Cambio normal, se guarda directamente
+            doSaveAjax(data);
+        }
     }
 
     function cargarEquipo(id) {
         $.ajax({
-            url: '/equipos/api/' + id + '/ver/',
+            url: '/equipos/api/' + id + '/',
             type: 'GET',
             success: function(resp) {
                 abrirModal();
                 var eq = resp.data;
                 
+                // Guardamos el PMA original para comparar luego en guardarEquipo
+                window.original_pma_id = eq.pma;
+                
                 $(f.id).val(eq.id);
                 $(f.serial).val(eq.serial_number);
-                $(f.correlativo).val(eq.correlativo);
                 $(f.ip).val(eq.ip);
                 
                 // Set selects y trigger (cuidado con el orden por las cascadas)
-                $(f.articulo).val(eq.articulo_id).trigger('change');
-                $(f.so).val(eq.so_id).trigger('change');
-                $(f.estado).val(eq.estado_id).trigger('change');
-                $(f.proveedor).val(eq.proveedor_id).trigger('change');
+                $(f.articulo).val(eq.articulo).trigger('change');
+                $(f.so).val(eq.so).trigger('change');
+                $(f.estado).val(eq.estado).trigger('change');
+                $(f.proveedor).val(eq.proveedor).trigger('change');
                 
-                // Marca -> Modelo
-                $(f.marca).val(eq.marca_id).trigger('change');
+                // Marca -> Modelo -> Imagen Preview
+                $(f.marca).val(eq.marca).trigger('change');
                 setTimeout(function() {
-                    $(f.modelo).val(eq.modelo_id).trigger('change');
-                }, 100);
+                    $(f.modelo).val(eq.modelo).trigger('change');
+                    // Forzar actualizacion de imagen con el modelo ya seleccionado
+                    setTimeout(actualizarImagenPreview, 50);
+                }, 150);
 
-                // PMA (no requiere triggerar la cascada si solo lo seteamos)
-                $(f.pma).val(eq.pma_id).trigger('change');
+                // Ubicacion: Piso -> Recinto -> PMA
+                // Tambien seteamos unidad directamente ya que no usamos el filtro de area
+                $(f.piso).val(eq.piso).trigger('change');
+                setTimeout(function() {
+                    // Setear unidad directamente (sin necesidad de area)
+                    if ($(f.unidad).length) {
+                        if ($(f.unidad).data('select2')) $(f.unidad).select2('destroy');
+                        $(f.unidad).prop('disabled', false);
+                        $(f.unidad).val(eq.unidad);
+                        $(f.unidad).select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+                        // Disparar filtro de recintos
+                        filterRecintos();
+                    }
+                    setTimeout(function() {
+                        $(f.recinto).val(eq.recinto).trigger('change');
+                        setTimeout(function() {
+                            $(f.pma).val(eq.pma).trigger('change');
+                        }, 50);
+                    }, 50);
+                }, 50);
                 
             },
             error: function() {
-                alert("No se pudo cargar la información del equipo.");
+                alert("No se pudo cargar la informaci\u00f3n del equipo.");
             }
         });
+    }
+
+    function cargarBitacora(id) {
+        var $tl = $('#bitacora-timeline');
+        $tl.html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>');
+        $.ajax({
+            url: '/equipos/api/' + id + '/bitacora/',
+            type: 'GET',
+            success: function(resp) {
+                if(resp.success && resp.data.length > 0) {
+                    var html = '';
+                    resp.data.forEach(function(b) {
+                        html += '<div style="border-left: 2px solid #3b82f6; padding-left: 15px; position: relative; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">';
+                        html += '<div style="position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: white; border: 2px solid #3b82f6;"></div>';
+                        
+                        if (b.source === 'SISTEMA') {
+                            html += '<div style="display:flex; justify-content:space-between; align-items:center;">';
+                            html += '  <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">Registro #' + b.id + ' <span class="badge" style="background:#fef08a; color:#854d0e; margin-left:10px;">' + b.tipo_registro + '</span></div>';
+                            html += '  <div style="font-size: 0.75rem; color: #64748b;">Ingreso: ' + b.fecha + '</div>';
+                            html += '</div>';
+                            html += '<div style="font-size: 0.8rem; color: #64748b; margin-top:5px; margin-bottom: 8px;">Tecnico: ' + b.tecnico + ' | Solicitante: ' + b.solicitante + '</div>';
+                            html += '<div style="font-size: 0.85rem; color: #475569; margin-bottom: 3px;"><i class="fas fa-microchip text-secondary mr-1"></i><b>Acción:</b> ' + b.accion + '</div>';
+                            html += '<div style="font-size: 0.85rem; color: #475569; padding: 6px; background: #f1f5f9; border-radius: 4px; border: 1px dashed #cbd5e1;"><i class="fas fa-tools text-secondary mr-1"></i><b>Detalles:</b> ' + b.detalles + '</div>';
+                        } else {
+                            html += '<div style="display:flex; justify-content:space-between; align-items:center;">';
+                            html += '  <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">Registro #' + b.id + ' <span class="badge badge-primary" style="margin-left:10px;">' + b.tipo_registro + '</span></div>';
+                            html += '  <div style="font-size: 0.75rem; color: #64748b;">Ingreso: ' + b.fecha_mantenimiento + ' | Entrega: ' + (b.fecha_devolucion || 'En mantención') + '</div>';
+                            html += '</div>';
+                            html += '<div style="font-size: 0.8rem; color: #64748b; margin-top:5px; margin-bottom: 8px;">Técnico: ' + b.tecnico + ' | Solicitante: ' + b.solicitante + ' | Unidad: ' + b.servicio_unidad + '</div>';
+                            if(b.falla_reportada) {
+                                html += '<div style="font-size: 0.85rem; color: #475569; margin-bottom: 3px;"><i class="fas fa-exclamation-triangle text-warning mr-1"></i><b>Falla/Motivo:</b> ' + b.falla_reportada + '</div>';
+                            }
+                            if(b.actividades_realizadas) {
+                                html += '<div style="font-size: 0.85rem; color: #475569; padding: 6px; background: #f0fdf4; border-radius: 4px; border: 1px dashed #bbf7d0;"><i class="fas fa-tools text-success mr-1"></i><b>Acción Realizada:</b> ' + b.actividades_realizadas + '</div>';
+                            }
+                        }
+                        html += '</div>';
+                    });
+                    $tl.html(html);
+                } else {
+                    $tl.html('<div class="alert alert-light text-center" style="border: 1px dashed #cbd5e1;"><i class="fas fa-info-circle mb-2" style="font-size:24px; color:#94a3b8; display:block;"></i>No hay registros en la bitácora de este equipo.</div>');
+                }
+            },
+            error: function() {
+                $tl.html('<div class="alert alert-danger">Error al cargar bitácora.</div>');
+            }
+        });
+    }
+
+    function abrirBitacora(id, sn) {
+        $('#b-equipo-id').val(id);
+        
+        // Actualizar titulo del modal y header
+        $('#b-equipo-sn').text(sn);
+        $('#b-equipo-sn-header').text(sn);
+        $('#b-equipo-estado').text('-');
+        $('#b-equipo-ubicacion').text('-');
+        $('#b-imagen').attr('src', '/static/img/placeholder_equipo.png');
+        
+        // Inicializar select2 dentro del modal para evitar problemas de z-index
+        $('#modalBitacora .select2').not('.select2-ajax').each(function() {
+            if ($(this).data('select2')) return; // ya inicializado
+            $(this).select2({
+                dropdownParent: $('#modalBitacora'),
+                width: '100%'
+            });
+        });
+        
+        // Inicializar Select2 con AJAX para Funcionario (Solicitante)
+        var $solicitante = $('#b-solicitante');
+        if ($solicitante.data('select2')) $solicitante.select2('destroy');
+        $solicitante.select2({
+            dropdownParent: $('#modalBitacora'),
+            width: '100%',
+            ajax: {
+                url: '/api/funcionarios/search/',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data) {
+                    return { results: data.results };
+                },
+                cache: true
+            },
+            minimumInputLength: 2,
+            placeholder: '-- Buscar por RUT o Nombre --',
+            allowClear: true,
+            language: {
+                noResults: function() {
+                    return '<div style="text-align:center; padding: 10px;">' +
+                        '<span style="color:#64748b; font-size:0.85rem; display:block; margin-bottom:8px;">No se encontraron resultados</span>' +
+                        '<button type="button" class="btn btn-sm btn-outline-primary" onclick="$(\"#b-solicitante\").select2(\'close\'); $(\"#modalFuncionario\").modal(\'show\');">' +
+                            '<i class="fas fa-plus"></i> Registrar Nuevo Funcionario' +
+                        '</button>' +
+                    '</div>';
+                },
+                inputTooShort: function() { return 'Escribe 2 o m\u00e1s caracteres...'; },
+                searching: function() { return 'Buscando...'; }
+            },
+            escapeMarkup: function (markup) { return markup; }
+        });
+        
+        // Fetch equipo details for the header card
+        $.ajax({
+            url: '/equipos/api/' + id + '/ver/',
+            type: 'GET',
+            success: function(resp) {
+                var eq = resp.data;
+                $('#b-imagen').attr('src', eq.imagen || '/static/img/placeholder_equipo.png');
+                $('#b-equipo-sn-header').text(eq.serial_number || sn);
+                $('#b-equipo-estado').text(eq.estado || 'S/E');
+                var ubicacion = [];
+                if (eq.edificio) ubicacion.push(eq.edificio);
+                if (eq.unidad) ubicacion.push(eq.unidad);
+                $('#b-equipo-ubicacion').text(ubicacion.join(' - ') || '-');
+                
+                // Preseleccionar unidad en el select de la bitacora
+                if (eq.unidad) {
+                    var $bUnidad = $('#b-unidad');
+                    if ($bUnidad.data('select2')) $bUnidad.select2('destroy');
+                    $bUnidad.val(eq.unidad);
+                    $bUnidad.select2({ dropdownParent: $('#modalBitacora'), width: '100%' });
+                }
+            }
+        });
+        
+        // Resetear formulario
+        $('#form-bitacora')[0].reset();
+        if ($('#b-tipo').data('select2')) $('#b-tipo').select2('destroy');
+        $('#b-tipo').select2({ dropdownParent: $('#modalBitacora'), width: '100%' });
+        if ($('#b-falla').data('select2')) $('#b-falla').select2('destroy');
+        $('#b-falla').select2({ dropdownParent: $('#modalBitacora'), width: '100%' });
+        
+        // Set default date to today
+        var today = new Date().toISOString().split('T')[0];
+        $('#b-fecha-mtto').val(today);
+        
+        $('#modalBitacora').modal('show');
+        cargarBitacora(id);
     }
 
     function verEquipoInfo(id) {
@@ -363,9 +703,10 @@ var EquiposApp = (function($) {
                 $('#v-proveedor').text(eq.proveedor || 'Sin Proveedor');
                 
                 // Auditoria
-                $('#v-sysid').text(eq.id);
-                // Si la BD retorna un updated_at se puede poner aqui.
-                $('#v-fecha').text('Actualizado recientemente');
+                $('#v-sysid').text(eq.id || '#');
+                var modPor = eq.usuario_modificador || 'Sistema';
+                var modFec = eq.fecha_modificacion || 'N/A';
+                $('#v-fecha').html('Actualizado por <b>' + modPor + '</b> el ' + modFec);
                 
                 $('#modalVerEquipo').modal('show');
             },
@@ -402,6 +743,102 @@ var EquiposApp = (function($) {
             initCascades();
             initDataTable();
             initEvents();
+            // Eventos Bitacora
+            $('#btn-toggle-bitacora').on('click', function() {
+                $('#collapseFormBitacora').slideToggle(250);
+            });
+            $('#btn-cancel-bitacora').on('click', function() {
+                $('#collapseFormBitacora').slideUp(250);
+            });
+            
+            $('#tabla-equipos').on('click', '.ic-bitacora', function(e) {
+                e.preventDefault();
+                abrirBitacora($(this).data('id'), $(this).data('sn'));
+            });
+            
+            $('#form-bitacora').on('submit', function(e) {
+                e.preventDefault();
+                var btn = $('#btn-guardar-bitacora');
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+                
+                var data = {
+                    tipo_registro: $('#b-tipo').val(),
+                    fecha_mantenimiento: $('#b-fecha-mtto').val(),
+                    fecha_devolucion: $('#b-fecha-dev').val(),
+                    falla_reportada: $('#b-falla').val(),
+                    actividades_realizadas: $('#b-actividades').val(),
+                    solicitante: $('#b-solicitante').val(),
+                    servicio_unidad: $('#b-unidad').val()
+                };
+                
+                var eq_id = $('#b-equipo-id').val();
+                
+                $.ajax({
+                    url: '/equipos/api/' + eq_id + '/bitacora/',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    headers: { 'X-CSRFToken': csrfToken() },
+                    success: function(resp) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Registro');
+                        if(resp.success) {
+                            $('#form-bitacora')[0].reset();
+                            $('#b-tipo').val('').trigger('change');
+                            cargarBitacora(eq_id); // Recargar timeline
+                        } else {
+                            alert(resp.message);
+                        }
+                    },
+                    error: function(err) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Registro');
+                        var msg = "Error al guardar.";
+                        if(err.responseJSON && err.responseJSON.message) msg = err.responseJSON.message;
+                        alert(msg);
+                    }
+                });
+            });
+            
+            // Eventos Funcionario
+            $('#form-funcionario').on('submit', function(e) {
+                e.preventDefault();
+                var btn = $('#btn-guardar-funcionario');
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+                
+                var data = {
+                    rut: $('#f-rut').val(),
+                    nombres: $('#f-nombres').val(),
+                    apellidos: $('#f-apellidos').val(),
+                    correo: $('#f-correo').val(),
+                    cargo: $('#f-cargo').val(),
+                    unidad: $('#f-unidad').val()
+                };
+                
+                $.ajax({
+                    url: '/api/funcionarios/crear/',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    headers: { 'X-CSRFToken': csrfToken() },
+                    success: function(resp) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Funcionario');
+                        if(resp.success) {
+                            $('#modalFuncionario').modal('hide');
+                            // Agregar y seleccionar la nueva opcion en Select2
+                            var newOption = new Option(resp.data.text, resp.data.id, true, true);
+                            $('#b-solicitante').append(newOption).trigger('change');
+                        } else {
+                            alert(resp.message);
+                        }
+                    },
+                    error: function(err) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Funcionario');
+                        var msg = "Error al guardar funcionario.";
+                        if(err.responseJSON && err.responseJSON.message) msg = err.responseJSON.message;
+                        alert(msg);
+                    }
+                });
+            });
+            
         }
     };
 

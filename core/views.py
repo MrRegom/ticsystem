@@ -115,6 +115,32 @@ class CustomLogoutView(View):
         return redirect('login')
 
 
+class SwitchUserView(LoginRequiredMixin, View):
+    """
+    Permite a los superusuarios impersonar a otros usuarios para pruebas.
+    """
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return JsonResponse({'success': False, 'message': 'No autorizado.'}, status=403)
+            
+        try:
+            data = json.loads(request.body)
+            target_user_id = data.get('user_id')
+        except (json.JSONDecodeError, TypeError):
+            return JsonResponse({'success': False, 'message': 'JSON inválido.'}, status=400)
+            
+        if not target_user_id:
+            return JsonResponse({'success': False, 'message': 'ID de usuario requerido.'}, status=400)
+            
+        from django.contrib.auth.models import User
+        target_user = User.objects.filter(id=target_user_id).first()
+        if not target_user:
+            return JsonResponse({'success': False, 'message': 'Usuario no encontrado.'}, status=404)
+            
+        login(request, target_user)
+        return JsonResponse({'success': True, 'redirect_url': redirect('dashboard').url})
+
+
 class DashboardGeneralView(LoginRequiredMixin, TemplateView):
     """
     Dashboard de inicio general con estadísticas agregadas del sistema TIC.
@@ -134,8 +160,15 @@ class UsuariosDashboardView(LoginRequiredMixin, TemplateView):
     """
     template_name = 'core/usuarios.html'
 
-
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from core.models import Rol
+        from tickets.models import GrupoResolutor
+        from mantenedores.models import Unidad
+        context['roles_disponibles'] = Rol.objects.filter(activo=True).order_by('nombre')
+        context['grupos_disponibles'] = GrupoResolutor.objects.filter(activo=True).order_by('nombre')
+        context['unidades'] = Unidad.objects.all().order_by('nombre')
+        return context
 class UsuarioListView(LoginRequiredMixin, View):
     """
     API Server-Side para DataTables de Usuarios.
@@ -164,6 +197,11 @@ class UsuarioActionView(LoginRequiredMixin, View):
     API JSON/multipart para acciones CRUD de operadores/usuarios.
     Soporta tanto JSON como FormData (para upload de foto).
     """
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'POST' and request.POST.get('_method', '').upper() == 'PUT':
+            request.method = 'PUT'
+        return super().dispatch(request, *args, **kwargs)
+
     def _parse_request(self, request):
         """Extrae datos del request tanto de JSON como de multipart."""
         if request.content_type and 'multipart/form-data' in request.content_type:
@@ -178,7 +216,14 @@ class UsuarioActionView(LoginRequiredMixin, View):
                 'contrasena': request.POST.get('contrasena', ''),
                 'id': request.POST.get('id'),
                 'foto': request.FILES.get('foto'),
+                'is_active': str(request.POST.get('is_active', 'true')).lower() == 'true',
+                'rol_id': request.POST.get('rol', None)
             }
+            try:
+                data['grupos'] = json.loads(request.POST.get('grupos', '[]'))
+            except (json.JSONDecodeError, TypeError, ValueError):
+                data['grupos'] = []
+            return data
         try:
             data = json.loads(request.body)
             data['foto'] = None
@@ -205,7 +250,10 @@ class UsuarioActionView(LoginRequiredMixin, View):
                 cargo=data.get('cargo', ''),
                 grado=data.get('grado', ''),
                 contrasena=data.get('contrasena', ''),
-                foto=data.get('foto')
+                foto=data.get('foto'),
+                grupos=data.get('grupos', []),
+                rol_id=data.get('rol_id'),
+                is_active=data.get('is_active', True)
             )
             
             # LOG AUDITORIA
@@ -283,7 +331,10 @@ class UsuarioActionView(LoginRequiredMixin, View):
                 grado=grado,
                 rut=rut,
                 contrasena=contrasena,
-                foto=data.get('foto')
+                foto=data.get('foto'),
+                grupos=data.get('grupos', []),
+                rol_id=data.get('rol_id'),
+                is_active=data.get('is_active', True)
             )
 
             # LOG AUDITORIA
@@ -341,3 +392,83 @@ class UsuarioActionView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': 'Ya existe un usuario con esos datos.'}, status=400)
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
+
+class FuncionarioSearchAPIView(LoginRequiredMixin, View):
+    """Búsqueda de funcionarios para Select2 por RUT, nombres o apellidos."""
+    def get(self, request, *args, **kwargs):
+        from core.models import Funcionario
+        from django.db.models import Q
+        
+        q = request.GET.get('q', '').strip()
+        qs = Funcionario.objects.all()
+        
+        if q:
+            qs = qs.filter(
+                Q(rut__icontains=q) | 
+                Q(nombres__icontains=q) | 
+                Q(apellidos__icontains=q)
+            )
+            
+        qs = qs[:20]  # Limitar a 20 resultados para performance
+        
+        results = []
+        for f in qs:
+            results.append({
+                'id': f.id,
+                'text': f"{f.nombres} {f.apellidos} ({f.rut})"
+            })
+            
+        return JsonResponse({'results': results})
+
+class FuncionarioCreateAPIView(LoginRequiredMixin, View):
+    """Creación on-the-fly de Funcionarios desde modal."""
+    def post(self, request, *args, **kwargs):
+        from core.models import Funcionario
+        from mantenedores.models import Unidad
+        from core.services.usuario_service import UsuarioService
+        
+        try:
+            data = json.loads(request.body)
+            rut = data.get('rut', '').strip()
+            nombres = data.get('nombres', '').strip()
+            apellidos = data.get('apellidos', '').strip()
+            correo = data.get('correo', '').strip()
+            cargo_id = data.get('cargo', '')
+            unidad_nombre = data.get('unidad', '').strip()
+            
+            if not rut or not nombres or not apellidos:
+                return JsonResponse({'success': False, 'message': 'RUT, nombres y apellidos son obligatorios.'}, status=400)
+                
+            rut_norm = UsuarioService.normalizar_rut(rut)
+            
+            if Funcionario.objects.filter(rut=rut_norm).exists():
+                return JsonResponse({'success': False, 'message': 'Ya existe un funcionario con este RUT.'}, status=400)
+                
+            unidad = None
+            if unidad_nombre:
+                unidad = Unidad.objects.filter(nombre=unidad_nombre).first()
+                
+            from mantenedores.models import Cargo
+            cargo = None
+            if cargo_id:
+                cargo = Cargo.objects.filter(id=cargo_id).first()
+                
+            func = Funcionario.objects.create(
+                rut=rut_norm,
+                nombres=nombres,
+                apellidos=apellidos,
+                correo=correo,
+                unidad=unidad,
+                cargo=cargo
+            )
+            
+            return JsonResponse({
+                'success': True, 
+                'data': {
+                    'id': func.id,
+                    'text': f"{func.nombres} {func.apellidos} ({func.rut})"
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)

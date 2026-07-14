@@ -1,86 +1,34 @@
-from django.db import transaction
 from django.db.models import Q
-
-from tickets.models import Ticket, TicketBitacora
-
+from tickets.models import Ticket
 
 class TicketRepository:
+    """
+    Capa de Acceso a Datos (Repository) para el módulo de Tickets.
+    Aísla las consultas complejas (ORM) de la capa de Servicios.
+    """
 
     @staticmethod
-    def get_by_id(ticket_id: int) -> Ticket:
-        try:
-            return Ticket.objects.select_related(
-                'edificio', 'piso', 'unidad', 'equipo', 'tecnico', 'prioridad', 'categoria',
-            ).get(pk=ticket_id)
-        except Ticket.DoesNotExist:
-            return None
+    def get_ticket_by_id(ticket_id: int):
+        return Ticket.objects.select_related(
+            'solicitante', 'responsable', 'activo', 'activo__pma',
+            'prioridad', 'categoria'
+        ).filter(id=ticket_id).first()
 
     @staticmethod
-    @transaction.atomic
-    def save(ticket: Ticket) -> Ticket:
-        ticket.save()
-        return ticket
+    def get_all_active_tickets():
+        """Obtiene tickets abiertos para el tablero Kanban."""
+        return Ticket.objects.exclude(
+            estado__in=[Ticket.Estado.CERRADO, Ticket.Estado.CANCELADO]
+        ).select_related(
+            'solicitante', 'responsable', 'activo', 'activo__pma',
+            'prioridad', 'categoria'
+        ).order_by('-fecha_creacion')
 
     @staticmethod
-    @transaction.atomic
-    def delete(ticket: Ticket) -> None:
-        ticket.delete()
+    def get_tickets_by_activo(equipo_id: int):
+        return Ticket.objects.filter(activo_id=equipo_id).order_by('-fecha_creacion')
 
-    @classmethod
-    def _apply_search(cls, queryset, search_value: str):
-        if search_value:
-            queryset = queryset.filter(
-                Q(solicitante_nombre__icontains=search_value) |
-                Q(solicitante_rut__icontains=search_value) |
-                Q(solicitante_correo__icontains=search_value) |
-                Q(descripcion__icontains=search_value) |
-                Q(estado__icontains=search_value) |
-                Q(edificio__nombre__icontains=search_value) |
-                Q(unidad__nombre__icontains=search_value) |
-                Q(equipo__serial_number__icontains=search_value) |
-                Q(prioridad__nivel__icontains=search_value) |
-                Q(categoria__nombre__icontains=search_value) |
-                Q(tecnico__username__icontains=search_value)
-            )
-        return queryset
-
-    @classmethod
-    def get_paginated_list(cls, start: int, length: int, search_value: str,
-                           order_column: str, order_dir: str):
-        queryset = Ticket.objects.select_related(
-            'edificio', 'piso', 'unidad', 'equipo', 'tecnico', 'prioridad', 'categoria',
-        ).all()
-        queryset = cls._apply_search(queryset, search_value)
-
-        order_mapping = {
-            'id': 'id',
-            'solicitante_nombre': 'solicitante_nombre',
-            'edificio': 'edificio__nombre',
-            'piso': 'piso__nombre',
-            'unidad': 'unidad__nombre',
-            'equipo': 'equipo__serial_number',
-            'estado': 'estado',
-            'prioridad': 'prioridad__nivel',
-            'categoria': 'categoria__nombre',
-            'tecnico': 'tecnico__username',
-            'fecha_hora': 'fecha_hora',
-        }
-        column_to_order = order_mapping.get(order_column, '-fecha_hora')
-        if order_dir == 'desc' and not column_to_order.startswith('-'):
-            column_to_order = f'-{column_to_order}'
-        elif order_dir == 'asc' and column_to_order.startswith('-'):
-            column_to_order = column_to_order[1:]
-
-        queryset = queryset.order_by(column_to_order)
-        end = start + length
-        return queryset[start:end]
-
-    @classmethod
-    def count_total(cls) -> int:
-        return Ticket.objects.count()
-
-    @classmethod
-    def count_filtered(cls, search_value: str) -> int:
-        queryset = Ticket.objects.all()
-        queryset = cls._apply_search(queryset, search_value)
-        return queryset.count()
+    @staticmethod
+    def get_latest_correlativo() -> str:
+        latest = Ticket.objects.order_by('-id').first()
+        return latest.correlativo if latest else None

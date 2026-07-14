@@ -4,123 +4,8 @@
 {% block module_title %}Mantenedores{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
-<style>
-/* ===== Layout de secciones ===== */
-.grupo-titulo {
-  font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;
-  color:#64748b; padding:6px 0 4px; margin-bottom:8px;
-  border-bottom:2px solid #e2e8f0;
-}
-.grupo-titulo i { margin-right:5px; }
 
-/* Cards */
-.card-modelo { cursor: pointer; border: 2px solid #e2e8f0 !important; border-radius: 10px; transition: all .2s; }
-.card-modelo:hover { border-color: #002a54 !important; background: #f8faff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,42,84,.1); }
-.card-modelo.active { border-color: #002a54 !important; background: #eef4ff; }
-.card-modelo .card-body { padding: 14px 10px !important; }
-.card-modelo i { display: block; margin-bottom: 6px; }
-.card-modelo .modelo-label { font-size: .78rem; font-weight: 600; color: #334155; }
-.card-modelo.active .modelo-label { color:#002a54; }
-
-/* Section title */
-.section-title { font-size: .85rem; font-weight: 700; color: #002a54; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
-.section-title i { margin-right: 6px; }
-
-/* ===== Modern DataTable ===== */
-.dataTables_wrapper {
-  background: #fff; border-radius: 10px;
-  padding: 16px 16px 10px 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-}
-.dataTables_wrapper .dataTables_length,
-.dataTables_wrapper .dataTables_filter { margin-bottom: 14px; }
-.dataTables_wrapper .dataTables_length label,
-.dataTables_wrapper .dataTables_filter label {
-  font-size: .8rem; color: #475569; font-weight: 500;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.dataTables_wrapper .dataTables_length select {
-  border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 24px 4px 8px;
-  font-size: .8rem;
-  background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3e%3cpath fill='%2364748b' d='M0 0l5 6 5-6z'/%3e%3c/svg%3e") no-repeat right 8px center;
-  -webkit-appearance: none; appearance: none; cursor: pointer;
-}
-.dataTables_wrapper .dataTables_filter input {
-  border: 1px solid #e2e8f0; border-radius: 8px; padding: 5px 10px 5px 32px;
-  font-size: .8rem; min-width: 220px;
-  background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3e%3ccircle cx='11' cy='11' r='8'/%3e%3cpath d='M21 21l-4.35-4.35'/%3e%3c/svg%3e") no-repeat 10px center;
-  transition: border-color .15s, box-shadow .15s;
-}
-.dataTables_wrapper .dataTables_filter input:focus {
-  outline: none; border-color: #002a54; box-shadow: 0 0 0 2px rgba(0,42,84,.12);
-}
-#tabla-mantenedores {
-  font-size: .8rem; border-collapse: separate !important;
-  border-spacing: 0; width: 100% !important; margin-bottom: 0 !important;
-}
-#tabla-mantenedores thead th {
-  background: #f8fafc; padding: 10px 12px !important;
-  font-weight: 600; color: #334155; border-bottom: 2px solid #e2e8f0 !important;
-  border-top: none !important; white-space: nowrap; user-select: none;
-}
-#tabla-mantenedores tbody td {
-  padding: 8px 12px !important; vertical-align: middle;
-  border-top: 1px solid #f1f5f9 !important; color: #1e293b;
-}
-#tabla-mantenedores tbody tr:hover td { background: #f8fafc; }
-#tabla-mantenedores tbody tr:nth-child(even) td { background: #fcfcfd; }
-#tabla-mantenedores tbody tr:nth-child(even):hover td { background: #f1f5f9; }
-#tabla-mantenedores, #tabla-mantenedores th, #tabla-mantenedores td {
-  border-left: none !important; border-right: none !important;
-}
-.dataTables_wrapper .dataTables_info { font-size: .78rem; color: #94a3b8; padding-top: 14px; }
-.dataTables_wrapper .dataTables_paginate { font-size: .8rem; padding-top: 10px; }
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-  padding: 5px 12px; border-radius: 8px; border: 1px solid #e2e8f0;
-  margin: 0 2px; background: #fff; color: #475569 !important; font-weight: 500; transition: all .15s;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button.current {
-  background: #002a54 !important; border-color: #002a54 !important;
-  color: #fff !important; box-shadow: 0 2px 4px rgba(0,42,84,.2);
-}
-
-/* KPI badge */
-.kpi-badge { display: inline-flex; align-items: center; background: #eef4ff; color: #002a54; border-radius: 20px; padding: 3px 14px; font-size: .78rem; font-weight: 600; }
-.kpi-badge i { margin-right: 5px; }
-
-/* ===== Modal ===== */
-#modalMantenedor .modal-body { padding: 1.5rem 1.5rem .5rem; }
-#modalMantenedor .form-group {
-  margin-bottom: 1.1rem; padding-left: 12px;
-  border-left: 3px solid #e2e8f0; transition: border-color .2s ease;
-}
-#modalMantenedor .form-group:focus-within, #modalMantenedor .form-group.focus { border-left-color: #0f766e; }
-#modalMantenedor .form-group label {
-  display: block; margin-bottom: 5px; font-size: .7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .4px; color: #64748b;
-}
-#modalMantenedor .form-control {
-  border-radius: 6px; border: 1.5px solid #e2e8f0; padding: .45rem .65rem;
-  font-size: .85rem; color: #1e293b; transition: border-color .2s, box-shadow .2s; height: auto;
-}
-#modalMantenedor .form-control:focus { border-color: #002a54; box-shadow: 0 0 0 3px rgba(0,42,84,.08); }
-#modalMantenedor .select2-container--bootstrap4 .select2-selection {
-  border-radius: 6px; border: 1.5px solid #e2e8f0; transition: border-color .2s, box-shadow .2s;
-}
-#modalMantenedor .select2-container--bootstrap4 .select2-selection--single {
-  height: calc(1.5em + .9rem + 3px); padding: .25rem .65rem;
-}
-#modalMantenedor .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
-  line-height: 1.6; padding-left: 0; font-size: .85rem; color: #1e293b;
-}
-#modalMantenedor .select2-container--bootstrap4.select2-container--focus .select2-selection {
-  border-color: #002a54; box-shadow: 0 0 0 3px rgba(0,42,84,.08);
-}
-#modalMantenedor .form-check { padding-left: 12px; border-left: 3px solid #e2e8f0; margin-bottom: 0; padding-top: 6px; padding-bottom: 6px; }
-#modalMantenedor .modal-footer { padding: .75rem 1.5rem; border-top: 1px solid #f1f5f9; }
-</style>
+<link rel="stylesheet" href="{% static 'css/mantenedores.css' %}?v=1">
 {% endblock %}
 
 {% block content %}
@@ -130,52 +15,135 @@
   </div>
   <div class="dash-card-body">
 
-    <!-- Cards grid divididas por sección -->
-    <div class="section-title"><i class="fas fa-th"></i>Seleccione un catálogo</div>
+    <!-- Cards grid divididas por sección (Acordeón) -->
+    <div class="section-title mb-4"><i class="fas fa-th"></i> Seleccione una Categoría Principal</div>
 
-    <!-- Grupo: Equipamiento Técnico -->
-    <div class="grupo-titulo"><i class="fas fa-tools text-secondary"></i>Equipamiento Técnico</div>
-    <div class="row mb-3" id="cards-grid">
-      {% for m in modelos %}{% if m.grupo == 'tecnico' %}
-      <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-2">
-        <div class="card card-modelo" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
-          <div class="card-body text-center">
-            <i class="fas fa-{{ m.icon }} fa-2x" style="color:#002a54;"></i>
-            <div class="modelo-label">{{ m.label }}</div>
+    <div class="row mb-4" id="accordionCategorias">
+      <!-- Card: Equipamiento Técnico -->
+      <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card shadow-sm category-card h-100" data-toggle="collapse" data-target="#collapseTecnico" aria-expanded="false" style="cursor: pointer; border: 2px solid transparent; transition: all 0.2s; border-radius: 12px;">
+          <div class="card-body text-center p-4">
+            <div style="background: rgba(108, 117, 125, 0.1); border-radius: 50%; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+              <i class="fas fa-tools fa-3x text-secondary"></i>
+            </div>
+            <h6 class="font-weight-bold mb-0" style="color: #002a54;">Equipamiento Técnico</h6>
           </div>
         </div>
       </div>
-      {% endif %}{% endfor %}
+      <!-- Card: Infraestructura Física -->
+      <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card shadow-sm category-card h-100" data-toggle="collapse" data-target="#collapseFisica" aria-expanded="false" style="cursor: pointer; border: 2px solid transparent; transition: all 0.2s; border-radius: 12px;">
+          <div class="card-body text-center p-4">
+            <div style="background: rgba(14, 165, 233, 0.1); border-radius: 50%; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+              <i class="fas fa-building fa-3x" style="color:#0ea5e9;"></i>
+            </div>
+            <h6 class="font-weight-bold mb-0" style="color: #002a54;">Infraestructura Física</h6>
+          </div>
+        </div>
+      </div>
+      <!-- Card: Infraestructura Hospitalaria -->
+      <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card shadow-sm category-card h-100" data-toggle="collapse" data-target="#collapseHospitalaria" aria-expanded="false" style="cursor: pointer; border: 2px solid transparent; transition: all 0.2s; border-radius: 12px;">
+          <div class="card-body text-center p-4">
+            <div style="background: rgba(16, 185, 129, 0.1); border-radius: 50%; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+              <i class="fas fa-hospital fa-3x" style="color:#10b981;"></i>
+            </div>
+            <h6 class="font-weight-bold mb-0" style="color: #002a54;">Infraestructura Hospitalaria</h6>
+          </div>
+        </div>
+      </div>
+      <!-- Card: Recursos Humanos -->
+      <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card shadow-sm category-card h-100" data-toggle="collapse" data-target="#collapseRRHH" aria-expanded="false" style="cursor: pointer; border: 2px solid transparent; transition: all 0.2s; border-radius: 12px;">
+          <div class="card-body text-center p-4">
+            <div style="background: rgba(245, 158, 11, 0.1); border-radius: 50%; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+              <i class="fas fa-users fa-3x" style="color:#f59e0b;"></i>
+            </div>
+            <h6 class="font-weight-bold mb-0" style="color: #002a54;">Recursos Humanos</h6>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Grupo: Infraestructura Física -->
-    <div class="grupo-titulo"><i class="fas fa-building text-info"></i>Infraestructura Física</div>
-    <div class="row mb-3">
-      {% for m in modelos %}{% if m.grupo == 'fisica' %}
-      <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-2">
-        <div class="card card-modelo" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
-          <div class="card-body text-center">
-            <i class="fas fa-{{ m.icon }} fa-2x" style="color:#0ea5e9;"></i>
-            <div class="modelo-label">{{ m.label }}</div>
+    <!-- Contenidos Desplegables -->
+    <div class="cat-collapse-container">
+      
+      <!-- Collapse Técnico -->
+      <div class="collapse" id="collapseTecnico" data-parent="#accordionCategorias">
+        <div class="card card-body shadow-sm mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <div class="grupo-titulo mb-3" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;"><i class="fas fa-tools text-secondary mr-2"></i>Catálogos de Equipamiento Técnico</div>
+          <div class="row">
+            {% for m in modelos %}{% if m.grupo == 'tecnico' %}
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-3">
+              <div class="card card-modelo h-100" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
+                <div class="card-body text-center d-flex flex-column justify-content-center align-items-center p-3">
+                  <i class="fas fa-{{ m.icon }} fa-2x mb-2" style="color:#002a54;"></i>
+                  <div class="modelo-label">{{ m.label }}</div>
+                </div>
+              </div>
+            </div>
+            {% endif %}{% endfor %}
           </div>
         </div>
       </div>
-      {% endif %}{% endfor %}
-    </div>
 
-    <!-- Grupo: Infraestructura Hospitalaria -->
-    <div class="grupo-titulo"><i class="fas fa-hospital text-success"></i>Infraestructura Hospitalaria</div>
-    <div class="row mb-3">
-      {% for m in modelos %}{% if m.grupo == 'hospitalaria' %}
-      <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-2">
-        <div class="card card-modelo" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
-          <div class="card-body text-center">
-            <i class="fas fa-{{ m.icon }} fa-2x" style="color:#10b981;"></i>
-            <div class="modelo-label">{{ m.label }}</div>
+      <!-- Collapse Física -->
+      <div class="collapse" id="collapseFisica" data-parent="#accordionCategorias">
+        <div class="card card-body shadow-sm mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <div class="grupo-titulo mb-3" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;"><i class="fas fa-building mr-2" style="color:#0ea5e9;"></i>Catálogos de Infraestructura Física</div>
+          <div class="row">
+            {% for m in modelos %}{% if m.grupo == 'fisica' %}
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-3">
+              <div class="card card-modelo h-100" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
+                <div class="card-body text-center d-flex flex-column justify-content-center align-items-center p-3">
+                  <i class="fas fa-{{ m.icon }} fa-2x mb-2" style="color:#0ea5e9;"></i>
+                  <div class="modelo-label">{{ m.label }}</div>
+                </div>
+              </div>
+            </div>
+            {% endif %}{% endfor %}
           </div>
         </div>
       </div>
-      {% endif %}{% endfor %}
+
+      <!-- Collapse Hospitalaria -->
+      <div class="collapse" id="collapseHospitalaria" data-parent="#accordionCategorias">
+        <div class="card card-body shadow-sm mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <div class="grupo-titulo mb-3" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;"><i class="fas fa-hospital mr-2" style="color:#10b981;"></i>Catálogos de Infraestructura Hospitalaria</div>
+          <div class="row">
+            {% for m in modelos %}{% if m.grupo == 'hospitalaria' %}
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-3">
+              <div class="card card-modelo h-100" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
+                <div class="card-body text-center d-flex flex-column justify-content-center align-items-center p-3">
+                  <i class="fas fa-{{ m.icon }} fa-2x mb-2" style="color:#10b981;"></i>
+                  <div class="modelo-label">{{ m.label }}</div>
+                </div>
+              </div>
+            </div>
+            {% endif %}{% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapse RRHH -->
+      <div class="collapse" id="collapseRRHH" data-parent="#accordionCategorias">
+        <div class="card card-body shadow-sm mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <div class="grupo-titulo mb-3" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;"><i class="fas fa-users mr-2" style="color:#f59e0b;"></i>Catálogos de Recursos Humanos</div>
+          <div class="row">
+            {% for m in modelos %}{% if m.grupo == 'rrhh' %}
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-3">
+              <div class="card card-modelo h-100" data-key="{{ m.key }}"{% if m.no_create %} data-no-create="true"{% endif %}>
+                <div class="card-body text-center d-flex flex-column justify-content-center align-items-center p-3">
+                  <i class="fas fa-{{ m.icon }} fa-2x mb-2" style="color:#f59e0b;"></i>
+                  <div class="modelo-label">{{ m.label }}</div>
+                </div>
+              </div>
+            </div>
+            {% endif %}{% endfor %}
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Table section -->
@@ -337,10 +305,17 @@
               <i class="fas fa-info-circle mr-1"></i> Identificación del Registro
             </h6>
             <div class="row">
-              <!-- Nombre (siempre visible) -->
-              <div class="col-md-12 form-group">
+              <!-- Nombre (siempre visible excepto funcionario) -->
+              <div class="col-md-12 form-group" id="field-nombre-wrapper">
                 <label id="label-nombre" style="color: #0f766e;">Nombre</label>
                 <input type="text" class="form-control form-control-sm" id="m-nombre" required placeholder="Ingrese el nombre...">
+              </div>
+
+              <!-- Imagen (Solo para Modelo) -->
+              <div class="col-md-12 form-group" id="field-imagen" style="display:none;">
+                <label>Fotografía del Modelo</label>
+                <input type="file" class="form-control-file form-control-sm" id="m-imagen" accept="image/*">
+                <small class="form-text text-muted">Opcional. Se mostrará en el inventario.</small>
               </div>
 
               <!-- Código (Institución) -->
@@ -355,6 +330,30 @@
                 <input type="text" class="form-control form-control-sm" id="m-alias" maxlength="50">
               </div>
 
+              <!-- Funcionario Fields -->
+
+              <div class="col-md-6 form-group" id="field-nombres" style="display:none;">
+                <label>Nombres *</label>
+                <input type="text" class="form-control form-control-sm" id="m-nombres" maxlength="150">
+              </div>
+              <div class="col-md-6 form-group" id="field-apellidos" style="display:none;">
+                <label>Apellidos *</label>
+                <input type="text" class="form-control form-control-sm" id="m-apellidos" maxlength="150">
+              </div>
+              <div class="col-md-6 form-group" id="field-correo" style="display:none;">
+                <label>Correo Electrónico</label>
+                <input type="email" class="form-control form-control-sm" id="m-correo" maxlength="150">
+              </div>
+              <div class="col-md-6 form-group" id="field-cargo" style="display:none;">
+                <label>Cargo</label>
+                <select class="form-control form-control-sm" id="m-cargo">
+                  <option value="">-- Seleccione Cargo --</option>
+                  {% for c in cargos %}
+                  <option value="{{ c.id }}">{{ c.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
               <!-- Tipo (Bitácora) -->
               <div class="col-md-6 form-group" id="field-tipo" style="display:none;">
                 <label>Clasificación</label>
@@ -364,10 +363,27 @@
                 </select>
               </div>
 
+              <!-- Miembros (Equipo Resolutor) -->
+              <div class="col-md-12 form-group" id="field-miembros" style="display:none;">
+                <label>Miembros</label>
+                <select class="form-control form-control-sm" id="m-miembros" multiple="multiple">
+                  {% for t in usuarios_activos %}
+                  <option value="{{ t.id }}">{{ t.first_name }} {{ t.last_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
               <!-- Orden (Bitácora) -->
               <div class="col-md-6 form-group" id="field-orden" style="display:none;">
                 <label>Orden de Prioridad</label>
                 <input type="number" class="form-control form-control-sm" id="m-orden" value="10" min="0">
+              </div>
+
+              <!-- RUT (Proveedor / Funcionario) -->
+              <div class="col-md-6 form-group" id="field-rut" style="display:none;">
+                <label id="label-rut">RUT</label>
+                <input type="text" class="form-control form-control-sm" id="m-rut" maxlength="20" placeholder="Ej. 12345678-9" oninput="formatRut(this)">
+                <small id="rut-feedback" class="form-text mt-1 font-weight-bold"></small>
               </div>
 
               <!-- Contacto (Proveedor) -->
@@ -377,11 +393,12 @@
               </div>
               <div class="col-md-6 form-group" id="field-telefono" style="display:none;">
                 <label>Teléfono</label>
-                <input type="text" class="form-control form-control-sm" id="m-telefono" maxlength="50">
+                <input type="tel" class="form-control form-control-sm" id="m-telefono" maxlength="15" placeholder="+56 9 1234 5678" oninput="formatPhone(this)">
               </div>
               <div class="col-md-6 form-group" id="field-email" style="display:none;">
                 <label>Correo Electrónico</label>
-                <input type="email" class="form-control form-control-sm" id="m-email" maxlength="120">
+                <input type="email" class="form-control form-control-sm" id="m-email" maxlength="120" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" title="Debe incluir una @ y un dominio válido" oninput="formatEmail(this)">
+                <small id="email-feedback" class="form-text mt-1 font-weight-bold"></small>
               </div>
               <div class="col-md-12 form-group" id="field-direccion" style="display:none;">
                 <label>Dirección Comercial</label>
@@ -408,11 +425,22 @@
     </div>
   </div>
 </div>
+
+<!-- Modal para Ver Imagen (Thumbnail) -->
+<div class="modal fade" id="modalVerImagen" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="background: transparent; border: none; box-shadow: none;">
+      <div class="modal-body text-center position-relative">
+        <button type="button" class="close text-white position-absolute" data-dismiss="modal" style="top: -10px; right: 0px; font-size: 2.5rem; opacity: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.8); z-index: 1050;">&times;</button>
+        <img id="imgModalPreview" src="" class="img-fluid rounded" style="max-height: 80vh; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="{% static 'js/mantenedores.js' %}"></script>
+<!-- JS del mantenedor dinámico -->
+<script src="/static/js/mantenedores.js?v=2"></script>
 {% endblock %}

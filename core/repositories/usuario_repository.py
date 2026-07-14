@@ -60,7 +60,7 @@ class UsuarioRepository:
     @classmethod
     def get_paginated_list(cls, start: int, length: int, search_value: str, 
                             order_column: str, order_dir: str):
-        queryset = User.objects.select_related('perfil').all()
+        queryset = User.objects.select_related('perfil').prefetch_related('groups').all()
         queryset = cls._apply_search_and_filters(queryset, search_value)
 
         # Mapeo seguro de columnas de ordenamiento

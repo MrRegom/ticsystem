@@ -1,244 +1,206 @@
 """
-Modelos del módulo de Tickets de Terreno (despacho a terreno / Mesa de Ayuda).
+Modelos del módulo Enterprise Helpdesk (Gestión de Incidentes).
 
-Normalización aplicada (3NF):
-- Ticket: consolida `tb_tickets_terreno` + `tickets` (legacy duplicada).
-  FKs reales (en PHP ya tenía constraints a tbedificios, tbunidades, tblistaequipos,
-  tbusuarios). estado enum → choices. Añade FK a Prioridad y Categoria.
-- TicketBitacora: de tb_itsm_bitacora (esbozo vacío). Notas públicas/internas/sistema.
-- Prioridad: de tb_itsm_prioridades (4 niveles con SLA).
-- Categoria: de tb_itsm_categorias (4 categorías).
+Normalización (3NF) y Clean Architecture:
+- El Ticket NO duplica datos de ubicación (Edificio, Piso, Unidad, PMA).
+- Todo se infiere a través de la relación ForeignKey con 'Equipo' (el Activo).
+- Implementación de patrón de auditoría inmutable (TicketHistorial).
 """
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-
-from mantenedores.models import Edificio, Piso, Unidad
 from equipos.models import Equipo
 
 
 class Prioridad(models.Model):
-    """Nivel de prioridad de un ticket. Reemplaza tb_itsm_prioridades."""
-    nivel = models.CharField(
-        max_length=100,
-        verbose_name="Nivel"
-    )
-    sla_respuesta_minutos = models.IntegerField(
-        verbose_name="SLA respuesta (minutos)",
-        help_text="Tiempo esperado para tomar el caso"
-    )
-    sla_resolucion_horas = models.IntegerField(
-        verbose_name="SLA resolución (horas)",
-        help_text="Tiempo esperado para solucionar"
-    )
-    color_hex = models.CharField(
-        max_length=20,
-        default='#333333',
-        verbose_name="Color (hex)"
-    )
+    nombre = models.CharField(max_length=50, verbose_name="Nombre")
+    sla_horas = models.IntegerField(verbose_name="SLA Resolución (horas)")
+    color_hex = models.CharField(max_length=20, default='#333333', verbose_name="Color Hex")
 
     class Meta:
         verbose_name = "Prioridad"
         verbose_name_plural = "Prioridades"
-        ordering = ['id']
 
     def __str__(self):
-        return self.nivel
+        return self.nombre
+
+
+class GrupoResolutor(models.Model):
+    nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre del Grupo")
+    descripcion = models.TextField(null=True, blank=True, verbose_name="Descripción")
+    # Los usuarios que pertenecen a este grupo
+    miembros = models.ManyToManyField(User, related_name='grupos_resolutores', blank=True, verbose_name="Técnicos Miembros")
+    activo = models.BooleanField(default=True, verbose_name="Activo")
+
+    class Meta:
+        verbose_name = "Grupo Resolutor"
+        verbose_name_plural = "Grupos Resolutores"
+
+    def __str__(self):
+        return self.nombre
 
 
 class Categoria(models.Model):
-    """Categoría de un ticket. Reemplaza tb_itsm_categorias."""
-    nombre = models.CharField(
-        max_length=100,
-        verbose_name="Nombre"
-    )
-    activo = models.BooleanField(
-        default=True,
-        verbose_name="Activo"
-    )
+    nombre = models.CharField(max_length=100, verbose_name="Nombre")
+    grupo_resolutor = models.ForeignKey(GrupoResolutor, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Grupo de Resolución Asignado")
+    activa = models.BooleanField(default=True, verbose_name="Activa")
 
     class Meta:
         verbose_name = "Categoría"
         verbose_name_plural = "Categorías"
-        ordering = ['nombre']
 
     def __str__(self):
         return self.nombre
 
 
 class Ticket(models.Model):
-    """Ticket de terreno / despacho. Reemplaza tb_tickets_terreno + consolida `tickets` legacy."""
     class Estado(models.TextChoices):
-        PENDIENTE = 'PENDIENTE', 'Pendiente'
-        EN_TERRENO = 'EN_TERRENO', 'En Terreno'
+        NUEVO = 'NUEVO', 'Nuevo'
+        ASIGNADO = 'ASIGNADO', 'Asignado'
+        EN_PROCESO = 'EN_PROCESO', 'En Proceso'
+        ESPERA_APROBACION = 'ESPERA_APROBACION', 'En Espera de Aprobación'
+        PENDIENTE_USUARIO = 'PENDIENTE_USUARIO', 'Pendiente Usuario'
+        PENDIENTE_PROVEEDOR = 'PENDIENTE_PROVEEDOR', 'Pendiente Proveedor'
+        ESCALADO = 'ESCALADO', 'Escalado'
         RESUELTO = 'RESUELTO', 'Resuelto'
+        CERRADO = 'CERRADO', 'Cerrado'
+        CANCELADO = 'CANCELADO', 'Cancelado'
+        
+    class Tipo(models.TextChoices):
+        INCIDENTE = 'INCIDENTE', 'Incidente (Falla/Interrupción)'
+        REQUERIMIENTO = 'REQUERIMIENTO', 'Requerimiento (Solicitud)'
 
-    fecha_hora = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Fecha y Hora"
-    )
-    solicitante_nombre = models.CharField(
-        max_length=255,
-        verbose_name="Nombre del Solicitante"
-    )
-    solicitante_rut = models.CharField(
-        max_length=20,
-        null=True,
-        blank=True,
-        verbose_name="RUT del Solicitante"
-    )
-    solicitante_correo = models.EmailField(
-        null=True,
-        blank=True,
-        verbose_name="Correo del Solicitante"
-    )
-    solicitante_anexo = models.CharField(
-        max_length=50,
-        null=True,
-        blank=True,
-        verbose_name="Anexo del Solicitante"
-    )
-    edificio = models.ForeignKey(
-        Edificio,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets',
-        verbose_name="Edificio"
-    )
-    piso = models.ForeignKey(
-        Piso,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Piso"
-    )
-    unidad = models.ForeignKey(
-        Unidad,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets',
-        verbose_name="Unidad"
-    )
-    equipo = models.ForeignKey(
-        Equipo,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets',
-        verbose_name="Equipo"
-    )
-    descripcion = models.TextField(
-        verbose_name="Descripción"
-    )
-    tecnico = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets_asignados',
-        verbose_name="Técnico asignado"
-    )
-    grupo_asignado = models.IntegerField(
-        null=True,
-        blank=True,
-        verbose_name="Grupo asignado"
-    )
-    estado = models.CharField(
-        max_length=20,
-        choices=Estado.choices,
-        default=Estado.PENDIENTE,
-        db_index=True,
-        verbose_name="Estado"
-    )
-    prioridad = models.ForeignKey(
-        Prioridad,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets',
-        verbose_name="Prioridad"
-    )
-    categoria = models.ForeignKey(
-        Categoria,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets',
-        verbose_name="Categoría"
-    )
-    fecha_cierre = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="Fecha de Cierre"
-    )
-    fecha_toma = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="Fecha de Toma",
-        help_text="El segundo exacto en que el técnico asume"
-    )
+    class Impacto(models.IntegerChoices):
+        HOSPITAL = 1, 'Hospital / Alta Críticidad'
+        SERVICIO = 2, 'Servicio / Área'
+        PACIENTE = 3, 'Paciente / Usuario Único'
+        BAJO = 4, 'Bajo / Sin Impacto Clínico'
+
+    class Urgencia(models.IntegerChoices):
+        ALTA = 1, 'Alta / Detiene Operación'
+        MEDIA = 2, 'Media / Operación Degradada'
+        BAJA = 3, 'Baja / Operación Normal'
+
+    correlativo = models.CharField(max_length=20, unique=True, verbose_name="N° Ticket")
+    tipo = models.CharField(max_length=20, choices=Tipo.choices, default=Tipo.INCIDENTE, verbose_name="Tipo")
+    estado = models.CharField(max_length=30, choices=Estado.choices, default=Estado.NUEVO, verbose_name="Estado")
+    
+    impacto = models.IntegerField(choices=Impacto.choices, default=Impacto.BAJO, verbose_name="Impacto")
+    urgencia = models.IntegerField(choices=Urgencia.choices, default=Urgencia.BAJA, verbose_name="Urgencia")
+    
+    prioridad = models.ForeignKey(Prioridad, on_delete=models.PROTECT, null=True, blank=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, null=True, blank=True)
+    
+    # Enrutamiento ITIL
+    grupo_resolutor = models.ForeignKey(GrupoResolutor, on_delete=models.PROTECT, null=True, blank=True, related_name='tickets_asignados', verbose_name="Grupo Resolutor")
+    responsable = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True, related_name='tickets_asignados', verbose_name="Técnico Responsable")
+    
+    # El Operador de Mesa de Ayuda que tomó la llamada
+    creador = models.ForeignKey(User, on_delete=models.PROTECT, related_name='tickets_creados', null=True, blank=True, verbose_name="Creador (Operador)")
+    # El Funcionario que reporta el problema (para el cual es el ticket)
+    solicitante = models.ForeignKey('core.Funcionario', on_delete=models.PROTECT, related_name='tickets_solicitados', verbose_name="Solicitante")
+    
+    # El Activo es el núcleo. De aquí sacamos la ubicación física y clínica en tiempo real.
+    activo = models.ForeignKey(Equipo, on_delete=models.PROTECT, related_name='tickets', null=True, blank=True, verbose_name="Activo / Equipo")
+    
+    anexo_contacto = models.CharField(max_length=50, null=True, blank=True, verbose_name="Anexo/Teléfono de Contacto")
+    
+    descripcion = models.TextField(verbose_name="Descripción del Problema")
+    diagnostico = models.TextField(null=True, blank=True, verbose_name="Diagnóstico Técnico")
+    solucion = models.TextField(null=True, blank=True, verbose_name="Solución Aplicada")
+    
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
+    fecha_asignacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Asignación")
+    fecha_cierre = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Cierre")
+    
+    # Campos para SLA
+    fecha_vencimiento_sla = models.DateTimeField(null=True, blank=True, verbose_name="Vencimiento SLA Resolución")
 
     class Meta:
         verbose_name = "Ticket"
         verbose_name_plural = "Tickets"
-        ordering = ['-fecha_hora']
-        indexes = [
-            models.Index(fields=['estado'], name='idx_ticket_estado'),
-            models.Index(fields=['tecnico'], name='idx_ticket_tecnico'),
-            models.Index(fields=['prioridad'], name='idx_ticket_prioridad'),
+        ordering = ['-fecha_creacion']
+
+    def __str__(self):
+        return f"{self.correlativo} - {self.get_estado_display()}"
+
+    @property
+    def en_pausa_sla(self):
+        """
+        Determina si el cronómetro SLA está pausado.
+        En ITIL, el reloj se detiene cuando el ticket depende de factores externos
+        (Pendiente de Usuario o Proveedor).
+        """
+        return self.estado in [
+            self.Estado.PENDIENTE_USUARIO,
+            self.Estado.PENDIENTE_PROVEEDOR,
+            self.Estado.ESPERA_APROBACION
         ]
 
-    def clean(self):
-        super().clean()
-        if self.fecha_cierre and self.fecha_hora and self.fecha_cierre < self.fecha_hora:
-            raise ValidationError({'fecha_cierre': 'La fecha de cierre no puede ser anterior a la creación del ticket.'})
-        if self.fecha_toma and self.fecha_hora and self.fecha_toma < self.fecha_hora:
-            raise ValidationError({'fecha_toma': 'La fecha de toma no puede ser anterior a la creación del ticket.'})
+    @property
+    def is_sla_vencido(self):
+        """
+        Retorna True si la fecha actual es mayor a la fecha de vencimiento.
+        Si está cerrado/resuelto, se compara con la fecha de cierre.
+        """
+        if not self.fecha_vencimiento_sla:
+            return False
+            
+        from django.utils import timezone
+        
+        if self.estado in [self.Estado.RESUELTO, self.Estado.CERRADO]:
+            # Verificar si se venció ANTES de resolverlo
+            if self.fecha_cierre and self.fecha_cierre > self.fecha_vencimiento_sla:
+                return True
+            return False
+            
+        return timezone.now() > self.fecha_vencimiento_sla
 
-    def __str__(self):
-        return f"Ticket #{self.pk} - {self.solicitante_nombre} ({self.estado})"
+    @property
+    def porcentaje_tiempo_transcurrido(self):
+        """
+        Calcula un porcentaje aproximado para pintar el semáforo.
+        > 90% = Rojo
+        > 75% = Amarillo
+        < 75% = Verde
+        """
+        if not self.fecha_vencimiento_sla:
+            return 0
+            
+        if self.estado in [self.Estado.RESUELTO, self.Estado.CERRADO]:
+            return 0
+            
+        from django.utils import timezone
+        ahora = timezone.now()
+        
+        total = (self.fecha_vencimiento_sla - self.fecha_creacion).total_seconds()
+        transcurrido = (ahora - self.fecha_creacion).total_seconds()
+        
+        if total <= 0:
+            return 100
+            
+        pct = (transcurrido / total) * 100
+        return min(max(pct, 0), 100) # Clamp entre 0 y 100
 
 
-class TicketBitacora(models.Model):
-    """Nota/comentario de un ticket. Reemplaza tb_itsm_bitacora (esbozo vacío)."""
-    class TipoNota(models.TextChoices):
-        PUBLICA = 'PUBLICA', 'Pública'
-        INTERNA = 'INTERNA', 'Interna'
-        SISTEMA = 'SISTEMA', 'Sistema'
-
-    ticket = models.ForeignKey(
-        Ticket,
-        on_delete=models.CASCADE,
-        related_name='notas',
-        verbose_name="Ticket"
-    )
-    usuario = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='notas_tickets',
-        verbose_name="Usuario"
-    )
-    nota = models.TextField(
-        verbose_name="Nota"
-    )
-    tipo_nota = models.CharField(
-        max_length=20,
-        choices=TipoNota.choices,
-        default=TipoNota.INTERNA,
-        verbose_name="Tipo de nota"
-    )
-    fecha_registro = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Fecha de Registro"
-    )
+class TicketHistorial(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='historial')
+    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
+    accion = models.CharField(max_length=255, verbose_name="Acción (ej. Cambio de Estado)")
+    valor_anterior = models.TextField(null=True, blank=True)
+    valor_nuevo = models.TextField(null=True, blank=True)
+    comentario = models.TextField(null=True, blank=True)
+    fecha = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Nota de Ticket"
-        verbose_name_plural = "Notas de Tickets"
-        ordering = ['-fecha_registro']
+        verbose_name = "Historial de Ticket"
+        ordering = ['-fecha']
 
-    def __str__(self):
-        return f"{self.ticket} - {self.tipo_nota} - {self.fecha_registro}"
+
+class ArchivoAdjunto(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='archivos')
+    archivo = models.FileField(upload_to='tickets/adjuntos/')
+    subido_por = models.ForeignKey(User, on_delete=models.PROTECT)
+    fecha_subida = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Archivo Adjunto"

@@ -12,20 +12,23 @@ from core.models import LogAuditoria
 from core.utils import get_client_ip, parse_datatables_params, extract_validation_error
 from mantenedores.models import (
     Institucion, Edificio, Piso, Sector, AreaHospitalaria, Unidad, Recinto, PMA,
-    Articulo, Marca, Modelo, ModeloAnexo, SistemaOperativo, EstadoEquipo, Proveedor,
+    Articulo, Marca, Modelo, ModeloAnexo, SistemaOperativo, EstadoEquipo, Proveedor, Cargo
 )
 from equipos.models import BitacoraOpcion
+from tickets.models import GrupoResolutor
+from django.contrib.auth.models import User
 
 
 MODELOS_INFO = [
     # --- Infraestructura Técnica ---
-    {'key': 'articulo',          'label': 'Artículos',             'icon': 'tag',           'fields': ['nombre'],                              'grupo': 'tecnico'},
-    {'key': 'fallas_bitacora',   'label': 'Fallas Bitácora',       'icon': 'clipboard-list','fields': ['tipo', 'nombre', 'orden'],              'grupo': 'tecnico'},
-    {'key': 'marca',             'label': 'Marcas',                'icon': 'trademark',     'fields': ['nombre'],                              'grupo': 'tecnico'},
-    {'key': 'modelo',            'label': 'Modelos',               'icon': 'microchip',     'fields': ['nombre', 'marca'],                     'grupo': 'tecnico'},
-    {'key': 'modeloanexo',       'label': 'Modelos de Anexos',     'icon': 'phone',         'fields': ['nombre'],                              'grupo': 'tecnico'},
+    {'key': 'grupo_resolutor',   'label': 'Equipos Resolutores',   'icon': 'users-cog',     'fields': ['nombre', 'miembros'],                  'grupo': 'rrhh'},
     {'key': 'proveedor',         'label': 'Proveedores',           'icon': 'truck',         'fields': ['nombre'],                              'grupo': 'tecnico'},
+    {'key': 'articulo',          'label': 'Artículos',             'icon': 'tag',           'fields': ['nombre', 'imagen'],                    'grupo': 'tecnico'},
+    {'key': 'marca',             'label': 'Marcas',                'icon': 'trademark',     'fields': ['nombre'],                              'grupo': 'tecnico'},
+    {'key': 'modelo',            'label': 'Modelos',               'icon': 'microchip',     'fields': ['nombre', 'marca', 'imagen'],           'grupo': 'tecnico'},
+    {'key': 'modeloanexo',       'label': 'Modelos de Anexos',     'icon': 'phone',         'fields': ['nombre'],                              'grupo': 'tecnico'},
     {'key': 'sistemaoperativo',  'label': 'Sistemas Operativos',   'icon': 'desktop',       'fields': ['nombre'],                              'grupo': 'tecnico'},
+    {'key': 'fallas_bitacora',   'label': 'Fallas Reportadas / Motivo', 'icon': 'clipboard-list','fields': ['tipo', 'nombre', 'orden'],              'grupo': 'tecnico'},
     # --- Infraestructura Física ---
     {'key': 'institucion',       'label': 'Instituciones',         'icon': 'university',    'fields': ['nombre', 'codigo'],                    'grupo': 'fisica'},
     {'key': 'edificio',          'label': 'Edificios',             'icon': 'building',      'fields': ['nombre', 'institucion'],               'grupo': 'fisica'},
@@ -36,6 +39,9 @@ MODELOS_INFO = [
     {'key': 'unidad',            'label': 'Unidades / Servicios',  'icon': 'sitemap',       'fields': ['nombre', 'area_hospitalaria'],          'grupo': 'hospitalaria'},
     {'key': 'recinto',           'label': 'Recintos',              'icon': 'door-open',     'fields': ['nombre', 'piso', 'sector', 'unidad'],  'grupo': 'hospitalaria'},
     {'key': 'pma',               'label': 'PMAs',                  'icon': 'plug',          'fields': ['nombre', 'recinto'],                   'grupo': 'hospitalaria'},
+    # --- Recursos Humanos ---
+    {'key': 'funcionario',       'label': 'Funcionarios (RRHH)',   'icon': 'id-badge',      'fields': ['rut', 'nombres', 'apellidos', 'correo', 'cargo', 'unidad'], 'grupo': 'rrhh'},
+    {'key': 'cargo',             'label': 'Cargos (RRHH)',         'icon': 'briefcase',     'fields': ['nombre'], 'grupo': 'rrhh'},
 ]
 
 
@@ -59,8 +65,8 @@ class MantenedoresDashboardView(LoginRequiredMixin, TemplateView):
         )
         ctx['sectores'] = list(
             Sector.objects.filter(activo=True)
-            .select_related('piso', 'piso__edificio')
-            .values('id', 'nombre', 'piso_id', 'piso__nombre', 'piso__edificio__nombre')
+            .select_related('piso')
+            .values('id', 'nombre', 'piso__nombre', 'piso_id')
         )
         ctx['areas'] = list(AreaHospitalaria.objects.filter(activo=True).values('id', 'nombre'))
         ctx['unidades'] = list(
@@ -71,9 +77,11 @@ class MantenedoresDashboardView(LoginRequiredMixin, TemplateView):
         ctx['recintos'] = list(
             Recinto.objects.filter(activo=True)
             .select_related('unidad', 'piso')
-            .values('id', 'nombre', 'unidad__nombre', 'piso__nombre')
+            .values('id', 'nombre', 'unidad__nombre', 'piso__nombre', 'unidad_id', 'piso_id')
         )
         ctx['marcas'] = list(Marca.objects.filter(activo=True).values('id', 'nombre'))
+        ctx['usuarios_activos'] = User.objects.filter(is_active=True).order_by('first_name')
+        ctx['cargos'] = list(Cargo.objects.filter(activo=True).values('id', 'nombre').order_by('nombre'))
         return ctx
 
 
@@ -94,19 +102,38 @@ class MantenedorActionView(LoginRequiredMixin, View):
         return (data.get('modelo') or '').strip().lower()
 
     def post(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-        except (json.JSONDecodeError, TypeError):
-            return JsonResponse({'success': False, 'message': 'Petición inválida.'}, status=400)
+        # Manejar tanto application/json como multipart/form-data
+        archivos = None
+        if request.content_type.startswith('multipart/form-data'):
+            data = request.POST.dict()
+            archivos = request.FILES
+        else:
+            try:
+                data = json.loads(request.body)
+            except (json.JSONDecodeError, TypeError):
+                return JsonResponse({'success': False, 'message': 'Petición inválida.'}, status=400)
+                
+        item_id = data.get('id')
         try:
             from mantenedores.services.mantenedor_service import MantenedorService
-            item = MantenedorService.crear_item(self._get_modelo(data), data, usuario=request.user)
-            AuditoriaService.registrar_accion(
-                usuario=request.user.username, accion=LogAuditoria.Accion.CREAR,
-                tabla=self._get_modelo(data).capitalize(), registro_id=item.id,
-                detalles=f"{self._get_modelo(data).capitalize()} creado: {item.nombre}",
-                ip_address=get_client_ip(request))
-            return JsonResponse({'success': True, 'message': 'Registro creado con éxito.', 'data': {'id': item.id}})
+            if item_id:
+                # Es una actualización (actúa como PUT)
+                item = MantenedorService.actualizar_item(self._get_modelo(data), int(item_id), data, usuario=request.user, archivos=archivos)
+                AuditoriaService.registrar_accion(
+                    usuario=request.user.username, accion=LogAuditoria.Accion.MODIFICAR,
+                    tabla=self._get_modelo(data).capitalize(), registro_id=item.id,
+                    detalles=f"{self._get_modelo(data).capitalize()} modificado: {item.nombre}",
+                    ip_address=get_client_ip(request))
+                return JsonResponse({'success': True, 'message': 'Los datos han sido actualizados correctamente.'})
+            else:
+                # Es una creación
+                item = MantenedorService.crear_item(self._get_modelo(data), data, usuario=request.user, archivos=archivos)
+                AuditoriaService.registrar_accion(
+                    usuario=request.user.username, accion=LogAuditoria.Accion.CREAR,
+                    tabla=self._get_modelo(data).capitalize(), registro_id=item.id,
+                    detalles=f"{self._get_modelo(data).capitalize()} creado: {item.nombre}",
+                    ip_address=get_client_ip(request))
+                return JsonResponse({'success': True, 'message': 'Los datos han sido guardados correctamente.', 'data': {'id': item.id}})
         except ValidationError as e:
             return JsonResponse({'success': False, 'message': extract_validation_error(e)}, status=400)
         except IntegrityError:
@@ -115,6 +142,7 @@ class MantenedorActionView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
     def put(self, request, *args, **kwargs):
+        # Mantenemos el método PUT original por retrocompatibilidad con llamadas JSON puras
         try:
             data = json.loads(request.body)
             item_id = int(data.get('id', 0))
@@ -171,7 +199,15 @@ class MantenedorDetailView(LoginRequiredMixin, View):
         item = MantenedorService.obtener_item_por_id(modelo, item_id)
         if not item:
             return JsonResponse({'success': False, 'message': 'No encontrado.'}, status=404)
-        data = {'id': item.id, 'nombre': item.nombre, 'activo': item.activo}
+        if modelo == 'funcionario':
+            data = {
+                'id': item.id, 'activo': True,
+                'rut': item.rut, 'nombres': item.nombres, 'apellidos': item.apellidos,
+                'correo': item.correo, 'cargo': item.cargo_id, 'unidad': item.unidad_id
+            }
+        else:
+            data = {'id': item.id, 'nombre': item.nombre, 'activo': item.activo}
+            
         # Campos adicionales por tipo de entidad
         if modelo == 'edificio':
             data['institucion'] = item.institucion_id
@@ -203,4 +239,6 @@ class MantenedorDetailView(LoginRequiredMixin, View):
             data['unidad'] = item.unidad_id
         elif modelo == 'pma':
             data['recinto'] = item.recinto_id
+        elif modelo == 'grupo_resolutor':
+            data['miembros'] = list(item.miembros.values_list('id', flat=True))
         return JsonResponse({'success': True, 'data': data})

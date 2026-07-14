@@ -1,10 +1,10 @@
 {% extends 'core/base.html' %}
 
 {% block title %}Usuarios{% endblock %}
+{% block module_title %}Gestión de Usuarios{% endblock %}
 
 {% block extra_css %}
-<!-- DataTables CSS standard -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+
 {% endblock %}
 
 {% block content %}
@@ -30,15 +30,15 @@
         <table id="tabla-usuarios" class="table table-hover w-100">
           <thead>
             <tr>
+              <th></th>
               <th>RUT</th>
               <th>Nombres</th>
               <th>Apellidos</th>
               <th>Correo Electrónico</th>
               <th>Unidad / Servicio</th>
-              <th>Cargo</th>
-              <th>Grado</th>
-              <th>Fecha Registro</th>
-              <th>Acciones</th>
+              <th>Grupos</th>
+              <th>Estado</th>
+              <th style="width: 90px; text-align: center;">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -53,29 +53,29 @@
 
 <!-- MODAL: Crear Usuario -->
 <div class="modal fade" id="modalCrearUsuario" tabindex="-1" role="dialog" aria-labelledby="modalCrearUsuarioLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-gob-azul text-white">
-        <h5 class="modal-title font-weight-bold" id="modalCrearUsuarioLabel">Registrar Nuevo Funcionario</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header-clean">
+        <h5 id="modalCrearUsuarioLabel"><i class="fas fa-user-plus mr-2"></i> Registrar Nuevo Funcionario</h5>
+        <button type="button" class="close" data-dismiss="modal" style="opacity: 0.5; outline:none;">&times;</button>
       </div>
       <form id="form-crear-usuario" novalidate>
-        <div class="modal-body">
-          <div id="crear-error-alert" class="alert alert-danger d-none border-0" role="alert"></div>
+        <div class="modal-body-clean">
+          <div id="crear-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 8px;"></div>
           
           <div class="row">
             <!-- RUT -->
             <div class="col-md-6 form-group">
               <label for="crear-rut" class="font-weight-bold">RUT *</label>
               <input type="text" id="crear-rut" class="form-control" placeholder="12345678-9" required>
+              <div class="invalid-feedback">El RUT ingresado no es válido o está vacío.</div>
               <small class="form-text text-muted">Sin puntos, con guion y dígito verificador.</small>
             </div>
             <!-- Correo -->
             <div class="col-md-6 form-group">
               <label for="crear-email" class="font-weight-bold">Correo Electrónico *</label>
               <input type="email" id="crear-email" class="form-control" placeholder="nombre.apellido@hospitalfricke.cl" required>
+              <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
             </div>
           </div>
 
@@ -84,29 +84,26 @@
             <div class="col-md-6 form-group">
               <label for="crear-nombres" class="font-weight-bold">Nombres *</label>
               <input type="text" id="crear-nombres" class="form-control" placeholder="Ej: Pedro Juan" required>
+              <div class="invalid-feedback">Este campo es obligatorio.</div>
             </div>
             <!-- Apellidos -->
             <div class="col-md-6 form-group">
               <label for="crear-apellidos" class="font-weight-bold">Apellidos *</label>
               <input type="text" id="crear-apellidos" class="form-control" placeholder="Ej: Soto Muñoz" required>
+              <div class="invalid-feedback">Este campo es obligatorio.</div>
             </div>
           </div>
 
           <div class="row">
             <!-- Unidad / Servicio -->
-            <div class="col-md-4 form-group">
+            <div class="col-md-12 form-group">
               <label for="crear-unidad" class="font-weight-bold">Unidad / Servicio *</label>
-              <input type="text" id="crear-unidad" class="form-control" placeholder="Ej: Informática" required>
-            </div>
-            <!-- Cargo -->
-            <div class="col-md-4 form-group">
-              <label for="crear-cargo" class="font-weight-bold">Cargo *</label>
-              <input type="text" id="crear-cargo" class="form-control" placeholder="Ej: Operador TI" required>
-            </div>
-            <!-- Grado -->
-            <div class="col-md-4 form-group">
-              <label for="crear-grado" class="font-weight-bold">Grado *</label>
-              <input type="text" id="crear-grado" class="form-control" placeholder="Ej: 12" required>
+              <select id="crear-unidad" class="form-control select2" required>
+                <option value="">-- Seleccionar Unidad --</option>
+                {% for unidad in unidades %}
+                  <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
 
@@ -117,13 +114,45 @@
               <input type="password" id="crear-contrasena" class="form-control" placeholder="Mínimo 8 caracteres" required>
               <small class="form-text text-muted">Asegúrese de usar una clave robusta.</small>
             </div>
+            <!-- Rol de Usuario -->
+            <div class="col-md-12 form-group">
+              <label for="crear-rol" class="font-weight-bold">Rol en el Sistema *</label>
+              <select class="form-control" id="crear-rol" name="rol" required>
+                <option value="">-- Seleccione un Rol --</option>
+                {% for r in roles_disponibles %}
+                <option value="{{ r.id }}">{{ r.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <!-- Grupos -->
+            <div class="col-md-12 form-group">
+              <label class="font-weight-bold">Grupos Resolutores (Opcional)</label>
+              <div class="form-control" style="height: auto; max-height: 130px; overflow-y: auto; padding: 10px; border-radius: 8px; background: #f8fafc;">
+                {% for grupo in grupos_disponibles %}
+                <div class="custom-control custom-checkbox mb-2">
+                  <input type="checkbox" class="custom-control-input crear-grupo-checkbox" id="crear-grupo-{{ grupo.id }}" value="{{ grupo.id }}">
+                  <label class="custom-control-label" for="crear-grupo-{{ grupo.id }}" style="font-size: 0.85rem; color: #334155;">{{ grupo.nombre }}</label>
+                </div>
+                {% endfor %}
+              </div>
+              <small class="form-text text-muted mt-1">Puede asignar al técnico a múltiples grupos de resolución de tickets.</small>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Estado -->
+            <div class="col-md-6 form-group">
+              <div class="custom-control custom-switch mt-4">
+                <input type="checkbox" class="custom-control-input" id="crear-activo" checked>
+                <label class="custom-control-label font-weight-bold" for="crear-activo">Usuario Activo</label>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-gob-outline" data-dismiss="modal">Cancelar</button>
-          <button type="submit" id="btn-crear-submit" class="btn btn-gob-primary">
-            <span>Crear Usuario</span>
-            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+        <div class="modal-footer-clean">
+          <button type="button" class="btn" data-dismiss="modal" style="font-weight:600; color:#64748b; background:transparent;">Cerrar</button>
+          <button type="submit" id="btn-crear-submit" class="btn-primary-action">
+            Confirmar Registro
           </button>
         </div>
       </form>
@@ -133,30 +162,29 @@
 
 <!-- MODAL: Editar Usuario -->
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-gob-azul text-white">
-        <h5 class="modal-title font-weight-bold" id="modalEditarUsuarioLabel">Modificar Datos de Funcionario</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header-clean">
+        <h5 id="modalEditarUsuarioLabel"><i class="fas fa-user-edit mr-2"></i> Modificar Datos de Funcionario</h5>
+        <button type="button" class="close" data-dismiss="modal" style="opacity: 0.5; outline:none;">&times;</button>
       </div>
       <form id="form-editar-usuario" novalidate>
         <input type="hidden" id="editar-id">
-        <div class="modal-body">
-          <div id="editar-error-alert" class="alert alert-danger d-none border-0" role="alert"></div>
+        <div class="modal-body-clean">
+          <div id="editar-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 8px;"></div>
           
           <div class="row">
             <!-- RUT -->
             <div class="col-md-6 form-group">
               <label for="editar-rut" class="font-weight-bold">RUT *</label>
-              <input type="text" id="editar-rut" class="form-control" placeholder="12345678-9" required>
-              <div class="invalid-feedback">El RUT ingresado no es válido o es requerido.</div>
+              <input type="text" id="editar-rut" class="form-control" required>
+              <div class="invalid-feedback">El RUT ingresado no es válido o está vacío.</div>
             </div>
             <!-- Correo -->
             <div class="col-md-6 form-group">
               <label for="editar-email" class="font-weight-bold">Correo Electrónico *</label>
               <input type="email" id="editar-email" class="form-control" required>
+              <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
             </div>
           </div>
 
@@ -165,29 +193,26 @@
             <div class="col-md-6 form-group">
               <label for="editar-nombres" class="font-weight-bold">Nombres *</label>
               <input type="text" id="editar-nombres" class="form-control" required>
+              <div class="invalid-feedback">Este campo es obligatorio.</div>
             </div>
             <!-- Apellidos -->
             <div class="col-md-6 form-group">
               <label for="editar-apellidos" class="font-weight-bold">Apellidos *</label>
               <input type="text" id="editar-apellidos" class="form-control" required>
+              <div class="invalid-feedback">Este campo es obligatorio.</div>
             </div>
           </div>
 
           <div class="row">
             <!-- Unidad / Servicio -->
-            <div class="col-md-4 form-group">
+            <div class="col-md-12 form-group">
               <label for="editar-unidad" class="font-weight-bold">Unidad / Servicio *</label>
-              <input type="text" id="editar-unidad" class="form-control" required>
-            </div>
-            <!-- Cargo -->
-            <div class="col-md-4 form-group">
-              <label for="editar-cargo" class="font-weight-bold">Cargo *</label>
-              <input type="text" id="editar-cargo" class="form-control" required>
-            </div>
-            <!-- Grado -->
-            <div class="col-md-4 form-group">
-              <label for="editar-grado" class="font-weight-bold">Grado *</label>
-              <input type="text" id="editar-grado" class="form-control" required>
+              <select id="editar-unidad" class="form-control select2" required>
+                <option value="">-- Seleccionar Unidad --</option>
+                {% for unidad in unidades %}
+                  <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
 
@@ -198,11 +223,36 @@
               <input type="password" id="editar-contrasena" class="form-control" placeholder="Dejar en blanco para no cambiar">
               <small class="form-text text-muted">Sólo si desea actualizar la clave del funcionario.</small>
             </div>
+            <!-- Rol de Usuario -->
+            <div class="col-md-12 form-group">
+              <label for="editar-rol" class="font-weight-bold">Rol en el Sistema *</label>
+              <select class="form-control" id="editar-rol" name="rol" required>
+                <option value="">-- Seleccione un Rol --</option>
+                {% for r in roles_disponibles %}
+                <option value="{{ r.id }}">{{ r.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <!-- Grupos -->
+            <div class="col-md-12 form-group">
+              <label class="font-weight-bold">Grupos Resolutores (Opcional)</label>
+              <div class="form-control" style="height: auto; max-height: 130px; overflow-y: auto; padding: 10px; border-radius: 8px; background: #f8fafc;">
+                {% for grupo in grupos_disponibles %}
+                <div class="custom-control custom-checkbox mb-2">
+                  <input type="checkbox" class="custom-control-input editar-grupo-checkbox" id="editar-grupo-{{ grupo.id }}" value="{{ grupo.id }}">
+                  <label class="custom-control-label" for="editar-grupo-{{ grupo.id }}" style="font-size: 0.85rem; color: #334155;">{{ grupo.nombre }}</label>
+                </div>
+                {% endfor %}
+              </div>
+              <small class="form-text text-muted mt-1">Puede asignar al técnico a múltiples grupos de resolución de tickets.</small>
+            </div>
           </div>
+
+
         </div>
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-gob-outline" data-dismiss="modal">Cancelar</button>
-          <button type="submit" id="btn-editar-submit" class="btn btn-gob-primary">Guardar Cambios</button>
+        <div class="modal-footer-clean">
+          <button type="button" class="btn" data-dismiss="modal" style="font-weight:600; color:#64748b; background:transparent;">Cerrar</button>
+          <button type="submit" id="btn-editar-submit" class="btn-primary-action">Guardar Cambios</button>
         </div>
       </form>
     </div>
@@ -212,24 +262,15 @@
 <!-- Plantillas HTML Ocultas para renderizado seguro en JS (DataTables) -->
 <div id="dt-templates" style="display: none;">
   <!-- Botones de Acción para cada fila -->
-  <div class="btn-group tmpl-acciones" role="group">
-    <button class="btn btn-sm btn-light text-gob-azul btn-editar-usuario" title="Modificar Datos">
-      <i class="fas fa-edit"></i>
-    </button>
-    <button class="btn btn-sm btn-light text-danger btn-eliminar-usuario" title="Eliminar Funcionario">
-      <i class="fas fa-trash-alt"></i>
-    </button>
+  <div class="actions-cell tmpl-acciones" style="justify-content: center;">
+    <a href="#" class="action-icon ic-edit btn-editar-usuario" title="Modificar Datos">
+      <i class="fas fa-pencil-alt"></i>
+    </a>
   </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<!-- DataTables JS library -->
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-
-<!-- SweetAlert2 para notificaciones premium -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
 <!-- JS Estático del módulo de gestión de usuarios -->
 <script src="/static/js/usuarios.js"></script>
 {% endblock %}

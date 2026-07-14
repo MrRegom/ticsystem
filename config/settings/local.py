@@ -48,3 +48,6 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+# Correos a consola en desarrollo local para no ralentizar el sistema
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

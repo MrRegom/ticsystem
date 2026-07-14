@@ -133,6 +133,8 @@ $(document).ready(function() {
           msg = 'RUT/Usuario o contraseña incorrectos.';
         } else if (xhr.status === 403) {
           msg = 'Cuenta deshabilitada.';
+        } else if (xhr.status === 429) {
+          msg = 'Acceso bloqueado por múltiples intentos fallidos (Espere 30 min).';
         }
         showError(msg);
       }

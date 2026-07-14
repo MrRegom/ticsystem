@@ -107,7 +107,7 @@ class Piso(TimestampedActivo):
     )
     edificio = models.ForeignKey(
         Edificio,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name='pisos',
         verbose_name="Edificio"
     )
@@ -135,7 +135,7 @@ class Sector(TimestampedActivo):
     )
     piso = models.ForeignKey(
         Piso,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True, blank=True,
         related_name='sectores',
         verbose_name="Piso"
@@ -175,7 +175,7 @@ class Unidad(TimestampedActivo):
     )
     area_hospitalaria = models.ForeignKey(
         AreaHospitalaria,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True, blank=True,
         related_name='unidades',
         verbose_name="Área Hospitalaria"
@@ -198,21 +198,21 @@ class Recinto(TimestampedActivo):
     )
     piso = models.ForeignKey(
         Piso,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True, blank=True,
         related_name='recintos',
         verbose_name="Piso"
     )
     sector = models.ForeignKey(
         Sector,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True, blank=True,
         related_name='recintos',
         verbose_name="Sector"
     )
     unidad = models.ForeignKey(
         Unidad,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True, blank=True,
         related_name='recintos',
         verbose_name="Unidad / Servicio"
@@ -235,7 +235,7 @@ class PMA(TimestampedActivo):
     )
     recinto = models.ForeignKey(
         Recinto,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name='pmas',
         verbose_name="Recinto"
     )
@@ -258,6 +258,12 @@ class Articulo(TimestampedActivo):
         max_length=80,
         unique=True,
         verbose_name="Nombre del Artículo"
+    )
+    imagen = models.ImageField(
+        upload_to='articulos/',
+        null=True,
+        blank=True,
+        verbose_name="Imagen por Defecto"
     )
 
     class Meta:
@@ -408,6 +414,11 @@ class Proveedor(TimestampedActivo):
         null=True, blank=True,
         verbose_name="Persona de Contacto"
     )
+    rut = models.CharField(
+        max_length=12,
+        null=True, blank=True,
+        verbose_name="RUT Empresa"
+    )
     telefono = models.CharField(
         max_length=50,
         null=True, blank=True,
@@ -450,6 +461,23 @@ class Vlan(TimestampedActivo):
     class Meta:
         verbose_name = "VLAN"
         verbose_name_plural = "VLANs"
+        ordering = ['nombre']
+
+    def __str__(self):
+        return self.nombre
+
+
+class Cargo(TimestampedActivo):
+    """Cargo o Rol del funcionario en su Unidad Clínica."""
+    nombre = models.CharField(
+        max_length=150,
+        unique=True,
+        verbose_name="Nombre del Cargo"
+    )
+
+    class Meta:
+        verbose_name = "Cargo"
+        verbose_name_plural = "Cargos"
         ordering = ['nombre']
 
     def __str__(self):

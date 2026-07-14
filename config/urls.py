@@ -14,7 +14,16 @@ urlpatterns = [
     path('actas/', include('actas.urls')),
     path('mantenedores/', include('mantenedores.urls')),
     path('tickets/', include('tickets.urls')),
+    path('reportes/', include('reportes.urls')),
 ]
 
 if settings.DEBUG:
+    # Solo agregar la ruta si debug_toolbar está disponible
+    try:
+        import debug_toolbar
+        urlpatterns += [
+            path('__debug__/', include('debug_toolbar.urls')),
+        ]
+    except ImportError:
+        pass
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

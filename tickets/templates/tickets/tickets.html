@@ -1,17 +1,435 @@
-{% extends "core/base.html" %}
-{% block title %}Tickets{% endblock %}
+{% extends 'core/base.html' %}
+{% block title %}Helpdesk - Kanban{% endblock %}
+{% block module_title %}Gestión de Incidentes (Tickets){% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/tickets.css' %}?v=1">
+{% endblock %}
+
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h3 mb-0 text-gray-800">Tickets</h1>
-            <p class="text-muted mb-0">Gestión de despachos a terreno - Hospital Marga Marga</p>
-        </div>
+<div class="helpdesk-wrapper">
+
+  <div class="helpdesk-header">
+    <div>
+      <h1 class="helpdesk-title">Helpdesk Enterprise</h1>
+      <p class="helpdesk-subtitle">Gestión de Incidentes — Hospital Marga Marga</p>
     </div>
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <p>Módulo en construcción o migración.</p>
-        </div>
+    <div class="header-actions">
+      <div class="view-toggle">
+        <button class="view-toggle-btn active" id="btn-view-kanban" onclick="switchView('kanban')">
+          <i class="fas fa-th-large"></i> Kanban
+        </button>
+        <button class="view-toggle-btn" id="btn-view-historial" onclick="switchView('historial')">
+          <i class="fas fa-history"></i> Historial
+        </button>
+      </div>
+      <div class="view-toggle">
+        <select id="kanban-filtro-fecha" class="form-control form-control-sm" style="width: auto; display: inline-block; border: 1px solid #cbd5e1; font-weight: 600; color: #475569;" onchange="window.location.href='?rango=' + this.value;">
+          <option value="hoy" {% if rango_filtro == 'hoy' %}selected{% endif %}>Hoy</option>
+          <option value="semana" {% if rango_filtro == 'semana' %}selected{% endif %}>Últimos 7 Días</option>
+          <option value="mes" {% if rango_filtro == 'mes' %}selected{% endif %}>Últimos 30 Días</option>
+          <option value="todos" {% if rango_filtro == 'todos' %}selected{% endif %}>Todos (Histórico)</option>
+        </select>
+      </div>
+      <button class="btn-primary-action" data-toggle="modal" data-target="#modalNuevoTicket">
+        <i class="fas fa-plus"></i> Nuevo Ticket
+      </button>
     </div>
+  </div>
+
+  <!-- Vista Kanban -->
+  <div class="view-panel active" id="panel-kanban">
+    <div class="kanban-board" id="kanban-board">
+      {% for estado in estados_kanban %}
+      <div class="kanban-column" data-estado="{{ estado.id }}">
+        <div class="kanban-col-header">
+          <h3 class="kanban-col-title">{{ estado.nombre }}</h3>
+          <span class="kanban-col-count" id="count-{{ estado.id }}">0</span>
+        </div>
+        <div class="kanban-items" id="column-{{ estado.id }}"></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Vista Historial -->
+  <div class="view-panel" id="panel-historial">
+    <div class="historial-panel">
+      <div class="historial-header">
+        <h2><i class="fas fa-archive mr-2" style="color:#6b7280;"></i> Historial de Tickets Terminados</h2>
+        <small class="text-muted">{{ historial|length }} registro(s)</small>
+      </div>
+      <div class="card-premium">
+        <div class="card-body p-0">
+          <table id="tabla-historial" class="table table-hover mb-0" style="width:100%">
+            <thead class="thead-light">
+              <tr>
+                <th>Correlativo</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Solicitante</th>
+                <th>Técnico</th>
+                <th>Creado</th>
+                <th>Cerrado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in historial %}
+              <tr>
+                <td><strong>{{ t.correlativo }}</strong></td>
+                <td>{{ t.descripcion }}</td>
+                <td><span class="badge-estado badge-{{ t.estado_id }}">{{ t.estado }}</span></td>
+                <td><span class="card-prio-badge" style="background:{{ t.prioridad_color }}">{{ t.prioridad }}</span></td>
+                <td>{{ t.solicitante }}</td>
+                <td>{{ t.tecnico }}</td>
+                <td>{{ t.fecha_creacion }}</td>
+                <td>{{ t.fecha_cierre }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<!-- OFFCANVAS DETALLE TICKET -->
+<div class="offcanvas-backdrop-tk" id="oc-backdrop" onclick="closeOffcanvas()"></div>
+<div class="offcanvas-ticket" id="oc-ticket">
+  <div class="oc-header">
+    <div>
+      <h5 class="oc-title" id="oc-tk-correlativo">Cargando...</h5>
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <button class="btn btn-sm btn-primary" id="btn-tomar-tk" style="display:none; font-size:0.75rem; font-weight:bold; background-color:#0284c7; border:none;">
+          <i class="fas fa-hand-paper"></i> Tomar Ticket
+        </button>
+        <button class="btn btn-sm btn-success" id="btn-resolver-tk" style="display:none; font-size:0.75rem; font-weight:bold;">
+          <i class="fas fa-check-circle"></i> Resolver Incidente
+        </button>
+      </div>
+    </div>
+    <button class="oc-close" onclick="closeOffcanvas()">&times;</button>
+  </div>
+  <div class="oc-body">
+    <!-- INFO BÁSICA -->
+    <div class="oc-section">
+      <div class="oc-section-title">Detalles del Incidente</div>
+      <div class="oc-info-row"><span class="oc-info-label">Estado</span><span class="oc-info-val badge-estado" id="oc-tk-estado" style="background:#3b82f6;">-</span></div>
+      <div class="oc-info-row"><span class="oc-info-label">Prioridad</span><span class="oc-info-val" id="oc-tk-prioridad">-</span></div>
+      <div class="oc-info-row"><span class="oc-info-label">Categoría</span><span class="oc-info-val" id="oc-tk-categoria">-</span></div>
+      <div class="oc-info-row"><span class="oc-info-label">Solicitante</span><span class="oc-info-val" id="oc-tk-solicitante">-</span></div>
+      <div class="oc-info-row"><span class="oc-info-label">Activo</span><span class="oc-info-val" id="oc-tk-activo">-</span></div>
+      <div class="oc-info-row"><span class="oc-info-label">Ubicación</span><span class="oc-info-val" id="oc-tk-pma">-</span></div>
+      <div style="margin-top:12px; font-size:0.85rem; color:#374151; line-height:1.4; padding:10px; background:#f8fafc; border-radius:6px; border:1px solid #e2e8f0;" id="oc-tk-desc"></div>
+    </div>
+
+    <!-- ASIGNACIÓN -->
+    <div class="oc-section">
+      <div class="oc-section-title">Asignación</div>
+      <form id="form-asignar" method="POST" onsubmit="return false;">
+        <input type="hidden" id="oc-tk-id">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; gap:10px;">
+            <select class="tk-input" id="oc-select-tecnico" style="flex:1;">
+              <option value="">-- Seleccionar Grupo o Técnico --</option>
+              <optgroup label="Equipos Resolutores">
+                {% for grp in grupos_resolutores %}
+                  <option value="grp_{{ grp.id }}">{{ grp.nombre }}</option>
+                {% endfor %}
+              </optgroup>
+              <optgroup label="Técnicos">
+                {% for tec in tecnicos %}
+                <option value="tec_{{ tec.id }}">{{ tec.first_name }} {{ tec.last_name }}{{ tec.rol_str }}</option>
+              {% endfor %}
+              </optgroup>
+            </select>
+            <button type="submit" class="btn-primary-action" id="btn-asignar" style="padding:6px 12px; font-size:0.8rem; height: 38px;">Asignar / Escalar</button>
+          </div>
+          <textarea class="tk-input" id="oc-asignar-comentario" rows="2" placeholder="Obligatorio: Escriba el motivo de la reasignación o mensaje para el técnico/grupo..." style="min-height:50px; resize:none; display:none;"></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- BITÁCORA / TIMELINE -->
+    <div class="oc-section" style="flex-grow:1; display:flex; flex-direction:column;">
+      <div class="oc-section-title">Bitácora & Historial</div>
+      
+      <form id="form-comentario" method="POST" onsubmit="return false;" style="margin-bottom:15px;">
+        <textarea class="tk-input" id="oc-comentario-texto" rows="2" placeholder="Escribe un nuevo comentario o actualización..." required style="min-height:60px; margin-bottom:8px;"></textarea>
+        <div style="text-align:right;">
+          <button type="submit" class="btn btn-sm btn-success" id="btn-comentar" style="font-weight:600;"><i class="fas fa-paper-plane"></i> Enviar</button>
+        </div>
+      </form>
+
+      <div class="timeline" id="oc-timeline">
+        <!-- Generado via JS -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL NUEVO TICKET -->
+
+<div class="modal fade" id="modalNuevoTicket" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form id="form-nuevo-ticket" method="POST" action="#" onsubmit="return false;">
+        {% csrf_token %}
+        <div class="modal-header-tk">
+          <h5><i class="fas fa-ticket-alt mr-2 text-primary"></i> Crear Nuevo Ticket</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+
+          <!-- SECCION: Solicitante & Activo -->
+          <div class="section-title">
+            <i class="fas fa-user-circle"></i> 1. Datos del Solicitante
+          </div>
+          
+          <div class="form-group mb-3">
+            <label class="form-label-custom">Funcionario <span class="text-danger">*</span></label>
+            <select name="solicitante_id" id="solicitante-select" class="form-control" style="width:100%" required>
+              <option value="">Buscar por nombre, apellido, RUT...</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-4">
+            <label class="form-label-custom">Equipo Involucrado <span class="text-muted font-weight-normal" style="font-size:12px;">(Opcional)</span></label>
+            <select name="activo_id" id="activo-select" class="form-control" style="width:100%">
+              <option value="">-- Buscar Activo por Serie o Nombre --</option>
+              {% for eq in equipos %}
+                <option value="{{ eq.id }}">{{ eq.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- SECCION: Clasificación -->
+          <div class="section-title">
+            <i class="fas fa-tags"></i> 2. Clasificación del Ticket
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6 mb-3">
+              <label class="form-label-custom">Tipo de Requerimiento <span class="text-danger">*</span></label>
+              <div class="segment-control" id="segment-tipo">
+                <label class="active" onclick="document.querySelectorAll('#segment-tipo label').forEach(l=>l.classList.remove('active')); this.classList.add('active');">
+                  <input type="radio" name="tipo" id="tipoIncidente" value="INCIDENTE" checked>
+                  <i class="fas fa-exclamation-triangle text-warning"></i> Incidente
+                </label>
+                <label onclick="document.querySelectorAll('#segment-tipo label').forEach(l=>l.classList.remove('active')); this.classList.add('active');">
+                  <input type="radio" name="tipo" id="tipoRequerimiento" value="REQUERIMIENTO">
+                  <i class="fas fa-tasks text-info"></i> Requerimiento
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group col-md-6 mb-3">
+              <label class="form-label-custom">Categoría Principal <span class="text-danger">*</span></label>
+              <select name="categoria_id" class="form-control" required style="width:100%;">
+                <option value="">-- Seleccione Categoría --</option>
+                {% for cat in categorias %}
+                  <option value="{{ cat.id }}">{{ cat.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="form-group col-md-4 mb-0">
+              <label class="form-label-custom">Anexo Contacto</label>
+              <input type="text" name="anexo_contacto" class="form-control" placeholder="Ej: 320891">
+            </div>
+            <div class="form-group col-md-4 mb-0">
+              <label class="form-label-custom">Impacto</label>
+              <select name="impacto" class="form-control">
+                <option value="4">Bajo / Sin Impacto</option>
+                <option value="3">Usuario Único</option>
+                <option value="2">Servicio / Área</option>
+                <option value="1">Alta Críticidad</option>
+              </select>
+            </div>
+            <div class="form-group col-md-4 mb-0">
+              <label class="form-label-custom">Urgencia</label>
+              <select name="urgencia" class="form-control">
+                <option value="3">Baja / Normal</option>
+                <option value="2">Media / Degradada</option>
+                <option value="1">Alta / Detenida</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- SECCION: Detalles -->
+          <div class="section-title">
+            <i class="fas fa-align-left"></i> 3. Detalle del Problema
+          </div>
+          
+          <div class="form-group mb-0">
+            <textarea id="tk-descripcion" name="descripcion" class="form-control" rows="3" required placeholder="Describe detalladamente el requerimiento o la falla..."></textarea>
+          </div>
+
+          <!-- Contenedor KEDB -->
+          <div id="kedb-container" style="display:none; margin-top:15px; background:#f0fdf4; border:1px solid #16a34a; border-radius:8px; padding:12px;">
+            <h6 style="color:#16a34a; font-size:0.85rem; font-weight:700; margin:0 0 8px 0;"><i class="fas fa-lightbulb"></i> Soluciones KEDB Recomendadas</h6>
+            <div id="kedb-results"></div>
+          </div>
+
+        </div>
+        <div class="modal-footer bg-white border-top-0 pt-0">
+          <button type="button" class="btn btn-secondary" style="border-radius:6px;" data-dismiss="modal">Cancelar</button>
+          <button type="submit" id="btn-submit-ticket" class="btn-primary-action" style="font-size:0.88rem;">
+            <i class="fas fa-save"></i> Crear Ticket
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CREAR USUARIO AL VUELO -->
+<div class="modal fade" id="modalCrearUsuario" tabindex="-1" role="dialog" style="z-index: 1060;">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form id="form-crear-usuario" method="POST" onsubmit="return false;">
+        <div class="modal-header" style="background:#f1f5f9; border-bottom:1px solid #e2e8f0;">
+          <h5 class="modal-title" style="font-size:1.1rem; color:#0f172a; font-weight:600;"><i class="fas fa-user-plus text-primary mr-2"></i> Añadir Funcionario Rápido</h5>
+          <button type="button" class="close" onclick="$('#modalCrearUsuario').modal('hide')">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+          <div class="form-group">
+            <label style="font-weight:600; font-size:0.85rem; color:#334155;">RUT <span class="text-danger">*</span></label>
+            <input type="text" id="rut_nuevo" name="rut_nuevo" class="form-control" required placeholder="Ej: 12345678-9">
+            <small id="rut_feedback" class="form-text text-muted">Ingresa el RUT con guion y dígito verificador.</small>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Nombres <span class="text-danger">*</span></label>
+              <input type="text" name="nombres_nuevo" class="form-control" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Apellidos <span class="text-danger">*</span></label>
+              <input type="text" name="apellidos_nuevo" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Correo Electrónico <span style="color:#94a3b8;font-weight:400;">(opcional)</span></label>
+              <input type="email" id="correo_nuevo" name="correo_nuevo" class="form-control" placeholder="usuario@correo.cl">
+              <small id="correo_feedback" class="form-text text-muted">Opcional, pero recomendado.</small>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Cargo / Rol</label>
+              <select name="cargo_nuevo" class="form-control">
+                <option value="">-- Seleccionar Cargo --</option>
+                {% for c in cargos %}
+                  <option value="{{ c.nombre }}">{{ c.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Unidad / Servicio</label>
+              <select name="unidad_nuevo" class="form-control">
+                <option value="">-- Seleccionar Unidad --</option>
+                {% for u in unidades %}
+                  <option value="{{ u.nombre }}">{{ u.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid #e2e8f0;">
+          <button type="button" class="btn btn-secondary" onclick="$('#modalCrearUsuario').modal('hide')">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-usuario"><i class="fas fa-save"></i> Guardar Funcionario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RESOLVER TICKET CON BITÁCORA -->
+<div class="modal fade" id="modalResolverTicket" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form id="form-resolver-ticket" method="POST" onsubmit="return false;">
+        <input type="hidden" id="res_ticket_id" name="ticket_id">
+        <div class="modal-header" style="background:#f0fdf4; border-bottom:1px solid #bbf7d0;">
+          <h5 class="modal-title" style="color:#166534; font-weight:600;"><i class="fas fa-check-circle mr-2"></i> Resolver Ticket</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+          
+          <div class="form-group">
+            <label style="font-weight:600; font-size:0.9rem; color:#334155;">Solución Aplicada al Problema <span class="text-danger">*</span></label>
+            <textarea id="res_solucion" name="solucion" class="form-control" rows="3" required placeholder="Describe detalladamente cómo se resolvió el ticket..."></textarea>
+          </div>
+
+          <hr style="margin:20px 0;">
+
+          <!-- Sección de Bitácora -->
+          <div id="seccion-bitacora" style="display:none; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:15px;">
+            <div class="custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input" id="chk-crear-bitacora" name="crear_bitacora">
+              <label class="custom-control-label" for="chk-crear-bitacora" style="font-weight:600; color:#0f172a; cursor:pointer;">
+                Registrar intervención en la Bitácora del Equipo Físico
+              </label>
+              <div style="font-size:0.8rem; color:#64748b; margin-top:4px;">El ticket actual tiene un equipo asociado. Activa esta opción para registrar la historia clínica del hardware.</div>
+            </div>
+
+            <div id="campos-bitacora" style="display:none; margin-top:15px; padding-top:15px; border-top:1px dashed #cbd5e1;">
+              <div class="form-group">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Tipo de Intervención</label>
+                <select id="res_tipo_registro" name="tipo_registro" class="form-control">
+                  <option value="MANTENCION">Mantención</option>
+                  <option value="REPARACION_EXTERNA">Reparación Externa</option>
+                  <option value="ACTUALIZACION_SISTEMA">Actualización de Sistema</option>
+                  <option value="INSTALACION">Instalación</option>
+                  <option value="TRASLADO">Traslado</option>
+                  <option value="AISLAMIENTO_MINSAL">Aislamiento MINSAL</option>
+                  <option value="REEMPLAZO">Reemplazo</option>
+                  <option value="REVISION_PREVENTIVA">Revisión Preventiva</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Falla Reportada en Terreno <span style="color:#94a3b8;font-weight:400;">(Opcional)</span></label>
+                <textarea id="res_falla_reportada" name="falla_reportada" class="form-control" rows="2" placeholder="Ej: Disco duro emite ruidos extraños..."></textarea>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Trabajos Realizados <span style="color:#94a3b8;font-weight:400;">(Opcional, asume Solución por defecto)</span></label>
+                <textarea id="res_actividades" name="actividades_realizadas" class="form-control" rows="2" placeholder="Ej: Reemplazo de disco duro por SSD 500GB..."></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer" style="border-top:1px solid #e2e8f0;">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-success" id="btn-submit-resolver"><i class="fas fa-check"></i> Finalizar y Resolver Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    window.TICKET_CONFIG = {
+        csrfToken: '{{ csrf_token }}',
+        kanbanData: {{ kanban_data|safe }},
+        urls: {
+            apiSearchUsers: '{% url "tickets:api_search_users" %}',
+            apiSearchKedb: '{% url "tickets:api_search_kedb" %}'
+        }
+    };
+</script>
+<script src="{% static 'js/tickets-kanban.js' %}?v=2"></script>
 {% endblock %}

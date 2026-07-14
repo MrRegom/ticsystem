@@ -45,7 +45,7 @@ class UsuarioService:
     @classmethod
     def crear_usuario(cls, rut: str, nombres: str, apellidos: str, correo: str,
                       unidad: str, cargo: str, grado: str, contrasena: str,
-                      foto=None) -> User:
+                      foto=None, grupos: list = None, rol_id=None, is_active: bool = True) -> User:
         """
         Caso de uso: Crear un nuevo funcionario/operador en el sistema del hospital.
         """
@@ -76,7 +76,7 @@ class UsuarioService:
             email=correo,
             first_name=normalizar_nombre(nombres),
             last_name=normalizar_nombre(apellidos),
-            is_active=True
+            is_active=is_active
         )
         user.set_password(contrasena)
 
@@ -88,13 +88,25 @@ class UsuarioService:
             grado=normalizar_nombre(grado),
             foto=foto
         )
+        if rol_id:
+            from core.models import Rol
+            perfil.rol_id = rol_id
 
-        return UsuarioRepository.save(user, perfil)
-
+        user = UsuarioRepository.save(user, perfil)
+        if grupos is not None:
+            from tickets.models import GrupoResolutor
+            # grupos es un array de IDs, actualizamos las relaciones del usuario
+            for g in GrupoResolutor.objects.all():
+                if str(g.id) in grupos or g.id in grupos:
+                    g.miembros.add(user)
+                else:
+                    g.miembros.remove(user)
+        return user
     @classmethod
     def actualizar_usuario(cls, user_id: int, nombres: str, apellidos: str, correo: str,
                            unidad: str, cargo: str, grado: str, rut: str = None,
-                           contrasena: str = None, foto=None) -> User:
+                           contrasena: str = None, foto=None, grupos: list = None,
+                           rol_id=None, is_active: bool = True) -> User:
         """
         Caso de uso: Actualizar información de un operador, permitiendo actualizar el RUT
         y creando dinámicamente el perfil si no existe (ej: superusuario admin).
@@ -115,12 +127,14 @@ class UsuarioService:
         # Manejar cambio de RUT / username
         rut_clean = None
         if rut and rut.strip():
-            rut_clean = cls.normalizar_rut(rut)
-            if not cls.validar_rut(rut_clean):
-                raise ValidationError("El RUT ingresado no es válido.")
-            
-            # Si el RUT cambió, validar que no esté duplicado
-            if rut_clean != user.username:
+            raw_rut = rut.strip()
+            # Permitir actualización de usuarios con usernames legacy (ej. admin) si no cambiaron su RUT
+            if raw_rut != user.username:
+                rut_clean = cls.normalizar_rut(raw_rut)
+                if not cls.validar_rut(rut_clean):
+                    raise ValidationError("El RUT ingresado no es válido.")
+                
+                # Si el RUT cambió, validar que no esté duplicado
                 existing = UsuarioRepository.get_by_username(rut_clean)
                 if existing is not None and existing.id != user.id:
                     raise ValidationError("El nuevo RUT ya se encuentra registrado en el sistema.")
@@ -130,6 +144,7 @@ class UsuarioService:
         user.first_name = normalizar_nombre(nombres)
         user.last_name = normalizar_nombre(apellidos)
         user.email = correo
+        user.is_active = is_active
 
         if contrasena and contrasena.strip():
             if len(contrasena) < 8:
@@ -147,10 +162,21 @@ class UsuarioService:
         perfil.unidad = normalizar_nombre(unidad)
         perfil.cargo = normalizar_nombre(cargo)
         perfil.grado = normalizar_nombre(grado)
+        if rol_id:
+            perfil.rol_id = rol_id
         if foto:
             perfil.foto = foto
 
-        return UsuarioRepository.save(user, perfil)
+        user = UsuarioRepository.save(user, perfil)
+        if grupos is not None:
+            from tickets.models import GrupoResolutor
+            # grupos es un array de IDs, actualizamos las relaciones del usuario
+            for g in GrupoResolutor.objects.all():
+                if str(g.id) in grupos or g.id in grupos:
+                    g.miembros.add(user)
+                else:
+                    g.miembros.remove(user)
+        return user
 
     @classmethod
     def eliminar_usuario(cls, user_id: int, current_user_id: int) -> None:
@@ -209,7 +235,10 @@ class UsuarioService:
                 'cargo': perfil.cargo if perfil else '',
                 'grado': perfil.grado if perfil else '',
                 'fecha_registro': perfil.fecha_registro.strftime('%d/%m/%Y %H:%M') if perfil else '',
-                'foto_url': foto_url
+                'foto_url': foto_url,
+                'is_active': r.is_active,
+                'rol_id': getattr(perfil, 'rol_id', None) if perfil else None,
+                'grupos': [{'id': g.id, 'nombre': g.nombre} for g in r.grupos_resolutores.all()]
             })
 
         return {

@@ -21,7 +21,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
-
+from django.utils.timezone import localtime
 from core.services.auditoria_service import AuditoriaService
 from core.models import LogAuditoria
 from core.utils import get_client_ip, parse_datatables_params, extract_validation_error
@@ -33,14 +33,29 @@ class EquiposDashboardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Catálogos para los selects de los modales
         from mantenedores.models import (
             Articulo, Marca, Modelo, Edificio, Piso, Sector, Unidad, AreaHospitalaria, Recinto, PMA,
-            SistemaOperativo, EstadoEquipo, Proveedor,
+            SistemaOperativo, EstadoEquipo, Proveedor, Cargo
         )
-        context['articulos'] = list(Articulo.objects.filter(activo=True).values('id', 'nombre'))
+        articulos_list = []
+        for a in Articulo.objects.filter(activo=True):
+            articulos_list.append({
+                'id': a.id,
+                'nombre': a.nombre,
+                'imagen': a.imagen.url if a.imagen and hasattr(a.imagen, 'url') else ''
+            })
+        context['articulos'] = articulos_list
         context['marcas'] = list(Marca.objects.filter(activo=True).values('id', 'nombre'))
-        context['modelos'] = list(Modelo.objects.filter(activo=True).values('id', 'nombre', 'marca_id'))
+        from equipos.services.equipo_service import _resolver_imagen_modelo
+        modelos_list = []
+        for m in Modelo.objects.filter(activo=True):
+            modelos_list.append({
+                'id': m.id,
+                'nombre': m.nombre,
+                'marca_id': m.marca_id,
+                'imagen': _resolver_imagen_modelo(m)
+            })
+        context['modelos'] = modelos_list
         context['edificios'] = list(Edificio.objects.filter(activo=True).values('id', 'nombre'))
         context['pisos'] = list(Piso.objects.filter(activo=True).select_related('edificio').values('id', 'nombre', 'edificio__id', 'edificio__nombre'))
         context['sectores'] = list(Sector.objects.filter(activo=True).select_related('piso').values('id', 'nombre', 'piso_id', 'piso__nombre'))
@@ -63,6 +78,18 @@ class EquiposDashboardView(LoginRequiredMixin, TemplateView):
             'operativos': operativos,
             'mantenimiento': mantenimiento
         }
+        
+        from equipos.models import BitacoraEquipo, BitacoraOpcion
+        
+        # Filtramos las opciones manuales permitidas (ocultamos las automáticas como Movimiento o Actualización)
+        opciones_permitidas = ['MANTENCION', 'REPARACION_EXTERNA', 'REVISION_PREVENTIVA', 'INSTALACION', 'AISLAMIENTO_MINSAL', 'REEMPLAZO']
+        context['tipos_registro_bitacora'] = [
+            {'id': choice[0], 'nombre': choice[1]}
+            for choice in BitacoraEquipo.TipoRegistro.choices if choice[0] in opciones_permitidas
+        ]
+        
+        context['fallas_motivos'] = list(BitacoraOpcion.objects.filter(activo=True, tipo='FALLA').values('id', 'nombre'))
+        context['cargos'] = list(Cargo.objects.all().values('id', 'nombre'))
         
         return context
 
@@ -208,7 +235,9 @@ class EquipoDetailView(LoginRequiredMixin, View):
                 'modelo': equipo.modelo_id,
                 'modelo_nombre': str(equipo.modelo) if equipo.modelo else '',
                 'pma': equipo.pma_id,
-                
+                'recinto': equipo.pma.recinto_id if equipo.pma else '',
+                'piso': equipo.pma.recinto.piso_id if equipo.pma and equipo.pma.recinto else '',
+                'unidad': equipo.pma.recinto.unidad_id if equipo.pma and equipo.pma.recinto else '',
                 
                 'so': equipo.so_id,
                 'estado': equipo.estado_id,
@@ -235,13 +264,17 @@ class EquipoDetailReadView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': 'No encontrado.'}, status=404)
         img_url = _resolver_imagen_equipo(e)
         return JsonResponse({'success': True, 'data': {
+            'id': e.id,
             'serial_number': e.serial_number,
             'articulo': str(e.articulo) if e.articulo else '',
             'marca': str(e.marca) if e.marca else '',
             'modelo': str(e.modelo) if e.modelo else '',
             'pma': str(e.pma) if e.pma else '',
-            
-            
+            'recinto': str(e.pma.recinto) if e.pma and e.pma.recinto else '',
+            'piso': str(e.pma.recinto.piso) if e.pma and e.pma.recinto and e.pma.recinto.piso else '',
+            'edificio': str(e.pma.recinto.piso.edificio) if e.pma and e.pma.recinto and e.pma.recinto.piso and e.pma.recinto.piso.edificio else '',
+            'unidad': str(e.pma.recinto.unidad) if e.pma and e.pma.recinto and e.pma.recinto.unidad else '',
+            'sector': str(e.pma.recinto.sector) if e.pma and e.pma.recinto and e.pma.recinto.sector else '',
             'so': str(e.so) if e.so else '',
             'estado': str(e.estado) if e.estado else '',
             'proveedor': str(e.proveedor) if e.proveedor else '',
@@ -253,8 +286,8 @@ class EquipoDetailReadView(LoginRequiredMixin, View):
             'pmalugar': e.pmalugar or '',
             'comentario': e.comentario or '',
             'imagen': img_url,
-            'fecha_creacion': e.fecha_creacion.strftime('%d/%m/%Y %H:%M') if e.fecha_creacion else '',
-            'fecha_modificacion': e.fecha_modificacion.strftime('%d/%m/%Y %H:%M') if e.fecha_modificacion else '',
+            'fecha_creacion': localtime(e.fecha_creacion).strftime('%d/%m/%Y %H:%M') if e.fecha_creacion else '',
+            'fecha_modificacion': localtime(e.fecha_modificacion).strftime('%d/%m/%Y %H:%M') if e.fecha_modificacion else '',
             'usuario_modificador': e.modificado_por.get_full_name() or e.modificado_por.username if e.modificado_por else '',
         }})
 
@@ -273,7 +306,7 @@ class EquipoHistorialView(LoginRequiredMixin, View):
                 'usuario': log.usuario,
                 'accion': log.accion,
                 'detalles': log.detalles or '',
-                'fecha': log.fecha_registro.strftime('%d/%m/%Y %H:%M') if log.fecha_registro else '',
+                'fecha': localtime(log.fecha_registro).strftime('%d/%m/%Y %H:%M') if log.fecha_registro else '',
                 'ip': log.ip_address or '',
             })
         return JsonResponse({'success': True, 'data': data})
@@ -284,12 +317,29 @@ class EquipoBitacoraView(LoginRequiredMixin, View):
 
     def get(self, request, equipo_id, *args, **kwargs):
         from equipos.models import BitacoraEquipo
+        from django.utils.timezone import localtime
+        
+        # 1. Obtener Bitácoras Manuales y Automáticas (Signals)
         bitacoras = BitacoraEquipo.objects.filter(
             equipo_id=equipo_id
-        ).select_related('tecnico').order_by('-fecha_creacion')[:50]
+        ).select_related('tecnico').order_by('-fecha_creacion')
+        
         data = []
         for b in bitacoras:
-            data.append(self._serialize(b))
+            data.append({
+                'source': 'BITACORA',
+                'id': b.id,
+                'fecha': localtime(b.fecha_creacion).strftime('%d/%m/%Y %H:%M') if b.fecha_creacion else '',
+                'fecha_mantenimiento': b.fecha_mantenimiento.strftime('%d/%m/%Y') if b.fecha_mantenimiento else '',
+                'fecha_devolucion': b.fecha_devolucion.strftime('%d/%m/%Y') if b.fecha_devolucion else '',
+                'tipo_registro': b.get_tipo_registro_display(),
+                'tecnico': b.tecnico.get_full_name() or b.tecnico.username,
+                'solicitante': f"{b.solicitante.nombres} {b.solicitante.apellidos} ({b.solicitante.rut})" if b.solicitante else '',
+                'servicio_unidad': b.servicio_unidad or '',
+                'falla_reportada': b.falla_reportada or '',
+                'actividades_realizadas': b.actividades_realizadas or ''
+            })
+            
         return JsonResponse({'success': True, 'data': data})
 
     def post(self, request, equipo_id, *args, **kwargs):
@@ -319,14 +369,21 @@ class EquipoBitacoraView(LoginRequiredMixin, View):
             except ValueError:
                 fecha_dev = None
 
+        falla_reportada = body.get('falla_reportada', '')
+        if str(falla_reportada).isdigit():
+            from equipos.models import BitacoraOpcion
+            opcion = BitacoraOpcion.objects.filter(id=falla_reportada).first()
+            if opcion:
+                falla_reportada = opcion.nombre
+
         registro = BitacoraEquipo(
             equipo=equipo,
             tecnico=request.user,
             tipo_registro=body.get('tipo_registro', BitacoraEquipo.TipoRegistro.MANTENCION),
             fecha_mantenimiento=fecha_mtto,
             fecha_devolucion=fecha_dev,
-            solicitante=body.get('solicitante', '')[:150] or None,
-            falla_reportada=body.get('falla_reportada', '') or None,
+            solicitante_id=body.get('solicitante') or None,
+            falla_reportada=falla_reportada or None,
             actividades_realizadas=body.get('actividades_realizadas', '') or None,
             servicio_unidad=body.get('servicio_unidad', '')[:100] or None,
         )

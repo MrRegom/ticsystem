@@ -42,9 +42,13 @@ INSTALLED_APPS = [
     'anexos.apps.AnexosConfig',
     'actas.apps.ActasConfig',
     'tickets.apps.TicketsConfig',
+    'sla.apps.SlaConfig',
     'correos.apps.CorreosConfig',
     'utilidades.apps.UtilidadesConfig',
     'visor.apps.VisorConfig',
+    'redes.apps.RedesConfig',
+    'conocimiento.apps.ConocimientoConfig',
+    'reportes.apps.ReportesConfig',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.global_users_for_impersonation',
             ],
         },
     },

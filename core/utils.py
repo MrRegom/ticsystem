@@ -45,15 +45,15 @@ def extract_validation_error(e):
     """Extrae un string legible de cualquier ValidationError (string, dict o lista)."""
     if not isinstance(e, ValidationError):
         return str(e)
-    if isinstance(e.message, str):
-        return e.message
-    if isinstance(e.message, dict):
-        for field_errors in e.message.values():
-            for err in field_errors:
-                return str(err)
-    if isinstance(e.message, (list, tuple)):
-        return str(e.message[0]) if e.message else 'Error de validación.'
-    return str(e.message)
+    if hasattr(e, 'message_dict'):
+        for field_errors in e.message_dict.values():
+            if field_errors:
+                return str(field_errors[0])
+    if hasattr(e, 'messages') and e.messages:
+        return str(e.messages[0])
+    if hasattr(e, 'message'):
+        return str(e.message)
+    return str(e)
 
 
 def normalizar_nombre(valor):

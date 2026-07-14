@@ -22,20 +22,36 @@ var MantenedoresApp = (function ($) {
     edificio:        { pre: [{ data: 'institucion',      title: 'Institución' }] },
     institucion:     { post: [{ data: 'codigo',           title: 'Código' }] },
     fallas_bitacora: { post: [{ data: 'tipo',             title: 'Tipo' }] },
-    modelo:          { pre: [{ data: 'marca',            title: 'Marca' }] },
+    modelo:          { pre: [{ data: 'imagen_url',       title: '', orderable: false, width: '45px',
+                               render: function(d, t) {
+                                  if (t === 'display') {
+                                    if (d) {
+                                        return '<img src="' + d + '" class="img-thumbnail" style="height:35px; width:35px; object-fit:contain; cursor:pointer;" onclick="verImagenModelo(\'' + d + '\')">';
+                                    }
+                                    return '<div style="height:35px; width:35px; background:#f1f5f9; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#cbd5e1;"><i class="fas fa-camera-slash"></i></div>';
+                                  }
+                                  return d;
+                               }
+                             },
+                             { data: 'marca',            title: 'Marca' }] },
     piso:            { pre: [{ data: 'edificio',         title: 'Edificio' }], 
                        post: [{ data: 'alias',             title: 'Alias' }] },
-    proveedor:       { post: [{ data: 'contacto',         title: 'Contacto' },
-                             { data: 'telefono',          title: 'Teléfono' },
-                             { data: 'email',             title: 'Email' }] },
+    proveedor:       { post: [{ data: 'rut',              title: 'RUT' },
+                              { data: 'contacto',         title: 'Contacto' },
+                              { data: 'telefono',          title: 'Teléfono' },
+                              { data: 'email',             title: 'Email' }] },
     sector:          { pre: [{ data: 'piso',             title: 'Piso' }] },
     unidad:          { pre: [{ data: 'area_hospitalaria',title: 'Área Hospitalaria' }] },
     recinto:         { pre: [{ data: 'piso',             title: 'Piso' },
                              { data: 'sector',            title: 'Sector' },
                              { data: 'unidad',            title: 'Unidad' }] },
-    pma:             { pre: [{ data: 'recinto',          title: 'Recinto' },
-                             { data: 'unidad',            title: 'Unidad' },
-                             { data: 'piso',              title: 'Piso' }] }
+    pma:             { pre:  [{ data: 'recinto',           title: 'Recinto Base' }],
+                             post: [{ data: 'unidad',            title: 'Unidad Clínica' },
+                                    { data: 'piso',              title: 'Piso' }] },
+    funcionario:      { pre:  [{ data: 'rut',               title: 'RUT' }],
+                             post: [{ data: 'correo',            title: 'Correo' },
+                                    { data: 'cargo',             title: 'Cargo' },
+                                    { data: 'unidad',            title: 'Unidad Clínica' }] }
   };
 
   /* Etiquetas cortas para el encabezado de la columna 'Nombre' en la tabla */
@@ -43,6 +59,7 @@ var MantenedoresApp = (function ($) {
     piso:             'Piso',
     edificio:         'Edificio',
     institucion:      'Institución',
+    fallas_bitacora:  'Opción de Falla',
     marca:            'Marca',
     modelo:           'Modelo',
     articulo:         'Artículo',
@@ -53,7 +70,8 @@ var MantenedoresApp = (function ($) {
     sector:           'Sector',
     area_hospitalaria:'Área',
     recinto:          'Recinto',
-    pma:              'PMA'
+    pma:              'PMA',
+    funcionario:      'Nombres y Apellidos'
   };
 
   /* ─── Campos del formulario modal por modelo ───────────────── */
@@ -64,27 +82,30 @@ var MantenedoresApp = (function ($) {
     institucion:     ['codigo'],
     modelo:          ['marca'],
     piso:            ['alias', 'edificio'],
-    proveedor:       ['contacto', 'telefono', 'email', 'direccion'],
+    proveedor:       ['rut', 'contacto', 'telefono', 'email', 'direccion'],
     sector:          ['piso'],
     unidad:          ['area_hospitalaria'],
     recinto:         ['piso', 'sector', 'unidad'],
-    pma:             ['recinto']
+    pma:             ['recinto'],
+    grupo_resolutor: ['miembros'],
+    funcionario:     ['rut', 'nombres', 'apellidos', 'correo', 'cargo', 'unidad']
   };
 
   /* Campos <select> que necesitan Select2 */
   var SELECT_FIELDS = ['institucion', 'edificio', 'marca', 'piso',
-                       'sector', 'area_hospitalaria', 'unidad', 'recinto'];
+                       'sector', 'area_hospitalaria', 'unidad', 'recinto', 'miembros', 'cargo'];
 
   /* Todos los campos del formulario (para ocultar en resetForm) */
   var ALL_FIELDS = ['codigo', 'alias', 'tipo', 'orden', 'color_hex',
                     'institucion', 'edificio', 'marca', 'piso', 'sector',
                     'area_hospitalaria', 'unidad', 'recinto',
-                    'contacto', 'telefono', 'email', 'direccion'];
+                    'contacto', 'telefono', 'email', 'direccion', 'rut', 'miembros',
+                    'nombres', 'apellidos', 'correo', 'cargo'];
 
   /* Textos de ayuda y contexto para la interfaz */
   var DESCRIPTIONS = {
     articulo:         'Tipos genéricos de equipos (ej. Monitor Multiparámetro, Electrocardiógrafo). Son independientes de la marca.',
-    fallas_bitacora:  'Tipos de fallas predefinidas o tareas frecuentes para facilitar el registro en bitácoras de mantenimiento.',
+    fallas_bitacora:  'Gestiona las opciones de falla/motivo que usa la bitácora.',
     marca:            'Marcas o fabricantes de los equipos médicos e informáticos.',
     modelo:           'Modelos específicos asociados a una Marca.',
     modeloanexo:      'Modelos y configuraciones específicas para teléfonos y anexos IP.',
@@ -97,7 +118,8 @@ var MantenedoresApp = (function ($) {
     area_hospitalaria:'Áreas macro o grandes divisiones del hospital (ej. Atención Cerrada, Atención Abierta).',
     unidad:           'Servicios o Unidades Clínicas (ej. UPC, Urgencia, Pabellón). Pertenecen a un Área Hospitalaria.',
     recinto:          'Salas, habitaciones o espacios físicos (ej. Box 1, Sala Espera). <b>Tienen una doble relación:</b> están en una ubicación física (Piso/Sector) y pertenecen a una Unidad Clínica.',
-    pma:              'Puntos de Montaje de Activos. Representan la "toma" o ubicación exacta (en pared, cielo o red) dentro de un Recinto donde se conecta un equipo.'
+    pma:              'Puntos de Montaje de Activos. Representan a ubicación exacta (en pared, cielo o red) dentro de un Recinto donde se conecta un equipo.',
+    funcionario:      'Directorio de funcionarios (RRHH) que interactúan con la mesa de ayuda o pertenecen a una unidad clínica.'
   };
 
   /* Etiquetas del campo "nombre" por tipo de entidad */
@@ -105,6 +127,7 @@ var MantenedoresApp = (function ($) {
     piso:             'Nombre del Piso (ej. Nivel 2)',
     edificio:         'Nombre del Edificio (ej. Torre Principal)',
     institucion:      'Nombre de la Institución',
+    fallas_bitacora:  'Descripción de la Falla/Motivo',
     marca:            'Nombre de la Marca',
     modelo:           'Modelo Específico',
     articulo:         'Nombre del Artículo',
@@ -189,6 +212,12 @@ var MantenedoresApp = (function ($) {
   function initDataTable() {
     destroyTable();
     if (!modeloActual) { return; }
+
+    if (modeloActual === 'grupo_resolutor') {
+      $('#tabla-mantenedores tbody').css('cursor', 'pointer');
+    } else {
+      $('#tabla-mantenedores tbody').css('cursor', 'default');
+    }
 
     var cols = getColumns();
     var headerHtml = '';
@@ -339,6 +368,26 @@ var MantenedoresApp = (function ($) {
     var fields = FIELD_MAP[modelo] || [];
     var hasRelations = false;
 
+    $('#field-imagen').hide();
+    $('#field-nombre-wrapper').show();
+    $('#m-nombre').prop('required', true);
+
+    if (modeloActual === 'modelo') {
+      $('#field-imagen').show();
+    }
+    
+    if (modeloActual === 'fallas_bitacora') {
+      $('#modalMantenedorLabel').html('<i class="fas fa-edit mr-2"></i>Nueva Opcion de Falla');
+    }
+    
+    if (modeloActual === 'funcionario') {
+      $('#field-nombre-wrapper').hide();
+      $('#m-nombre').prop('required', false);
+      $('#label-rut').text('RUT *');
+    } else if (modeloActual === 'proveedor') {
+      $('#label-rut').text('RUT Empresa');
+    }
+
     $.each(fields, function (i, f) {
       $('#field-' + f).show();
       if ($.inArray(f, SELECT_FIELDS) !== -1) { 
@@ -408,23 +457,55 @@ var MantenedoresApp = (function ($) {
   }
 
   function guardar() {
-    var data   = getFormData();
-    var method = data.id ? 'PUT' : 'POST';
+    if (!$('#form-mantenedor')[0].checkValidity()) {
+      $('#form-mantenedor').addClass('was-validated');
+      return;
+    }
+    if (modeloActual === 'funcionario') {
+        if (!$('#m-rut').val().trim() || !$('#m-nombres').val().trim() || !$('#m-apellidos').val().trim()) {
+            $('#form-mantenedor').addClass('was-validated');
+            return;
+        }
+    }
+
+    var rawData = getFormData();
+    
+    var formData = new FormData();
+    for (var key in rawData) {
+        if (rawData[key] !== null) {
+            if (Array.isArray(rawData[key])) {
+                formData.append(key, JSON.stringify(rawData[key]));
+            } else {
+                formData.append(key, rawData[key]);
+            }
+        }
+    }
+    
+    // Adjuntar archivo de imagen si es modelo
+    if (modeloActual === 'modelo') {
+        var fileInput = document.getElementById('m-imagen');
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append('imagen', fileInput.files[0]);
+        }
+    }
+
+    // Siempre usamos POST con FormData porque Django no parsea request.FILES en PUT
     $.ajax({
       url        : '/mantenedores/api/action/',
-      type       : method,
-      contentType: 'application/json',
-      data       : JSON.stringify(data)
+      type       : 'POST',
+      data       : formData,
+      processData: false,
+      contentType: false
     }).done(function (r) {
       if (r.success) {
         $('#modalMantenedor').modal('hide');
-        Swal.fire({ icon: 'success', title: 'Éxito', text: r.message, confirmButtonColor: '#002a54' });
+        Swal.fire({ icon: 'success', title: 'Operación Exitosa', text: r.message, confirmButtonColor: '#002a54' });
         recargar();
       } else {
         showError(r.message);
       }
     }).fail(function (x) {
-      showError((x.responseJSON && x.responseJSON.message) || 'Error al guardar.');
+      showError(x.responseJSON ? x.responseJSON.message : 'Error de red.');
     });
   }
 
@@ -458,16 +539,16 @@ var MantenedoresApp = (function ($) {
         type       : 'DELETE',
         contentType: 'application/json',
         data       : JSON.stringify({ id: id, modelo: modeloActual })
-      }).done(function (r) {
-        if (r.success) {
-          Swal.fire({ icon: 'success', title: 'Eliminado', text: r.message });
-          recargar();
-        } else {
-          Swal.fire({ icon: 'error', title: 'Error', text: r.message });
-        }
-      }).fail(function (x) {
-        Swal.fire({ icon: 'warning', html: (x.responseJSON && x.responseJSON.message) || 'El registro está en uso.' });
-      });
+        }).done(function (r) {
+          if (r.success) {
+            Swal.fire({ icon: 'success', title: 'Registro Eliminado', text: r.message });
+            recargar();
+          } else {
+            Swal.fire({ icon: 'error', title: 'Error de Validación', text: r.message });
+          }
+        }).fail(function (x) {
+          Swal.fire({ icon: 'warning', title: 'Atención', html: (x.responseJSON && x.responseJSON.message) || 'El registro está en uso y no puede ser eliminado.' });
+        });
     });
   }
 
@@ -487,17 +568,17 @@ var MantenedoresApp = (function ($) {
         type       : 'PUT',
         contentType: 'application/json',
         data       : JSON.stringify({ id: id, modelo: modeloActual, activo: activo })
-      }).done(function (r) {
-        if (r.success) {
-          Swal.fire({ icon: 'success', title: 'Actualizado', text: r.message, timer: 1200, showConfirmButton: false });
-        } else {
-          Swal.fire({ icon: 'error', title: 'Error', text: r.message });
-        }
-        recargar();
-      }).fail(function () {
-        recargar();
-        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo actualizar.' });
-      });
+        }).done(function (r) {
+          if (r.success) {
+            Swal.fire({ icon: 'success', title: 'Estado Actualizado', text: r.message, timer: 1200, showConfirmButton: false });
+          } else {
+            Swal.fire({ icon: 'error', title: 'Error de Sistema', text: r.message });
+          }
+          recargar();
+        }).fail(function () {
+          recargar();
+          Swal.fire({ icon: 'error', title: 'Atención', text: 'No se pudo procesar la solicitud en el servidor.' });
+        });
     });
   }
 
@@ -531,6 +612,36 @@ var MantenedoresApp = (function ($) {
     $(document).on('click', '.btn-editar',  function (e) { e.preventDefault(); editar($(this).data('id')); });
     $(document).on('click', '.btn-eliminar',function (e) { e.preventDefault(); eliminar($(this).data('id')); });
 
+    // Expandir filas hijas en Grupos Resolutores
+    $(document).on('click', '#tabla-mantenedores tbody tr', function(e) {
+      if (modeloActual !== 'grupo_resolutor') return;
+      if ($(e.target).closest('.btn-editar, .btn-eliminar, .toggle-activo').length) return;
+
+      var tr = $(this).closest('tr');
+      if (tr.find('.dataTables_empty').length) return;
+      
+      var row = tabla.row(tr);
+      if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown-child');
+      } else {
+        var d = row.data();
+        if (!d || !d.miembros || d.miembros.length === 0) {
+          row.child('<div class="p-3 text-muted text-center" style="background:#f8faff; border-radius:8px;"><i class="fas fa-info-circle mr-2"></i>Sin miembros asignados</div>').show();
+        } else {
+          var html = '<div class="p-3 shadow-sm" style="background:#f8faff; border-radius:8px; border-left:4px solid #002a54;">';
+          html += '<h6 class="mb-2 text-dark font-weight-bold"><i class="fas fa-users mr-2" style="color:#0ea5e9;"></i>Personal del Equipo:</h6>';
+          html += '<ul class="mb-0 pl-4" style="column-count: 2; column-gap: 40px; list-style: none;">';
+          $.each(d.miembros, function(i, m) {
+            html += '<li class="mb-1"><i class="fas fa-user-check text-success mr-2"></i>' + m + '</li>';
+          });
+          html += '</ul></div>';
+          row.child(html).show();
+        }
+        tr.addClass('shown-child');
+      }
+    });
+
     // Toggle activo/inactivo
     $(document).on('change', '.toggle-activo', function () {
       toggleActivo($(this).data('id'), this.checked);
@@ -541,15 +652,137 @@ var MantenedoresApp = (function ($) {
       $('#color-swatch-preview').css('background', $(this).val());
     });
 
-    // Auto-seleccionar primera tarjeta al cargar
-    var $primera = $('.card-modelo').first();
-    if ($primera.length) {
-      seleccionarModelo($primera.data('key'));
-    }
+    // Auto-seleccionar primera tarjeta al cargar (Desactivado por petición)
+    // var $primera = $('.card-modelo').first();
+    // if ($primera.length) {
+    //   seleccionarModelo($primera.data('key'));
+    // }
   }
 
   /* ─── Arrancar cuando el DOM esté listo ───────────────────── */
   $(document).ready(init);
+
+  /* Exponer función global para modal de imagen */
+  window.verImagenModelo = function(url) {
+    $('#imgModalPreview').attr('src', url);
+    $('#modalVerImagen').modal('show');
+  };
+
+  /* Formateadores visuales para inputs de Proveedor */
+  window.formatRut = function(input) {
+    var rut = input.value.replace(/[^0-9kK]/g, '').toUpperCase();
+    var feedback = document.getElementById('rut-feedback');
+    
+    if (rut.length === 0) {
+      input.value = '';
+      if(feedback) { feedback.textContent = ''; input.classList.remove('is-valid', 'is-invalid'); }
+      return;
+    }
+
+    if (rut.length > 1) {
+      var dv = rut.slice(-1);
+      var body = rut.slice(0, -1);
+      var formattedBody = body.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      input.value = formattedBody + '-' + dv;
+      
+      // Validar Modulo 11
+      if (body.length >= 7) {
+        var suma = 0;
+        var multiplo = 2;
+        for (var i = 1; i <= body.length; i++) {
+            suma += multiplo * body.charAt(body.length - i);
+            multiplo = multiplo < 7 ? multiplo + 1 : 2;
+        }
+        var dvEsperado = 11 - (suma % 11);
+        dvEsperado = (dvEsperado === 11) ? "0" : (dvEsperado === 10) ? "K" : dvEsperado.toString();
+        
+        if (dv === dvEsperado) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            if(feedback) {
+                feedback.textContent = 'RUT Válido';
+                feedback.className = 'form-text mt-1 font-weight-bold text-success';
+            }
+        } else {
+            input.classList.remove('is-valid');
+            input.classList.add('is-invalid');
+            if(feedback) {
+                feedback.textContent = 'RUT Inválido';
+                feedback.className = 'form-text mt-1 font-weight-bold text-danger';
+            }
+        }
+      } else {
+         input.classList.remove('is-valid');
+         input.classList.add('is-invalid');
+         if(feedback) {
+             feedback.textContent = 'RUT Inválido';
+             feedback.className = 'form-text mt-1 font-weight-bold text-danger';
+         }
+      }
+    } else {
+      input.value = rut;
+      input.classList.remove('is-valid');
+      input.classList.add('is-invalid');
+      if(feedback) {
+          feedback.textContent = 'Escriba un RUT...';
+          feedback.className = 'form-text mt-1 font-weight-bold text-muted';
+      }
+    }
+  };
+
+  window.formatPhone = function(input) {
+    var num = input.value.replace(/[^0-9+]/g, '');
+    if (num.length > 0 && num[0] !== '+') {
+      if (num.startsWith('569')) {
+        num = '+' + num;
+      } else if (num.startsWith('9') && num.length >= 8) {
+        num = '+56' + num;
+      }
+    }
+    // Simple block formatting: +56 9 1234 5678
+    if (num.startsWith('+569') || num.startsWith('+56 9')) {
+        var clean = num.replace(/[^0-9]/g, '');
+        if (clean.length > 3) {
+            var res = '+56 9';
+            var rest = clean.substring(3);
+            if (rest.length > 4) {
+                res += ' ' + rest.substring(0, 4) + ' ' + rest.substring(4, 8);
+            } else if (rest.length > 0) {
+                res += ' ' + rest;
+            }
+            input.value = res;
+            return;
+        }
+    }
+    input.value = num;
+  };
+
+  window.formatEmail = function(input) {
+    var email = input.value.trim();
+    var feedback = document.getElementById('email-feedback');
+    
+    if (email.length === 0) {
+      if(feedback) { feedback.textContent = ''; input.classList.remove('is-valid', 'is-invalid'); }
+      return;
+    }
+
+    var emailPattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    if (emailPattern.test(email)) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        if(feedback) {
+            feedback.textContent = 'Correo Válido';
+            feedback.className = 'form-text mt-1 font-weight-bold text-success';
+        }
+    } else {
+        input.classList.remove('is-valid');
+        input.classList.add('is-invalid');
+        if(feedback) {
+            feedback.textContent = 'Correo Inválido (Falta @ o dominio)';
+            feedback.className = 'form-text mt-1 font-weight-bold text-danger';
+        }
+    }
+  };
 
   // Exponer API pública (para debugging en consola si es necesario)
   return { seleccionarModelo: seleccionarModelo, recargar: recargar };

@@ -25,6 +25,7 @@ SELECT_RELATED_MAP: dict = {
     'Recinto'         : ['piso', 'sector', 'unidad', 'piso__edificio'],
     'PMA'             : ['recinto', 'recinto__piso', 'recinto__unidad',
                          'recinto__piso__edificio'],
+    'Funcionario'     : ['unidad'],
 }
 
 # Campos de búsqueda por modelo (se combinarán con OR)
@@ -36,7 +37,8 @@ SEARCH_FIELDS_MAP: dict = {
     'Sector'          : ['nombre', 'piso__nombre'],
     'Unidad'          : ['nombre', 'area_hospitalaria__nombre'],
     'Recinto'         : ['nombre', 'piso__nombre', 'sector__nombre', 'unidad__nombre'],
-    'PMA'             : ['nombre', 'recinto__nombre', 'recinto__unidad__nombre'],
+    'PMA'             : ['nombre', 'recinto__nombre', 'recinto__piso__nombre', 'recinto__unidad__nombre', 'recinto__piso__edificio__nombre'],
+    'Funcionario'     : ['rut', 'nombres', 'apellidos', 'correo', 'cargo__nombre', 'unidad__nombre'],
 }
 
 # Columnas de ordenamiento por modelo (data-key DataTables → campo ORM)
@@ -49,8 +51,8 @@ ORDER_MAP: dict = {
     'Unidad'          : {'nombre': 'nombre', 'area_hospitalaria': 'area_hospitalaria__nombre'},
     'Recinto'         : {'nombre': 'nombre', 'piso': 'piso__nombre',
                          'sector': 'sector__nombre', 'unidad': 'unidad__nombre'},
-    'PMA'             : {'nombre': 'nombre', 'recinto': 'recinto__nombre',
-                         'unidad': 'recinto__unidad__nombre'},
+    'PMA'             : {'nombre': 'nombre', 'recinto': 'recinto__nombre', 'recinto__piso': 'recinto__piso__nombre', 'recinto__unidad': 'recinto__unidad__nombre'},
+    'Funcionario'     : {'nombres': 'nombres', 'rut': 'rut', 'correo': 'correo', 'cargo': 'cargo__nombre', 'unidad': 'unidad__nombre'},
 }
 
 
@@ -116,7 +118,8 @@ class MantenedorRepository:
 
         # Ordenamiento seguro: mapeamos el nombre de columna DataTables al campo ORM real
         mapping = ORDER_MAP.get(model_class.__name__, {'nombre': 'nombre'})
-        orm_col = mapping.get(order_column, 'nombre')
+        default_sort = 'nombres' if model_class.__name__ == 'Funcionario' else 'nombre'
+        orm_col = mapping.get(order_column, default_sort)
         if order_dir == 'desc' and not orm_col.startswith('-'):
             orm_col = f'-{orm_col}'
         elif order_dir == 'asc' and orm_col.startswith('-'):

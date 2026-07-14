@@ -88,7 +88,7 @@ def audit_trail_equipo(sender, instance, created, **kwargs):
             equipo=instance,
             tecnico=tecnico or _usuario_sistema(),
             fecha_mantenimiento=timezone_localdate(),
-            solicitante='Sistema (Automático)',
+            solicitante=None,
             falla_reportada='Alta de equipo en inventario',
             actividades_realizadas=f'Creación de equipo por: {nombre_tec}',
             servicio_unidad=instance.pma.recinto.unidad.nombre if instance.pma and instance.pma.recinto and getattr(instance.pma.recinto, 'unidad', None) else '',
@@ -99,6 +99,11 @@ def audit_trail_equipo(sender, instance, created, **kwargs):
     # Edición: comparar con estado anterior
     original = getattr(instance, '_estado_anterior', None)
     if original is None:
+        return
+        
+    # Si el usuario explicitó que es una corrección, no registramos el movimiento en bitácora
+    motivo_edicion = getattr(instance, '_motivo_edicion_pma', None)
+    if motivo_edicion == 'CORRECCION':
         return
 
     cambios = []
@@ -114,7 +119,7 @@ def audit_trail_equipo(sender, instance, created, **kwargs):
             equipo=instance,
             tecnico=tecnico or _usuario_sistema(),
             fecha_mantenimiento=timezone_localdate(),
-            solicitante='Sistema (Automático)',
+            solicitante=None,
             falla_reportada='Actualización',
             actividades_realizadas=(
                 f'Actualizacion por: {nombre_tec}. '

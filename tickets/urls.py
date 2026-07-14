@@ -1,16 +1,19 @@
 from django.urls import path
-from tickets.views import (
-    TicketsDashboardView,
-    TicketListView,
-    TicketActionView,
-    TicketDetailView,
-)
+from . import views
 
 app_name = 'tickets'
 
 urlpatterns = [
-    path('', TicketsDashboardView.as_view(), name='dashboard'),
-    path('api/', TicketListView.as_view(), name='list_api'),
-    path('api/action/', TicketActionView.as_view(), name='action_api'),
-    path('api/<int:ticket_id>/', TicketDetailView.as_view(), name='detail_api'),
+    path('', views.TicketsDashboardView.as_view(), name='dashboard'),
+    path('api/action/', views.TicketActionView.as_view(), name='api_action'),
+    path('api/ticket/<int:ticket_id>/', views.TicketDetailApiView.as_view(), name='api_ticket_detail'),
+    path('api/ticket/<int:ticket_id>/assign/', views.TicketAssignApiView.as_view(), name='api_ticket_assign'),
+    path('api/ticket/<int:ticket_id>/comment/', views.TicketCommentApiView.as_view(), name='api_ticket_comment'),
+    path('api/ticket/<int:ticket_id>/resolve/', views.TicketResolveApiView.as_view(), name='api_ticket_resolve'),
+    path('api/ticket/<int:ticket_id>/take/', views.TicketTakeApiView.as_view(), name='api_ticket_take'),
+    path('api/dev/switch-user/', views.SwitchUserView.as_view(), name='api_dev_switch_user'),
+    path('api/search/users/', views.UserSearchApiView.as_view(), name='api_search_users'),
+    path('api/search/users/create/', views.UserCreateApiView.as_view(), name='api_create_user'),
+    path('api/search/kedb/', views.KEDBSearchApiView.as_view(), name='api_search_kedb'),
+    path('api/sync/', views.TicketSyncApiView.as_view(), name='api_ticket_sync'),
 ]

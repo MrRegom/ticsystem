@@ -1,0 +1,1638 @@
+{
+  "communities": {
+    "0": [
+      "actas_views_actaactionview_delete",
+      "actas_views_actaactionview_post",
+      "actas_views_actaactionview_put",
+      "actas_views_actadetailview_get",
+      "actas_views_rationale_82",
+      "anexos_services_anexo_service_anexoservice_obtener_anexo_por_id",
+      "anexos_views_anexoactionview_delete",
+      "anexos_views_anexoactionview_post",
+      "anexos_views_anexoactionview_put",
+      "anexos_views_anexodetailview_get",
+      "core_services_dashboard_service_obtener_kpis_generales",
+      "core_services_usuario_service_py_user",
+      "core_services_usuario_service_rationale_10",
+      "core_services_usuario_service_rationale_157",
+      "core_services_usuario_service_rationale_17",
+      "core_services_usuario_service_rationale_177",
+      "core_services_usuario_service_rationale_37",
+      "core_services_usuario_service_rationale_49",
+      "core_services_usuario_service_rationale_98",
+      "core_services_usuario_service_usuarioservice",
+      "core_services_usuario_service_usuarioservice_actualizar_usuario",
+      "core_services_usuario_service_usuarioservice_crear_usuario",
+      "core_services_usuario_service_usuarioservice_eliminar_usuario",
+      "core_services_usuario_service_usuarioservice_normalizar_rut",
+      "core_services_usuario_service_usuarioservice_obtener_usuario_por_id",
+      "core_services_usuario_service_usuarioservice_obtener_usuarios_para_datatable",
+      "core_services_usuario_service_usuarioservice_validar_rut",
+      "core_urls",
+      "core_utils_extract_validation_error",
+      "core_utils_get_client_ip",
+      "core_utils_rationale_45",
+      "core_views",
+      "core_views_customloginview",
+      "core_views_customloginview_get",
+      "core_views_customloginview_post",
+      "core_views_customlogoutview",
+      "core_views_customlogoutview_get",
+      "core_views_customlogoutview_post",
+      "core_views_dashboardgeneralview",
+      "core_views_dashboardgeneralview_get_context_data",
+      "core_views_py_loginrequiredmixin",
+      "core_views_py_templateview",
+      "core_views_py_view",
+      "core_views_rationale_119",
+      "core_views_rationale_132",
+      "core_views_rationale_140",
+      "core_views_rationale_163",
+      "core_views_rationale_168",
+      "core_views_rationale_19",
+      "core_views_rationale_86",
+      "core_views_usuarioactionview",
+      "core_views_usuarioactionview_delete",
+      "core_views_usuarioactionview_parse_request",
+      "core_views_usuarioactionview_post",
+      "core_views_usuarioactionview_put",
+      "core_views_usuariolistview",
+      "core_views_usuariolistview_post",
+      "core_views_usuariosdashboardview",
+      "equipos_views_bitacoraregistroview_put",
+      "equipos_views_equipoactionview_delete",
+      "equipos_views_equipoactionview_post",
+      "equipos_views_equipoactionview_put",
+      "equipos_views_equipobitacoraview_get",
+      "equipos_views_equipobitacoraview_post",
+      "equipos_views_equipobitacoraview_serialize",
+      "equipos_views_equipocheckview_get",
+      "equipos_views_importarmargamargaview_get",
+      "equipos_views_rationale_131",
+      "redes_views_ipactionview_delete",
+      "redes_views_ipactionview_post",
+      "redes_views_ipactionview_put",
+      "redes_views_ipdetailview_get",
+      "temp_extract_core_urls"
+    ],
+    "1": [
+      "equipos_repositories_equipo_repository_equiporepository",
+      "equipos_repositories_equipo_repository_equiporepository_apply_search_and_filters",
+      "equipos_repositories_equipo_repository_equiporepository_count_filtered",
+      "equipos_repositories_equipo_repository_equiporepository_count_total",
+      "equipos_repositories_equipo_repository_equiporepository_delete",
+      "equipos_repositories_equipo_repository_equiporepository_get_by_id",
+      "equipos_repositories_equipo_repository_equiporepository_get_by_serial",
+      "equipos_repositories_equipo_repository_equiporepository_get_paginated_list",
+      "equipos_repositories_equipo_repository_equiporepository_save",
+      "equipos_repositories_equipo_repository_rationale_13",
+      "equipos_services_equipo_service_equiposervice",
+      "equipos_services_equipo_service_equiposervice_actualizar_equipo",
+      "equipos_services_equipo_service_equiposervice_crear_equipo",
+      "equipos_services_equipo_service_equiposervice_eliminar_equipo",
+      "equipos_services_equipo_service_equiposervice_obtener_equipo_por_id",
+      "equipos_services_equipo_service_equiposervice_obtener_equipo_por_serial",
+      "equipos_services_equipo_service_equiposervice_obtener_equipos_para_datatable",
+      "equipos_services_equipo_service_normalizar_nombre",
+      "equipos_services_equipo_service_rationale_113",
+      "equipos_services_equipo_service_rationale_125",
+      "equipos_services_equipo_service_rationale_218",
+      "equipos_services_equipo_service_rationale_26",
+      "equipos_services_equipo_service_rationale_38",
+      "equipos_services_equipo_service_rationale_83",
+      "equipos_services_equipo_service_resolver_imagen_equipo",
+      "equipos_services_equipo_service_resolver_imagen_modelo",
+      "equipos_services_importacion_marga_marga_margamargaimporterservice",
+      "equipos_services_importacion_marga_marga_margamargaimporterservice_limpiar_texto",
+      "equipos_services_importacion_marga_marga_margamargaimporterservice_obtener_catalogo",
+      "equipos_urls",
+      "equipos_views",
+      "equipos_views_bitacoraregistroview",
+      "equipos_views_bitacoraregistroview_delete",
+      "equipos_views_equipoactionview",
+      "equipos_views_equipobitacoraview",
+      "equipos_views_equipocheckview",
+      "equipos_views_equipodetailreadview",
+      "equipos_views_equipodetailreadview_get",
+      "equipos_views_equipodetailview",
+      "equipos_views_equipodetailview_get",
+      "equipos_views_equipohistorialview",
+      "equipos_views_equipohistorialview_get",
+      "equipos_views_equipolistview",
+      "equipos_views_equipolistview_post",
+      "equipos_views_equiposdashboardview",
+      "equipos_views_equiposdashboardview_get_context_data",
+      "equipos_views_importarmargamargaview",
+      "equipos_views_importarmargamargaview_post",
+      "equipos_views_modelospormarcaview",
+      "equipos_views_modelospormarcaview_get",
+      "equipos_views_py_loginrequiredmixin",
+      "equipos_views_py_templateview",
+      "equipos_views_py_view",
+      "equipos_views_rationale_1",
+      "equipos_views_rationale_200",
+      "equipos_views_rationale_240",
+      "equipos_views_rationale_274",
+      "equipos_views_rationale_294",
+      "equipos_views_rationale_31",
+      "equipos_views_rationale_383",
+      "equipos_views_rationale_458",
+      "equipos_views_rationale_475",
+      "equipos_views_rationale_524",
+      "equipos_views_rationale_80",
+      "equipos_views_rationale_98"
+    ],
+    "2": [
+      "tickets_admin",
+      "tickets_admin_archivoadjuntoadmin",
+      "tickets_admin_categoriaadmin",
+      "tickets_admin_prioridadadmin",
+      "tickets_admin_ticketadmin",
+      "tickets_admin_tickethistorialadmin",
+      "tickets_init",
+      "tickets_management_commands_seed_tickets_sla",
+      "tickets_management_commands_seed_tickets_sla_command",
+      "tickets_management_commands_seed_tickets_sla_command_handle",
+      "tickets_management_commands_seed_tickets_sla_command_log",
+      "tickets_management_commands_seed_tickets_sla_py_basecommand",
+      "tickets_management_commands_seed_tickets_sla_rationale_1",
+      "tickets_models",
+      "tickets_models_archivoadjunto",
+      "tickets_models_categoria",
+      "tickets_models_categoria_str",
+      "tickets_models_estado",
+      "tickets_models_meta",
+      "tickets_models_prioridad",
+      "tickets_models_prioridad_str",
+      "tickets_models_rationale_1",
+      "tickets_models_ticket",
+      "tickets_models_ticket_str",
+      "tickets_models_tickethistorial",
+      "tickets_repositories_ticket_repository",
+      "tickets_repositories_ticket_repository_rationale_19",
+      "tickets_repositories_ticket_repository_rationale_5",
+      "tickets_repositories_ticket_repository_ticketrepository",
+      "tickets_repositories_ticket_repository_ticketrepository_get_all_active_tickets",
+      "tickets_repositories_ticket_repository_ticketrepository_get_latest_correlativo",
+      "tickets_repositories_ticket_repository_ticketrepository_get_ticket_by_id",
+      "tickets_repositories_ticket_repository_ticketrepository_get_tickets_by_activo",
+      "tickets_services_ticket_service",
+      "tickets_services_ticket_service_py_user",
+      "tickets_services_ticket_service_rationale_10",
+      "tickets_services_ticket_service_rationale_17",
+      "tickets_services_ticket_service_ticketservice",
+      "tickets_services_ticket_service_ticketservice_agregar_comentario",
+      "tickets_services_ticket_service_ticketservice_asignar_tecnico",
+      "tickets_services_ticket_service_ticketservice_cambiar_estado",
+      "tickets_services_ticket_service_ticketservice_crear_ticket",
+      "tickets_services_ticket_service_ticketservice_generar_correlativo",
+      "tickets_services_ticket_service_ticketservice_resolver_ticket",
+      "tickets_urls",
+      "tickets_views",
+      "tickets_views_py_loginrequiredmixin",
+      "tickets_views_py_templateview",
+      "tickets_views_py_view",
+      "tickets_views_switchuserview",
+      "tickets_views_switchuserview_post",
+      "tickets_views_ticketactionview",
+      "tickets_views_ticketactionview_post",
+      "tickets_views_ticketactionview_put",
+      "tickets_views_ticketassignapiview",
+      "tickets_views_ticketassignapiview_post",
+      "tickets_views_ticketcommentapiview",
+      "tickets_views_ticketcommentapiview_post",
+      "tickets_views_ticketdetailapiview",
+      "tickets_views_ticketdetailapiview_get",
+      "tickets_views_ticketresolveapiview",
+      "tickets_views_ticketresolveapiview_post",
+      "tickets_views_ticketsdashboardview",
+      "tickets_views_ticketsdashboardview_get_context_data"
+    ],
+    "3": [
+      "mantenedores_repositories_mantenedor_repository",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository_apply_search",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository_build_search_q",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository_count_filtered",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository_count_total",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository_delete",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository_get_by_id",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository_get_paginated_list",
+      "mantenedores_repositories_mantenedor_repository_mantenedorrepository_save",
+      "mantenedores_repositories_mantenedor_repository_rationale_1",
+      "mantenedores_repositories_mantenedor_repository_rationale_105",
+      "mantenedores_repositories_mantenedor_repository_rationale_129",
+      "mantenedores_repositories_mantenedor_repository_rationale_134",
+      "mantenedores_repositories_mantenedor_repository_rationale_143",
+      "mantenedores_repositories_mantenedor_repository_rationale_150",
+      "mantenedores_repositories_mantenedor_repository_rationale_58",
+      "mantenedores_repositories_mantenedor_repository_rationale_76",
+      "mantenedores_repositories_mantenedor_repository_rationale_88",
+      "mantenedores_repositories_mantenedor_repository_rationale_97",
+      "mantenedores_services_mantenedor_service_mantenedorservice",
+      "mantenedores_services_mantenedor_service_mantenedorservice_actualizar_item",
+      "mantenedores_services_mantenedor_service_mantenedorservice_crear_item",
+      "mantenedores_services_mantenedor_service_mantenedorservice_eliminar_item",
+      "mantenedores_services_mantenedor_service_mantenedorservice_get_modelo_class",
+      "mantenedores_services_mantenedor_service_mantenedorservice_obtener_item_por_id",
+      "mantenedores_services_mantenedor_service_mantenedorservice_obtener_items_para_datatable",
+      "mantenedores_services_mantenedor_service_mantenedorservice_validar_duplicado",
+      "mantenedores_services_mantenedor_service_mantenedorservice_validar_fk",
+      "mantenedores_services_mantenedor_service_rationale_50",
+      "mantenedores_services_mantenedor_service_rationale_65",
+      "mantenedores_urls",
+      "mantenedores_views_mantenedoractionview",
+      "mantenedores_views_mantenedoractionview_delete",
+      "mantenedores_views_mantenedoractionview_get_modelo",
+      "mantenedores_views_mantenedoractionview_post",
+      "mantenedores_views_mantenedoractionview_put",
+      "mantenedores_views_mantenedordetailview",
+      "mantenedores_views_mantenedordetailview_get",
+      "mantenedores_views_mantenedoresdashboardview",
+      "mantenedores_views_mantenedoresdashboardview_get_context_data",
+      "mantenedores_views_mantenedorlistview",
+      "mantenedores_views_mantenedorlistview_post",
+      "mantenedores_views_py_loginrequiredmixin",
+      "mantenedores_views_py_templateview",
+      "mantenedores_views_py_view",
+      "q"
+    ],
+    "4": [
+      "actas_admin",
+      "actas_admin_actaadmin",
+      "actas_admin_actaadmin_firma_encargado_preview",
+      "actas_admin_actaadmin_firma_receptor_preview",
+      "actas_admin_actaadmin_timbre_encargado_preview",
+      "actas_admin_actadetalleadmin",
+      "actas_admin_actadetalleinline",
+      "actas_models",
+      "actas_models_acta",
+      "actas_models_acta_clean",
+      "actas_models_acta_str",
+      "actas_models_actadetalle",
+      "actas_models_actadetalle_str",
+      "actas_models_estado",
+      "actas_models_meta",
+      "actas_models_rationale_1",
+      "actas_models_rationale_141",
+      "actas_models_rationale_21",
+      "actas_models_tipoitem",
+      "actas_repositories_acta_repository",
+      "actas_repositories_acta_repository_actarepository",
+      "actas_repositories_acta_repository_actarepository_apply_search_and_filters",
+      "actas_repositories_acta_repository_actarepository_count_filtered",
+      "actas_repositories_acta_repository_actarepository_count_total",
+      "actas_repositories_acta_repository_actarepository_delete",
+      "actas_repositories_acta_repository_actarepository_get_by_id",
+      "actas_repositories_acta_repository_actarepository_get_paginated_list",
+      "actas_repositories_acta_repository_actarepository_save",
+      "actas_services_acta_service",
+      "actas_services_acta_service_actaservice",
+      "actas_services_acta_service_actaservice_actualizar_acta",
+      "actas_services_acta_service_actaservice_crear_acta",
+      "actas_services_acta_service_actaservice_eliminar_acta",
+      "actas_services_acta_service_actaservice_obtener_acta_por_id",
+      "actas_services_acta_service_actaservice_obtener_actas_para_datatable",
+      "actas_views_actalistview_post",
+      "core_management_commands_migrar_desde_mysql_command_migrar_actas",
+      "core_utils_normalizar_codigo",
+      "core_utils_normalizar_nombre",
+      "core_utils_rationale_60",
+      "core_utils_rationale_83",
+      "mantenedores_management_commands_normalizar_datos_command",
+      "mantenedores_management_commands_normalizar_datos_py_basecommand"
+    ],
+    "5": [
+      "core_management_commands_migrar_desde_mysql_command",
+      "core_management_commands_migrar_desde_mysql_command_add_arguments",
+      "core_management_commands_migrar_desde_mysql_command_handle",
+      "core_management_commands_migrar_desde_mysql_command_migrar_avisos_visor",
+      "core_management_commands_migrar_desde_mysql_command_migrar_ayudas",
+      "core_management_commands_migrar_desde_mysql_command_migrar_bitacora_opciones",
+      "core_management_commands_migrar_desde_mysql_command_migrar_checklist",
+      "core_management_commands_migrar_desde_mysql_command_migrar_correos",
+      "core_management_commands_migrar_desde_mysql_command_migrar_equipos",
+      "core_management_commands_migrar_desde_mysql_command_migrar_ips_red",
+      "core_management_commands_migrar_desde_mysql_command_migrar_modelos",
+      "core_management_commands_migrar_desde_mysql_command_migrar_modelos_anexos",
+      "core_management_commands_migrar_desde_mysql_command_migrar_pendientes",
+      "core_management_commands_migrar_desde_mysql_command_migrar_pmas",
+      "core_management_commands_migrar_desde_mysql_command_migrar_rangos_ip",
+      "core_management_commands_migrar_desde_mysql_command_migrar_requerimientos",
+      "core_management_commands_migrar_desde_mysql_command_migrar_unidades",
+      "core_management_commands_migrar_desde_mysql_command_migrar_usuarios",
+      "core_management_commands_migrar_desde_mysql_command_migrar_webapps",
+      "core_management_commands_migrar_desde_mysql_command_resolver_articulo_por_id",
+      "core_management_commands_migrar_desde_mysql_command_resolver_edificio_por_id",
+      "core_management_commands_migrar_desde_mysql_command_resolver_estado_por_id",
+      "core_management_commands_migrar_desde_mysql_command_resolver_marca_por_id",
+      "core_management_commands_migrar_desde_mysql_command_resolver_so_por_id",
+      "core_management_commands_migrar_desde_mysql_py_basecommand",
+      "core_migracion_helpers",
+      "core_migracion_helpers_abrir_mysql",
+      "core_migracion_helpers_decodificar_firma_base64",
+      "core_migracion_helpers_limpiar_serial",
+      "core_migracion_helpers_normalizar",
+      "core_migracion_helpers_rationale_1",
+      "core_migracion_helpers_rationale_19",
+      "core_migracion_helpers_rationale_30",
+      "core_migracion_helpers_rationale_41",
+      "core_migracion_helpers_rationale_48",
+      "core_migracion_helpers_rationale_83",
+      "core_migracion_helpers_reportemigracion",
+      "core_migracion_helpers_reportemigracion_add_creado",
+      "core_migracion_helpers_reportemigracion_add_no_macheo",
+      "core_migracion_helpers_reportemigracion_add_omitido",
+      "core_migracion_helpers_reportemigracion_init",
+      "core_migracion_helpers_reportemigracion_resumen"
+    ],
+    "6": [
+      "core_management_commands_migrar_desde_mysql_command_migrar_bitacora_equipos",
+      "core_services_dashboard_service",
+      "equipos_admin",
+      "equipos_admin_bitacoraequipoadmin",
+      "equipos_admin_bitacoraequipoinline",
+      "equipos_admin_bitacoraequipoinline_has_add_permission",
+      "equipos_admin_bitacoraopcionadmin",
+      "equipos_admin_equipoadmin",
+      "equipos_admin_equipoadmin_imagen_preview",
+      "equipos_models",
+      "equipos_models_bitacoraequipo",
+      "equipos_models_bitacoraequipo_clean",
+      "equipos_models_bitacoraequipo_str",
+      "equipos_models_bitacoraopcion",
+      "equipos_models_bitacoraopcion_clean",
+      "equipos_models_bitacoraopcion_str",
+      "equipos_models_equipo",
+      "equipos_models_equipo_clean",
+      "equipos_models_equipo_str",
+      "equipos_models_meta",
+      "equipos_models_rationale_1",
+      "equipos_models_rationale_197",
+      "equipos_models_rationale_264",
+      "equipos_models_rationale_30",
+      "equipos_models_tipo",
+      "equipos_models_tiporegistro",
+      "equipos_repositories_equipo_repository",
+      "equipos_repositories_equipo_repository_rationale_1",
+      "equipos_services_equipo_service",
+      "equipos_services_equipo_service_rationale_1",
+      "equipos_signals",
+      "equipos_signals_capturar_estado_anterior",
+      "equipos_signals_rationale_1",
+      "equipos_signals_rationale_130",
+      "equipos_signals_rationale_64",
+      "equipos_signals_recalcular_estado_equipo"
+    ],
+    "7": [
+      "equipos_services_importacion_marga_marga",
+      "equipos_services_importacion_marga_marga_margamargaimporterservice_importar_excel",
+      "mantenedores_models",
+      "mantenedores_models_areahospitalaria",
+      "mantenedores_models_areahospitalaria_str",
+      "mantenedores_models_meta",
+      "mantenedores_models_modelo",
+      "mantenedores_models_modelo_str",
+      "mantenedores_models_piso",
+      "mantenedores_models_piso_str",
+      "mantenedores_models_pma",
+      "mantenedores_models_pma_str",
+      "mantenedores_models_proveedor",
+      "mantenedores_models_proveedor_str",
+      "mantenedores_models_rationale_1",
+      "mantenedores_models_rationale_131",
+      "mantenedores_models_rationale_154",
+      "mantenedores_models_rationale_19",
+      "mantenedores_models_rationale_194",
+      "mantenedores_models_rationale_230",
+      "mantenedores_models_rationale_290",
+      "mantenedores_models_rationale_400",
+      "mantenedores_models_rationale_93",
+      "mantenedores_models_recinto",
+      "mantenedores_models_recinto_str",
+      "mantenedores_models_sector",
+      "mantenedores_models_sector_str",
+      "mantenedores_models_timestampedactivo",
+      "mantenedores_services_mantenedor_service",
+      "mantenedores_views"
+    ],
+    "8": [
+      "core_repositories_usuario_repository_py_perfilusuario",
+      "core_repositories_usuario_repository_py_user",
+      "core_repositories_usuario_repository_rationale_7",
+      "core_repositories_usuario_repository_usuariorepository",
+      "core_repositories_usuario_repository_usuariorepository_apply_search_and_filters",
+      "core_repositories_usuario_repository_usuariorepository_count_filtered",
+      "core_repositories_usuario_repository_usuariorepository_count_total",
+      "core_repositories_usuario_repository_usuariorepository_delete",
+      "core_repositories_usuario_repository_usuariorepository_get_by_id",
+      "core_repositories_usuario_repository_usuariorepository_get_by_rut",
+      "core_repositories_usuario_repository_usuariorepository_get_by_username",
+      "core_repositories_usuario_repository_usuariorepository_get_paginated_list",
+      "core_repositories_usuario_repository_usuariorepository_save",
+      "temp_extract_core_services_usuario_service_py_user",
+      "temp_extract_core_services_usuario_service_rationale_15",
+      "temp_extract_core_services_usuario_service_rationale_150",
+      "temp_extract_core_services_usuario_service_rationale_165",
+      "temp_extract_core_services_usuario_service_rationale_35",
+      "temp_extract_core_services_usuario_service_rationale_46",
+      "temp_extract_core_services_usuario_service_rationale_8",
+      "temp_extract_core_services_usuario_service_rationale_93",
+      "temp_extract_core_services_usuario_service_usuarioservice",
+      "temp_extract_core_services_usuario_service_usuarioservice_actualizar_usuario",
+      "temp_extract_core_services_usuario_service_usuarioservice_crear_usuario",
+      "temp_extract_core_services_usuario_service_usuarioservice_eliminar_usuario",
+      "temp_extract_core_services_usuario_service_usuarioservice_normalizar_rut",
+      "temp_extract_core_services_usuario_service_usuarioservice_obtener_usuario_por_id",
+      "temp_extract_core_services_usuario_service_usuarioservice_obtener_usuarios_para_datatable",
+      "temp_extract_core_services_usuario_service_usuarioservice_validar_rut"
+    ],
+    "9": [
+      "anexos_admin",
+      "anexos_admin_anexoadmin",
+      "anexos_admin_requerimientocambioadmin",
+      "anexos_admin_requerimientocambioinline",
+      "anexos_models_anexo",
+      "anexos_models_anexo_clean",
+      "anexos_models_anexo_str",
+      "anexos_models_rationale_185",
+      "anexos_models_rationale_34",
+      "anexos_models_requerimientocambio",
+      "anexos_models_requerimientocambio_str",
+      "anexos_repositories_anexo_repository",
+      "anexos_repositories_anexo_repository_anexorepository",
+      "anexos_repositories_anexo_repository_anexorepository_apply_search",
+      "anexos_repositories_anexo_repository_anexorepository_count_filtered",
+      "anexos_repositories_anexo_repository_anexorepository_count_total",
+      "anexos_repositories_anexo_repository_anexorepository_delete",
+      "anexos_repositories_anexo_repository_anexorepository_get_by_id",
+      "anexos_repositories_anexo_repository_anexorepository_get_paginated_list",
+      "anexos_repositories_anexo_repository_anexorepository_save",
+      "anexos_repositories_anexo_repository_rationale_1",
+      "anexos_services_anexo_service",
+      "anexos_services_anexo_service_anexoservice_actualizar_anexo",
+      "anexos_services_anexo_service_anexoservice_crear_anexo",
+      "anexos_services_anexo_service_anexoservice_eliminar_anexo",
+      "anexos_services_anexo_service_anexoservice_obtener_anexos_para_datatable",
+      "anexos_services_anexo_service_rationale_1",
+      "core_management_commands_migrar_desde_mysql_command_migrar_anexos"
+    ],
+    "10": [
+      "temp_extract_core_views",
+      "temp_extract_core_views_customloginview",
+      "temp_extract_core_views_customloginview_get",
+      "temp_extract_core_views_customloginview_post",
+      "temp_extract_core_views_customlogoutview",
+      "temp_extract_core_views_customlogoutview_get",
+      "temp_extract_core_views_customlogoutview_post",
+      "temp_extract_core_views_dashboardgeneralview",
+      "temp_extract_core_views_dashboardgeneralview_get_context_data",
+      "temp_extract_core_views_get_client_ip",
+      "temp_extract_core_views_py_loginrequiredmixin",
+      "temp_extract_core_views_py_templateview",
+      "temp_extract_core_views_py_view",
+      "temp_extract_core_views_rationale_129",
+      "temp_extract_core_views_rationale_140",
+      "temp_extract_core_views_rationale_148",
+      "temp_extract_core_views_rationale_16",
+      "temp_extract_core_views_rationale_193",
+      "temp_extract_core_views_rationale_29",
+      "temp_extract_core_views_rationale_96",
+      "temp_extract_core_views_usuarioactionview",
+      "temp_extract_core_views_usuarioactionview_delete",
+      "temp_extract_core_views_usuarioactionview_post",
+      "temp_extract_core_views_usuarioactionview_put",
+      "temp_extract_core_views_usuariolistview",
+      "temp_extract_core_views_usuariolistview_post",
+      "temp_extract_core_views_usuariosdashboardview"
+    ],
+    "11": [
+      "temp_extract_core_tests_auditoriaservicetests",
+      "temp_extract_core_tests_auditoriaservicetests_test_registrar_accion_exitosa",
+      "temp_extract_core_tests_correoservicetests",
+      "temp_extract_core_tests_correoservicetests_test_actualizar_cuota_correcta",
+      "temp_extract_core_tests_correoservicetests_test_actualizar_cuota_invalida",
+      "temp_extract_core_tests_correoservicetests_test_crear_correo_dominio_invalido",
+      "temp_extract_core_tests_correoservicetests_test_crear_correo_duplicado",
+      "temp_extract_core_tests_correoservicetests_test_crear_correo_rut_invalido",
+      "temp_extract_core_tests_correoservicetests_test_crear_correo_valido",
+      "temp_extract_core_tests_correoservicetests_test_validar_rut_correcto",
+      "temp_extract_core_tests_correoservicetests_test_validar_rut_incorrecto",
+      "temp_extract_core_tests_py_testcase",
+      "temp_extract_core_tests_rationale_111",
+      "temp_extract_core_tests_rationale_138",
+      "temp_extract_core_tests_rationale_7",
+      "temp_extract_core_tests_usuarioservicetests",
+      "temp_extract_core_tests_usuarioservicetests_setup",
+      "temp_extract_core_tests_usuarioservicetests_test_actualizar_usuario",
+      "temp_extract_core_tests_usuarioservicetests_test_actualizar_usuario_sin_perfil",
+      "temp_extract_core_tests_usuarioservicetests_test_crear_usuario_duplicado",
+      "temp_extract_core_tests_usuarioservicetests_test_crear_usuario_rut_invalido",
+      "temp_extract_core_tests_usuarioservicetests_test_crear_usuario_valido",
+      "temp_extract_core_tests_usuarioservicetests_test_datatable_usuarios",
+      "temp_extract_core_tests_usuarioservicetests_test_eliminar_usuario_impidiendo_auto_eliminacion",
+      "temp_extract_core_tests_usuarioservicetests_test_normalizar_rut_usuario",
+      "temp_extract_core_tests_usuarioservicetests_test_validar_rut_usuario"
+    ],
+    "12": [
+      "anexos_models",
+      "anexos_models_estado",
+      "anexos_models_meta",
+      "anexos_models_rationale_1",
+      "mantenedores_management_commands_seed_mantenedores",
+      "mantenedores_management_commands_seed_mantenedores_rationale_1",
+      "mantenedores_models_edificio",
+      "mantenedores_models_edificio_str",
+      "mantenedores_models_institucion",
+      "mantenedores_models_institucion_str",
+      "mantenedores_models_rationale_171",
+      "mantenedores_models_rationale_39",
+      "mantenedores_models_rationale_442",
+      "mantenedores_models_rationale_61",
+      "mantenedores_models_unidad",
+      "mantenedores_models_unidad_str",
+      "mantenedores_models_vlan",
+      "mantenedores_models_vlan_str",
+      "utilidades_management_commands_exportar_infraestructura"
+    ],
+    "13": [
+      "redes_admin",
+      "redes_admin_infraestructuraredadmin",
+      "redes_admin_infraestructuraredinline",
+      "redes_admin_pmaadmin",
+      "redes_admin_rangoipadmin",
+      "redes_admin_slaconfiguracionadmin",
+      "redes_models",
+      "redes_models_estado",
+      "redes_models_infraestructurared",
+      "redes_models_infraestructurared_clean",
+      "redes_models_infraestructurared_str",
+      "redes_models_meta",
+      "redes_models_pma",
+      "redes_models_pma_str",
+      "redes_models_rangoip",
+      "redes_models_rangoip_str",
+      "redes_models_rationale_1",
+      "redes_models_rationale_195",
+      "redes_models_rationale_22",
+      "redes_models_rationale_264",
+      "redes_models_rationale_70",
+      "redes_models_slaconfiguracion",
+      "redes_models_slaconfiguracion_str"
+    ],
+    "14": [
+      "utilidades_admin",
+      "utilidades_admin_ayudarapidaadmin",
+      "utilidades_admin_checklistitemadmin",
+      "utilidades_admin_pendienteadmin",
+      "utilidades_admin_webappadmin",
+      "utilidades_models",
+      "utilidades_models_ayudarapida",
+      "utilidades_models_ayudarapida_str",
+      "utilidades_models_checklistitem",
+      "utilidades_models_checklistitem_str",
+      "utilidades_models_estado",
+      "utilidades_models_meta",
+      "utilidades_models_pendiente",
+      "utilidades_models_pendiente_str",
+      "utilidades_models_rationale_1",
+      "utilidades_models_rationale_103",
+      "utilidades_models_rationale_139",
+      "utilidades_models_rationale_14",
+      "utilidades_models_rationale_58",
+      "utilidades_models_webapp",
+      "utilidades_models_webapp_str"
+    ],
+    "15": [
+      "core_admin",
+      "core_admin_logauditoriaadmin",
+      "core_admin_logauditoriaadmin_has_add_permission",
+      "core_admin_logauditoriaadmin_has_change_permission",
+      "core_admin_perfilusuarioinline",
+      "core_admin_useradmin",
+      "core_models",
+      "core_models_accion",
+      "core_models_meta",
+      "core_models_perfilusuario",
+      "core_models_perfilusuario_clean",
+      "core_models_perfilusuario_str",
+      "core_repositories_usuario_repository",
+      "core_services_usuario_service",
+      "core_tests",
+      "djangouseradmin",
+      "temp_extract_core_repositories_usuario_repository",
+      "temp_extract_core_services_usuario_service",
+      "temp_extract_core_tests"
+    ],
+    "16": [
+      "static_js_mantenedores",
+      "static_js_mantenedores_destroyselect2",
+      "static_js_mantenedores_destroytable",
+      "static_js_mantenedores_editar",
+      "static_js_mantenedores_eliminar",
+      "static_js_mantenedores_fillform",
+      "static_js_mantenedores_getcolumns",
+      "static_js_mantenedores_getformdata",
+      "static_js_mantenedores_guardar",
+      "static_js_mantenedores_init",
+      "static_js_mantenedores_initdatatable",
+      "static_js_mantenedores_initselect2",
+      "static_js_mantenedores_recargar",
+      "static_js_mantenedores_resetform",
+      "static_js_mantenedores_seleccionarmodelo",
+      "static_js_mantenedores_showerror",
+      "static_js_mantenedores_showfields",
+      "static_js_mantenedores_toggleactivo",
+      "static_js_mantenedores_updatekpi"
+    ],
+    "17": [
+      "anexos_views_anexolistview_post",
+      "core_utils",
+      "core_utils_parse_datatables_params",
+      "redes_urls",
+      "redes_views",
+      "redes_views_ipactionview",
+      "redes_views_ipdetailview",
+      "redes_views_iplistview",
+      "redes_views_iplistview_post",
+      "redes_views_py_loginrequiredmixin",
+      "redes_views_py_templateview",
+      "redes_views_py_view",
+      "redes_views_rationale_1",
+      "redes_views_rationale_36",
+      "redes_views_rationale_82",
+      "redes_views_redesdashboardview",
+      "redes_views_redesdashboardview_get_context_data"
+    ],
+    "18": [
+      "correos_admin",
+      "correos_admin_credencialcorreoadmin",
+      "correos_admin_grupocorreoadmin",
+      "correos_admin_miembrogrupocorreoadmin",
+      "correos_admin_miembrogrupocorreoinline",
+      "correos_models",
+      "correos_models_credencialcorreo",
+      "correos_models_credencialcorreo_str",
+      "correos_models_grupocorreo",
+      "correos_models_grupocorreo_str",
+      "correos_models_meta",
+      "correos_models_miembrogrupocorreo",
+      "correos_models_miembrogrupocorreo_str",
+      "correos_models_rationale_1",
+      "correos_models_rationale_17",
+      "correos_models_rationale_56",
+      "correos_models_rationale_85"
+    ],
+    "19": [
+      "anexos_services_anexo_service_anexoservice",
+      "anexos_urls",
+      "anexos_views",
+      "anexos_views_anexoactionview",
+      "anexos_views_anexodetailview",
+      "anexos_views_anexolistview",
+      "anexos_views_anexosdashboardview",
+      "anexos_views_anexosdashboardview_get_context_data",
+      "anexos_views_py_loginrequiredmixin",
+      "anexos_views_py_templateview",
+      "anexos_views_py_view",
+      "anexos_views_rationale_1",
+      "core_services_auditoria_service_auditoriaservice",
+      "core_services_auditoria_service_auditoriaservice_registrar_accion",
+      "core_services_auditoria_service_py_logauditoria",
+      "core_services_auditoria_service_rationale_5"
+    ],
+    "20": [
+      "core_tests_auditoriaservicetests",
+      "core_tests_auditoriaservicetests_test_registrar_accion_exitosa",
+      "core_tests_py_testcase",
+      "core_tests_rationale_33",
+      "core_tests_rationale_6",
+      "core_tests_usuarioservicetests",
+      "core_tests_usuarioservicetests_setup",
+      "core_tests_usuarioservicetests_test_actualizar_usuario",
+      "core_tests_usuarioservicetests_test_actualizar_usuario_sin_perfil",
+      "core_tests_usuarioservicetests_test_crear_usuario_duplicado",
+      "core_tests_usuarioservicetests_test_crear_usuario_rut_invalido",
+      "core_tests_usuarioservicetests_test_crear_usuario_valido",
+      "core_tests_usuarioservicetests_test_datatable_usuarios",
+      "core_tests_usuarioservicetests_test_eliminar_usuario_impidiendo_auto_eliminacion",
+      "core_tests_usuarioservicetests_test_normalizar_rut_usuario",
+      "core_tests_usuarioservicetests_test_validar_rut_usuario"
+    ],
+    "21": [
+      "mantenedores_admin",
+      "mantenedores_admin_articuloadmin",
+      "mantenedores_admin_edificioadmin",
+      "mantenedores_admin_estadoequipoadmin",
+      "mantenedores_admin_institucionadmin",
+      "mantenedores_admin_marcaadmin",
+      "mantenedores_admin_modeloadmin",
+      "mantenedores_admin_modeloadmin_imagen_preview",
+      "mantenedores_admin_modeloanexoadmin",
+      "mantenedores_admin_modeloinline",
+      "mantenedores_admin_pisoadmin",
+      "mantenedores_admin_pisoinline",
+      "mantenedores_admin_proveedoradmin",
+      "mantenedores_admin_sistemaoperativoadmin",
+      "mantenedores_admin_unidadadmin",
+      "mantenedores_admin_vlanadmin"
+    ],
+    "22": [
+      "actas_urls",
+      "actas_views",
+      "actas_views_actaactionview",
+      "actas_views_actadetailview",
+      "actas_views_actalistview",
+      "actas_views_actasdashboardview",
+      "actas_views_actasdashboardview_get_context_data",
+      "actas_views_py_loginrequiredmixin",
+      "actas_views_py_templateview",
+      "actas_views_py_view",
+      "actas_views_rationale_151",
+      "actas_views_rationale_17",
+      "actas_views_rationale_31",
+      "actas_views_rationale_49"
+    ],
+    "23": [
+      "utilidades_management_commands_exportar_infraestructura_auto_width",
+      "utilidades_management_commands_exportar_infraestructura_command",
+      "utilidades_management_commands_exportar_infraestructura_command_add_arguments",
+      "utilidades_management_commands_exportar_infraestructura_command_handle",
+      "utilidades_management_commands_exportar_infraestructura_command_hoja_edificios_pisos",
+      "utilidades_management_commands_exportar_infraestructura_command_hoja_ipam",
+      "utilidades_management_commands_exportar_infraestructura_command_hoja_pisos_anexos",
+      "utilidades_management_commands_exportar_infraestructura_command_hoja_pisos_equipos",
+      "utilidades_management_commands_exportar_infraestructura_command_hoja_pisos_pmas",
+      "utilidades_management_commands_exportar_infraestructura_command_hoja_pisos_rangos",
+      "utilidades_management_commands_exportar_infraestructura_py_basecommand",
+      "utilidades_management_commands_exportar_infraestructura_style_header",
+      "utilidades_management_commands_exportar_infraestructura_write_rows",
+      "utilidades_management_commands_exportar_infraestructura_write_title"
+    ],
+    "24": [
+      "core_models_logauditoria",
+      "core_models_logauditoria_str",
+      "core_repositories_auditoria_repository",
+      "core_repositories_auditoria_repository_auditoriarepository",
+      "core_repositories_auditoria_repository_auditoriarepository_save",
+      "core_repositories_auditoria_repository_py_logauditoria",
+      "core_repositories_auditoria_repository_rationale_4",
+      "core_services_auditoria_service",
+      "temp_extract_core_services_auditoria_service",
+      "temp_extract_core_services_auditoria_service_auditoriaservice",
+      "temp_extract_core_services_auditoria_service_auditoriaservice_registrar_accion",
+      "temp_extract_core_services_auditoria_service_py_logauditoria",
+      "temp_extract_core_services_auditoria_service_rationale_5"
+    ],
+    "25": [
+      "core_management_commands_migrar_desde_mysql",
+      "core_management_commands_migrar_desde_mysql_rationale_1",
+      "mantenedores_management_commands_normalizar_datos",
+      "mantenedores_management_commands_normalizar_datos_command_handle",
+      "mantenedores_management_commands_normalizar_datos_normalizar_qs",
+      "mantenedores_models_articulo",
+      "mantenedores_models_articulo_str",
+      "mantenedores_models_marca",
+      "mantenedores_models_marca_str",
+      "mantenedores_models_modeloanexo",
+      "mantenedores_models_modeloanexo_str",
+      "mantenedores_models_rationale_254",
+      "mantenedores_models_rationale_273",
+      "mantenedores_models_rationale_327",
+      "mantenedores_models_rationale_352",
+      "mantenedores_models_sistemaoperativo",
+      "mantenedores_models_sistemaoperativo_str"
+    ],
+    "26": [
+      "temp_extract_core_repositories_usuario_repository_py_perfilusuario",
+      "temp_extract_core_repositories_usuario_repository_py_user",
+      "temp_extract_core_repositories_usuario_repository_rationale_7",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_apply_search_and_filters",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_count_filtered",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_count_total",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_delete",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_get_by_id",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_get_by_rut",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_get_by_username",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_get_paginated_list",
+      "temp_extract_core_repositories_usuario_repository_usuariorepository_save"
+    ],
+    "27": [
+      "static_js_actas",
+      "static_js_actas_agregarfiladetalle",
+      "static_js_actas_buildselectoptions",
+      "static_js_actas_cargarpisos",
+      "static_js_actas_editaracta",
+      "static_js_actas_eliminaracta",
+      "static_js_actas_fillform",
+      "static_js_actas_getformdata",
+      "static_js_actas_guardaracta",
+      "static_js_actas_initdatatable",
+      "static_js_actas_resetform",
+      "static_js_actas_showerror"
+    ],
+    "28": [
+      "static_js_equipos",
+      "static_js_equipos_abrirmodal",
+      "static_js_equipos_cargarequipo",
+      "static_js_equipos_csrftoken",
+      "static_js_equipos_eliminarequipo",
+      "static_js_equipos_guardarequipo",
+      "static_js_equipos_initcascades",
+      "static_js_equipos_initdatatable",
+      "static_js_equipos_initevents",
+      "static_js_equipos_initselect2",
+      "static_js_equipos_verequipoinfo"
+    ],
+    "29": [
+      "core_management_commands_seed_roles",
+      "core_management_commands_seed_roles_command",
+      "core_management_commands_seed_roles_command_handle",
+      "core_management_commands_seed_roles_py_basecommand",
+      "core_management_commands_seed_roles_rationale_1",
+      "core_models_rationale_129",
+      "core_models_rationale_68",
+      "core_models_rol",
+      "core_models_rol_str",
+      "core_models_rol_tiene_permiso"
+    ],
+    "30": [
+      "static_js_anexos",
+      "static_js_anexos_cargarpisos",
+      "static_js_anexos_editar",
+      "static_js_anexos_eliminar",
+      "static_js_anexos_fillform",
+      "static_js_anexos_getformdata",
+      "static_js_anexos_guardar",
+      "static_js_anexos_initdatatable",
+      "static_js_anexos_resetform",
+      "static_js_anexos_showerror"
+    ],
+    "31": [
+      "static_js_redes",
+      "static_js_redes_cargarp",
+      "static_js_redes_editar",
+      "static_js_redes_eliminar",
+      "static_js_redes_err",
+      "static_js_redes_fill",
+      "static_js_redes_get",
+      "static_js_redes_guardar",
+      "static_js_redes_init",
+      "static_js_redes_reset"
+    ],
+    "32": [
+      "static_js_tickets",
+      "static_js_tickets_editar",
+      "static_js_tickets_eliminar",
+      "static_js_tickets_fillform",
+      "static_js_tickets_getformdata",
+      "static_js_tickets_guardar",
+      "static_js_tickets_initdatatable",
+      "static_js_tickets_resetform",
+      "static_js_tickets_showerror"
+    ],
+    "33": [
+      "equipos_signals_audit_trail_equipo",
+      "equipos_signals_rationale_160",
+      "equipos_signals_rationale_171",
+      "equipos_signals_rationale_50",
+      "equipos_signals_rationale_77",
+      "equipos_signals_timezone_localdate",
+      "equipos_signals_usuario_sistema",
+      "equipos_signals_valor_campo"
+    ],
+    "34": [
+      "visor_admin",
+      "visor_admin_avisovisoradmin",
+      "visor_models",
+      "visor_models_avisovisor",
+      "visor_models_avisovisor_str",
+      "visor_models_meta",
+      "visor_models_rationale_1",
+      "visor_models_rationale_11"
+    ],
+    "35": [
+      "temp_extract_core_models",
+      "temp_extract_core_models_accion",
+      "temp_extract_core_models_logauditoria",
+      "temp_extract_core_models_logauditoria_str",
+      "temp_extract_core_models_meta",
+      "temp_extract_core_models_perfilusuario",
+      "temp_extract_core_models_perfilusuario_str"
+    ],
+    "36": [
+      "config_settings_base",
+      "config_settings_development",
+      "config_settings_init",
+      "config_settings_local",
+      "config_settings_production",
+      "config_settings_testing"
+    ],
+    "37": [
+      "redes_signals",
+      "redes_signals_liberar_ip_on_equipo_delete",
+      "redes_signals_rationale_1",
+      "redes_signals_rationale_19",
+      "redes_signals_rationale_33",
+      "redes_signals_sync_ipam_on_equipo_save"
+    ],
+    "38": [
+      "temp_extract_config_settings_base",
+      "temp_extract_config_settings_development",
+      "temp_extract_config_settings_init",
+      "temp_extract_config_settings_local",
+      "temp_extract_config_settings_production",
+      "temp_extract_config_settings_testing"
+    ],
+    "39": [
+      "static_js_usuarios",
+      "static_js_usuarios_formatrutinput",
+      "static_js_usuarios_renderfotopreview",
+      "static_js_usuarios_setupfotoinput",
+      "static_js_usuarios_validarrut"
+    ],
+    "40": [
+      "temp_extract_core_repositories_auditoria_repository",
+      "temp_extract_core_repositories_auditoria_repository_auditoriarepository",
+      "temp_extract_core_repositories_auditoria_repository_auditoriarepository_save",
+      "temp_extract_core_repositories_auditoria_repository_py_logauditoria",
+      "temp_extract_core_repositories_auditoria_repository_rationale_4"
+    ],
+    "41": [
+      "actas_apps",
+      "actas_apps_actasconfig",
+      "actas_apps_actasconfig_ready",
+      "actas_apps_py_appconfig"
+    ],
+    "42": [
+      "anexos_apps",
+      "anexos_apps_anexosconfig",
+      "anexos_apps_anexosconfig_ready",
+      "anexos_apps_py_appconfig"
+    ],
+    "43": [
+      "core_apps",
+      "core_apps_coreconfig",
+      "core_apps_coreconfig_ready",
+      "core_apps_py_appconfig"
+    ],
+    "44": [
+      "equipos_apps",
+      "equipos_apps_equiposconfig",
+      "equipos_apps_equiposconfig_ready",
+      "equipos_apps_py_appconfig"
+    ],
+    "45": [
+      "mantenedores_apps",
+      "mantenedores_apps_mantenedoresconfig",
+      "mantenedores_apps_mantenedoresconfig_ready",
+      "mantenedores_apps_py_appconfig"
+    ],
+    "46": [
+      "mantenedores_management_commands_seed_mantenedores_command",
+      "mantenedores_management_commands_seed_mantenedores_command_handle",
+      "mantenedores_management_commands_seed_mantenedores_command_log",
+      "mantenedores_management_commands_seed_mantenedores_py_basecommand"
+    ],
+    "47": [
+      "redes_apps",
+      "redes_apps_py_appconfig",
+      "redes_apps_redesconfig",
+      "redes_apps_redesconfig_ready"
+    ],
+    "48": [
+      "static_js_auth",
+      "static_js_auth_formatrutinput",
+      "static_js_auth_showerror",
+      "static_js_auth_validarrut"
+    ],
+    "49": [
+      "static_js_base",
+      "static_js_base_adjustresponsivefooter",
+      "static_js_base_csrftoken",
+      "static_js_base_getcookie"
+    ],
+    "50": [
+      "temp_extract_static_js_auth",
+      "temp_extract_static_js_auth_formatrutinput",
+      "temp_extract_static_js_auth_showerror",
+      "temp_extract_static_js_auth_validarrut"
+    ],
+    "51": [
+      "correos_apps",
+      "correos_apps_correosconfig",
+      "correos_apps_py_appconfig"
+    ],
+    "52": [
+      "manage",
+      "manage_main",
+      "manage_rationale_8"
+    ],
+    "53": [
+      "static_js_tickets_kanban",
+      "static_js_tickets_kanban_buildcard",
+      "static_js_tickets_kanban_rendertimeline"
+    ],
+    "54": [
+      "temp_extract_core_apps",
+      "temp_extract_core_apps_coreconfig",
+      "temp_extract_core_apps_py_appconfig"
+    ],
+    "55": [
+      "temp_extract_manage",
+      "temp_extract_manage_main",
+      "temp_extract_manage_rationale_8"
+    ],
+    "56": [
+      "temp_extract_static_js_usuarios",
+      "temp_extract_static_js_usuarios_formatrutinput",
+      "temp_extract_static_js_usuarios_validarrut"
+    ],
+    "57": [
+      "tickets_apps",
+      "tickets_apps_py_appconfig",
+      "tickets_apps_ticketsconfig"
+    ],
+    "58": [
+      "utilidades_apps",
+      "utilidades_apps_py_appconfig",
+      "utilidades_apps_utilidadesconfig"
+    ],
+    "59": [
+      "visor_apps",
+      "visor_apps_py_appconfig",
+      "visor_apps_visorconfig"
+    ],
+    "60": [
+      "actas_migrations_0001_initial",
+      "actas_migrations_0001_initial_migration"
+    ],
+    "61": [
+      "anexos_migrations_0001_initial",
+      "anexos_migrations_0001_initial_migration"
+    ],
+    "62": [
+      "config_asgi",
+      "config_asgi_rationale_1"
+    ],
+    "63": [
+      "config_urls",
+      "config_urls_rationale_1"
+    ],
+    "64": [
+      "config_wsgi",
+      "config_wsgi_rationale_1"
+    ],
+    "65": [
+      "core_migrations_0001_initial",
+      "core_migrations_0001_initial_migration"
+    ],
+    "66": [
+      "correos_migrations_0001_initial",
+      "correos_migrations_0001_initial_migration"
+    ],
+    "67": [
+      "equipos_migrations_0001_initial",
+      "equipos_migrations_0001_initial_migration"
+    ],
+    "68": [
+      "mantenedores_migrations_0001_initial",
+      "mantenedores_migrations_0001_initial_migration"
+    ],
+    "69": [
+      "mantenedores_migrations_0002_proveedor_rut",
+      "mantenedores_migrations_0002_proveedor_rut_migration"
+    ],
+    "70": [
+      "redes_migrations_0001_initial",
+      "redes_migrations_0001_initial_migration"
+    ],
+    "71": [
+      "temp_extract_config_asgi",
+      "temp_extract_config_asgi_rationale_1"
+    ],
+    "72": [
+      "temp_extract_config_urls",
+      "temp_extract_config_urls_rationale_1"
+    ],
+    "73": [
+      "temp_extract_config_wsgi",
+      "temp_extract_config_wsgi_rationale_1"
+    ],
+    "74": [
+      "temp_extract_core_migrations_0001_initial",
+      "temp_extract_core_migrations_0001_initial_migration"
+    ],
+    "75": [
+      "temp_extract_static_js_core",
+      "temp_extract_static_js_core_recargardepartamentos"
+    ],
+    "76": [
+      "tickets_migrations_0001_initial",
+      "tickets_migrations_0001_initial_migration"
+    ],
+    "77": [
+      "utilidades_migrations_0001_initial",
+      "utilidades_migrations_0001_initial_migration"
+    ],
+    "78": [
+      "visor_migrations_0001_initial",
+      "visor_migrations_0001_initial_migration"
+    ],
+    "79": [
+      "actas_init"
+    ],
+    "80": [
+      "actas_migrations_init"
+    ],
+    "81": [
+      "actas_repositories_init"
+    ],
+    "82": [
+      "actas_services_init"
+    ],
+    "83": [
+      "actas_tests"
+    ],
+    "84": [
+      "anexos_init"
+    ],
+    "85": [
+      "anexos_migrations_init"
+    ],
+    "86": [
+      "anexos_repositories_init"
+    ],
+    "87": [
+      "anexos_services_init"
+    ],
+    "88": [
+      "anexos_tests"
+    ],
+    "89": [
+      "config_init"
+    ],
+    "90": [
+      "core_init"
+    ],
+    "91": [
+      "core_management_commands_init"
+    ],
+    "92": [
+      "core_management_init"
+    ],
+    "93": [
+      "core_migrations_init"
+    ],
+    "94": [
+      "correos_init"
+    ],
+    "95": [
+      "correos_migrations_init"
+    ],
+    "96": [
+      "correos_tests"
+    ],
+    "97": [
+      "correos_views"
+    ],
+    "98": [
+      "equipos_init"
+    ],
+    "99": [
+      "equipos_management_commands_init"
+    ],
+    "100": [
+      "equipos_management_init"
+    ],
+    "101": [
+      "equipos_migrations_init"
+    ],
+    "102": [
+      "equipos_repositories_init"
+    ],
+    "103": [
+      "equipos_services_init"
+    ],
+    "104": [
+      "equipos_tests"
+    ],
+    "105": [
+      "extract_base_js"
+    ],
+    "106": [
+      "extract_js"
+    ],
+    "107": [
+      "mantenedores_init"
+    ],
+    "108": [
+      "mantenedores_management_commands_init"
+    ],
+    "109": [
+      "mantenedores_management_init"
+    ],
+    "110": [
+      "mantenedores_migrations_init"
+    ],
+    "111": [
+      "mantenedores_repositories_init"
+    ],
+    "112": [
+      "mantenedores_services_init"
+    ],
+    "113": [
+      "mantenedores_tests"
+    ],
+    "114": [
+      "redes_init"
+    ],
+    "115": [
+      "redes_migrations_init"
+    ],
+    "116": [
+      "redes_repositories_init"
+    ],
+    "117": [
+      "redes_services_init"
+    ],
+    "118": [
+      "redes_tests"
+    ],
+    "119": [
+      "remove_style"
+    ],
+    "120": [
+      "static_js_datatables_config"
+    ],
+    "121": [
+      "temp_extract_config_init"
+    ],
+    "122": [
+      "temp_extract_core_admin"
+    ],
+    "123": [
+      "temp_extract_core_init"
+    ],
+    "124": [
+      "temp_extract_core_management_commands_init"
+    ],
+    "125": [
+      "temp_extract_core_management_init"
+    ],
+    "126": [
+      "temp_extract_core_migrations_init"
+    ],
+    "127": [
+      "tickets_management_commands_init"
+    ],
+    "128": [
+      "tickets_management_init"
+    ],
+    "129": [
+      "tickets_migrations_init"
+    ],
+    "130": [
+      "tickets_repositories_init"
+    ],
+    "131": [
+      "tickets_services_init"
+    ],
+    "132": [
+      "tickets_tests"
+    ],
+    "133": [
+      "utilidades_init"
+    ],
+    "134": [
+      "utilidades_management_commands_init"
+    ],
+    "135": [
+      "utilidades_management_init"
+    ],
+    "136": [
+      "utilidades_migrations_init"
+    ],
+    "137": [
+      "utilidades_tests"
+    ],
+    "138": [
+      "utilidades_views"
+    ],
+    "139": [
+      "visor_init"
+    ],
+    "140": [
+      "visor_migrations_init"
+    ],
+    "141": [
+      "visor_tests"
+    ],
+    "142": [
+      "visor_urls"
+    ],
+    "143": [
+      "visor_views"
+    ],
+    "144": [
+      "mantenedores_models_estadoequipo",
+      "mantenedores_models_estadoequipo_clean",
+      "mantenedores_models_estadoequipo_str",
+      "mantenedores_models_rationale_369"
+    ]
+  },
+  "cohesion": {
+    "0": 0.0547945205479452,
+    "1": 0.06682692307692308,
+    "2": 0.07936507936507936,
+    "3": 0.08233117483811286,
+    "4": 0.09302325581395349,
+    "5": 0.08130081300813008,
+    "6": 0.10317460317460317,
+    "7": 0.14022988505747128,
+    "8": 0.09852216748768473,
+    "9": 0.12698412698412698,
+    "10": 0.12535612535612536,
+    "11": 0.07692307692307693,
+    "12": 0.13450292397660818,
+    "13": 0.18181818181818182,
+    "14": 0.19047619047619047,
+    "15": 0.15204678362573099,
+    "16": 0.22807017543859648,
+    "17": 0.19852941176470587,
+    "18": 0.22794117647058823,
+    "19": 0.26666666666666666,
+    "20": 0.125,
+    "21": 0.125,
+    "22": 0.24175824175824176,
+    "23": 0.37362637362637363,
+    "24": 0.21794871794871795,
+    "25": 0.16911764705882354,
+    "26": 0.23076923076923078,
+    "27": 0.25757575757575757,
+    "28": 0.34545454545454546,
+    "29": 0.2,
+    "30": 0.3111111111111111,
+    "31": 0.3333333333333333,
+    "32": 0.3333333333333333,
+    "33": 0.25,
+    "34": 0.32142857142857145,
+    "35": 0.2857142857142857,
+    "36": 0.5333333333333333,
+    "37": 0.3333333333333333,
+    "38": 0.5333333333333333,
+    "39": 0.4,
+    "40": 0.4,
+    "41": 0.5,
+    "42": 0.5,
+    "43": 0.5,
+    "44": 0.5,
+    "45": 0.5,
+    "46": 0.6666666666666666,
+    "47": 0.5,
+    "48": 0.5,
+    "49": 0.5,
+    "50": 0.5,
+    "51": 0.6666666666666666,
+    "52": 0.6666666666666666,
+    "53": 0.6666666666666666,
+    "54": 0.6666666666666666,
+    "55": 0.6666666666666666,
+    "56": 0.6666666666666666,
+    "57": 0.6666666666666666,
+    "58": 0.6666666666666666,
+    "59": 0.6666666666666666,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0,
+    "121": 1.0,
+    "122": 1.0,
+    "123": 1.0,
+    "124": 1.0,
+    "125": 1.0,
+    "126": 1.0,
+    "127": 1.0,
+    "128": 1.0,
+    "129": 1.0,
+    "130": 1.0,
+    "131": 1.0,
+    "132": 1.0,
+    "133": 1.0,
+    "134": 1.0,
+    "135": 1.0,
+    "136": 1.0,
+    "137": 1.0,
+    "138": 1.0,
+    "139": 1.0,
+    "140": 1.0,
+    "141": 1.0,
+    "142": 1.0,
+    "143": 1.0,
+    "144": 0.5
+  },
+  "gods": [
+    {
+      "id": "core_services_auditoria_service_auditoriaservice",
+      "label": "AuditoriaService",
+      "degree": 57
+    },
+    {
+      "id": "core_management_commands_migrar_desde_mysql_command",
+      "label": "Command",
+      "degree": 31
+    },
+    {
+      "id": "core_services_usuario_service_usuarioservice",
+      "label": "UsuarioService",
+      "degree": 31
+    },
+    {
+      "id": "core_utils_get_client_ip",
+      "label": "get_client_ip()",
+      "degree": 31
+    },
+    {
+      "id": "equipos_models_equipo",
+      "label": "Equipo",
+      "degree": 29
+    },
+    {
+      "id": "core_utils_extract_validation_error",
+      "label": "extract_validation_error()",
+      "degree": 28
+    },
+    {
+      "id": "actas_models_acta",
+      "label": "Acta",
+      "degree": 24
+    },
+    {
+      "id": "mantenedores_models_piso",
+      "label": "Piso",
+      "degree": 23
+    },
+    {
+      "id": "mantenedores_models_unidad",
+      "label": "Unidad",
+      "degree": 23
+    },
+    {
+      "id": "mantenedores_models_edificio",
+      "label": "Edificio",
+      "degree": 22
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Command",
+      "target": "Acta",
+      "source_files": [
+        "core/management/commands/migrar_desde_mysql.py",
+        "actas/models.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "Command",
+      "target": "ActaDetalle",
+      "source_files": [
+        "core/management/commands/migrar_desde_mysql.py",
+        "actas/models.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "ActasDashboardView",
+      "target": "AuditoriaService",
+      "source_files": [
+        "actas/views.py",
+        "core/services/auditoria_service.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "ActaListView",
+      "target": "AuditoriaService",
+      "source_files": [
+        "actas/views.py",
+        "core/services/auditoria_service.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "ActaActionView",
+      "target": "AuditoriaService",
+      "source_files": [
+        "actas/views.py",
+        "core/services/auditoria_service.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `AuditoriaService` connect `AuditoriaService` to `UsuarioService`, `views.py`, `MantenedorService`, `models.py`, `views.py`, `UsuarioServiceTests`, `models.py`, `views.py`, `UsuarioServiceTests`, `views.py`, `LogAuditoria`?",
+      "why": "High betweenness centrality (0.113) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `PerfilUsuario` connect `models.py` to `UsuarioService`, `migrar_desde_mysql.py`, `UsuarioRepository`?",
+      "why": "High betweenness centrality (0.049) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Equipo` connect `models.py` to `views.py`, `views.py`, `signals.py`, `Command`, `models.py`, `Unidad`, `migrar_desde_mysql.py`?",
+      "why": "High betweenness centrality (0.044) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 45 inferred relationships involving `AuditoriaService` (e.g. with `ActaActionView` and `ActaDetailView`) actually correct?",
+      "why": "`AuditoriaService` has 45 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 3 inferred relationships involving `Command` (e.g. with `Acta` and `ActaDetalle`) actually correct?",
+      "why": "`Command` has 3 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 18 inferred relationships involving `UsuarioService` (e.g. with `UsuarioRepository` and `AuditoriaServiceTests`) actually correct?",
+      "why": "`UsuarioService` has 18 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 4 inferred relationships involving `Equipo` (e.g. with `BitacoraEquipoAdmin` and `BitacoraEquipoInline`) actually correct?",
+      "why": "`Equipo` has 4 INFERRED edges - model-reasoned connections that need verification."
+    }
+  ]
+}

@@ -49,6 +49,10 @@ def _resolver_imagen_equipo(equipo) -> str:
     if not modelo:
         return ''
 
+    # Check if the modelo has an image uploaded via the UI
+    if hasattr(modelo, 'imagen') and modelo.imagen and hasattr(modelo.imagen, 'url') and modelo.imagen.name:
+        return modelo.imagen.url
+
     cache_key = f'modelo_{modelo.id}'
     if cache_key in MODEL_IMAGE_CACHE:
         return MODEL_IMAGE_CACHE[cache_key]
@@ -72,6 +76,12 @@ def _resolver_imagen_equipo(equipo) -> str:
             return url
 
     MODEL_IMAGE_CACHE[cache_key] = ''
+    
+    # 3. Fallback: imagen por defecto del Articulo
+    articulo = getattr(equipo, 'articulo', None)
+    if articulo and hasattr(articulo, 'imagen') and articulo.imagen and articulo.imagen.name:
+        return articulo.imagen.url
+        
     return ''
 
 
@@ -79,6 +89,10 @@ def _resolver_imagen_modelo(modelo) -> str:
     """Resuelve la URL de la imagen para un modelo (sin equipo asociado)."""
     if not modelo:
         return ''
+        
+    if hasattr(modelo, 'imagen') and modelo.imagen and hasattr(modelo.imagen, 'url') and modelo.imagen.name:
+        return modelo.imagen.url
+
     cache_key = f'modelo_{modelo.id}'
     if cache_key in MODEL_IMAGE_CACHE:
         return MODEL_IMAGE_CACHE[cache_key]
@@ -129,19 +143,15 @@ class EquipoService:
             raise ValidationError(f"La IP {ip} ya está asignada a otro equipo.")
 
         equipo = Equipo(
-            articulo_id=datos.get('articulo') or None,
-            marca_id=datos.get('marca') or None,
-            modelo_id=datos.get('modelo') or None,
-            edificio_id=datos.get('edificio') or None,
-            piso_id=datos.get('piso') or None,
-            unidad_id=datos.get('unidad') or None,
-            so_id=datos.get('so') or None,
-            estado_id=datos.get('estado') or None,
-            proveedor_id=datos.get('proveedor') or None,
+            articulo_id=datos.get('articulo_id') or None,
+            marca_id=datos.get('marca_id') or None,
+            modelo_id=datos.get('modelo_id') or None,
+            pma_id=datos.get('pma_id') or None,
+            so_id=datos.get('so_id') or None,
+            estado_id=datos.get('estado_id') or None,
+            proveedor_id=datos.get('proveedor_id') or None,
             serial_number=serial,
             ip=ip,
-            anexo=(datos.get('anexo') or '').strip() or None,
-            usuario=(datos.get('usuario') or '').strip() or None,
             office=(datos.get('office') or '').strip() or None,
             activador=(datos.get('activador') or '').strip() or None,
             pmalugar=(datos.get('pmalugar') or '').strip() or None,
@@ -168,24 +178,23 @@ class EquipoService:
         if ip and Equipo.objects.filter(ip=ip).exclude(pk=equipo_id).exists():
             raise ValidationError(f"La IP {ip} ya está asignada a otro equipo.")
 
-        equipo.articulo_id = datos.get('articulo') or None
-        equipo.marca_id = datos.get('marca') or None
-        equipo.modelo_id = datos.get('modelo') or None
-        equipo.edificio_id = datos.get('edificio') or None
-        equipo.piso_id = datos.get('piso') or None
-        equipo.unidad_id = datos.get('unidad') or None
-        equipo.so_id = datos.get('so') or None
-        equipo.estado_id = datos.get('estado') or None
-        equipo.proveedor_id = datos.get('proveedor') or None
+        equipo.articulo_id = datos.get('articulo_id') or None
+        equipo.marca_id = datos.get('marca_id') or None
+        equipo.modelo_id = datos.get('modelo_id') or None
+        equipo.pma_id = datos.get('pma_id') or None
+        equipo.so_id = datos.get('so_id') or None
+        equipo.estado_id = datos.get('estado_id') or None
+        equipo.proveedor_id = datos.get('proveedor_id') or None
         equipo.serial_number = serial
         equipo.ip = ip
-        equipo.anexo = (datos.get('anexo') or '').strip() or None
-        equipo.usuario = (datos.get('usuario') or '').strip() or None
         equipo.office = (datos.get('office') or '').strip() or None
         equipo.activador = (datos.get('activador') or '').strip() or None
         equipo.pmalugar = (datos.get('pmalugar') or '').strip() or None
         equipo.comentario = (datos.get('comentario') or '').strip() or None
         equipo.modificado_por = usuario
+        
+        # Volatile property para signals.py
+        equipo._motivo_edicion_pma = datos.get('motivo_edicion_pma')
 
         equipo.full_clean()
         EquipoRepository.save(equipo)

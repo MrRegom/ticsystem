@@ -5,9 +5,10 @@ from core.utils import normalizar_nombre, normalizar_codigo
 from mantenedores.models import (
     Edificio, Piso, Sector, Unidad, AreaHospitalaria, Recinto, PMA,
     Articulo, Marca, Modelo, ModeloAnexo, SistemaOperativo, EstadoEquipo,
-    Proveedor, Institucion,
+    Proveedor, Institucion, Cargo
 )
 from equipos.models import BitacoraOpcion
+from tickets.models import GrupoResolutor
 from mantenedores.repositories.mantenedor_repository import MantenedorRepository
 
 
@@ -15,6 +16,7 @@ MODEL_MAP = {
     'articulo': Articulo,
     'area_hospitalaria': AreaHospitalaria,
     'edificio': Edificio,
+    'grupo_resolutor': GrupoResolutor,
     'institucion': Institucion,
     'estados': EstadoEquipo,
     'fallas_bitacora': BitacoraOpcion,
@@ -28,6 +30,7 @@ MODEL_MAP = {
     'sector': Sector,
     'sistemaoperativo': SistemaOperativo,
     'unidad': Unidad,
+    'cargo': Cargo,
 }
 
 
@@ -37,6 +40,9 @@ class MantenedorService:
     def _get_modelo_class(modelo_nombre):
         cls = MODEL_MAP.get(modelo_nombre.lower())
         if not cls:
+            from core.models import Funcionario
+            if modelo_nombre.lower() == 'funcionario':
+                return Funcionario
             raise ValidationError(f"Modelo '{modelo_nombre}' no válido.")
         return cls
 
@@ -84,8 +90,35 @@ class MantenedorService:
                     raise ValidationError(f"Ya existe '{nombre}' en esta combinación.")
 
     @staticmethod
-    def crear_item(modelo_nombre, datos, usuario):
+    def crear_item(modelo_nombre, datos, usuario, archivos=None):
         cls = MantenedorService._get_modelo_class(modelo_nombre)
+        
+        if modelo_nombre == 'funcionario':
+            rut = datos.get('rut', '').strip().upper()
+            nombres = datos.get('nombres', '').strip()
+            apellidos = datos.get('apellidos', '').strip()
+            if not rut or not nombres or not apellidos:
+                raise ValidationError("RUT, Nombres y Apellidos son obligatorios.")
+            
+            if cls.objects.filter(rut=rut).exists():
+                raise ValidationError(f"Ya existe un funcionario con el RUT '{rut}'.")
+                
+            kwargs = {
+                'rut': rut,
+                'nombres': nombres,
+                'apellidos': apellidos,
+                'correo': datos.get('correo', ''),
+            }
+            if datos.get('cargo'):
+                kwargs['cargo_id'] = MantenedorService._validar_fk('cargo', datos.get('cargo'))
+            if datos.get('unidad'):
+                kwargs['unidad_id'] = MantenedorService._validar_fk('unidad', datos.get('unidad'))
+                
+            instance = cls(**kwargs)
+            instance.full_clean()
+            instance.save()
+            return instance
+
         nombre = normalizar_nombre(datos.get('nombre'))
         if not nombre:
             raise ValidationError("El nombre es obligatorio.")
@@ -100,7 +133,7 @@ class MantenedorService:
             'institucion':       ['codigo'],
             'modelo':            ['marca'],
             'piso':              ['alias', 'edificio'],
-            'proveedor':         ['contacto', 'telefono', 'email', 'direccion'],
+            'proveedor':         ['contacto', 'telefono', 'email', 'direccion', 'rut'],
             'sector':            ['piso'],
             'unidad':            ['area_hospitalaria'],
             'recinto':           ['piso', 'sector', 'unidad'],
@@ -138,22 +171,56 @@ class MantenedorService:
         elif modelo_nombre == 'modelo':
             extra['marca'] = kwargs.get('marca_id')
         MantenedorService._validar_duplicado(cls, nombre, extra)
+
+        if modelo_nombre in ('modelo', 'articulo') and archivos and 'imagen' in archivos:
+            instance.imagen = archivos['imagen']
+
         instance.full_clean()
         MantenedorRepository.save(instance)
+
+        if modelo_nombre == 'grupo_resolutor' and 'miembros' in datos:
+            miembros = datos.get('miembros')
+            if isinstance(miembros, str):
+                import json
+                try:
+                    miembros = json.loads(miembros)
+                except:
+                    pass
+            if isinstance(miembros, list):
+                instance.miembros.set(miembros)
+
         return instance
 
     @staticmethod
-    def actualizar_item(modelo_nombre, item_id, datos, usuario):
+    def actualizar_item(modelo_nombre, item_id, datos, usuario, archivos=None):
         cls = MantenedorService._get_modelo_class(modelo_nombre)
         instance = MantenedorRepository.get_by_id(cls, item_id)
         if not instance:
             raise ValidationError("El registro no existe.")
 
-        nombre = normalizar_nombre(datos.get('nombre'))
-        if not nombre:
-            raise ValidationError("El nombre es obligatorio.")
+        if modelo_nombre == 'funcionario':
+            rut = datos.get('rut', '').strip().upper()
+            if rut:
+                if cls.objects.filter(rut=rut).exclude(id=item_id).exists():
+                    raise ValidationError(f"Ya existe un funcionario con el RUT '{rut}'.")
+                instance.rut = rut
+            if 'nombres' in datos: instance.nombres = datos.get('nombres').strip()
+            if 'apellidos' in datos: instance.apellidos = datos.get('apellidos').strip()
+            if 'correo' in datos: instance.correo = datos.get('correo', '').strip()
+            if 'cargo' in datos: 
+                instance.cargo_id = MantenedorService._validar_fk('cargo', datos.get('cargo'))
+            if 'unidad' in datos:
+                instance.unidad_id = MantenedorService._validar_fk('unidad', datos.get('unidad'))
+            
+            instance.full_clean()
+            instance.save()
+            return instance
 
-        instance.nombre = nombre
+        if 'nombre' in datos:
+            nombre = normalizar_nombre(datos.get('nombre'))
+            if not nombre:
+                raise ValidationError("El nombre es obligatorio.")
+            instance.nombre = nombre
 
         extra_fields = {
             'edificio':          ['institucion'],
@@ -162,7 +229,7 @@ class MantenedorService:
             'institucion':       ['codigo'],
             'modelo':            ['marca'],
             'piso':              ['alias', 'edificio'],
-            'proveedor':         ['contacto', 'telefono', 'email', 'direccion'],
+            'proveedor':         ['contacto', 'telefono', 'email', 'direccion', 'rut'],
             'sector':            ['piso'],
             'unidad':            ['area_hospitalaria'],
             'recinto':           ['piso', 'sector', 'unidad'],
@@ -171,16 +238,17 @@ class MantenedorService:
         FK_FIELDS = {'edificio', 'marca', 'institucion', 'piso', 'sector', 'unidad', 'area_hospitalaria', 'recinto'}
 
         for f in extra_fields.get(modelo_nombre, []):
-            v = datos.get(f)
-            if f in FK_FIELDS:
-                fk_val = MantenedorService._validar_fk(f, v)
-                setattr(instance, f'{f}_id', fk_val)
-            elif f == 'codigo' and v:
-                setattr(instance, f, normalizar_codigo(v))
-            elif f in ('contacto', 'direccion') and v:
-                setattr(instance, f, normalizar_nombre(v))
-            elif v is not None:
-                setattr(instance, f, v)
+            if f in datos:
+                v = datos.get(f)
+                if f in FK_FIELDS:
+                    fk_val = MantenedorService._validar_fk(f, v)
+                    setattr(instance, f'{f}_id', fk_val)
+                elif f == 'codigo' and v:
+                    setattr(instance, f, normalizar_codigo(v))
+                elif f in ('contacto', 'direccion') and v:
+                    setattr(instance, f, normalizar_nombre(v))
+                elif v is not None:
+                    setattr(instance, f, v)
 
         activo = datos.get('activo')
         if activo is not None:
@@ -194,8 +262,24 @@ class MantenedorService:
         elif modelo_nombre == 'modelo':
             extra['marca'] = instance.marca_id
         MantenedorService._validar_duplicado(cls, instance.nombre, extra, exclude_id=item_id)
+        
+        if modelo_nombre in ('modelo', 'articulo') and archivos and 'imagen' in archivos:
+            instance.imagen = archivos['imagen']
+
         instance.full_clean()
         MantenedorRepository.save(instance)
+
+        if modelo_nombre == 'grupo_resolutor' and 'miembros' in datos:
+            miembros = datos.get('miembros')
+            if isinstance(miembros, str):
+                import json
+                try:
+                    miembros = json.loads(miembros)
+                except:
+                    pass
+            if isinstance(miembros, list):
+                instance.miembros.set(miembros)
+
         return instance
 
     @staticmethod
@@ -204,6 +288,10 @@ class MantenedorService:
         instance = MantenedorRepository.get_by_id(cls, item_id)
         if not instance:
             raise ValidationError("El registro no existe.")
+            
+        if modelo_nombre == 'modelo' and instance.nombre.upper() in ('GENÉRICO', 'GENERICO'):
+            raise ValidationError("No se puede eliminar el modelo Genérico porque actúa como valor por defecto del sistema.")
+            
         try:
             MantenedorRepository.delete(instance)
         except ProtectedError:
@@ -216,10 +304,14 @@ class MantenedorService:
         cls_modelo = MantenedorService._get_modelo_class(modelo_nombre)
 
         order_name = 'nombre'
+        if modelo_nombre == 'funcionario':
+            order_name = 'nombres'
         if 0 <= order_col < len(cols):
             col_data = cols[order_col].get('data', 'nombre')
             if col_data != 'acciones':
                 order_name = col_data
+                if modelo_nombre == 'funcionario' and col_data == 'nombre':
+                    order_name = 'nombres'
 
         records = MantenedorRepository.get_paginated_list(
             cls_modelo, start, length, search_value, order_name, order_dir,
@@ -229,6 +321,24 @@ class MantenedorService:
 
         data = []
         for idx, item in enumerate(records):
+            if modelo_nombre == 'funcionario':
+                unidad_str = item.unidad.nombre if item.unidad else ''
+                cargo_str = item.cargo.nombre if item.cargo else ''
+                row = {
+                    'id': item.id,
+                    'row_num': start + idx + 1,
+                    'nombre': f"{item.nombres} {item.apellidos}",
+                    'activo': True,
+                    'rut': item.rut,
+                    'nombres': item.nombres,
+                    'apellidos': item.apellidos,
+                    'correo': item.correo or '',
+                    'cargo': cargo_str,
+                    'unidad': unidad_str
+                }
+                data.append(row)
+                continue
+
             row = {
                 'id': item.id,
                 'row_num': start + idx + 1,
@@ -246,11 +356,13 @@ class MantenedorService:
                 row['tipo'] = item.tipo
             elif modelo_nombre == 'modelo':
                 row['marca'] = item.marca.nombre if item.marca else ''
+                row['imagen_url'] = item.imagen.url if item.imagen else ''
             elif modelo_nombre == 'piso':
                 row['alias'] = item.alias or ''
                 row['edificio'] = item.edificio.nombre if item.edificio else ''
             elif modelo_nombre == 'proveedor':
                 row['contacto'] = item.contacto or ''
+                row['rut'] = item.rut or ''
                 row['telefono'] = item.telefono or ''
                 row['email'] = item.email or ''
                 row['direccion'] = item.direccion or ''
@@ -267,6 +379,8 @@ class MantenedorService:
                 row['recinto'] = item.recinto.nombre if item.recinto else ''
                 row['unidad'] = item.recinto.unidad.nombre if item.recinto and item.recinto.unidad else ''
                 row['piso'] = str(item.recinto.piso) if item.recinto and item.recinto.piso else ''
+            elif modelo_nombre == 'grupo_resolutor':
+                row['miembros'] = [f"{u.first_name} {u.last_name}".strip() for u in item.miembros.all()]
             data.append(row)
 
         return {'recordsTotal': total, 'recordsFiltered': filtered, 'data': data}
