@@ -202,6 +202,85 @@ class UsuarioActionView(LoginRequiredMixin, View):
             request.method = 'PUT'
         return super().dispatch(request, *args, **kwargs)
 
+class RolesDashboardView(LoginRequiredMixin, TemplateView):
+    """
+    Vista principal para gestión de Roles y Perfiles.
+    """
+    template_name = 'core/roles.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from core.models import Rol
+        from core.services.rol_service import RolService
+        import json
+        context['roles'] = Rol.objects.all().order_by('orden', 'nombre').prefetch_related('usuarios')
+        context['permisos_json'] = json.dumps(RolService.obtener_permisos_disponibles())
+        return context
+
+class RolesDetailAPIView(LoginRequiredMixin, View):
+    def get(self, request, rol_id, *args, **kwargs):
+        if not request.user.is_superuser and not (hasattr(request.user, 'perfil') and request.user.perfil.rol and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')):
+            return JsonResponse({'success': False, 'message': 'No autorizado'}, status=403)
+        try:
+            from core.models import Rol
+            rol = Rol.objects.get(id=rol_id)
+            return JsonResponse({
+                'success': True,
+                'data': {
+                    'id': rol.id,
+                    'nombre': rol.nombre,
+                    'descripcion': rol.descripcion,
+                    'activo': rol.activo,
+                    'permisos': rol.permisos
+                }
+            })
+        except Rol.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Rol no encontrado'}, status=404)
+
+class RolesAPIView(LoginRequiredMixin, View):
+    """
+    API JSON para crear o editar roles y sus permisos.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'POST' and request.POST.get('_method', '').upper() == 'PUT':
+            request.method = 'PUT'
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_superuser and not (hasattr(request.user, 'perfil') and request.user.perfil.rol and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')):
+            return JsonResponse({'success': False, 'message': 'No autorizado'}, status=403)
+            
+        try:
+            data = json.loads(request.body)
+            from core.models import Rol
+            rol = Rol.objects.create(
+                nombre=data.get('nombre', ''),
+                descripcion=data.get('descripcion', ''),
+                activo=data.get('activo', True),
+                permisos=data.get('permisos', {})
+            )
+            return JsonResponse({'success': True, 'message': 'Rol creado con éxito', 'id': rol.id})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=400)
+
+    def put(self, request, *args, **kwargs):
+        if not request.user.is_superuser and not (hasattr(request.user, 'perfil') and request.user.perfil.rol and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')):
+            return JsonResponse({'success': False, 'message': 'No autorizado'}, status=403)
+            
+        try:
+            data = json.loads(request.body)
+            from core.models import Rol
+            rol_id = data.get('id')
+            rol = Rol.objects.get(id=rol_id)
+            rol.nombre = data.get('nombre', rol.nombre)
+            rol.descripcion = data.get('descripcion', rol.descripcion)
+            rol.activo = data.get('activo', rol.activo)
+            rol.permisos = data.get('permisos', rol.permisos)
+            rol.save()
+            return JsonResponse({'success': True, 'message': 'Rol actualizado con éxito'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=400)
+
     def _parse_request(self, request):
         """Extrae datos del request tanto de JSON como de multipart."""
         if request.content_type and 'multipart/form-data' in request.content_type:
@@ -392,6 +471,7 @@ class UsuarioActionView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': 'Ya existe un usuario con esos datos.'}, status=400)
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
+
 
 class FuncionarioSearchAPIView(LoginRequiredMixin, View):
     """Búsqueda de funcionarios para Select2 por RUT, nombres o apellidos."""

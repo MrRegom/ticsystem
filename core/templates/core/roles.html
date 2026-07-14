@@ -1,0 +1,128 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Roles y Perfiles{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 animate__animated animate__fadeIn">
+  <div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+      <h2 class="font-weight-bold text-dark mb-0">Gestión de Roles y Perfiles</h2>
+      <p class="text-muted mb-0">Administración de perfiles y permisos de acceso al sistema</p>
+    </div>
+    <div class="col-md-4 text-right">
+      <button class="btn btn-primary shadow-sm rounded-pill font-weight-bold px-4" id="btn-nuevo-rol">
+        <i class="fas fa-plus-circle mr-2"></i> Nuevo Rol
+      </button>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 rounded-lg">
+    <div class="card-body p-4">
+      <div class="table-responsive">
+        <table id="roles-table" class="table table-hover table-borderless align-middle w-100">
+          <thead class="thead-light">
+            <tr>
+              <th class="text-uppercase text-secondary font-weight-bold text-xs">Rol</th>
+              <th class="text-uppercase text-secondary font-weight-bold text-xs">Descripción</th>
+              <th class="text-uppercase text-secondary font-weight-bold text-xs text-center">Permisos Asignados</th>
+              <th class="text-uppercase text-secondary font-weight-bold text-xs text-center">Usuarios</th>
+              <th class="text-uppercase text-secondary font-weight-bold text-xs text-center">Estado</th>
+              <th class="text-uppercase text-secondary font-weight-bold text-xs text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for rol in roles %}
+            <tr>
+              <td><span class="font-weight-bold text-dark">{{ rol.nombre }}</span></td>
+              <td class="text-muted text-sm">{{ rol.descripcion|default:"-" }}</td>
+              <td class="text-center">
+                <span class="badge badge-info badge-pill px-3 py-2">{{ rol.permisos.keys|length }} permisos</span>
+              </td>
+              <td class="text-center">
+                <span class="badge badge-light badge-pill px-3 py-2 border text-dark">{{ rol.usuarios.count }} usuarios</span>
+              </td>
+              <td class="text-center">
+                {% if rol.activo %}
+                  <span class="badge badge-success badge-pill px-3 py-2"><i class="fas fa-check-circle mr-1"></i> Activo</span>
+                {% else %}
+                  <span class="badge badge-danger badge-pill px-3 py-2"><i class="fas fa-times-circle mr-1"></i> Inactivo</span>
+                {% endif %}
+              </td>
+              <td class="text-right">
+                <button class="btn btn-sm btn-light btn-icon text-primary btn-edit-rol" data-id="{{ rol.id }}" title="Editar Rol">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Formulario de Rol -->
+<div class="modal fade" id="modalRol" tabindex="-1" aria-labelledby="modalRolLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 0;">
+      <div class="modal-header bg-white border-bottom-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title font-weight-bold text-dark" id="modalRolLabel">Rol y Permisos</h5>
+        <button type="button" class="close text-secondary" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="form-rol">
+        <div class="modal-body p-4">
+          <input type="hidden" id="rol_id" name="rol_id">
+          
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold text-dark text-sm">Nombre del Rol *</label>
+              <input type="text" class="form-control form-control-solid rounded" id="nombre" name="nombre" required>
+            </div>
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold text-dark text-sm">Estado</label>
+              <select class="form-control form-control-solid rounded custom-select" id="activo" name="activo">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group mb-4">
+            <label class="font-weight-bold text-dark text-sm">Descripción</label>
+            <textarea class="form-control form-control-solid rounded" id="descripcion" name="descripcion" rows="2"></textarea>
+          </div>
+
+          <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-3 mt-4"><i class="fas fa-key text-warning mr-2"></i> Permisos de Acceso</h6>
+          
+          <div class="row" id="permisos-container">
+            <!-- Renderizado dinámicamente -->
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-top-0 px-4 py-3" style="border-radius: 0;">
+          <button type="button" class="btn btn-light font-weight-bold text-muted px-4" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary font-weight-bold px-4" id="btn-save-rol">
+            <i class="fas fa-save mr-2"></i>Guardar Rol
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script>
+  const PERMISOS_DISPONIBLES = {{ permisos_json|safe }};
+</script>
+<script src="{% static 'js/roles.js' %}"></script>
+{% endblock %}

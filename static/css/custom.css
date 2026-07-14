@@ -34,12 +34,12 @@
   --ic-default: #64748b;
 
   /* Typography scale */
-  --text-xs: .65rem;
-  --text-sm: .78rem;
-  --text-base: .88rem;
-  --text-lg: 1.05rem;
-  --text-xl: 1.35rem;
-  --text-2xl: 1.65rem;
+  --text-xs: .60rem;
+  --text-sm: .72rem;
+  --text-base: .80rem;
+  --text-lg: .95rem;
+  --text-xl: 1.15rem;
+  --text-2xl: 1.45rem;
 }
 
 body {

@@ -5,6 +5,9 @@ from core.views import (
     CustomLogoutView, 
     DashboardGeneralView,
     UsuariosDashboardView,
+    RolesDashboardView,
+    RolesAPIView,
+    RolesDetailAPIView,
     UsuarioListView,
     UsuarioActionView,
     SwitchUserView,
@@ -25,8 +28,11 @@ urlpatterns = [
     path('switch_user/', SwitchUserView.as_view(), name='switch_user'),
 
     path('usuarios/', UsuariosDashboardView.as_view(), name='usuarios_dashboard'),
+    path('roles/', RolesDashboardView.as_view(), name='roles_dashboard'),
     
     # APIs para AJAX
+    path('api/roles/', RolesAPIView.as_view(), name='roles_api'),
+    path('api/roles/<int:rol_id>/', RolesDetailAPIView.as_view(), name='roles_detail_api'),
 
     path('api/usuarios/', UsuarioListView.as_view(), name='usuario_list_api'),
     path('api/usuarios/action/', UsuarioActionView.as_view(), name='usuario_action_api'),
