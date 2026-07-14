@@ -8,44 +8,42 @@
 {% endblock %}
 
 {% block content %}
-<div class="fade-in">
+<div class="container-fluid pb-4 animate__animated animate__fadeIn" style="padding: 0 10px; margin-top: -24px;">
   
   <!-- Encabezado de Página -->
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+  <div class="page-header-top">
     <div>
-      <h1 class="h2 font-weight-bold text-gob-azul mb-1">Gestión de Usuarios y Perfiles</h1>
-      <p class="text-muted mb-0">Administración de operadores y personal administrativo - Hospital Marga Marga</p>
+      <h2 class="font-weight-bold text-dark mb-0">Gestión de Usuarios y Perfiles</h2>
+      <p class="page-subtitle">Administración de operadores y personal administrativo - Hospital Marga Marga</p>
     </div>
-    <div class="mt-3 mt-md-0">
-      <button class="btn btn-gob-primary" data-toggle="modal" data-target="#modalCrearUsuario">
-        <i class="fas fa-plus mr-2"></i>Nuevo Funcionario / Operador
+    <div>
+      <button class="btn-primary-action shadow-sm" data-toggle="modal" data-target="#modalCrearUsuario">
+        <i class="fas fa-plus mr-1"></i> Nuevo Funcionario / Operador
       </button>
     </div>
   </div>
 
   <!-- Tabla de Resultados -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
-      <div class="table-responsive">
-        <table id="tabla-usuarios" class="table table-hover w-100">
-          <thead>
-            <tr>
-              <th></th>
-              <th>RUT</th>
-              <th>Nombres</th>
-              <th>Apellidos</th>
-              <th>Correo Electrónico</th>
-              <th>Unidad / Servicio</th>
-              <th>Grupos</th>
-              <th>Estado</th>
-              <th style="width: 90px; text-align: center;">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Cargado vía DataTables Server-Side -->
-          </tbody>
-        </table>
-      </div>
+  <div class="datagrid-container">
+    <div class="table-responsive">
+      <table id="tabla-usuarios" class="table dataTable align-middle w-100">
+        <thead class="thead-light">
+          <tr>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs"></th>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs">RUT</th>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs">Nombres</th>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs">Apellidos</th>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs">Correo Electrónico</th>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs">Unidad / Servicio</th>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs">Grupos</th>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs">Estado</th>
+            <th class="text-uppercase text-secondary font-weight-bold text-xs" style="text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Cargado vía DataTables Server-Side -->
+        </tbody>
+      </table>
     </div>
   </div>
 
