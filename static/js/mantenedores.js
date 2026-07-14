@@ -597,6 +597,15 @@ var MantenedoresApp = (function ($) {
       $('#modalMantenedor').modal('show');
     });
 
+    // Forzar mayúsculas en todos los inputs de texto del modal
+    $(document).on('input', '#modalMantenedor input[type="text"]', function() {
+      var val = $(this).val();
+      var upper = val.toUpperCase();
+      if (val !== upper) {
+        $(this).val(upper);
+      }
+    });
+
     // Modal al cerrar → limpiar errores
     $('#modalMantenedor').on('hidden.bs.modal', function () {
       $('#mantenedor-error-alert').addClass('d-none').empty();
