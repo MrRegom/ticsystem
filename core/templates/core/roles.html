@@ -41,16 +41,16 @@
               <td><span class="font-weight-bold text-dark">{{ rol.nombre }}</span></td>
               <td class="text-muted text-sm">{{ rol.descripcion|default:"-" }}</td>
               <td class="text-center">
-                <span class="badge badge-info badge-pill px-3 py-2">{{ rol.permisos.keys|length }} permisos</span>
+                <span class="badge badge-info badge-pill px-2 py-1" style="font-size: 0.7rem;">{{ rol.permisos.keys|length }} permisos</span>
               </td>
               <td class="text-center">
-                <span class="badge badge-light badge-pill px-3 py-2 border text-dark">{{ rol.usuarios.count }} usuarios</span>
+                <span class="badge badge-light badge-pill px-2 py-1 border text-dark" style="font-size: 0.7rem;">{{ rol.usuarios.count }} usuarios</span>
               </td>
               <td class="text-center">
                 {% if rol.activo %}
-                  <span class="badge badge-success badge-pill px-3 py-2"><i class="fas fa-check-circle mr-1"></i> Activo</span>
+                  <span class="badge badge-success badge-pill px-2 py-1" style="font-size: 0.7rem;"><i class="fas fa-check-circle mr-1"></i> Activo</span>
                 {% else %}
-                  <span class="badge badge-danger badge-pill px-3 py-2"><i class="fas fa-times-circle mr-1"></i> Inactivo</span>
+                  <span class="badge badge-danger badge-pill px-2 py-1" style="font-size: 0.7rem;"><i class="fas fa-times-circle mr-1"></i> Inactivo</span>
                 {% endif %}
               </td>
               <td class="text-right">
