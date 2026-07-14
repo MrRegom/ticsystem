@@ -752,6 +752,7 @@ var EquiposApp = (function($) {
                 $('#v-edificio').text(eq.edificio || '-');
                 $('#v-piso').text(eq.piso || '-');
                 $('#v-unidad').text(eq.unidad || '-');
+                $('#v-recinto').text(eq.recinto || '-');
                 $('#v-pma').text(eq.pma || '-');
                 
                 // Especificaciones

@@ -291,24 +291,26 @@
           <div style="border-top: 1px solid #e2e8f0; margin-bottom: 16px;"></div>
           
           <div class="row mb-3">
-            <div class="col-6">
-              <span class="cell-subtitle"><i class="far fa-building mr-1"></i> Edificio</span>
+            <div class="col-4">
+              <span class="cell-subtitle"><i class="far fa-building mr-1"></i> Área Hospitalaria</span>
               <span id="v-edificio" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
             </div>
-            <div class="col-6">
-              <span class="cell-subtitle"><i class="fas fa-layer-group mr-1"></i> Piso</span>
+            <div class="col-4">
+              <span class="cell-subtitle"><i class="fas fa-layer-group mr-1"></i> Sector</span>
               <span id="v-piso" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
             </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-12">
-              <span class="cell-subtitle"><i class="far fa-hospital mr-1"></i> Servicio / Unidad</span>
+            <div class="col-4">
+              <span class="cell-subtitle"><i class="far fa-hospital mr-1"></i> Unidad Hosp.</span>
               <span id="v-unidad" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
             </div>
           </div>
           <div class="row mb-4">
-            <div class="col-12">
-              <span class="cell-subtitle"><i class="fas fa-plug mr-1"></i> PMA / Lugar</span>
+            <div class="col-6">
+              <span class="cell-subtitle"><i class="fas fa-door-open mr-1"></i> Nombre de Recinto</span>
+              <span id="v-recinto" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
+            </div>
+            <div class="col-6">
+              <span class="cell-subtitle"><i class="fas fa-plug mr-1"></i> PMA</span>
               <span id="v-pma" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
             </div>
           </div>
@@ -432,28 +434,28 @@
           <div class="section-label mt-2"><i class="fas fa-map-marker-alt"></i> Ubicación Topológica</div>
           <div class="row mb-4">
             <div class="col-md-4 mb-3">
-              <label class="form-label-clean">Edificio / Piso (Filtro)</label>
+              <label class="form-label-clean">Área Hospitalaria / Sector (Filtro)</label>
               <select class="form-control-clean select2" id="e-piso">
                 <option value="">Todos</option>
                 {% for p in pisos %}<option value="{{ p.id }}">{{ p.edificio__nombre }} - P{{ p.nombre }}</option>{% endfor %}
               </select>
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label-clean">Unidad Clínica (Filtro)</label>
+              <label class="form-label-clean">Unidad Hospitalaria (Filtro)</label>
               <select class="form-control-clean select2" id="e-unidad">
                 <option value="">Todas</option>
                 {% for u in unidades %}<option value="{{ u.id }}">{{ u.nombre }}</option>{% endfor %}
               </select>
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label-clean">Recinto (Filtro)</label>
+              <label class="form-label-clean">Nombre de Recinto (Filtro)</label>
               <select class="form-control-clean select2" id="e-recinto">
                 <option value="">Todos</option>
                 {% for r in recintos %}<option value="{{ r.id }}" data-piso="{{ r.piso_id }}" data-unidad="{{ r.unidad_id }}">{{ r.nombre }}</option>{% endfor %}
               </select>
             </div>
             <div class="col-md-12 mb-0">
-              <label class="form-label-clean">Punto de Montaje (PMA) <span style="color:#ef4444;">*</span></label>
+              <label class="form-label-clean">PMA <span style="color:#ef4444;">*</span></label>
               <select class="form-control-clean select2" id="e-pma" required>
                 <option value="">-- Seleccionar el conector exacto --</option>
                 {% for pma in pmas %}<option value="{{ pma.id }}" data-recinto="{{ pma.recinto_id }}">{{ pma.nombre }}</option>{% endfor %}
