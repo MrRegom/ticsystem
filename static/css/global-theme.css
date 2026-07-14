@@ -207,3 +207,27 @@
 .btn-gob-outline { border: 1px solid #002855; color: #002855; background: white; }
 .btn-gob-outline:hover { background-color: #f1f5f9; color: #002855; }
 
+.btn-primary-action {
+    background: #0066cc;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-primary-action:hover { background: #0052a3; color: #fff; }
+
+/* Global typography reductions */
+h1, .h1 { font-size: 1.5rem !important; }
+h2, .h2 { font-size: 1.25rem !important; }
+h3, .h3 { font-size: 1.1rem !important; }
+h4, .h4 { font-size: 0.95rem !important; }
+h5, .h5 { font-size: 0.85rem !important; }
+
+.table { font-size: 0.8rem; }
+
