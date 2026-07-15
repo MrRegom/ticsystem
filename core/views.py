@@ -555,3 +555,49 @@ class FuncionarioCreateAPIView(LoginRequiredMixin, View):
             
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+class UsuarioCrearAPIView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        from core.services.usuario_service import UsuarioService
+        import json
+        try:
+            data = json.loads(request.body)
+            UsuarioService.crear_usuario(
+                rut=data.get('rut'), nombres=data.get('nombres'), apellidos=data.get('apellidos'),
+                correo=data.get('email'), unidad=data.get('unidad'), cargo='', grado='',
+                contrasena=data.get('contrasena', '12345678'), grupos=data.get('grupos', []),
+                rol_id=data.get('rol'), is_active=data.get('is_active', True)
+            )
+            return JsonResponse({'success': True, 'mensaje': 'Identidad creada correctamente.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+class UsuarioEditarAPIView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        from core.services.usuario_service import UsuarioService
+        import json
+        try:
+            data = json.loads(request.body)
+            # The JS might send 'rut' as 'id' if there's no id, but the service needs user_id.
+            # Let's resolve the user_id by username(rut) if id is not a number.
+            user_id = data.get('id')
+            if user_id and not str(user_id).isdigit():
+                from django.contrib.auth.models import User
+                user_obj = User.objects.filter(username=user_id).first()
+                if user_obj:
+                    user_id = user_obj.id
+            UsuarioService.actualizar_usuario(
+                user_id=user_id, rut=data.get('rut'), nombres=data.get('nombres'), 
+                apellidos=data.get('apellidos'), correo=data.get('email'), 
+                unidad=data.get('unidad'), cargo='', grado='',
+                contrasena=data.get('contrasena'), grupos=data.get('grupos', []),
+                rol_id=data.get('rol') or None, is_active=data.get('is_active', True)
+            )
+            return JsonResponse({'success': True, 'mensaje': 'Identidad modificada correctamente.'})
+        except Exception as e:
+            from django.core.exceptions import ValidationError
+            err_msg = str(e)
+            if isinstance(e, ValidationError):
+                if hasattr(e, 'messages'):
+                    err_msg = e.messages[0]
+            return JsonResponse({'success': False, 'error': err_msg}, status=400)
