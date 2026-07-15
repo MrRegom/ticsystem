@@ -158,7 +158,7 @@ $(document).ready(function() {
                 }
             },
             { 
-                data: 'ubicacion',
+                data: null,
                 render: function(data, type, row) {
                     var ubi = row.unidad_nombre || row.pma_nombre || 'Sin Unidad';
                     var edif = [];
