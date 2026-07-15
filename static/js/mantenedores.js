@@ -481,8 +481,8 @@ var MantenedoresApp = (function ($) {
         }
     }
     
-    // Adjuntar archivo de imagen si es modelo
-    if (modeloActual === 'modelo') {
+    // Adjuntar archivo de imagen si es modelo, modeloanexo, o articulo
+    if (['modelo', 'modeloanexo', 'articulo'].includes(modeloActual)) {
         var fileInput = document.getElementById('m-imagen');
         if (fileInput && fileInput.files.length > 0) {
             formData.append('imagen', fileInput.files[0]);

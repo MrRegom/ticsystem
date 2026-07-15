@@ -1,104 +1,262 @@
-/* anexos.js - DataTables Server-Side + CRUD Anexos */
-(function () {
-  'use strict';
-  let tabla;
+$(document).ready(function() {
+    // CSRF Setup
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = $.trim(cookies[i]);
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({ beforeSend: function(xhr, settings) { xhr.setRequestHeader("X-CSRFToken", csrftoken); }});
 
-  function initDataTable() {
-    tabla = $('#tabla-anexos').DataTable({
-      processing: true, serverSide: true,
-      ajax: { url: '/anexos/api/', type: 'POST', dataSrc: 'data' },
-      columns: [
-        { data: 'numero_anexo' }, { data: 'marca' }, { data: 'modelo' },
-        { data: 'edificio' }, { data: 'piso' }, { data: 'unidad' },
-        { data: 'estado', render: function(d,t,r){ if(t==='display'&&d){ var c=d==='Activo'?'success':'secondary'; return '<span class="badge badge-'+c+'">'+d+'</span>'; } return d; } },
-        { data: 'serial_number' }, { data: 'ip' }, { data: 'pma_lugar' },
-        { data: 'id', orderable: false, render: function(d,t){ if(t==='display'){ return '<div class="actions-cell"><a href="#" class="action-icon ic-edit btn-editar" data-id="'+d+'" title="Editar"><i class="fas fa-edit"></i></a><a href="#" class="action-icon ic-delete btn-eliminar" data-id="'+d+'" title="Eliminar"><i class="fas fa-trash-alt"></i></a></div>'; } return d; } },
-      ],
-      order: [[0, 'asc']], pageLength: 25,
-      language: {
-        search: 'Buscar:',
-        searchPlaceholder: 'Buscar...',
-        lengthMenu: 'Mostrar _MENU_ registros',
-        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        infoEmpty: 'Mostrando 0 registros',
-        infoFiltered: '(filtrado de _MAX_ registros totales)',
-        zeroRecords: 'No se encontraron registros',
-        loadingRecords: 'Cargando...',
-        processing: 'Procesando...',
-        paginate: {
-          first: 'Primero',
-          last: 'Último',
-          next: 'Siguiente',
-          previous: 'Anterior',
-        },
-      },
+    // Inicializar Select2
+    $('.select2-modal').select2({
+        dropdownParent: $('#modalAnexo'),
+        width: '100%',
+        theme: 'bootstrap4'
     });
-  }
 
-  function resetForm() {
-    $('#form-anexo')[0].reset();
-    $('#anexo-id').val('');
-    $('#anexo-error-alert').addClass('d-none').empty();
-    $('#modalAnexoLabel').text('Registrar Nuevo Anexo');
-    $('#ax-piso').html('<option value="">Seleccione edificio...</option>');
-  }
+    // Lógica para filtrar Pisos según Edificio
+    $('#a-edificio').on('change', function() {
+        var edif_id = $(this).val();
+        $('#a-piso option').each(function() {
+            if ($(this).val() === "") {
+                $(this).show();
+            } else {
+                if ($(this).data('edificio') == edif_id || edif_id === "") {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            }
+        });
+        $('#a-piso').val('').trigger('change.select2');
+    });
 
-  function showError(m) { $('#anexo-error-alert').html(m).removeClass('d-none'); }
+    // Inicializar DataTable
+    var tablaAnexos = $('#tabla-anexos').DataTable({
+        serverSide: true,
+        processing: true,
+        responsive: true,
+        ajax: {
+            url: '/anexos/api/',
+            type: 'POST',
+            error: function (xhr, error, code) {
+                console.error("Error al cargar Anexos:", error);
+            }
+        },
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+            search: "_INPUT_",
+            searchPlaceholder: "Buscar..."
+        },
+        dom: '<"top">rt<"bottom"ilp><"clear">',
+        columns: [
+            { data: 'id', orderable: false, className: 'text-center' },
+            { 
+                data: 'numero_anexo',
+                render: function(data, type, row) {
+                    var img = row.modelo_img ? `<img src="${row.modelo_img}" style="width:100%; object-fit:contain;">` : `<i class="fas fa-phone-alt fa-lg"></i>`;
+                    return `
+                    <div class="d-flex align-items-center">
+                        <div class="icon-square">${img}</div>
+                        <div>
+                            <div class="cell-primary">${data || 'S/N'}</div>
+                            <div class="cell-secondary">ID: ${row.id}</div>
+                        </div>
+                    </div>`;
+                }
+            },
+            { 
+                data: 'modelo',
+                render: function(data, type, row) {
+                    var mod = row.modelo_anexo_nombre || row.modelo || 'Sin Modelo';
+                    return `
+                    <div>
+                        <div class="cell-primary">${mod}</div>
+                        <div class="cell-secondary"><i class="fas fa-barcode mr-1"></i>${row.serial_number || 'S/N'}</div>
+                    </div>`;
+                }
+            },
+            { 
+                data: 'ubicacion',
+                render: function(data, type, row) {
+                    var ubi = row.unidad_nombre || row.pma_lugar || 'Sin Unidad';
+                    var edif = [];
+                    if (row.edificio_nombre) edif.push(row.edificio_nombre);
+                    if (row.piso_nombre) edif.push(row.piso_nombre);
+                    var edif_str = edif.length > 0 ? edif.join(' - ') : 'S/U';
+                    
+                    return `
+                    <div>
+                        <div class="cell-primary">${ubi}</div>
+                        <div class="cell-secondary"><i class="fas fa-hospital mr-1"></i>${edif_str}</div>
+                    </div>`;
+                }
+            },
+            { 
+                data: 'ip',
+                render: function(data, type, row) {
+                    var st = row.estado === 'Activo' 
+                        ? `<span class="status-badge status-activo"><i class="fas fa-check-circle mr-1"></i>Activo</span>`
+                        : `<span class="status-badge status-inactivo"><i class="fas fa-times-circle mr-1"></i>Inactivo</span>`;
+                    var ip_str = row.ip ? `<i class="fas fa-network-wired mr-1"></i>${row.ip}` : '<i class="fas fa-network-wired mr-1"></i>S/IP';
+                    return `
+                    <div>
+                        <div class="mb-1">${st}</div>
+                        <div class="cell-secondary">${ip_str}</div>
+                    </div>`;
+                }
+            },
+            {
+                data: null,
+                orderable: false,
+                searchable: false,
+                className: 'text-right',
+                render: function(data, type, row) {
+                    return `
+                        <button class="action-btn-square text-primary btn-ver-anexo" data-id="${row.id}" title="Ver Anexo">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn-square text-success btn-editar-anexo" data-id="${row.id}" title="Editar Anexo">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn-square text-danger btn-eliminar-anexo" data-id="${row.id}" title="Eliminar Anexo">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    `;
+                }
+            }
+        ]
+    });
 
-  function getFormData() {
-    return {
-      id: $('#anexo-id').val() || null,
-      numero_anexo: $('#ax-numero').val(), marca: $('#ax-marca').val(), modelo: $('#ax-modelo').val(),
-      edificio: $('#ax-edificio').val() || null, piso: $('#ax-piso').val() || null,
-      unidad: $('#ax-unidad').val() || null, serial_number: $('#ax-serial').val(),
-      ip: $('#ax-ip').val(), estado: $('#ax-estado').val(), pma_lugar: $('#ax-pma').val(),
-      grupo: $('#ax-grupo').val(), proveedor: $('#ax-proveedor').val() || null,
-      comentario: $('#ax-comentario').val(),
-    };
-  }
+    // Custom Search
+    $('#custom-search-input').on('keyup', function() {
+        tablaAnexos.search(this.value).draw();
+    });
 
-  function fillForm(d) {
-    $('#anexo-id').val(d.id);
-    $('#ax-numero').val(d.numero_anexo); $('#ax-marca').val(d.marca); $('#ax-modelo').val(d.modelo);
-    $('#ax-edificio').val(d.edificio).trigger('change'); $('#ax-unidad').val(d.unidad);
-    $('#ax-serial').val(d.serial_number); $('#ax-ip').val(d.ip); $('#ax-estado').val(d.estado);
-    $('#ax-pma').val(d.pma_lugar); $('#ax-grupo').val(d.grupo); $('#ax-proveedor').val(d.proveedor);
-    $('#ax-comentario').val(d.comentario);
-    if (d.edificio) cargarPisos(d.edificio, d.piso);
-    $('#modalAnexoLabel').text('Editar Anexo');
-  }
+    // Botón Nuevo Anexo
+    $('#btn-nuevo').on('click', function() {
+        $('#form-anexo')[0].reset();
+        $('#form-anexo').removeClass('was-validated');
+        $('#anexo-id').val('');
+        $('.select2-modal').val('').trigger('change.select2');
+        $('#modalAnexoLabel').text('Información Técnica del Equipo');
+        $('#modalAnexo').modal('show');
+    });
 
-  function cargarPisos(edId, sel) {
-    if (!edId) { $('#ax-piso').html('<option value="">Seleccione edificio...</option>'); return; }
-    var pisos = (window.__PISOS__||[]).filter(function(p){return p.edificio__id==edId;});
-    var opts = '<option value="">Seleccione...</option>';
-    pisos.forEach(function(p){ opts += '<option value="'+p.id+'"'+(p.id==sel?' selected':'')+'>'+p.nombre+'</option>'; });
-    $('#ax-piso').html(opts);
-  }
+    // Guardar Anexo
+    $('#btn-guardar-anexo').on('click', function() {
+        if (!$('#form-anexo')[0].checkValidity()) {
+            $('#form-anexo').addClass('was-validated');
+            return;
+        }
 
-  function guardar() {
-    var data = getFormData();
-    $.ajax({ url: '/anexos/api/action/', type: data.id ? 'PUT' : 'POST', contentType: 'application/json', data: JSON.stringify(data) })
-      .done(function(r){ if(r.success){ $('#modalCrearAnexo').modal('hide'); Swal.fire('Éxito',r.message,'success'); tabla.ajax.reload(null,false); } else showError(r.message); })
-      .fail(function(x){ showError(x.responseJSON?.message||'Error'); });
-  }
+        var data = {
+            id: $('#anexo-id').val(),
+            numero_anexo: $('#a-numero').val(),
+            modelo_anexo: $('#a-modelo-anexo').val(),
+            edificio: $('#a-edificio').val(),
+            piso: $('#a-piso').val(),
+            unidad: $('#a-unidad').val(),
+            ip: $('#a-ip').val(),
+            serial_number: $('#a-serial').val(),
+            pma_lugar: $('#a-pma').val(),
+            estado: $('#a-estado').val(),
+            comentario: $('#a-comentario').val()
+        };
 
-  function editar(id) {
-    resetForm();
-    $.get('/anexos/api/'+id+'/').done(function(r){ if(r.success){ fillForm(r.data); $('#modalCrearAnexo').modal('show'); } });
-  }
+        var url = '/anexos/api/action/';
+        var type = data.id ? 'PUT' : 'POST';
 
-  function eliminar(id) {
-    Swal.fire({ title:'¿Eliminar anexo?', text:'No se puede deshacer.', icon:'warning', showCancelButton:true, confirmButtonText:'Sí, eliminar', confirmButtonColor:'#dc3545' })
-      .then(function(r){ if(r.isConfirmed){ $.ajax({ url:'/anexos/api/action/', type:'DELETE', contentType:'application/json', data:JSON.stringify({id:id}) }).done(function(r){ if(r.success){ Swal.fire('Eliminado',r.message,'success'); tabla.ajax.reload(null,false); } else Swal.fire({ icon:'warning', text:r.message }); }).fail(function(x){ Swal.fire({ icon:'warning', text: (x.responseJSON && x.responseJSON.message) || 'El anexo está en uso y no se puede eliminar.' }); }); } });
-  }
+        $.ajax({
+            url: url,
+            type: type,
+            data: JSON.stringify(data),
+            contentType: 'application/json'
+        }).done(function(r) {
+            if (r.success) {
+                $('#modalAnexo').modal('hide');
+                Swal.fire({ icon: 'success', title: 'Éxito', text: r.message, confirmButtonColor: '#002a54' });
+                tablaAnexos.ajax.reload(null, false);
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: r.message, confirmButtonColor: '#002a54' });
+            }
+        }).fail(function(x) {
+            Swal.fire({ icon: 'error', title: 'Error', text: x.responseJSON ? x.responseJSON.message : 'Error de conexión.', confirmButtonColor: '#002a54' });
+        });
+    });
 
-  $(function(){
-    initDataTable();
-    $('#ax-edificio').on('change', function(){ cargarPisos($(this).val()); });
-    $('#modalCrearAnexo').on('show.bs.modal', function(e){ if(!$(e.relatedTarget).data('id')) resetForm(); });
-    $('#form-anexo').on('submit', function(e){ e.preventDefault(); guardar(); });
-    $('#tabla-anexos tbody').on('click','.btn-editar',function(){ editar($(this).data('id')); });
-    $('#tabla-anexos tbody').on('click','.btn-eliminar',function(){ eliminar($(this).data('id')); });
-  });
-})();
+    // Editar Anexo (Debe obtener los datos primero)
+    // Ya que la vista de ActionView actual no tiene un GET por ID, usamos los datos de la fila del Datatable para precargar.
+    $('#tabla-anexos').on('click', '.btn-editar-anexo', function() {
+        var tr = $(this).closest('tr');
+        var row = tablaAnexos.row(tr);
+        if (tr.hasClass('child')) {
+            row = tablaAnexos.row(tr.prev());
+        }
+        var data = row.data();
+
+        $('#form-anexo')[0].reset();
+        $('#form-anexo').removeClass('was-validated');
+        
+        $('#anexo-id').val(data.id);
+        $('#a-numero').val(data.numero_anexo);
+        $('#a-modelo-anexo').val(data.modelo_anexo_id).trigger('change.select2');
+        $('#a-edificio').val(data.edificio_id).trigger('change.select2');
+        $('#a-piso').val(data.piso_id).trigger('change.select2');
+        $('#a-unidad').val(data.unidad_id).trigger('change.select2');
+        $('#a-ip').val(data.ip);
+        $('#a-serial').val(data.serial_number);
+        $('#a-pma').val(data.pma_lugar);
+        $('#a-estado').val(data.estado);
+        $('#a-comentario').val(data.observacion || data.comentario);
+
+        $('#modalAnexoLabel').text('Editar Anexo');
+        $('#modalAnexo').modal('show');
+    });
+
+    // Ver Anexo (Read Only)
+    $('#tabla-anexos').on('click', '.btn-ver-anexo', function() {
+        Swal.fire({ icon: 'info', title: 'Funcionalidad en desarrollo', text: 'Vista detallada de anexo.'});
+    });
+
+    // Eliminar Anexo
+    $('#tabla-anexos').on('click', '.btn-eliminar-anexo', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esto. El anexo será eliminado.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/anexos/api/action/',
+                    type: 'DELETE',
+                    data: JSON.stringify({id: id}),
+                    contentType: 'application/json'
+                }).done(function(r) {
+                    if (r.success) {
+                        Swal.fire('Eliminado', r.message, 'success');
+                        tablaAnexos.ajax.reload(null, false);
+                    } else {
+                        Swal.fire('Error', r.message, 'error');
+                    }
+                });
+            }
+        });
+    });
+});

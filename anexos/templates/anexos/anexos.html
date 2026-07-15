@@ -1,17 +1,370 @@
 {% extends "core/base.html" %}
-{% block title %}Anexos{% endblock %}
+{% load static %}
+
+{% block title %}Gestión de Anexos Telefónicos | Marga Marga{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+  body, .content-wrapper, .wrapper {
+      background-color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+  }
+
+  /* Header Superior */
+  .page-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e2e8f0;
+  }
+  .page-subtitle {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin: 0;
+  }
+
+  /* Botones Principales */
+  .btn-primary-action {
+      background: #0066cc; 
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+  }
+  .btn-primary-action:hover { background: #0052a3; color: #fff; }
+  
+  .btn-success-action {
+      background: #10b981;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 10px;
+  }
+  .btn-success-action:hover { background: #059669; color: #fff; }
+
+  /* Toolbar de Búsqueda y Filtros */
+  .toolbar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 12px 16px;
+      border: 1px solid #e2e8f0;
+      border-bottom: none;
+      border-radius: 0 !important;
+  }
+  .search-wrapper {
+      position: relative;
+      width: 300px;
+  }
+  .search-wrapper i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+  }
+  .search-wrapper input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      transition: border-color 0.2s;
+  }
+  .search-wrapper input:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  }
+
+  /* DataGrid */
+  .datagrid-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+  }
+  .table {
+      margin-bottom: 0;
+  }
+  .table thead th {
+      background: #002a54 !important; /* Azul Marga Marga */
+      color: #ffffff !important;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border: none;
+  }
+  .table tbody td {
+      padding: 12px 16px;
+      vertical-align: middle;
+      font-size: 0.85rem;
+      color: #334155;
+      border-bottom: 1px solid #f1f5f9;
+  }
+  .table tbody tr:hover {
+      background-color: #f8fafc;
+  }
+  
+  /* Celdas compuestas */
+  .cell-primary {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 0.9rem;
+  }
+  .cell-secondary {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 2px;
+  }
+  .icon-square {
+      width: 36px;
+      height: 36px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #475569;
+      margin-right: 12px;
+  }
+
+  /* Status Badges */
+  .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+  }
+  .status-activo {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+  }
+  .status-inactivo {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+  }
+
+  /* DataTables customization */
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+      padding: 0.3em 0.8em;
+      font-size: 0.85rem;
+  }
+  .dataTables_info {
+      font-size: 0.85rem;
+      color: #64748b !important;
+      padding-top: 15px !important;
+      padding-left: 15px;
+      padding-bottom: 15px;
+  }
+
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h3 mb-0 text-gray-800">Anexos</h1>
-            <p class="text-muted mb-0">Gestión de teléfonos IP Cisco - Hospital Marga Marga</p>
-        </div>
+<div class="container-fluid pb-4 animate__animated animate__fadeIn" style="padding: 0 10px;">
+  
+  <!-- Header -->
+  <div class="page-header-top" style="margin-bottom: 8px; padding-bottom: 6px;">
+    <div>
+      <h2 class="font-weight-bold text-dark mb-0">Gestión de Anexos Telefónicos</h2>
+      <p class="page-subtitle">Directorio centralizado y administración de equipos IP</p>
     </div>
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <p>Módulo en construcción o migración.</p>
-        </div>
+    <div>
+        <button id="btn-nuevo" class="btn-primary-action">
+          <i class="fas fa-plus"></i> Nuevo Anexo
+        </button>
+        <button id="btn-export-excel" class="btn-success-action">
+          <i class="fas fa-file-excel"></i> Excel
+        </button>
     </div>
+  </div>
+
+  <div class="d-flex align-items-center mb-2" style="background: white; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 8px 8px 0 0; border-bottom: none;">
+      <h6 class="mb-0 font-weight-bold" style="color: #002a54;"><i class="fas fa-table mr-2"></i> Directorio Completo de Anexos</h6>
+  </div>
+
+  <!-- Barra de Herramientas Superior -->
+  <div class="toolbar-container border-top">
+    <div class="search-wrapper">
+      <i class="fas fa-search"></i>
+      <input type="text" id="custom-search-input" placeholder="Buscar anexo, serie, modelo, IP...">
+    </div>
+  </div>
+
+  <!-- DataGrid -->
+  <div class="datagrid-container">
+    <div class="table-responsive">
+      <table id="tabla-anexos" class="table" style="width:100%;">
+        <thead>
+          <tr>
+            <th data-col="id" style="width:30px; text-align:center;">#</th>
+            <th data-col="numero_anexo">ANEXO</th>
+            <th data-col="modelo">MODELO / SERIAL</th>
+            <th data-col="ubicacion">UBICACIÓN</th>
+            <th data-col="ip_estado">IP / ESTADO</th>
+            <th data-col="acciones" style="width:120px; text-align:right;">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Ajax Data -->
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
+
+<!-- Modal Formulario Anexo -->
+<div class="modal fade" id="modalAnexo" tabindex="-1" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content-premium">
+      <div class="modal-header-premium">
+        <h5 class="modal-title-premium" id="modalAnexoLabel">Información Técnica del Equipo</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body-premium">
+        <form id="form-anexo" novalidate>
+          <input type="hidden" id="anexo-id">
+          
+          <div class="row">
+            <!-- NÚMERO ANEXO -->
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">NÚMERO ANEXO <span class="text-danger">*</span></label>
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-light"><i class="fas fa-hashtag"></i></span>
+                </div>
+                <input type="text" class="form-control" id="a-numero" placeholder="Ej: 320645" required>
+              </div>
+            </div>
+
+            <!-- MODELO -->
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">MODELO <span class="text-danger">*</span></label>
+              <select class="form-control form-control-sm select2-modal" id="a-modelo-anexo" required>
+                <option value="">Seleccionar Modelo</option>
+                {% for ma in modelos_anexos %}
+                <option value="{{ ma.id }}">{{ ma.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- EDIFICIO -->
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">EDIFICIO</label>
+              <select class="form-control form-control-sm select2-modal" id="a-edificio">
+                <option value="">Seleccionar Edificio</option>
+                {% for e in edificios %}
+                <option value="{{ e.id }}">{{ e.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- PISO -->
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">PISO</label>
+              <select class="form-control form-control-sm select2-modal" id="a-piso">
+                <option value="">Seleccionar Piso</option>
+                <!-- Opciones se cargarán dinámicamente si se desea, o todos por ahora -->
+                {% for p in pisos %}
+                <option value="{{ p.id }}" data-edificio="{{ p.edificio__id }}">{{ p.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- SERVICIO / UNIDAD -->
+            <div class="col-md-12 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">SERVICIO / UNIDAD</label>
+              <select class="form-control form-control-sm select2-modal" id="a-unidad">
+                <option value="">Seleccionar Unidad</option>
+                {% for u in unidades %}
+                <option value="{{ u.id }}">{{ u.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- IP ADDRESS -->
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">IP ADDRESS</label>
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-light"><i class="fas fa-network-wired"></i></span>
+                </div>
+                <input type="text" class="form-control" id="a-ip" placeholder="10.x.x.x">
+              </div>
+            </div>
+
+            <!-- SERIAL NUMBER -->
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">SERIAL NUMBER</label>
+              <input type="text" class="form-control form-control-sm" id="a-serial" placeholder="Serial...">
+            </div>
+
+            <!-- LUGAR / PMA -->
+            <div class="col-md-12 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">LUGAR / PMA</label>
+              <input type="text" class="form-control form-control-sm" id="a-pma" placeholder="Ubicación específica del puesto">
+            </div>
+
+            <!-- ESTADO -->
+            <div class="col-md-12 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">ESTADO</label>
+              <select class="form-control form-control-sm" id="a-estado">
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </div>
+
+            <!-- COMENTARIO -->
+            <div class="col-md-12 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">COMENTARIO / OBS. TÉCNICA</label>
+              <textarea class="form-control" id="a-comentario" rows="3" placeholder="Información técnica adicional..."></textarea>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" style="font-weight: 600; padding: 8px 16px;">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-guardar-anexo" style="background:#0066cc; border:none; font-weight:600; padding: 8px 16px;">Guardar Anexo</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{% static 'js/anexos.js' %}"></script>
 {% endblock %}

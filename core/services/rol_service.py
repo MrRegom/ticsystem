@@ -14,8 +14,8 @@ PERMISOS_DISPONIBLES = [
     {'id': 'VER_REPORTES', 'nombre': 'Ver Reportes', 'modulo': 'Reportes'},
     {'id': 'VER_ACTAS', 'nombre': 'Ver Actas', 'modulo': 'Actas'},
     {'id': 'GESTIONAR_ACTAS', 'nombre': 'Gestionar Actas', 'modulo': 'Actas'},
-    {'id': 'VER_ANEXOS', 'nombre': 'Ver Anexos', 'modulo': 'Anexos IP'},
-    {'id': 'GESTIONAR_ANEXOS', 'nombre': 'Gestionar Anexos', 'modulo': 'Anexos IP'},
+    {'id': 'VER_ANEXOS', 'nombre': 'Ver Anexos', 'modulo': 'Anexos'},
+    {'id': 'GESTIONAR_ANEXOS', 'nombre': 'Gestionar Anexos', 'modulo': 'Anexos'},
     {'id': 'GESTIONAR_ROLES', 'nombre': 'Gestionar Roles y Perfiles', 'modulo': 'Sistema'},
 ]
 
