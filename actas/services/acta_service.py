@@ -139,6 +139,7 @@ class ActaService:
                 'encargado': a.encargado.get_full_name() or a.encargado.username if a.encargado else '',
                 'email_receptor': a.email_receptor or '',
                 'observaciones': a.observaciones or '',
+                'pdf_url': a.pdf_generado.url if a.pdf_generado else '',
             })
 
         return {

@@ -56,7 +56,11 @@ $(document).ready(function() {
             }},
             { data: 'encargado' },
             { data: null, orderable: false, render: function(data, type, row) {
-                return `<a href="/media/actas/pdf/${row.codigo}.pdf" target="_blank" class="btn btn-sm btn-outline-danger" title="Ver PDF"><i class="fas fa-file-pdf"></i> PDF</a>`;
+                if (row.pdf_url) {
+                    return `<a href="${row.pdf_url}" target="_blank" class="btn btn-sm btn-danger" title="Ver PDF"><i class="fas fa-file-pdf mr-1"></i> PDF</a>`;
+                } else {
+                    return `<span class="badge badge-secondary">Sin PDF</span>`;
+                }
             }}
         ],
         order: [[1, 'desc']],
