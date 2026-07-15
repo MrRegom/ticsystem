@@ -15,16 +15,16 @@
       height: 100%;
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #0f172a;
+      background: #f1f5f9; /* Fondo claro */
       overflow: hidden;
     }
     
-    /* Background animado */
+    /* Background animado sutil */
     .bg-animation {
       position: absolute;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: radial-gradient(circle at 15% 50%, rgba(2, 132, 199, 0.15), transparent 25%),
-                  radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.1), transparent 25%);
+      background: radial-gradient(circle at 15% 50%, rgba(2, 132, 199, 0.05), transparent 25%),
+                  radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.03), transparent 25%);
       z-index: 0;
     }
 
@@ -37,16 +37,15 @@
       justify-content: center;
     }
 
+    /* Tarjeta Blanca Limpia */
     .glass-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
       padding: 40px;
       width: 100%;
       max-width: 440px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
       animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       opacity: 0;
       transform: translateY(20px);
@@ -61,45 +60,44 @@
       margin-bottom: 32px;
     }
     
-    .logo-container i {
-      font-size: 3rem;
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
+    .logo-img {
+      max-width: 180px;
+      margin-bottom: 16px;
     }
 
     .login-title {
-      color: #f8fafc;
-      font-weight: 700;
+      color: #0f172a;
+      font-weight: 800;
       font-size: 1.5rem;
       margin-bottom: 4px;
+      letter-spacing: -0.5px;
     }
     
     .login-subtitle {
-      color: #94a3b8;
-      font-size: 0.85rem;
+      color: #64748b;
+      font-size: 0.9rem;
     }
 
     .custom-input {
-      background: rgba(15, 23, 42, 0.6) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      color: #f8fafc !important;
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #1e293b !important;
       border-radius: 12px !important;
       padding: 12px 16px 12px 42px !important;
       height: 48px;
       font-size: 0.95rem;
       transition: all 0.3s ease;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
     }
     
     .custom-input:focus {
-      background: rgba(15, 23, 42, 0.8) !important;
+      background: #ffffff !important;
       border-color: #38bdf8 !important;
-      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1) !important;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15) !important;
     }
 
     .custom-input::placeholder {
-      color: #64748b !important;
+      color: #94a3b8 !important;
     }
 
     .input-icon {
@@ -107,13 +105,13 @@
       left: 16px;
       top: 50%;
       transform: translateY(-50%);
-      color: #64748b;
+      color: #94a3b8;
       z-index: 10;
       transition: color 0.3s ease;
     }
     
     .form-group:focus-within .input-icon {
-      color: #38bdf8;
+      color: #0284c7;
     }
 
     .form-group {
@@ -132,11 +130,12 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
     }
 
     .login-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.4);
+      box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.3);
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
       color: white;
     }
@@ -145,21 +144,10 @@
       transform: translateY(0);
     }
 
-    .hospital-line {
-      display: flex;
-      height: 3px;
-      width: 40px;
-      margin: 0 auto 20px auto;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .hospital-line .blue { background: #0284c7; flex: 1; }
-    .hospital-line .red { background: #ef4444; flex: 1; }
-
     #login-error-alert {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      color: #fca5a5;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
       border-radius: 12px;
       padding: 12px 16px;
       font-size: 0.85rem;
@@ -181,10 +169,8 @@
   <div class="glass-container">
     <div class="glass-card">
       <div class="logo-container">
-        <i class="fas fa-heartbeat"></i>
-        <div class="hospital-line">
-          <div class="blue"></div><div class="red"></div>
-        </div>
+        <!-- Logo oficial del hospital -->
+        <img src="{% static 'img/logoHospital.jpeg' %}" alt="Logo Hospital Provincial Marga Marga" class="logo-img">
         <h1 class="login-title">TicSystem</h1>
         <p class="login-subtitle">Hospital Provincial Marga Marga</p>
       </div>
@@ -214,13 +200,13 @@
       </form>
       
       <div class="text-center mt-4">
-        <p style="color: #475569; font-size: 0.75rem; margin:0;">Uso exclusivo para funcionarios autorizados.</p>
+        <p style="color: #64748b; font-size: 0.75rem; margin:0;">Uso exclusivo para funcionarios autorizados.</p>
       </div>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="/static/js/auth.js"></script>
+  <script src="{% static 'js/auth.js' %}"></script>
 </body>
 </html>
