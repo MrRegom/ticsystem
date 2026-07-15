@@ -34,6 +34,18 @@ var MantenedoresApp = (function ($) {
                                }
                              },
                              { data: 'marca',            title: 'Marca' }] },
+    modeloanexo:     { pre: [{ data: 'imagen_url',       title: '', orderable: false, width: '45px',
+                               render: function(d, t) {
+                                  if (t === 'display') {
+                                    if (d) {
+                                        return '<img src="' + d + '" class="img-thumbnail" style="height:35px; width:35px; object-fit:contain; cursor:pointer;" onclick="verImagenModelo(\'' + d + '\')">';
+                                    }
+                                    return '<div style="height:35px; width:35px; background:#f1f5f9; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#cbd5e1;"><i class="fas fa-camera-slash"></i></div>';
+                                  }
+                                  return d;
+                               }
+                             },
+                             { data: 'marca',            title: 'Marca' }] },
     piso:            { pre: [{ data: 'edificio',         title: 'Edificio' }], 
                        post: [{ data: 'alias',             title: 'Alias' }] },
     proveedor:       { post: [{ data: 'rut',              title: 'RUT' },
@@ -62,6 +74,7 @@ var MantenedoresApp = (function ($) {
     fallas_bitacora:  'Opción de Falla',
     marca:            'Marca',
     modelo:           'Modelo',
+    modeloanexo:      'Modelo de Anexo',
     articulo:         'Artículo',
     proveedor:        'Proveedor',
     sistemaoperativo: 'Sistema Operativo',
@@ -81,6 +94,7 @@ var MantenedoresApp = (function ($) {
     fallas_bitacora: ['tipo'],
     institucion:     ['codigo'],
     modelo:          ['marca'],
+    modeloanexo:     ['marca'],
     piso:            ['alias', 'edificio'],
     proveedor:       ['rut', 'contacto', 'telefono', 'email', 'direccion'],
     sector:          ['piso'],
@@ -372,7 +386,7 @@ var MantenedoresApp = (function ($) {
     $('#field-nombre-wrapper').show();
     $('#m-nombre').prop('required', true);
 
-    if (modeloActual === 'modelo') {
+    if (modeloActual === 'modelo' || modeloActual === 'modeloanexo' || modeloActual === 'articulo') {
       $('#field-imagen').show();
     }
     
