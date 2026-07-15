@@ -89,9 +89,26 @@ $(document).ready(function() {
         }
     });
 
-    // Validar IP Address (solo números y puntos)
-    $('#a-ip').on('input', function() {
-        this.value = this.value.replace(/[^0-9.]/g, '');
+    // Validar y auto-formatear IP Address
+    $('#a-ip').on('input', function(e) {
+        let input = e.target;
+        let val = input.value.replace(/[^0-9.]/g, '');
+        val = val.replace(/\.+/g, '.'); // Evitar doble punto
+        
+        let parts = val.split('.');
+        if (parts.length > 4) parts = parts.slice(0, 4);
+        
+        for (let i = 0; i < parts.length; i++) {
+            if (parts[i].length > 3) {
+                if (i < 3 && parts.length === i + 1) {
+                    parts.push(parts[i].substring(3));
+                    parts[i] = parts[i].substring(0, 3);
+                } else {
+                    parts[i] = parts[i].substring(0, 3);
+                }
+            }
+        }
+        input.value = parts.join('.');
     });
 
     // Inicializar DataTable

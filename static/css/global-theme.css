@@ -248,6 +248,7 @@ h5, .h5 { font-size: 0.85rem !important; }
 /* Force square corners globally as requested by user */
 .form-control, 
 .form-control-sm,
+.form-control-clean,
 .btn, 
 .input-group-text,
 .select2-container--bootstrap4 .select2-selection,
