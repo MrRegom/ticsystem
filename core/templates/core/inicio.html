@@ -2,259 +2,196 @@
 {% load auth_extras %}
 
 {% block title %}Panel de Control General{% endblock %}
-{% block module_title %}Inicio{% endblock %}
+{% block module_title %}Inicio Operativo{% endblock %}
 
 {% block extra_css %}
+<!-- Fluent Design / PowerBI Aesthetic -->
 <style>
-  body { background: #f1f5f9; font-family: 'Inter', sans-serif; }
-  .dash-wrap { padding: 20px 24px; }
+  body { background-color: #faf9f8; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif; }
+  .dash-wrap { padding: 16px 24px; }
 
-  /* 🎯 PREMIUM HEADER */
-  .premium-header {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
-    border-radius: 16px;
-    padding: 28px 32px;
-    color: #fff;
+  /* 💎 Microsoft Style Cards */
+  .ms-card {
+    background: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #edebe9;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+    padding: 16px;
     margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 30px -5px rgba(15,23,42,.35);
+    height: 100%;
+  }
+  .ms-card-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: #323130;
+    margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .premium-header::before {
-    content: ''; position: absolute; top: -60px; right: -60px; width: 250px; height: 250px;
-    background: radial-gradient(circle, rgba(56,189,248,.15) 0%, transparent 70%);
+  
+  /* 💎 KPI Grid */
+  .ms-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .ms-kpi {
+    background: #ffffff; border-radius: 4px; padding: 16px;
+    border: 1px solid #edebe9; border-left: 4px solid #0078d4;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+    display: flex; flex-direction: column; justify-content: center;
   }
-  .ph-title { font-size: 1.6rem; font-weight: 800; margin: 0 0 6px; letter-spacing: -.3px; }
-  .ph-sub { color: #94a3b8; font-size: 0.85rem; margin: 0; }
-  .date-pill { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); padding: 7px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; z-index: 1; }
-
-  /* 🎯 KPI GRID */
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
-  .kpi-card { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,.03); position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; }
-  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 12px 12px 0 0; }
-  .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.06); }
+  .ms-kpi.teal { border-left-color: #008272; }
+  .ms-kpi.orange { border-left-color: #d83b01; }
+  .ms-kpi.purple { border-left-color: #5c2d91; }
   
-  .kpi-blue::before  { background: linear-gradient(90deg,#0284c7,#38bdf8); }
-  .kpi-teal::before  { background: linear-gradient(90deg,#0d9488,#2dd4bf); }
-  .kpi-amber::before { background: linear-gradient(90deg,#d97706,#fbbf24); }
-  .kpi-purple::before { background: linear-gradient(90deg,#7c3aed,#a78bfa); }
+  .ms-kpi-label { font-size: 12px; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 8px; }
+  .ms-kpi-val { font-size: 28px; font-weight: 300; color: #323130; line-height: 1; }
 
-  .kpi-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: .5px; margin-bottom: 8px; display:flex; justify-content:space-between;}
-  .kpi-value { font-size: 1.8rem; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
-  .kpi-desc  { font-size: 0.75rem; color: #94a3b8; }
+  /* 💎 Tables */
+  .ms-table { width: 100%; border-collapse: collapse; }
+  .ms-table th { font-size: 12px; font-weight: 600; color: #605e5c; padding: 8px 12px; border-bottom: 2px solid #edebe9; text-align: left; }
+  .ms-table td { font-size: 13px; color: #323130; padding: 10px 12px; border-bottom: 1px solid #edebe9; }
+  .ms-table tbody tr:hover { background-color: #f3f2f1; }
+  
+  /* 💎 Badges */
+  .ms-badge { padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 600; }
+  .ms-badge-blue { background: #e1dfdd; color: #323130; }
+  .ms-badge-red { background: #fde7e9; color: #a4262c; }
+  .ms-badge-green { background: #dff6dd; color: #107c10; }
 
-  /* 🎯 MODERN CARD */
-  .mcard { background: #fff; border-radius: 12px; padding: 20px 24px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,.03); transition: transform .2s, box-shadow .2s; margin-bottom: 20px; }
-  .mcard:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
-  .mc-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
-  .mc-title { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0; }
-  .mc-sub { font-size: 0.75rem; color: #64748b; margin: 4px 0 0; }
-
-  /* 🎯 ALERTS & PROGRESS */
-  .alert-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #f8fafc; border-radius: 8px; border: 1px solid #f1f5f9; margin-bottom: 10px; }
-  .alert-label { font-size: 0.8rem; font-weight: 600; color: #334155; }
-  .alert-val { font-size: 0.9rem; font-weight: 800; }
-  
-  .hbar { margin-bottom: 14px; }
-  .hbar-labels { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 6px; }
-  .hbar-track { height: 6px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
-  .hbar-fill { height: 100%; border-radius: 4px; }
-  
-  /* 🎯 DATA TABLE */
-  .d-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-  .d-table th { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: .5px; padding: 10px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
-  .d-table td { font-size: 0.8rem; color: #334155; padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-  .d-table tbody tr:hover { background: #f8fafc; }
-  
-  /* 🎯 MODULE LINKS */
-  .mod-link { display: flex; align-items: center; padding: 14px 18px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; color: #334155; text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.02); }
-  .mod-link:hover { border-color: #cbd5e1; color: #0f172a; text-decoration: none; transform: translateX(4px); box-shadow: 0 4px 6px rgba(0,0,0,.04); }
-  .mod-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-right: 14px; }
+  .chart-container { min-height: 250px; position: relative; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="dash-wrap">
-
-  <!-- Header -->
-  <div class="premium-header">
+  
+  <!-- Encabezado sutil -->
+  <div class="d-flex justify-content-between align-items-end mb-4">
     <div>
-      <h1 class="ph-title">Bienvenido, {{ user.first_name|default:user.username }}</h1>
-      <p class="ph-sub">Portal de Gestión Hospitalaria | Resumen Corporativo TIC</p>
+      <h2 style="font-weight: 300; color: #323130; margin: 0; font-size: 24px;">Resumen Corporativo TIC</h2>
+      <p style="color: #605e5c; font-size: 13px; margin: 4px 0 0;">Análisis operativo consolidado del Hospital Marga Marga.</p>
     </div>
-    <div class="date-pill" id="inicio-date-pill">--/--/----</div>
-  </div>
-
-  <!-- 4 KPIs -->
-  <div class="kpi-grid">
-    <div class="kpi-card kpi-blue">
-      <div class="kpi-label">Equipos Inventariados <i class="fas fa-laptop-medical text-primary"></i></div>
-      <div class="kpi-value">{{ kpis.equipos_total|default:"0" }}</div>
-      <div class="kpi-desc">Equipos bajo control</div>
-    </div>
-    <div class="kpi-card kpi-teal">
-      <div class="kpi-label">Anexos Activos <i class="fas fa-phone-alt text-info"></i></div>
-      <div class="kpi-value">{{ kpis.anexos_activos|default:"0" }}</div>
-      <div class="kpi-desc">Telefonía institucional</div>
-    </div>
-    <div class="kpi-card kpi-amber">
-      <div class="kpi-label">Actas Emitidas <i class="fas fa-file-signature text-warning"></i></div>
-      <div class="kpi-value">{{ kpis.actas_emitidas|default:"0" }}</div>
-      <div class="kpi-desc">Documentos oficiales</div>
-    </div>
-    <div class="kpi-card kpi-purple">
-      <div class="kpi-label">Salud Operativa <i class="fas fa-heartbeat text-success"></i></div>
-      <div class="kpi-value">{{ kpis.indice_salud|default:"0" }}%</div>
-      <div class="kpi-desc">Índice de calidad de datos</div>
+    <div style="font-size: 13px; color: #605e5c; background: #fff; padding: 6px 12px; border: 1px solid #edebe9; border-radius: 4px;">
+      Última actualización: <strong>ahora mismo</strong>
     </div>
   </div>
 
-  <div class="row">
+  <!-- KPIs Top -->
+  <div class="ms-kpi-grid">
+    <div class="ms-kpi">
+      <div class="ms-kpi-label">Total Activos TIC</div>
+      <div class="ms-kpi-val">{{ kpis.equipos_total|default:"0" }}</div>
+    </div>
+    <div class="ms-kpi teal">
+      <div class="ms-kpi-label">Anexos Operativos</div>
+      <div class="ms-kpi-val">{{ kpis.anexos_activos|default:"0" }}</div>
+    </div>
+    <div class="ms-kpi orange">
+      <div class="ms-kpi-label">Actas de Entrega</div>
+      <div class="ms-kpi-val">{{ kpis.actas_total|default:"0" }}</div>
+    </div>
+    <div class="ms-kpi purple">
+      <div class="ms-kpi-label">Salud del Inventario</div>
+      <div class="ms-kpi-val">{{ kpis.indice_salud|default:"0" }}%</div>
+    </div>
+  </div>
+
+  <!-- Middle Row: Charts -->
+  <div class="row" style="margin-bottom: 20px;">
+    <!-- Chart 1: Radial Cumplimiento -->
+    <div class="col-lg-4">
+      <div class="ms-card">
+        <div class="ms-card-header">SLA Mantenimiento (72 hrs) <i class="fas fa-info-circle text-muted" title="Porcentaje de mantenimientos cerrados en tiempo"></i></div>
+        <div class="chart-container" id="chart-sla"></div>
+      </div>
+    </div>
     
-    <!-- Centro de Alertas y Distribución -->
+    <!-- Chart 2: Top PMAs -->
+    <div class="col-lg-4">
+      <div class="ms-card">
+        <div class="ms-card-header">Top 5 Unidades (Eventos 90 días)</div>
+        <div class="chart-container" id="chart-pma"></div>
+      </div>
+    </div>
+    
+    <!-- Chart 3: Estado -->
+    <div class="col-lg-4">
+      <div class="ms-card">
+        <div class="ms-card-header">Distribución Operativa del Parque</div>
+        <div class="chart-container" id="chart-estado"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Row: Data Tables -->
+  <div class="row">
+    <!-- Auditoría y Calidad -->
     <div class="col-lg-5">
-      
-      <div class="mcard">
-        <div class="mc-header">
-          <div>
-            <h2 class="mc-title">Métricas de Cumplimiento</h2>
-            <p class="mc-sub">Mantenimiento preventivo y coberturas</p>
-          </div>
-        </div>
-        
-        <div class="hbar">
-          <div class="hbar-labels">
-            <span>Cumplimiento Mantenimiento (72h)</span>
-            <span>{{ kpis.cumplimiento_pct|default:"0" }}%</span>
-          </div>
-          <div class="hbar-track">
-            <div class="hbar-fill bg-info" style="width: {{ kpis.cumplimiento_pct|default:'0' }}%;"></div>
-          </div>
-        </div>
-
-        <div class="hbar mt-4">
-          <div class="hbar-labels">
-            <span>Cobertura de Asignación (Usuarios)</span>
-            <span>{% widthratio kpis.equipos_total|add:"-"|add:kpis.equipos_sin_usuario kpis.equipos_total 100 %}%</span>
-          </div>
-          <div class="hbar-track">
-            <div class="hbar-fill bg-success" style="width: {% widthratio kpis.equipos_total|add:'-'|add:kpis.equipos_sin_usuario kpis.equipos_total 100 %}%;"></div>
-          </div>
-        </div>
+      <div class="ms-card">
+        <div class="ms-card-header">Auditoría de Calidad de Datos</div>
+        <table class="ms-table">
+          <thead>
+            <tr>
+              <th>Métrica de Riesgo</th>
+              <th>Impacto</th>
+              <th style="text-align: right;">Casos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Equipos sin usuario responsable</td>
+              <td><span class="ms-badge ms-badge-red">Alto Riesgo</span></td>
+              <td style="text-align: right; font-weight: 600;">{{ kpis.equipos_sin_usuario|default:"0" }}</td>
+            </tr>
+            <tr>
+              <td>Equipos sin ubicación (PMA)</td>
+              <td><span class="ms-badge ms-badge-red">Alto Riesgo</span></td>
+              <td style="text-align: right; font-weight: 600;">{{ kpis.equipos_sin_pma|default:"0" }}</td>
+            </tr>
+            <tr>
+              <td>Conflictos / IPs Duplicadas</td>
+              <td><span class="ms-badge ms-badge-red">Crítico</span></td>
+              <td style="text-align: right; font-weight: 600;">{{ kpis.ips_falla|default:"0" }}</td>
+            </tr>
+            <tr>
+              <td>Mantenimientos Vencidos</td>
+              <td><span class="ms-badge ms-badge-blue">SLA</span></td>
+              <td style="text-align: right; font-weight: 600;">{{ kpis.mant_abiertas_vencidas|default:"0" }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-
-      <div class="mcard mt-3">
-        <div class="mc-header">
-          <div>
-            <h2 class="mc-title">Vigilancia de Calidad</h2>
-            <p class="mc-sub">Riesgos que impactan trazabilidad</p>
-          </div>
-        </div>
-        
-        <div class="alert-row">
-          <div class="alert-label">Equipos sin responsable asig.</div>
-          <div class="alert-val text-warning">{{ kpis.equipos_sin_usuario|default:"0" }}</div>
-        </div>
-        <div class="alert-row">
-          <div class="alert-label">Equipos sin ubicación (PMA)</div>
-          <div class="alert-val {% if kpis.equipos_sin_pma > 0 %}text-danger{% else %}text-success{% endif %}">{{ kpis.equipos_sin_pma|default:"0" }}</div>
-        </div>
-        <div class="alert-row">
-          <div class="alert-label">IPs duplicadas (Colisión)</div>
-          <div class="alert-val {% if kpis.ips_falla > 0 %}text-danger{% else %}text-success{% endif %}">{{ kpis.ips_falla|default:"0" }}</div>
-        </div>
-      </div>
-
     </div>
 
     <!-- Actividad Reciente -->
     <div class="col-lg-7">
-      <div class="mcard" style="padding:0;">
-        <div class="p-4 border-bottom">
-          <h2 class="mc-title">Actividad Reciente del Inventario</h2>
-          <p class="mc-sub">Últimos equipos ingresados o actualizados por soporte.</p>
-        </div>
-        
-        <div class="table-responsive p-3">
-          <table class="d-table">
-            <thead>
-              <tr>
-                <th>Equipo / Serial</th>
-                <th>Ubicación</th>
-                <th>Operador</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for eq in kpis.actividad_reciente %}
-              <tr>
-                <td>
-                  <strong>{{ eq.articulo__nombre }}</strong><br>
-                  <span style="color: #94a3b8; font-size: 0.7rem;">{{ eq.serial_number }}</span>
-                </td>
-                <td>
-                  <span style="color: #0f172a; font-weight: 500;">{{ eq.pma__nombre|default:"Sin Ubicación" }}</span>
-                </td>
-                <td>{{ eq.modificado_por__first_name }} {{ eq.modificado_por__last_name|default:"" }}</td>
-                <td>
-                  <span class="badge" style="background:#e0f2fe; color:#0284c7; padding:4px 8px;">
-                    Registrado
-                  </span>
-                </td>
-              </tr>
-              {% empty %}
-              <tr><td colspan="4" class="text-center text-muted">No hay registros recientes.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+      <div class="ms-card">
+        <div class="ms-card-header">Registro de Trazabilidad Reciente</div>
+        <table class="ms-table">
+          <thead>
+            <tr>
+              <th>Equipo / Serie</th>
+              <th>Operador</th>
+              <th>Ubicación</th>
+              <th>Fecha Registro</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for eq in kpis.actividad_reciente|slice:":5" %}
+            <tr>
+              <td>
+                <span style="font-weight: 600;">{{ eq.articulo__nombre }}</span><br>
+                <span style="color: #605e5c; font-size: 11px;">{{ eq.serial_number }}</span>
+              </td>
+              <td>{{ eq.modificado_por__first_name }} {{ eq.modificado_por__last_name|default:"" }}</td>
+              <td>{{ eq.pma__nombre|default:"Sin Asignar"|truncatechars:20 }}</td>
+              <td style="color: #605e5c; font-size: 12px;">{% if eq.fecha_modificacion %}{{ eq.fecha_modificacion|date:"d/m/Y H:i" }}{% else %}N/A{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center text-muted">Sin actividad.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-    </div>
-
-  </div>
-
-  <!-- Accesos Directos (Compactos) -->
-  <div class="mt-2 mb-3">
-    <h6 style="color: #64748b; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; margin-bottom: 14px;">Módulos del Sistema</h6>
-    <div class="row">
-      {% if user|has_permiso:'VER_EQUIPOS' %}
-      <div class="col-md-3">
-        <a href="{% url 'equipos:panel' %}" class="mod-link">
-          <div class="mod-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-laptop-medical"></i></div>
-          Equipos TIC
-        </a>
-      </div>
-      {% endif %}
-      
-      {% if user|has_permiso:'VER_TICKETS' %}
-      <div class="col-md-3">
-        <a href="/tickets/" class="mod-link">
-          <div class="mod-icon" style="background: #f3e8ff; color: #9333ea;"><i class="fas fa-ticket-alt"></i></div>
-          Tickets
-        </a>
-      </div>
-      {% endif %}
-      
-      {% if user|has_permiso:'VER_USUARIOS' %}
-      <div class="col-md-3">
-        <a href="{% url 'usuarios_dashboard' %}" class="mod-link">
-          <div class="mod-icon" style="background: #dcfce7; color: #16a34a;"><i class="fas fa-users-cog"></i></div>
-          Usuarios
-        </a>
-      </div>
-      {% endif %}
-      
-      {% if user|has_permiso:'VER_REPORTES' %}
-      <div class="col-md-3">
-        <a href="{% url 'reportes:dashboard' %}" class="mod-link">
-          <div class="mod-icon" style="background: #ccfbf1; color: #0d9488;"><i class="fas fa-chart-pie"></i></div>
-          B.I. (Reportes)
-        </a>
-      </div>
-      {% endif %}
     </div>
   </div>
 
@@ -262,12 +199,67 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- ApexCharts CDN -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const d = new Date();
-    const pad = n => String(n).padStart(2,'0');
-    document.getElementById('inicio-date-pill').textContent = 
-      `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
-  });
+  // Paleta estilo Microsoft / PowerBI
+  const msColors = ['#0078d4', '#008272', '#5c2d91', '#d83b01', '#00188f', '#00bcf2'];
+
+  // 1. Gráfico de Cumplimiento (Radial Bar)
+  const slaPct = {{ kpis.cumplimiento_pct|default:"0" }};
+  const slaOptions = {
+    series: [slaPct],
+    chart: { type: 'radialBar', height: 260, fontFamily: 'Segoe UI, sans-serif' },
+    plotOptions: {
+      radialBar: {
+        hollow: { size: '65%' },
+        dataLabels: {
+          name: { offsetY: -10, color: '#605e5c', fontSize: '13px' },
+          value: { offsetY: 5, color: '#323130', fontSize: '30px', fontWeight: 300, show: true }
+        }
+      }
+    },
+    fill: { colors: [slaPct >= 75 ? '#107c10' : (slaPct >= 50 ? '#d83b01' : '#a4262c')] },
+    labels: ['Cumplimiento'],
+  };
+  new ApexCharts(document.querySelector("#chart-sla"), slaOptions).render();
+
+  // 2. Gráfico Horizontal de Top PMAs (Barras)
+  const pmaData = [
+    {% for row in kpis.mapa_calor|slice:":5" %}
+      { x: '{{ row.equipo__pma__recinto__unidad__nombre|escapejs|truncatechars:15 }}', y: {{ row.total }} },
+    {% endfor %}
+  ];
+  
+  const pmaOptions = {
+    series: [{ name: 'Eventos', data: pmaData }],
+    chart: { type: 'bar', height: 250, toolbar: { show: false }, fontFamily: 'Segoe UI, sans-serif' },
+    plotOptions: { bar: { horizontal: true, borderRadius: 2, barHeight: '50%' } },
+    colors: ['#0078d4'],
+    dataLabels: { enabled: true, style: { fontSize: '11px', colors: ['#fff'] } },
+    xaxis: { labels: { style: { colors: '#605e5c' } }, axisBorder: { show: false } },
+    yaxis: { labels: { style: { colors: '#323130', fontSize: '12px' } } },
+    grid: { strokeDashArray: 4, borderColor: '#edebe9' }
+  };
+  new ApexCharts(document.querySelector("#chart-pma"), pmaOptions).render();
+
+  // 3. Gráfico Donut de Estado Operativo
+  const estadoData = [
+    {{ kpis.equipos_funcional|default:0 }},
+    {{ kpis.equipos_mantenimiento|default:0 }},
+    {{ kpis.equipos_desuso|default:0 }}
+  ];
+  
+  const estadoOptions = {
+    series: estadoData,
+    labels: ['Funcional', 'Mantención', 'Desuso'],
+    chart: { type: 'donut', height: 260, fontFamily: 'Segoe UI, sans-serif' },
+    colors: ['#0078d4', '#d83b01', '#a4262c'],
+    plotOptions: { pie: { donut: { size: '60%' } } },
+    dataLabels: { enabled: false },
+    legend: { position: 'bottom', labels: { colors: '#323130' } },
+    stroke: { width: 1, colors: ['#fff'] }
+  };
+  new ApexCharts(document.querySelector("#chart-estado"), estadoOptions).render();
 </script>
 {% endblock %}
