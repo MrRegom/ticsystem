@@ -316,45 +316,36 @@ $(document).ready(function() {
         $('#modalAnexo').modal('show');
     });
 
-    // Ver Anexo - Abre el mismo modal pero solo lectura visual
+    // Ver Anexo - Abre el modal de detalle (split layout, igual al de Equipos)
     $('#tabla-anexos').on('click', '.btn-ver-anexo', function() {
         var tr = $(this).closest('tr');
         var row = tablaAnexos.row(tr);
         if (tr.hasClass('child')) row = tablaAnexos.row(tr.prev());
-        var data = row.data();
-        if (!data) return;
+        var d = row.data();
+        if (!d) return;
 
-        // Reusar lógica de editar para precargar campos
-        $('#form-anexo')[0].reset();
-        $('#form-anexo').removeClass('was-validated');
-        $('#anexo-id').val(data.id);
-        $('#a-numero').val(data.numero_anexo);
-        $('#a-marca').val(data.marca).trigger('change.select2');
-        $('#a-modelo-anexo').val(data.modelo_anexo_id).trigger('change.select2');
-        var imgUrl = $('#a-modelo-anexo option:selected').data('imagen');
-        $('#a-imagen-preview').attr('src', imgUrl || '/static/img/placeholder_equipo.png');
-        $('#a-edificio').val(data.edificio_id).trigger('change.select2');
-        $('#a-piso').val(data.piso_id).trigger('change.select2');
-        $('#a-unidad').val(data.unidad_id).trigger('change.select2');
-        var pmaOption = $('#a-pma option[value="'+data.pma_id+'"]');
-        if (pmaOption.length && pmaOption.data('recinto')) {
-            $('#a-recinto').val(pmaOption.data('recinto')).trigger('change.select2');
-        }
-        $('#a-pma').val(data.pma_id).trigger('change.select2');
-        $('#a-ip').val(data.ip);
-        $('#a-serial').val(data.serial_number);
-        $('#a-estado').val(data.estado);
-        $('#a-comentario').val(data.observacion || data.comentario);
-        $('#modalAnexoLabel').html('<i class="fas fa-eye mr-2"></i>Detalle del Anexo');
-        // Deshabilitar campos en modo vista
-        $('#form-anexo input, #form-anexo select, #form-anexo textarea').prop('disabled', true);
-        $('#btn-guardar-anexo').hide();
-        $('#modalAnexo').modal('show');
-        // Al cerrar el modal, re-habilitar campos para el próximo uso
-        $('#modalAnexo').one('hidden.bs.modal', function() {
-            $('#form-anexo input, #form-anexo select, #form-anexo textarea').prop('disabled', false);
-            $('#btn-guardar-anexo').show();
-        });
+        // Panel izquierdo
+        $('#av-imagen').attr('src', d.modelo_img || '/static/img/placeholder_equipo.png');
+        $('#av-numero').text(d.numero_anexo || 'S/N');
+        $('#av-modelo-texto').text(d.modelo_anexo_nombre || d.modelo || 'Sin Modelo');
+        $('#av-serial-badge').text(d.serial_number || 'S/SERIAL');
+        $('#av-estado').text(d.estado || '-');
+        $('#av-sysid').text(d.id);
+
+        // Panel derecho - Ubicación
+        $('#av-edificio').text(d.edificio_nombre || '-');
+        $('#av-piso').text(d.piso_nombre || '-');
+        $('#av-unidad').text(d.unidad_nombre || '-');
+        // Recinto y PMA no vienen en el datatable, los obtenemos del PMA nombre
+        $('#av-recinto').text('-');
+        $('#av-pma').text(d.pma_nombre || '-');
+
+        // Especificaciones
+        $('#av-marca').text(d.marca || '-');
+        $('#av-ip').text(d.ip || 'Sin IP asignada');
+        $('#av-comentario').text(d.observacion || d.comentario || 'Sin observaciones');
+
+        $('#modalVerAnexo').modal('show');
     });
 
     // Eliminar Anexo

@@ -238,6 +238,108 @@
   </div>
 </div>
 
+<!-- Modal Detalle del Anexo (Vista Split, igual al de Equipos) -->
+<div class="modal fade" id="modalVerAnexo" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 860px;">
+    <div class="modal-content" style="border-radius: 0; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+
+      <!-- Cabecera Oscura -->
+      <div style="background: #002a54; color: white; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;">
+        <h5 style="margin: 0; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-phone-alt"></i> Detalles del Anexo
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 0.8; text-shadow: none;">&times;</button>
+      </div>
+
+      <!-- Cuerpo Split -->
+      <div style="display: flex; background: #ffffff; min-height: 360px;">
+
+        <!-- Panel Izquierdo -->
+        <div style="width: 260px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 32px 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 0; padding: 10px; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+            <img id="av-imagen" src="/static/img/placeholder_equipo.png" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+          </div>
+          <h3 id="av-numero" style="font-weight: 800; color: #0f172a; margin-bottom: 8px; font-size: 1.6rem;">-</h3>
+          <div id="av-modelo-texto" style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">-</div>
+          <div id="av-serial-badge" style="background: #dcfce7; color: #166534; font-family: monospace; font-weight: 700; padding: 5px 16px; border: 1px solid #bbf7d0; font-size: 0.9rem; margin-bottom: 20px; word-break: break-all;">-</div>
+          <div style="background: white; width: 100%; border: 1px solid #e2e8f0; border-radius: 0; padding: 12px;">
+            <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px;">ESTADO</div>
+            <div id="av-estado" style="font-size: 1rem; font-weight: 600; color: #334155;">-</div>
+          </div>
+        </div>
+
+        <!-- Panel Derecho -->
+        <div style="flex: 1; padding: 28px 36px;">
+
+          <!-- Ubicación -->
+          <h6 style="color: #2563eb; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-map-marker-alt"></i> Ubicación Topológica
+          </h6>
+          <div style="border-top: 1px solid #e2e8f0; margin-bottom: 14px;"></div>
+
+          <div class="row mb-3">
+            <div class="col-4">
+              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="far fa-building mr-1"></i> Edificio</span>
+              <span id="av-edificio" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+            </div>
+            <div class="col-4">
+              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-layer-group mr-1"></i> Piso</span>
+              <span id="av-piso" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+            </div>
+            <div class="col-4">
+              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="far fa-hospital mr-1"></i> Unidad / Servicio</span>
+              <span id="av-unidad" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-6">
+              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-door-open mr-1"></i> Recinto</span>
+              <span id="av-recinto" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+            </div>
+            <div class="col-6">
+              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-plug mr-1"></i> PMA</span>
+              <span id="av-pma" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+            </div>
+          </div>
+
+          <!-- Especificaciones -->
+          <h6 style="color: #2563eb; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-microchip"></i> Especificaciones Técnicas
+          </h6>
+          <div style="border-top: 1px solid #e2e8f0; margin-bottom: 14px;"></div>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-tag mr-1"></i> Marca</span>
+              <span id="av-marca" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+            </div>
+            <div class="col-6">
+              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-network-wired mr-1"></i> Dirección IP</span>
+              <span id="av-ip" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem; font-family: monospace;">-</span>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-comment-alt mr-1"></i> Comentario / Obs. Técnica</span>
+              <span id="av-comentario" style="font-weight: 500; color: #334155; display: block; font-size: 0.85rem; font-style: italic;">-</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 0.75rem; color: #64748b;">
+          ID Sistema: <strong id="av-sysid">#</strong>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" style="font-weight: 600; background: #64748b; border: none; border-radius: 0;">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- Modal Formulario Anexo -->
 <div class="modal fade" id="modalAnexo" tabindex="-1" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog modal-xl">
