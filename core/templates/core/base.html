@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Sistema de Gestión - Hospital Marga Marga">
-  <title>{% block title %}Gestión de Correos{% endblock %} - Hospital Marga Marga</title>
+  <meta name="description" content="Sistema de Gestión - Hospital Provincial Marga Marga">
+  <title>{% block title %}Gestión de Correos{% endblock %} - Hospital Provincial Marga Marga</title>
 
   <!-- Tipografías Oficiales -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
@@ -61,7 +61,7 @@
             <!-- Títulos: Hospital y Módulo actual -->
             <div class="d-flex align-items-center">
               <span class="font-weight-bold" style="color: #ffffff; font-size: 0.95rem; line-height: 1.2;">
-                Hospital Marga Marga <span style="font-weight: normal; color: rgba(255,255,255,0.7); margin: 0 4px;">|</span> TicSystem
+                Hospital Provincial Marga Marga <span style="font-weight: normal; color: rgba(255,255,255,0.7); margin: 0 4px;">|</span> TicSystem
               </span>
               <span class="ml-2 font-weight-normal d-none d-sm-flex" style="font-size: 0.85rem; height: 14px; align-items: center; color: #cbd5e1 !important; line-height: 1;">
                 <i class="fas fa-chevron-right mr-2" style="font-size:0.6rem; color: rgba(255,255,255,0.5);"></i> {% block module_title %}Inicio{% endblock %}
@@ -81,7 +81,7 @@
               <i class="fas fa-user-circle mr-1"></i> {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="navbarUserDropdown">
-              <span class="dropdown-item-text text-muted small">Hospital Marga Marga</span>
+              <span class="dropdown-item-text text-muted small">Hospital Provincial Marga Marga</span>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item text-danger" href="#" id="logout-button">
                 <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
@@ -208,8 +208,10 @@
   <footer class="py-2 mt-auto" id="footer-main" style="{% if user.is_authenticated %}margin-left: 200px;{% endif %}">
     <div class="container-fluid px-md-4 text-left">
       <span class="text-muted" style="font-size: 0.75rem; font-weight: 500;">
-        <i class="far fa-hospital mr-1" style="color: #006FB3;"></i> © 2026 Hospital Marga Marga — 
-        <span style="color: #64748b;">Copyright &copy; <strong style="color: #0f172a;">SERVIREC</strong> | Plataforma Tecnológica Hospitalaria</span>
+        <strong>
+        <i class="far fa-hospital mr-1" style="color: #006FB3;"></i> &copy; 2026 Hospital Provincial Marga Marga &mdash; 
+        <span style="color: #6c757d;">Copyright &copy; SERVIREC</span>
+      </strong> | Plataforma Tecnológica Hospitalaria</span>
         <span class="badge badge-warning ml-3" style="background-color: #ffc107; color: #212529; font-size: 0.6rem; vertical-align: text-top; letter-spacing: 0.5px; opacity: 0.9;">VERSIÓN DEMO</span>
       </span>
     </div>
