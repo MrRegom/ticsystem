@@ -2,99 +2,118 @@
 {% load static %}
 
 {% block title %}Usuarios{% endblock %}
-{% block module_title %}Gestión de Usuarios{% endblock %}
+{% block module_title %}Directorio de Identidades{% endblock %}
 
 {% block extra_css %}
-<!-- Fluent Design Aesthetic -->
+<!-- Fluent Design Identity Directory -->
 <style>
   body { background-color: #faf9f8; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif; }
-  .ms-wrap { padding: 16px 24px; }
+  .ms-wrap { padding: 24px 32px; max-width: 1200px; margin: 0 auto; }
 
-  /* 💎 Microsoft Style Cards */
-  .ms-card {
-    background: #ffffff;
-    border-radius: 4px;
-    border: 1px solid #edebe9;
-    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-
-  /* 💎 Header */
+  /* 💎 Header & Command Bar */
   .ms-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
+    display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;
   }
-  .ms-header h2 { font-weight: 300; color: #323130; margin: 0; font-size: 24px; }
-  .ms-header p { color: #605e5c; font-size: 13px; margin: 4px 0 0; }
+  .ms-title-area h2 { font-weight: 400; color: #201f1e; font-size: 28px; margin: 0 0 4px 0; letter-spacing: -0.02em; }
+  .ms-title-area p { color: #605e5c; font-size: 14px; margin: 0; }
+  
+  .ms-command-bar {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .ms-search-input {
+    border: 1px solid #8a8886; border-radius: 2px; padding: 6px 12px 6px 32px;
+    font-size: 14px; color: #323130; width: 260px; transition: border 0.1s;
+    background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="%23605e5c" d="M10.68 11.74a6 6 0 0 1-7.92-9.26 6 6 0 0 1 9.26 7.92l4.63 4.64-1.42 1.42-4.55-4.72zm-1.18-1.18a4.5 4.5 0 1 0-6.36-6.36 4.5 4.5 0 0 0 6.36 6.36z"/></svg>') no-repeat 8px center;
+  }
+  .ms-search-input:focus { outline: none; border: 1px solid #0078d4; border-bottom: 2px solid #0078d4; padding-bottom: 5px; }
 
-  /* 💎 Buttons */
   .ms-btn-primary {
-    background: #0078d4; color: #fff;
-    border: none; border-radius: 2px;
-    padding: 6px 16px; font-size: 13px; font-weight: 600;
-    transition: background 0.2s;
+    background: #0078d4; color: #fff; border: none; border-radius: 2px;
+    padding: 6px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; gap: 6px;
   }
-  .ms-btn-primary:hover { background: #106ebe; color: #fff; }
-  
-  .ms-btn-secondary {
-    background: #fff; color: #323130;
-    border: 1px solid #8a8886; border-radius: 2px;
-    padding: 6px 16px; font-size: 13px; font-weight: 600;
-    transition: background 0.2s;
-  }
-  .ms-btn-secondary:hover { background: #f3f2f1; }
+  .ms-btn-primary:hover { background: #106ebe; }
 
-  /* 💎 DataTables Overrides */
-  .ms-table { width: 100%; border-collapse: collapse !important; }
-  .ms-table thead th {
-    font-size: 12px; font-weight: 600; color: #605e5c;
-    padding: 10px 12px; border-bottom: 2px solid #edebe9 !important;
-    text-align: left; text-transform: none; border-top: none !important;
+  /* 💎 Rich List */
+  .ms-list-container {
+    background: #ffffff; border-radius: 2px; border: 1px solid #edebe9;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
   }
-  .ms-table tbody td {
-    font-size: 13px; color: #323130; padding: 12px;
-    border-bottom: 1px solid #edebe9 !important; border-top: none !important;
-    vertical-align: middle;
+  .ms-list-header {
+    display: grid; grid-template-columns: 280px 1fr 180px 150px; padding: 12px 20px;
+    border-bottom: 1px solid #edebe9; color: #605e5c; font-size: 12px; font-weight: 600;
   }
-  .ms-table tbody tr:hover { background-color: #f3f2f1; }
-  .dataTables_wrapper .dataTables_filter input {
-    border: 1px solid #605e5c; border-radius: 2px; padding: 4px 8px; font-size: 13px;
+  .ms-list-row {
+    display: grid; grid-template-columns: 280px 1fr 180px 150px; padding: 12px 20px;
+    border-bottom: 1px solid #edebe9; align-items: center; cursor: pointer; transition: background 0.15s;
+    position: relative;
   }
-  .dataTables_wrapper .dataTables_filter input:focus {
-    outline: none; border-color: #0078d4; border-width: 2px; padding: 3px 7px;
-  }
-
-  /* 💎 Modals */
-  .ms-modal-content {
-    border-radius: 4px; border: none;
-    box-shadow: 0 25.6px 57.6px 0 rgba(0,0,0,0.22), 0 4.8px 14.4px 0 rgba(0,0,0,0.18);
-  }
-  .ms-modal-header {
-    padding: 20px 24px; border-bottom: 1px solid #edebe9;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .ms-modal-title { font-weight: 600; font-size: 18px; color: #323130; margin: 0; }
-  .ms-modal-body { padding: 24px; }
-  .ms-modal-footer { padding: 16px 24px; border-top: 1px solid #edebe9; background: #f3f2f1; display: flex; justify-content: flex-end; gap: 8px; }
+  .ms-list-row:last-child { border-bottom: none; }
+  .ms-list-row:hover { background-color: #f3f2f1; }
   
-  /* 💎 Inputs */
-  .ms-input {
-    border: 1px solid #605e5c; border-radius: 2px; padding: 6px 12px;
-    font-size: 14px; color: #323130; width: 100%; transition: border 0.1s;
-    background: #fff;
+  /* 💎 Identity Avatar */
+  .ms-identity { display: flex; align-items: center; gap: 12px; }
+  .ms-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 14px; letter-spacing: 0.5px;
   }
-  .ms-input:focus { outline: none; border: 2px solid #0078d4; padding: 5px 11px; }
+  .ms-user-info { display: flex; flex-direction: column; }
+  .ms-user-name { font-weight: 600; font-size: 14px; color: #323130; }
+  .ms-user-email { font-size: 12px; color: #605e5c; }
+  
+  /* 💎 Badges */
+  .ms-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;
+  }
+  .badge-role { background: #e1dfdd; color: #323130; }
+  .badge-active { background: #dff6dd; color: #107c10; }
+  .badge-inactive { background: #fde7e9; color: #a4262c; }
+
+  /* 💎 Hover Actions */
+  .ms-row-actions {
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s;
+    background: #f3f2f1; padding: 4px; border-radius: 4px;
+  }
+  .ms-list-row:hover .ms-row-actions { opacity: 1; }
+  .ms-icon-btn {
+    background: transparent; border: none; color: #323130; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center; border-radius: 2px; cursor: pointer;
+  }
+  .ms-icon-btn:hover { background: #e1dfdd; }
+
+  /* 💎 Offcanvas / Drawer (Reemplazo de Modales) */
+  .ms-drawer-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4); z-index: 1040; opacity: 0; visibility: hidden; transition: 0.3s;
+  }
+  .ms-drawer-overlay.active { opacity: 1; visibility: visible; }
+  
+  .ms-drawer {
+    position: fixed; top: 0; right: -400px; width: 400px; height: 100vh;
+    background: #fff; z-index: 1050; box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+    transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
+  }
+  .ms-drawer.open { right: 0; }
+  
+  .ms-drawer-header {
+    padding: 24px; border-bottom: 1px solid #edebe9; display: flex; justify-content: space-between; align-items: center;
+  }
+  .ms-drawer-title { font-size: 20px; font-weight: 600; color: #323130; margin: 0; }
+  .ms-drawer-close { background: none; border: none; font-size: 18px; color: #605e5c; cursor: pointer; }
+  .ms-drawer-close:hover { color: #323130; }
+  
+  .ms-drawer-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
+  .ms-drawer-footer { padding: 16px 24px; border-top: 1px solid #edebe9; background: #faf9f8; display: flex; gap: 8px; }
+
+  /* Forms in Drawer */
   .ms-label { font-weight: 600; font-size: 13px; color: #323130; margin-bottom: 4px; display: block; }
-  
-  /* Actions */
-  .action-icon {
-    color: #0078d4; cursor: pointer; padding: 4px 8px; font-size: 14px;
-    transition: background 0.2s; border-radius: 2px;
+  .ms-input {
+    border: 1px solid #8a8886; border-radius: 2px; padding: 6px 12px; font-size: 14px; width: 100%; margin-bottom: 16px;
   }
-  .action-icon:hover { background: #edebe9; }
+  .ms-input:focus { outline: none; border: 1px solid #0078d4; border-bottom: 2px solid #0078d4; padding-bottom: 5px; }
+  
 </style>
 {% endblock %}
 
@@ -103,240 +122,90 @@
   
   <!-- Encabezado de Página -->
   <div class="ms-header">
-    <div>
-      <h2>Directorio de Usuarios</h2>
-      <p>Administración de funcionarios, operadores y roles del Hospital Provincial Marga Marga.</p>
+    <div class="ms-title-area">
+      <h2>Directorio de Identidades</h2>
+      <p>Administración de funcionarios y roles del Hospital Provincial Marga Marga</p>
     </div>
-    <div>
-      <button class="ms-btn-primary shadow-sm" data-toggle="modal" data-target="#modalCrearUsuario">
-        <i class="fas fa-plus mr-1"></i> Registrar Funcionario
+    <div class="ms-command-bar">
+      <input type="text" class="ms-search-input" id="search-input" placeholder="Buscar por nombre, RUT o correo...">
+      <button class="ms-btn-primary" onclick="openDrawer('crear')">
+        <i class="fas fa-plus"></i> Nuevo Funcionario
       </button>
     </div>
   </div>
 
-  <!-- Contenedor Principal (Tabla) -->
-  <div class="ms-card">
-    <div class="table-responsive">
-      <table id="tabla-usuarios" class="table ms-table w-100">
-        <thead>
-          <tr>
-            <th></th>
-            <th>RUT</th>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Correo Electrónico</th>
-            <th>Unidad / Servicio</th>
-            <th>Grupos</th>
-            <th>Estado</th>
-            <th style="text-align: center;">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Cargado vía DataTables Server-Side -->
-        </tbody>
-      </table>
+  <!-- Rich List -->
+  <div class="ms-list-container">
+    <div class="ms-list-header">
+      <div>IDENTIDAD</div>
+      <div>UNIDAD / SERVICIO</div>
+      <div>PERFIL DE ACCESO</div>
+      <div>ESTADO</div>
+    </div>
+    <div id="identities-list">
+      <!-- Generado vía JS -->
+      <div style="padding: 40px; text-align: center; color: #605e5c;">Cargando identidades...</div>
     </div>
   </div>
 
 </div>
 
-<!-- MODAL: Crear Usuario -->
-<div class="modal fade" id="modalCrearUsuario" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content ms-modal-content">
-      <div class="ms-modal-header">
-        <h5 class="ms-modal-title">Nuevo Funcionario</h5>
-        <button type="button" class="close" data-dismiss="modal" style="outline:none;">&times;</button>
+<!-- Drawer (Panel Lateral) -->
+<div class="ms-drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="ms-drawer" id="identity-drawer">
+  <div class="ms-drawer-header">
+    <h3 class="ms-drawer-title" id="drawer-title">Nuevo Funcionario</h3>
+    <button class="ms-drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="ms-drawer-body">
+    <form id="identity-form">
+      <input type="hidden" id="form-id">
+      
+      <label class="ms-label">RUT</label>
+      <input type="text" id="form-rut" class="ms-input" placeholder="12345678-9" required>
+      
+      <label class="ms-label">Nombres</label>
+      <input type="text" id="form-nombres" class="ms-input" required>
+      
+      <label class="ms-label">Apellidos</label>
+      <input type="text" id="form-apellidos" class="ms-input" required>
+      
+      <label class="ms-label">Correo Electrónico</label>
+      <input type="email" id="form-email" class="ms-input" required>
+      
+      <label class="ms-label">Unidad / Servicio</label>
+      <select id="form-unidad" class="ms-input" required>
+        <option value="">Seleccionar...</option>
+        {% for unidad in unidades %}
+          <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="ms-label">Perfil de Sistema (Rol)</label>
+      <select id="form-rol" class="ms-input" required>
+        <option value="">Seleccionar...</option>
+        {% for r in roles_disponibles %}
+          <option value="{{ r.id }}">{{ r.nombre }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="ms-label" id="lbl-password">Contraseña</label>
+      <input type="password" id="form-password" class="ms-input" placeholder="Ingresar contraseña">
+      
+      <div style="margin-top: 10px;">
+        <input type="checkbox" id="form-activo" checked style="margin-right: 8px;">
+        <label for="form-activo" style="font-size: 14px; color: #323130; font-weight: 500;">Cuenta habilitada para inicio de sesión</label>
       </div>
-      <form id="form-crear-usuario" novalidate>
-        <div class="ms-modal-body">
-          <div id="crear-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 2px; padding: 8px;"></div>
-          
-          <div class="row">
-            <div class="col-md-6 form-group">
-              <label for="crear-rut" class="ms-label">RUT</label>
-              <input type="text" id="crear-rut" class="ms-input" placeholder="12345678-9" required>
-              <small class="form-text text-muted" style="font-size:11px;">Sin puntos y con guión.</small>
-            </div>
-            <div class="col-md-6 form-group">
-              <label for="crear-email" class="ms-label">Correo Electrónico</label>
-              <input type="email" id="crear-email" class="ms-input" placeholder="ejemplo@hospital.cl" required>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-6 form-group">
-              <label for="crear-nombres" class="ms-label">Nombres</label>
-              <input type="text" id="crear-nombres" class="ms-input" required>
-            </div>
-            <div class="col-md-6 form-group">
-              <label for="crear-apellidos" class="ms-label">Apellidos</label>
-              <input type="text" id="crear-apellidos" class="ms-input" required>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-12 form-group">
-              <label for="crear-unidad" class="ms-label">Unidad / Servicio</label>
-              <select id="crear-unidad" class="ms-input" required>
-                <option value="">-- Seleccionar Unidad --</option>
-                {% for unidad in unidades %}
-                  <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <hr style="border-top: 1px solid #edebe9; margin: 20px 0;">
-
-          <div class="row">
-            <div class="col-md-6 form-group">
-              <label for="crear-contrasena" class="ms-label">Contraseña de Acceso</label>
-              <input type="password" id="crear-contrasena" class="ms-input" required>
-            </div>
-            <div class="col-md-6 form-group">
-              <label for="crear-rol" class="ms-label">Perfil de Sistema</label>
-              <select class="ms-input" id="crear-rol" name="rol" required>
-                <option value="">-- Seleccione un Rol --</option>
-                {% for r in roles_disponibles %}
-                <option value="{{ r.id }}">{{ r.nombre }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-12 form-group">
-              <label class="ms-label">Grupos de Especialidad (Opcional)</label>
-              <div style="height: 120px; overflow-y: auto; padding: 10px; border: 1px solid #edebe9; border-radius: 2px; background: #faf9f8;">
-                {% for grupo in grupos_disponibles %}
-                <div class="custom-control custom-checkbox mb-1">
-                  <input type="checkbox" class="custom-control-input crear-grupo-checkbox" id="crear-grupo-{{ grupo.id }}" value="{{ grupo.id }}">
-                  <label class="custom-control-label" for="crear-grupo-{{ grupo.id }}" style="font-size: 13px; color: #323130;">{{ grupo.nombre }}</label>
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-12">
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="crear-activo" checked>
-                <label class="custom-control-label ms-label" for="crear-activo" style="padding-top:2px;">Usuario Activo y Habilitado</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ms-modal-footer">
-          <button type="button" class="ms-btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" id="btn-crear-submit" class="ms-btn-primary">Guardar Funcionario</button>
-        </div>
-      </form>
-    </div>
+    </form>
+  </div>
+  <div class="ms-drawer-footer">
+    <button type="button" class="ms-btn-primary" style="background:#fff; color:#323130; border: 1px solid #8a8886;" onclick="closeDrawer()">Cancelar</button>
+    <button type="button" class="ms-btn-primary" id="btn-save-identity" onclick="saveIdentity()">Guardar Identidad</button>
   </div>
 </div>
 
-<!-- MODAL: Editar Usuario -->
-<div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content ms-modal-content">
-      <div class="ms-modal-header">
-        <h5 class="ms-modal-title">Modificar Funcionario</h5>
-        <button type="button" class="close" data-dismiss="modal" style="outline:none;">&times;</button>
-      </div>
-      <form id="form-editar-usuario" novalidate>
-        <input type="hidden" id="editar-id">
-        <div class="ms-modal-body">
-          <div id="editar-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 2px; padding: 8px;"></div>
-          
-          <div class="row">
-            <div class="col-md-6 form-group">
-              <label for="editar-rut" class="ms-label">RUT</label>
-              <input type="text" id="editar-rut" class="ms-input" required>
-            </div>
-            <div class="col-md-6 form-group">
-              <label for="editar-email" class="ms-label">Correo Electrónico</label>
-              <input type="email" id="editar-email" class="ms-input" required>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-6 form-group">
-              <label for="editar-nombres" class="ms-label">Nombres</label>
-              <input type="text" id="editar-nombres" class="ms-input" required>
-            </div>
-            <div class="col-md-6 form-group">
-              <label for="editar-apellidos" class="ms-label">Apellidos</label>
-              <input type="text" id="editar-apellidos" class="ms-input" required>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-12 form-group">
-              <label for="editar-unidad" class="ms-label">Unidad / Servicio</label>
-              <select id="editar-unidad" class="ms-input" required>
-                <option value="">-- Seleccionar Unidad --</option>
-                {% for unidad in unidades %}
-                  <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <hr style="border-top: 1px solid #edebe9; margin: 20px 0;">
-
-          <div class="row">
-            <div class="col-md-6 form-group">
-              <label for="editar-contrasena" class="ms-label">Nueva Contraseña (Opcional)</label>
-              <input type="password" id="editar-contrasena" class="ms-input" placeholder="Dejar en blanco para no cambiar">
-            </div>
-            <div class="col-md-6 form-group">
-              <label for="editar-rol" class="ms-label">Perfil de Sistema</label>
-              <select class="ms-input" id="editar-rol" name="rol" required>
-                <option value="">-- Seleccione un Rol --</option>
-                {% for r in roles_disponibles %}
-                <option value="{{ r.id }}">{{ r.nombre }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-12 form-group">
-              <label class="ms-label">Grupos de Especialidad</label>
-              <div style="height: 120px; overflow-y: auto; padding: 10px; border: 1px solid #edebe9; border-radius: 2px; background: #faf9f8;">
-                {% for grupo in grupos_disponibles %}
-                <div class="custom-control custom-checkbox mb-1">
-                  <input type="checkbox" class="custom-control-input editar-grupo-checkbox" id="editar-grupo-{{ grupo.id }}" value="{{ grupo.id }}">
-                  <label class="custom-control-label" for="editar-grupo-{{ grupo.id }}" style="font-size: 13px; color: #323130;">{{ grupo.nombre }}</label>
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ms-modal-footer">
-          <button type="button" class="ms-btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" id="btn-editar-submit" class="ms-btn-primary">Actualizar Cambios</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Plantillas HTML Ocultas para renderizado seguro en JS (DataTables) -->
-<div id="dt-templates" style="display: none;">
-  <!-- Botones de Acción para cada fila -->
-  <div class="actions-cell tmpl-acciones" style="display:flex; gap: 8px;">
-    <a href="javascript:void(0)" class="action-icon btn-editar-usuario" title="Modificar Datos">
-      <i class="fas fa-edit"></i>
-    </a>
-  </div>
-</div>
 {% endblock %}
 
 {% block extra_js %}
-<!-- JS Estático del módulo de gestión de usuarios -->
 <script src="{% static 'js/usuarios.js' %}"></script>
 {% endblock %}
