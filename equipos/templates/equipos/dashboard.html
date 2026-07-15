@@ -1,0 +1,419 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Dashboard Equipamiento{% endblock %}
+{% block module_title %}Dashboard Equipos{% endblock %}
+
+{% block extra_css %}
+<style>
+  body { background: #f1f5f9; }
+
+  .dash-wrap { padding: 20px 24px; }
+
+  /* ── PREMIUM HEADER ── */
+  .premium-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    border-radius: 16px;
+    padding: 28px 32px;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -5px rgba(15,23,42,.45);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .premium-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(56,189,248,.18) 0%, transparent 70%);
+  }
+  .premium-header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(2,132,199,.12) 0%, transparent 70%);
+  }
+  .ph-title { font-size: 1.6rem; font-weight: 800; margin: 0 0 6px; letter-spacing: -.3px; }
+  .ph-sub { color: #94a3b8; font-size: 0.85rem; margin: 0; }
+  .date-pill {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    z-index: 1;
+    white-space: nowrap;
+  }
+
+  /* ── KPI GRID ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .kpi-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    transition: transform .2s, box-shadow .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+  }
+  .kpi-card.blue::before  { background: linear-gradient(90deg,#0284c7,#38bdf8); }
+  .kpi-card.teal::before  { background: linear-gradient(90deg,#0d9488,#2dd4bf); }
+  .kpi-card.amber::before { background: linear-gradient(90deg,#d97706,#fbbf24); }
+  .kpi-card.green::before { background: linear-gradient(90deg,#16a34a,#4ade80); }
+  .kpi-card.red::before   { background: linear-gradient(90deg,#dc2626,#f87171); }
+  .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+  .kpi-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: .5px; margin-bottom: 8px; }
+  .kpi-value { font-size: 1.9rem; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
+  .kpi-desc  { font-size: 0.72rem; color: #94a3b8; }
+
+  /* ── GRIDS ── */
+  .main-grid   { display: grid; grid-template-columns: 7fr 5fr; gap: 18px; margin-bottom: 18px; }
+  .right-stack { display: flex; flex-direction: column; gap: 18px; }
+
+  /* ── MODERN CARD ── */
+  .mcard {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .mcard:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+
+  .card-title   { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0; }
+  .card-subtitle{ font-size: 0.75rem; color: #64748b; margin-top: 3px; }
+  .card-head    { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+
+  /* ── VIGILANCIA ── */
+  .vig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+  .vig-row  { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; }
+  .vig-info strong { display: block; font-size: 0.85rem; color: #334155; font-weight: 600; }
+  .vig-info small  { font-size: 0.72rem; color: #94a3b8; }
+  .vig-info a      { color: #0284c7; font-weight: 600; }
+  .vig-val  { font-size: 1.15rem; font-weight: 800; color: #0284c7; }
+  .vig-val.warn { color: #f59e0b; }
+  .vig-val.danger { color: #ef4444; }
+
+  /* ── PROGRESS ── */
+  .prog-track { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .prog-fill  { height: 100%; border-radius: 4px; transition: width .8s ease; }
+
+  /* ── HBARS ── */
+  .hbar-row { margin-bottom: 14px; }
+  .hbar-lbl { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 5px; }
+  .hbar-lbl strong { color: #334155; }
+  .hbar-lbl span   { font-weight: 600; color: #64748b; }
+  .hbar-track { height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden; }
+  .hbar-fill  { height: 100%; border-radius: 3px; }
+  .hbar-sub   { font-size: 0.7rem; color: #94a3b8; margin-top: 4px; }
+
+  /* ── TABLE ── */
+  .mtable { width: 100%; border-collapse: collapse; }
+  .mtable th {
+    text-align: left; padding: 10px 14px;
+    font-size: 0.72rem; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: .4px;
+    background: #f8fafc; border-bottom: 2px solid #f1f5f9;
+  }
+  .mtable td { padding: 13px 14px; font-size: 0.82rem; color: #334155; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  .mtable tr:hover td { background: #f8fafc; }
+  .equipo-icon { width: 34px; height: 34px; border-radius: 8px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0; }
+
+  /* ── BUTTONS ── */
+  .btn-mod {
+    display: inline-block;
+    background: #0284c7; color: #fff; border: none;
+    border-radius: 20px; padding: 6px 16px;
+    font-size: 0.78rem; font-weight: 600;
+    transition: all .2s; text-decoration: none; cursor: pointer;
+  }
+  .btn-mod:hover { background: #0369a1; color: #fff; text-decoration: none; }
+
+  /* ── INFO BOX ── */
+  .info-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px 16px; font-size: 0.78rem; color: #0284c7; margin-top: 16px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1280px) {
+    .kpi-grid  { grid-template-columns: repeat(3,1fr); }
+    .main-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .kpi-grid { grid-template-columns: repeat(2,1fr); }
+    .vig-grid { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+
+  <!-- HEADER -->
+  <div class="premium-header">
+    <div>
+      <div class="ph-title">Bienvenido, {{ user.first_name|default:user.username }} {{ user.last_name }}</div>
+      <div class="ph-sub">Panel de control de la Unidad de Equipamiento · Hospital Marga Marga</div>
+    </div>
+    <div class="date-pill" id="date-pill">--/--/----</div>
+  </div>
+
+  <!-- KPI GRID -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-label">Inventario Total</div>
+      <div class="kpi-value">{{ inventario_total|default:"0" }}</div>
+      <div class="kpi-desc">Equipos bajo control</div>
+    </div>
+    <div class="kpi-card teal">
+      <div class="kpi-label">Anexos Activos</div>
+      <div class="kpi-value">{{ anexos_activos|default:"0" }}</div>
+      <div class="kpi-desc">Telefonía institucional</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Actas en Borrador</div>
+      <div class="kpi-value">{{ actas_borrador|default:"0" }}</div>
+      <div class="kpi-desc">Pendientes de firma</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Salud del Inventario</div>
+      <div class="kpi-value">{{ indice_salud|default:"0" }}%</div>
+      <div class="kpi-desc">Índice operativo global</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Sin Ubicación (PMA)</div>
+      <div class="kpi-value">{{ sin_pma|default:"0" }}</div>
+      <div class="kpi-desc">Activos sin localización</div>
+    </div>
+  </div>
+
+  <!-- ROW 1 -->
+  <div class="main-grid">
+
+    <!-- VIGILANCIA DE CALIDAD -->
+    <div class="mcard">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Vigilancia de calidad de inventario</div>
+          <div class="card-subtitle">Riesgos que impactan auditoría, red y trazabilidad.</div>
+        </div>
+      </div>
+      <div class="vig-grid">
+        <div class="vig-row">
+          <div class="vig-info">
+            <strong>Seriales duplicados</strong>
+            <small>Control de unicidad — <a href="#">Ver listado</a></small>
+          </div>
+          <div class="vig-val {% if seriales_duplicados > 0 %}danger{% endif %}">{{ seriales_duplicados|default:"0" }}</div>
+        </div>
+        <div class="vig-row">
+          <div class="vig-info">
+            <strong>IPs duplicadas</strong>
+            <small>Colisión de red — <a href="#">Ver listado</a></small>
+          </div>
+          <div class="vig-val {% if ips_duplicadas > 0 %}warn{% endif %}">{{ ips_duplicadas|default:"0" }}</div>
+        </div>
+        <div class="vig-row">
+          <div class="vig-info">
+            <strong>Sin usuario responsable</strong>
+            <small>Asignación incompleta — <a href="#">Ver listado</a></small>
+          </div>
+          <div class="vig-val {% if sin_usuario > 10 %}warn{% endif %}">{{ sin_usuario|default:"0" }}</div>
+        </div>
+        <div class="vig-row">
+          <div class="vig-info">
+            <strong>Sin PMA / Ubicación</strong>
+            <small>Activo sin localización — <a href="#">Ver listado</a></small>
+          </div>
+          <div class="vig-val {% if sin_pma > 0 %}danger{% endif %}">{{ sin_pma|default:"0" }}</div>
+        </div>
+      </div>
+      <div class="mt-3">
+        <small style="font-size:0.78rem; color:#64748b; font-weight:600;">Índice de salud operativa</small>
+        <div class="prog-track mt-2">
+          <div class="prog-fill" style="width: {{ indice_salud|default:0 }}%; background: {% if indice_salud >= 70 %}linear-gradient(90deg,#16a34a,#4ade80){% elif indice_salud >= 40 %}linear-gradient(90deg,#d97706,#fbbf24){% else %}linear-gradient(90deg,#dc2626,#f87171){% endif %};"></div>
+        </div>
+        <div style="font-size:0.75rem;color:#64748b;margin-top:4px;font-weight:600;">{{ indice_salud|default:0 }}/100</div>
+      </div>
+    </div>
+
+    <!-- META OPERATIVA -->
+    <div class="mcard">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Meta operativa de mantención</div>
+          <div class="card-subtitle">Referencia de 72 horas, no contractual.</div>
+        </div>
+        <button class="btn-mod">Configurar meta</button>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-lbl"><strong>Cumplimiento</strong><span>75%</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:75%;background:#0ea5e9;"></div></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-lbl"><strong>Tiempo promedio de cierre</strong><span>2 días</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:30%;background:#38bdf8;"></div></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-lbl"><strong>Abiertos vencidos</strong><span style="color:#0284c7;cursor:pointer;">4 — ver detalle</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:15%;background:#0284c7;"></div></div>
+      </div>
+      <div class="info-box">
+        Total mantenciones: 60 &nbsp;|&nbsp; Cerradas: 56 &nbsp;|&nbsp; <a href="#" style="color:#0369a1;font-weight:700;">Abiertas: 4</a><br>
+        Tiempo promedio calculado en base a mantenciones cerradas.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 2 -->
+  <div class="main-grid">
+
+    <!-- ACTIVIDAD RECIENTE -->
+    <div class="mcard">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Actividad reciente del inventario</div>
+          <div class="card-subtitle">Últimos equipos ingresados o tocados por la mesa TIC.</div>
+        </div>
+        <a href="{% url 'equipos:dashboard' %}" class="btn-mod">Ver inventario</a>
+      </div>
+      <div class="table-responsive">
+        <table class="mtable">
+          <thead>
+            <tr>
+              <th>Equipo / Serial</th>
+              <th>Ubicación (PMA)</th>
+              <th>Técnico</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in actividad_reciente %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="equipo-icon"><i class="fas fa-desktop" style="color:#94a3b8;font-size:.9rem;"></i></div>
+                  <div>
+                    <div style="font-weight:600;font-size:0.82rem;">{{ b.equipo.articulo.nombre|default:"Equipo TIC" }}</div>
+                    <div style="font-size:0.72rem;color:#94a3b8;">{{ b.equipo.serial_number|default:"—" }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div style="font-weight:600;font-size:0.82rem;">{{ b.equipo.pma.nombre|default:"Sin PMA" }}</div>
+                <div style="font-size:0.72rem;color:#94a3b8;">{{ b.equipo.pma.recinto.nombre|default:"" }}</div>
+              </td>
+              <td style="font-size:0.82rem;">{{ b.tecnico.get_full_name|default:b.tecnico.username }}</td>
+              <td style="font-size:0.78rem;color:#64748b;">{{ b.fecha_mantenimiento|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center py-4" style="color:#94a3b8;font-size:0.82rem;">
+                <i class="fas fa-inbox mr-2"></i>No hay actividad reciente registrada.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA -->
+    <div class="right-stack">
+
+      <!-- DISTRIBUCIÓN POR ESTADO -->
+      <div class="mcard">
+        <div class="card-head mb-2">
+          <div>
+            <div class="card-title">Distribución por estado</div>
+            <div class="card-subtitle">Parque tecnológico hoy.</div>
+          </div>
+        </div>
+        {% for st in estados_data %}
+        <div class="hbar-row">
+          <div class="hbar-lbl">
+            <strong>{{ st.estado__nombre|default:"Sin estado" }}</strong>
+            <span>{{ st.total }}</span>
+          </div>
+          <div class="hbar-track">
+            <div class="hbar-fill" style="
+              width: {% widthratio st.total inventario_total_real 100 %}%;
+              background: {% cycle '#0284c7' '#06b6d4' '#8b5cf6' '#f59e0b' '#ef4444' %};
+            "></div>
+          </div>
+        </div>
+        {% empty %}
+        <p style="font-size:0.82rem;color:#94a3b8;">No hay estados configurados.</p>
+        {% endfor %}
+      </div>
+
+      <!-- MAPA DE CALOR POR UBICACIÓN -->
+      <div class="mcard">
+        <div class="card-head mb-2">
+          <div>
+            <div class="card-title">Mapa de calor por ubicación</div>
+            <div class="card-subtitle">Concentración de equipos por PMA activo.</div>
+          </div>
+        </div>
+        {% for pma in heatmap_data %}
+        <div class="hbar-row">
+          <div class="hbar-lbl">
+            <strong>{{ pma.nombre }}</strong>
+            <span>{{ pma.total }}</span>
+          </div>
+          <div class="hbar-track">
+            <div class="hbar-fill" style="
+              width: {% widthratio pma.total heatmap_max 100 %}%;
+              background: linear-gradient(90deg, #0284c7, #38bdf8);
+              opacity: {% widthratio pma.total heatmap_max 10 %};
+              min-width: 5%;
+            "></div>
+          </div>
+          <div class="hbar-sub">{{ pma.recinto.nombre|default:"" }}</div>
+        </div>
+        {% empty %}
+        <p style="font-size:0.82rem;color:#94a3b8;">No hay datos de ubicación disponibles.</p>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const d = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('date-pill').textContent =
+    `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+
+  // Animación de barras de progreso
+  document.querySelectorAll('.prog-fill, .hbar-fill').forEach(el => {
+    const w = el.style.width;
+    el.style.width = '0';
+    setTimeout(() => { el.style.width = w; }, 200);
+  });
+});
+</script>
+{% endblock %}

@@ -622,3 +622,80 @@ class ImportarMargaMargaView(LoginRequiredMixin, View):
             fs.delete(filename)
             
         return redirect('equipos:importar_marga_marga')
+
+
+class EquiposPanelControlView(LoginRequiredMixin, TemplateView):
+    template_name = 'equipos/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from equipos.models import Equipo, BitacoraEquipo
+        from mantenedores.models import PMA
+        from django.db.models import Count
+        
+        # KPIs Superiores
+        total = Equipo.objects.count()
+        context['inventario_total'] = total
+        context['anexos_activos'] = Equipo.objects.exclude(anexo='').count()
+        context['actas_borrador'] = 0
+        context['mantenciones_vencidas'] = 0
+        
+        # Vigilancia de calidad
+        from django.db.models import Count
+        duplicados_qs = (
+            Equipo.objects
+            .exclude(serial_number='')
+            .values('serial_number')
+            .annotate(total=Count('id'))
+            .filter(total__gt=1)
+        )
+        context['seriales_duplicados'] = duplicados_qs.count()
+        context['sin_usuario'] = Equipo.objects.filter(usuario__isnull=True).count()
+        context['sin_pma'] = Equipo.objects.filter(pma__isnull=True).count()
+        # IPs duplicadas (solo IPs no vacías)
+        ips_dup = (
+            Equipo.objects
+            .exclude(ip__isnull=True)
+            .exclude(ip='')
+            .values('ip')
+            .annotate(total=Count('id'))
+            .filter(total__gt=1)
+        )
+        context['ips_duplicadas'] = ips_dup.count()
+        
+        # Índice de salud (penalizar por campos vacíos)
+        max_penalty = total * 4  # 4 checks
+        penalty = (
+            context['seriales_duplicados'] +
+            context['sin_usuario'] +
+            context['sin_pma'] +
+            context['ips_duplicadas']
+        )
+        salud = max(0, 100 - int((penalty / max(max_penalty, 1)) * 100)) if total else 100
+        context['indice_salud'] = salud
+        
+        # Actividad reciente (últimas bitácoras)
+        context['actividad_reciente'] = (
+            BitacoraEquipo.objects
+            .select_related('equipo', 'equipo__articulo', 'equipo__pma', 'equipo__pma__recinto', 'tecnico')
+            .order_by('-fecha_mantenimiento')[:8]
+        )
+        
+        # Stats por estado
+        estados = Equipo.objects.values('estado__nombre').annotate(total=Count('id')).order_by('-total')
+        context['estados_data'] = list(estados)
+        context['inventario_total_real'] = max(total, 1)  # evitar div/0
+        
+        # Heatmap por PMA / Recinto
+        heatmap = (
+            PMA.objects
+            .annotate(total=Count('equipos'))
+            .filter(total__gt=0)
+            .select_related('recinto')
+            .order_by('-total')[:5]
+        )
+        context['heatmap_data'] = list(heatmap)
+        max_hm = heatmap[0].total if heatmap else 1
+        context['heatmap_max'] = max_hm
+        
+        return context

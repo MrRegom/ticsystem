@@ -11,12 +11,14 @@ from equipos.views import (
     ModelosPorMarcaView,
     EquipoCheckView,
     ImportarMargaMargaView,
+    EquiposPanelControlView,
 )
 
 app_name = 'equipos'
 
 urlpatterns = [
     path('', EquiposDashboardView.as_view(), name='dashboard'),
+    path('panel/', EquiposPanelControlView.as_view(), name='panel'),
     path('api/', EquipoListView.as_view(), name='list_api'),
     path('api/action/', EquipoActionView.as_view(), name='action_api'),
     path('api/<int:equipo_id>/', EquipoDetailView.as_view(), name='detail_api'),

@@ -118,9 +118,21 @@
       {% endif %}
       {% if user|has_permiso:'VER_EQUIPOS' %}
       <li class="sidebar-item">
-        <a href="/equipos/" class="sidebar-link">
-          <i class="fas fa-laptop-medical"></i> Equipos
+        <a href="#equiposSubmenu" data-toggle="collapse" aria-expanded="{% if '/equipos/' in request.path %}true{% else %}false{% endif %}" class="sidebar-link dropdown-toggle">
+          <i class="fas fa-laptop-medical"></i> Equipamiento
         </a>
+        <ul class="collapse list-unstyled {% if '/equipos/' in request.path %}show{% endif %}" id="equiposSubmenu" style="padding-left: 20px;">
+            <li>
+                <a href="{% url 'equipos:panel' %}" class="sidebar-link {% if request.resolver_match.url_name == 'panel' %}active{% endif %}" style="font-size: 0.85rem; padding: 5px 15px;">
+                    <i class="fas fa-chart-line mr-2"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'equipos:dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' and request.resolver_match.app_name == 'equipos' %}active{% endif %}" style="font-size: 0.85rem; padding: 5px 15px;">
+                    <i class="fas fa-list mr-2"></i> Inventario
+                </a>
+            </li>
+        </ul>
       </li>
       {% endif %}
       {% if user|has_permiso:'VER_MANTENEDORES' %}
