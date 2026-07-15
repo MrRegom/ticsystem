@@ -218,7 +218,7 @@ class MantenedorDetailView(LoginRequiredMixin, View):
         elif modelo == 'fallas_bitacora':
             data['tipo'] = item.tipo
             data['orden'] = item.orden
-        elif modelo == 'modelo':
+        elif modelo in ('modelo', 'modeloanexo'):
             data['marca'] = item.marca_id
         elif modelo == 'piso':
             data['alias'] = item.alias or ''

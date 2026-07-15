@@ -222,6 +222,9 @@ class MantenedorService:
 
         if 'nombre' in datos:
             nombre = normalizar_nombre(datos.get('nombre'))
+            # Para modelos de equipos y anexos, el nombre va en MAYÚSCULAS
+            if modelo_nombre in ('modelo', 'modeloanexo'):
+                nombre = nombre.upper() if nombre else nombre
             if not nombre:
                 raise ValidationError("El nombre es obligatorio.")
             instance.nombre = nombre
@@ -232,6 +235,7 @@ class MantenedorService:
             'fallas_bitacora':   ['tipo'],
             'institucion':       ['codigo'],
             'modelo':            ['marca'],
+            'modeloanexo':       ['marca'],
             'piso':              ['alias', 'edificio'],
             'proveedor':         ['contacto', 'telefono', 'email', 'direccion', 'rut'],
             'sector':            ['piso'],
@@ -263,11 +267,11 @@ class MantenedorService:
             extra['institucion'] = instance.institucion_id
         elif modelo_nombre == 'piso':
             extra['edificio'] = instance.edificio_id
-        elif modelo_nombre == 'modelo':
+        elif modelo_nombre in ('modelo', 'modeloanexo'):
             extra['marca'] = instance.marca_id
         MantenedorService._validar_duplicado(cls, instance.nombre, extra, exclude_id=item_id)
         
-        if modelo_nombre in ('modelo', 'articulo') and archivos and 'imagen' in archivos:
+        if modelo_nombre in ('modelo', 'modeloanexo', 'articulo') and archivos and 'imagen' in archivos:
             instance.imagen = archivos['imagen']
 
         instance.full_clean()
