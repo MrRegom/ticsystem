@@ -188,10 +188,16 @@
 
   <!-- Footer Delgado minimalista -->
   <footer class="py-2 mt-auto" id="footer-main" style="{% if user.is_authenticated %}margin-left: 200px;{% endif %}">
-    <div class="container-fluid px-md-4 text-center">
-      <span class="text-muted" style="font-size: 0.85rem; font-weight: 500;">
-        <i class="far fa-hospital mr-1" style="color: #006FB3;"></i> © 2026 Hospital Marga Marga | Aplicación desarrollada por <strong style="color: #002a54;">SERVIREC</strong>
-      </span>
+    <div class="container-fluid px-md-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-muted" style="font-size: 0.75rem; font-weight: 500;">
+          <i class="far fa-hospital mr-1" style="color: #006FB3;"></i> © 2026 Hospital Marga Marga
+        </span>
+        <span class="text-muted" style="font-size: 0.75rem; font-weight: 500;">
+          <span class="badge badge-warning mr-2" style="background-color: #ffc107; color: #212529; font-size: 0.6rem; vertical-align: text-top; letter-spacing: 0.5px;">VERSIÓN DEMO</span>
+          Desarrollado por <strong style="color: #002a54;">SERVIREC</strong>
+        </span>
+      </div>
     </div>
   </footer>
 
