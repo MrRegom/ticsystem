@@ -8,9 +8,13 @@ from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
 
+import os
+import base64
+from django.core.files.base import ContentFile
 from core.services.auditoria_service import AuditoriaService
 from core.models import LogAuditoria
 from core.utils import get_client_ip, parse_datatables_params, extract_validation_error
+from actas.utils.pdf_generator import generar_pdf_acta
 
 
 class ActasDashboardView(LoginRequiredMixin, TemplateView):
@@ -185,3 +189,76 @@ class ActaDetailView(LoginRequiredMixin, View):
                 'detalles': detalles,
             }
         })
+
+
+class ActaGenerateView(LoginRequiredMixin, View):
+    """API para generar un Acta con PDF y firmas desde el UI."""
+
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            return JsonResponse({'success': False, 'message': 'Petición inválida.'}, status=400)
+
+        try:
+            from actas.services.acta_service import ActaService
+            
+            # Generar un código único (ej: ACT-20260714-1)
+            from django.utils import timezone
+            import time
+            from actas.models import Acta
+            # Podríamos buscar el último y sumarle 1, pero usaremos timestamp corto por simplicidad
+            codigo = f"ACT-{timezone.now().strftime('%Y%m%d')}-{int(time.time() * 1000) % 10000}"
+            data['codigo'] = codigo
+
+            # 1. Crear el Acta en DB
+            acta = ActaService.crear_acta(data, usuario=request.user)
+            
+            # 2. Procesar y guardar firmas en Base64
+            firma_rec_b64 = data.get('firma_receptor_b64')
+            firma_tic_b64 = data.get('firma_tic_b64')
+            
+            if firma_rec_b64 and ',' in firma_rec_b64:
+                format, imgstr = firma_rec_b64.split(';base64,')
+                ext = format.split('/')[-1]
+                acta.firma_receptor.save(f"firma_rec_{acta.id}.{ext}", ContentFile(base64.b64decode(imgstr)), save=False)
+                
+            if firma_tic_b64 and ',' in firma_tic_b64:
+                format, imgstr = firma_tic_b64.split(';base64,')
+                ext = format.split('/')[-1]
+                acta.firma_encargado.save(f"firma_tic_{acta.id}.{ext}", ContentFile(base64.b64decode(imgstr)), save=False)
+            
+            acta.save()
+
+            # 3. Generar el PDF
+            rutas_firmas = {}
+            if acta.firma_receptor: rutas_firmas['receptor'] = acta.firma_receptor.path
+            if acta.firma_encargado: rutas_firmas['tic'] = acta.firma_encargado.path
+            
+            pdf_buffer = generar_pdf_acta(acta, firmas_paths=rutas_firmas)
+            
+            # 4. Guardar el PDF en el modelo
+            pdf_filename = f"Acta_{acta.codigo}.pdf"
+            acta.pdf_generado.save(pdf_filename, ContentFile(pdf_buffer.read()), save=True)
+
+            AuditoriaService.registrar_accion(
+                usuario=request.user.username,
+                accion=LogAuditoria.Accion.CREAR,
+                tabla='Acta',
+                registro_id=acta.id,
+                detalles=f"Acta generada con PDF: {acta.codigo}",
+                ip_address=get_client_ip(request),
+            )
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Acta generada exitosamente.',
+                'pdf_url': acta.pdf_generado.url
+            })
+            
+        except ValidationError as e:
+            return JsonResponse({'success': False, 'message': extract_validation_error(e)}, status=400)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return JsonResponse({'success': False, 'message': f'Error interno: {str(e)}'}, status=500)
