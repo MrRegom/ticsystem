@@ -4,40 +4,130 @@
 {% block module_title %}Gestión de Usuarios{% endblock %}
 
 {% block extra_css %}
+<!-- Fluent Design Aesthetic -->
+<style>
+  body { background-color: #faf9f8; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif; }
+  .ms-wrap { padding: 16px 24px; }
 
+  /* 💎 Microsoft Style Cards */
+  .ms-card {
+    background: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #edebe9;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* 💎 Header */
+  .ms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .ms-header h2 { font-weight: 300; color: #323130; margin: 0; font-size: 24px; }
+  .ms-header p { color: #605e5c; font-size: 13px; margin: 4px 0 0; }
+
+  /* 💎 Buttons */
+  .ms-btn-primary {
+    background: #0078d4; color: #fff;
+    border: none; border-radius: 2px;
+    padding: 6px 16px; font-size: 13px; font-weight: 600;
+    transition: background 0.2s;
+  }
+  .ms-btn-primary:hover { background: #106ebe; color: #fff; }
+  
+  .ms-btn-secondary {
+    background: #fff; color: #323130;
+    border: 1px solid #8a8886; border-radius: 2px;
+    padding: 6px 16px; font-size: 13px; font-weight: 600;
+    transition: background 0.2s;
+  }
+  .ms-btn-secondary:hover { background: #f3f2f1; }
+
+  /* 💎 DataTables Overrides */
+  .ms-table { width: 100%; border-collapse: collapse !important; }
+  .ms-table thead th {
+    font-size: 12px; font-weight: 600; color: #605e5c;
+    padding: 10px 12px; border-bottom: 2px solid #edebe9 !important;
+    text-align: left; text-transform: none; border-top: none !important;
+  }
+  .ms-table tbody td {
+    font-size: 13px; color: #323130; padding: 12px;
+    border-bottom: 1px solid #edebe9 !important; border-top: none !important;
+    vertical-align: middle;
+  }
+  .ms-table tbody tr:hover { background-color: #f3f2f1; }
+  .dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #605e5c; border-radius: 2px; padding: 4px 8px; font-size: 13px;
+  }
+  .dataTables_wrapper .dataTables_filter input:focus {
+    outline: none; border-color: #0078d4; border-width: 2px; padding: 3px 7px;
+  }
+
+  /* 💎 Modals */
+  .ms-modal-content {
+    border-radius: 4px; border: none;
+    box-shadow: 0 25.6px 57.6px 0 rgba(0,0,0,0.22), 0 4.8px 14.4px 0 rgba(0,0,0,0.18);
+  }
+  .ms-modal-header {
+    padding: 20px 24px; border-bottom: 1px solid #edebe9;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .ms-modal-title { font-weight: 600; font-size: 18px; color: #323130; margin: 0; }
+  .ms-modal-body { padding: 24px; }
+  .ms-modal-footer { padding: 16px 24px; border-top: 1px solid #edebe9; background: #f3f2f1; display: flex; justify-content: flex-end; gap: 8px; }
+  
+  /* 💎 Inputs */
+  .ms-input {
+    border: 1px solid #605e5c; border-radius: 2px; padding: 6px 12px;
+    font-size: 14px; color: #323130; width: 100%; transition: border 0.1s;
+    background: #fff;
+  }
+  .ms-input:focus { outline: none; border: 2px solid #0078d4; padding: 5px 11px; }
+  .ms-label { font-weight: 600; font-size: 13px; color: #323130; margin-bottom: 4px; display: block; }
+  
+  /* Actions */
+  .action-icon {
+    color: #0078d4; cursor: pointer; padding: 4px 8px; font-size: 14px;
+    transition: background 0.2s; border-radius: 2px;
+  }
+  .action-icon:hover { background: #edebe9; }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid pb-4 animate__animated animate__fadeIn" style="padding: 0 10px; ">
+<div class="ms-wrap">
   
   <!-- Encabezado de Página -->
-  <div class="page-header-top">
+  <div class="ms-header">
     <div>
-      <h2 class="font-weight-bold text-dark mb-0">Gestión de Usuarios y Perfiles</h2>
-      <p class="page-subtitle">Administración de operadores y personal administrativo - Hospital Marga Marga</p>
+      <h2>Directorio de Usuarios</h2>
+      <p>Administración de funcionarios, operadores y roles del Hospital Provincial Marga Marga.</p>
     </div>
     <div>
-      <button class="btn-primary-action shadow-sm" data-toggle="modal" data-target="#modalCrearUsuario">
-        <i class="fas fa-plus mr-1"></i> Nuevo Funcionario / Operador
+      <button class="ms-btn-primary shadow-sm" data-toggle="modal" data-target="#modalCrearUsuario">
+        <i class="fas fa-plus mr-1"></i> Registrar Funcionario
       </button>
     </div>
   </div>
 
-  <!-- Tabla de Resultados -->
-  <div class="datagrid-container">
+  <!-- Contenedor Principal (Tabla) -->
+  <div class="ms-card">
     <div class="table-responsive">
-      <table id="tabla-usuarios" class="table dataTable align-middle w-100">
-        <thead class="thead-light">
+      <table id="tabla-usuarios" class="table ms-table w-100">
+        <thead>
           <tr>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs"></th>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs">RUT</th>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs">Nombres</th>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs">Apellidos</th>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs">Correo Electrónico</th>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs">Unidad / Servicio</th>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs">Grupos</th>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs">Estado</th>
-            <th class="text-uppercase text-secondary font-weight-bold text-xs" style="text-align: center;">Acciones</th>
+            <th></th>
+            <th>RUT</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Correo Electrónico</th>
+            <th>Unidad / Servicio</th>
+            <th>Grupos</th>
+            <th>Estado</th>
+            <th style="text-align: center;">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -50,53 +140,44 @@
 </div>
 
 <!-- MODAL: Crear Usuario -->
-<div class="modal fade" id="modalCrearUsuario" tabindex="-1" role="dialog" aria-labelledby="modalCrearUsuarioLabel" aria-hidden="true">
+<div class="modal fade" id="modalCrearUsuario" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header-clean">
-        <h5 id="modalCrearUsuarioLabel"><i class="fas fa-user-plus mr-2"></i> Registrar Nuevo Funcionario</h5>
-        <button type="button" class="close" data-dismiss="modal" style="opacity: 0.5; outline:none;">&times;</button>
+    <div class="modal-content ms-modal-content">
+      <div class="ms-modal-header">
+        <h5 class="ms-modal-title">Nuevo Funcionario</h5>
+        <button type="button" class="close" data-dismiss="modal" style="outline:none;">&times;</button>
       </div>
       <form id="form-crear-usuario" novalidate>
-        <div class="modal-body-clean">
-          <div id="crear-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 8px;"></div>
+        <div class="ms-modal-body">
+          <div id="crear-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 2px; padding: 8px;"></div>
           
           <div class="row">
-            <!-- RUT -->
             <div class="col-md-6 form-group">
-              <label for="crear-rut" class="font-weight-bold">RUT *</label>
-              <input type="text" id="crear-rut" class="form-control" placeholder="12345678-9" required>
-              <div class="invalid-feedback">El RUT ingresado no es válido o está vacío.</div>
-              <small class="form-text text-muted">Sin puntos, con guion y dígito verificador.</small>
+              <label for="crear-rut" class="ms-label">RUT</label>
+              <input type="text" id="crear-rut" class="ms-input" placeholder="12345678-9" required>
+              <small class="form-text text-muted" style="font-size:11px;">Sin puntos y con guión.</small>
             </div>
-            <!-- Correo -->
             <div class="col-md-6 form-group">
-              <label for="crear-email" class="font-weight-bold">Correo Electrónico *</label>
-              <input type="email" id="crear-email" class="form-control" placeholder="nombre.apellido@hospitalfricke.cl" required>
-              <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
+              <label for="crear-email" class="ms-label">Correo Electrónico</label>
+              <input type="email" id="crear-email" class="ms-input" placeholder="ejemplo@hospital.cl" required>
             </div>
           </div>
 
-          <div class="row">
-            <!-- Nombres -->
+          <div class="row mt-2">
             <div class="col-md-6 form-group">
-              <label for="crear-nombres" class="font-weight-bold">Nombres *</label>
-              <input type="text" id="crear-nombres" class="form-control" placeholder="Ej: Pedro Juan" required>
-              <div class="invalid-feedback">Este campo es obligatorio.</div>
+              <label for="crear-nombres" class="ms-label">Nombres</label>
+              <input type="text" id="crear-nombres" class="ms-input" required>
             </div>
-            <!-- Apellidos -->
             <div class="col-md-6 form-group">
-              <label for="crear-apellidos" class="font-weight-bold">Apellidos *</label>
-              <input type="text" id="crear-apellidos" class="form-control" placeholder="Ej: Soto Muñoz" required>
-              <div class="invalid-feedback">Este campo es obligatorio.</div>
+              <label for="crear-apellidos" class="ms-label">Apellidos</label>
+              <input type="text" id="crear-apellidos" class="ms-input" required>
             </div>
           </div>
 
-          <div class="row">
-            <!-- Unidad / Servicio -->
+          <div class="row mt-2">
             <div class="col-md-12 form-group">
-              <label for="crear-unidad" class="font-weight-bold">Unidad / Servicio *</label>
-              <select id="crear-unidad" class="form-control select2" required>
+              <label for="crear-unidad" class="ms-label">Unidad / Servicio</label>
+              <select id="crear-unidad" class="ms-input" required>
                 <option value="">-- Seleccionar Unidad --</option>
                 {% for unidad in unidades %}
                   <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
@@ -105,53 +186,50 @@
             </div>
           </div>
 
+          <hr style="border-top: 1px solid #edebe9; margin: 20px 0;">
+
           <div class="row">
-            <!-- Contraseña -->
             <div class="col-md-6 form-group">
-              <label for="crear-contrasena" class="font-weight-bold">Contraseña *</label>
-              <input type="password" id="crear-contrasena" class="form-control" placeholder="Mínimo 8 caracteres" required>
-              <small class="form-text text-muted">Asegúrese de usar una clave robusta.</small>
+              <label for="crear-contrasena" class="ms-label">Contraseña de Acceso</label>
+              <input type="password" id="crear-contrasena" class="ms-input" required>
             </div>
-            <!-- Rol de Usuario -->
-            <div class="col-md-12 form-group">
-              <label for="crear-rol" class="font-weight-bold">Rol en el Sistema *</label>
-              <select class="form-control" id="crear-rol" name="rol" required>
+            <div class="col-md-6 form-group">
+              <label for="crear-rol" class="ms-label">Perfil de Sistema</label>
+              <select class="ms-input" id="crear-rol" name="rol" required>
                 <option value="">-- Seleccione un Rol --</option>
                 {% for r in roles_disponibles %}
                 <option value="{{ r.id }}">{{ r.nombre }}</option>
                 {% endfor %}
               </select>
             </div>
-            <!-- Grupos -->
+          </div>
+
+          <div class="row mt-2">
             <div class="col-md-12 form-group">
-              <label class="font-weight-bold">Grupos Resolutores (Opcional)</label>
-              <div class="form-control" style="height: auto; max-height: 130px; overflow-y: auto; padding: 10px; border-radius: 8px; background: #f8fafc;">
+              <label class="ms-label">Grupos de Especialidad (Opcional)</label>
+              <div style="height: 120px; overflow-y: auto; padding: 10px; border: 1px solid #edebe9; border-radius: 2px; background: #faf9f8;">
                 {% for grupo in grupos_disponibles %}
-                <div class="custom-control custom-checkbox mb-2">
+                <div class="custom-control custom-checkbox mb-1">
                   <input type="checkbox" class="custom-control-input crear-grupo-checkbox" id="crear-grupo-{{ grupo.id }}" value="{{ grupo.id }}">
-                  <label class="custom-control-label" for="crear-grupo-{{ grupo.id }}" style="font-size: 0.85rem; color: #334155;">{{ grupo.nombre }}</label>
+                  <label class="custom-control-label" for="crear-grupo-{{ grupo.id }}" style="font-size: 13px; color: #323130;">{{ grupo.nombre }}</label>
                 </div>
                 {% endfor %}
               </div>
-              <small class="form-text text-muted mt-1">Puede asignar al técnico a múltiples grupos de resolución de tickets.</small>
             </div>
           </div>
 
-          <div class="row">
-            <!-- Estado -->
-            <div class="col-md-6 form-group">
-              <div class="custom-control custom-switch mt-4">
+          <div class="row mt-2">
+            <div class="col-md-12">
+              <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="crear-activo" checked>
-                <label class="custom-control-label font-weight-bold" for="crear-activo">Usuario Activo</label>
+                <label class="custom-control-label ms-label" for="crear-activo" style="padding-top:2px;">Usuario Activo y Habilitado</label>
               </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer-clean">
-          <button type="button" class="btn" data-dismiss="modal" style="font-weight:600; color:#64748b; background:transparent;">Cerrar</button>
-          <button type="submit" id="btn-crear-submit" class="btn-primary-action">
-            Confirmar Registro
-          </button>
+        <div class="ms-modal-footer">
+          <button type="button" class="ms-btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" id="btn-crear-submit" class="ms-btn-primary">Guardar Funcionario</button>
         </div>
       </form>
     </div>
@@ -159,53 +237,44 @@
 </div>
 
 <!-- MODAL: Editar Usuario -->
-<div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
+<div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header-clean">
-        <h5 id="modalEditarUsuarioLabel"><i class="fas fa-user-edit mr-2"></i> Modificar Datos de Funcionario</h5>
-        <button type="button" class="close" data-dismiss="modal" style="opacity: 0.5; outline:none;">&times;</button>
+    <div class="modal-content ms-modal-content">
+      <div class="ms-modal-header">
+        <h5 class="ms-modal-title">Modificar Funcionario</h5>
+        <button type="button" class="close" data-dismiss="modal" style="outline:none;">&times;</button>
       </div>
       <form id="form-editar-usuario" novalidate>
         <input type="hidden" id="editar-id">
-        <div class="modal-body-clean">
-          <div id="editar-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 8px;"></div>
+        <div class="ms-modal-body">
+          <div id="editar-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 2px; padding: 8px;"></div>
           
           <div class="row">
-            <!-- RUT -->
             <div class="col-md-6 form-group">
-              <label for="editar-rut" class="font-weight-bold">RUT *</label>
-              <input type="text" id="editar-rut" class="form-control" required>
-              <div class="invalid-feedback">El RUT ingresado no es válido o está vacío.</div>
+              <label for="editar-rut" class="ms-label">RUT</label>
+              <input type="text" id="editar-rut" class="ms-input" required>
             </div>
-            <!-- Correo -->
             <div class="col-md-6 form-group">
-              <label for="editar-email" class="font-weight-bold">Correo Electrónico *</label>
-              <input type="email" id="editar-email" class="form-control" required>
-              <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
+              <label for="editar-email" class="ms-label">Correo Electrónico</label>
+              <input type="email" id="editar-email" class="ms-input" required>
             </div>
           </div>
 
-          <div class="row">
-            <!-- Nombres -->
+          <div class="row mt-2">
             <div class="col-md-6 form-group">
-              <label for="editar-nombres" class="font-weight-bold">Nombres *</label>
-              <input type="text" id="editar-nombres" class="form-control" required>
-              <div class="invalid-feedback">Este campo es obligatorio.</div>
+              <label for="editar-nombres" class="ms-label">Nombres</label>
+              <input type="text" id="editar-nombres" class="ms-input" required>
             </div>
-            <!-- Apellidos -->
             <div class="col-md-6 form-group">
-              <label for="editar-apellidos" class="font-weight-bold">Apellidos *</label>
-              <input type="text" id="editar-apellidos" class="form-control" required>
-              <div class="invalid-feedback">Este campo es obligatorio.</div>
+              <label for="editar-apellidos" class="ms-label">Apellidos</label>
+              <input type="text" id="editar-apellidos" class="ms-input" required>
             </div>
           </div>
 
-          <div class="row">
-            <!-- Unidad / Servicio -->
+          <div class="row mt-2">
             <div class="col-md-12 form-group">
-              <label for="editar-unidad" class="font-weight-bold">Unidad / Servicio *</label>
-              <select id="editar-unidad" class="form-control select2" required>
+              <label for="editar-unidad" class="ms-label">Unidad / Servicio</label>
+              <select id="editar-unidad" class="ms-input" required>
                 <option value="">-- Seleccionar Unidad --</option>
                 {% for unidad in unidades %}
                   <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
@@ -214,43 +283,41 @@
             </div>
           </div>
 
+          <hr style="border-top: 1px solid #edebe9; margin: 20px 0;">
+
           <div class="row">
-            <!-- Contraseña -->
             <div class="col-md-6 form-group">
-              <label for="editar-contrasena" class="font-weight-bold">Nueva Contraseña</label>
-              <input type="password" id="editar-contrasena" class="form-control" placeholder="Dejar en blanco para no cambiar">
-              <small class="form-text text-muted">Sólo si desea actualizar la clave del funcionario.</small>
+              <label for="editar-contrasena" class="ms-label">Nueva Contraseña (Opcional)</label>
+              <input type="password" id="editar-contrasena" class="ms-input" placeholder="Dejar en blanco para no cambiar">
             </div>
-            <!-- Rol de Usuario -->
-            <div class="col-md-12 form-group">
-              <label for="editar-rol" class="font-weight-bold">Rol en el Sistema *</label>
-              <select class="form-control" id="editar-rol" name="rol" required>
+            <div class="col-md-6 form-group">
+              <label for="editar-rol" class="ms-label">Perfil de Sistema</label>
+              <select class="ms-input" id="editar-rol" name="rol" required>
                 <option value="">-- Seleccione un Rol --</option>
                 {% for r in roles_disponibles %}
                 <option value="{{ r.id }}">{{ r.nombre }}</option>
                 {% endfor %}
               </select>
             </div>
-            <!-- Grupos -->
+          </div>
+
+          <div class="row mt-2">
             <div class="col-md-12 form-group">
-              <label class="font-weight-bold">Grupos Resolutores (Opcional)</label>
-              <div class="form-control" style="height: auto; max-height: 130px; overflow-y: auto; padding: 10px; border-radius: 8px; background: #f8fafc;">
+              <label class="ms-label">Grupos de Especialidad</label>
+              <div style="height: 120px; overflow-y: auto; padding: 10px; border: 1px solid #edebe9; border-radius: 2px; background: #faf9f8;">
                 {% for grupo in grupos_disponibles %}
-                <div class="custom-control custom-checkbox mb-2">
+                <div class="custom-control custom-checkbox mb-1">
                   <input type="checkbox" class="custom-control-input editar-grupo-checkbox" id="editar-grupo-{{ grupo.id }}" value="{{ grupo.id }}">
-                  <label class="custom-control-label" for="editar-grupo-{{ grupo.id }}" style="font-size: 0.85rem; color: #334155;">{{ grupo.nombre }}</label>
+                  <label class="custom-control-label" for="editar-grupo-{{ grupo.id }}" style="font-size: 13px; color: #323130;">{{ grupo.nombre }}</label>
                 </div>
                 {% endfor %}
               </div>
-              <small class="form-text text-muted mt-1">Puede asignar al técnico a múltiples grupos de resolución de tickets.</small>
             </div>
           </div>
-
-
         </div>
-        <div class="modal-footer-clean">
-          <button type="button" class="btn" data-dismiss="modal" style="font-weight:600; color:#64748b; background:transparent;">Cerrar</button>
-          <button type="submit" id="btn-editar-submit" class="btn-primary-action">Guardar Cambios</button>
+        <div class="ms-modal-footer">
+          <button type="button" class="ms-btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" id="btn-editar-submit" class="ms-btn-primary">Actualizar Cambios</button>
         </div>
       </form>
     </div>
@@ -260,9 +327,9 @@
 <!-- Plantillas HTML Ocultas para renderizado seguro en JS (DataTables) -->
 <div id="dt-templates" style="display: none;">
   <!-- Botones de Acción para cada fila -->
-  <div class="actions-cell tmpl-acciones" style="justify-content: center;">
-    <a href="#" class="action-icon ic-edit btn-editar-usuario" title="Modificar Datos">
-      <i class="fas fa-pencil-alt"></i>
+  <div class="actions-cell tmpl-acciones" style="display:flex; gap: 8px;">
+    <a href="javascript:void(0)" class="action-icon btn-editar-usuario" title="Modificar Datos">
+      <i class="fas fa-edit"></i>
     </a>
   </div>
 </div>
@@ -270,5 +337,5 @@
 
 {% block extra_js %}
 <!-- JS Estático del módulo de gestión de usuarios -->
-<script src="/static/js/usuarios.js"></script>
+<script src="{% static 'js/usuarios.js' %}"></script>
 {% endblock %}
