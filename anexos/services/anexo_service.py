@@ -31,7 +31,7 @@ class AnexoService:
             edificio_id=datos.get('edificio') or None,
             piso_id=datos.get('piso') or None,
             unidad_id=datos.get('unidad') or None,
-            pma_lugar=normalizar_nombre(datos.get('pma_lugar')),
+            pma_id=datos.get('pma') or None,
             proveedor_id=datos.get('proveedor') or None,
             estado=datos.get('estado') or Anexo.Estado.ACTIVO,
             serial_number=serial,
@@ -64,7 +64,7 @@ class AnexoService:
         anexo.edificio_id = datos.get('edificio') or None
         anexo.piso_id = datos.get('piso') or None
         anexo.unidad_id = datos.get('unidad') or None
-        anexo.pma_lugar = normalizar_nombre(datos.get('pma_lugar'))
+        anexo.pma_id = datos.get('pma') or None
         anexo.proveedor_id = datos.get('proveedor') or None
         anexo.estado = datos.get('estado') or Anexo.Estado.ACTIVO
         anexo.serial_number = serial
@@ -117,7 +117,8 @@ class AnexoService:
                 'estado': a.estado,
                 'serial_number': a.serial_number,
                 'ip': str(a.ip) if a.ip else '',
-                'pma_lugar': a.pma_lugar or '',
+                'pma_id': a.pma.id if a.pma else '',
+                'pma_nombre': a.pma.nombre if a.pma else '',
                 'grupo': a.grupo or '',
                 'observacion': a.observacion if hasattr(a, 'observacion') else getattr(a, 'comentario', ''),
             })

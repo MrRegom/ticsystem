@@ -245,3 +245,14 @@ h5, .h5 { font-size: 0.85rem !important; }
 
 .table { font-size: 0.8rem; }
 
+/* Force square corners globally as requested by user */
+.form-control, 
+.form-control-sm,
+.btn, 
+.input-group-text,
+.select2-container--bootstrap4 .select2-selection,
+.select2-container--default .select2-selection,
+.modal-content,
+.alert {
+    border-radius: 0 !important;
+}

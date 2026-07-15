@@ -11,7 +11,7 @@ class AnexoRepository:
     def get_by_id(anexo_id: int) -> Anexo:
         try:
             return Anexo.objects.select_related(
-                'modelo_anexo', 'edificio', 'piso', 'unidad', 'proveedor', 'establecimiento',
+                'modelo_anexo', 'edificio', 'piso', 'unidad', 'pma', 'proveedor', 'establecimiento',
             ).get(pk=anexo_id)
         except Anexo.DoesNotExist:
             return None
@@ -36,7 +36,7 @@ class AnexoRepository:
                 Q(marca__icontains=search_value) |
                 Q(modelo__icontains=search_value) |
                 Q(ip__icontains=search_value) |
-                Q(pma_lugar__icontains=search_value) |
+                Q(pma__nombre__icontains=search_value) |
                 Q(comentario__icontains=search_value) |
                 Q(grupo__icontains=search_value) |
                 Q(edificio__nombre__icontains=search_value) |
@@ -48,14 +48,14 @@ class AnexoRepository:
     @classmethod
     def get_paginated_list(cls, start, length, search_value, order_column, order_dir):
         qs = Anexo.objects.select_related(
-            'modelo_anexo', 'edificio', 'piso', 'unidad', 'establecimiento',
+            'modelo_anexo', 'edificio', 'piso', 'unidad', 'pma', 'establecimiento',
         ).all()
         qs = cls._apply_search(qs, search_value)
         order_map = {
             'numero_anexo': 'numero_anexo', 'marca': 'marca', 'modelo': 'modelo',
             'edificio': 'edificio__nombre', 'piso': 'piso__nombre',
             'unidad': 'unidad__nombre', 'estado': 'estado', 'ip': 'ip',
-            'serial_number': 'serial_number', 'pma_lugar': 'pma_lugar',
+            'serial_number': 'serial_number', 'pma_lugar': 'pma__nombre',
         }
         col = order_map.get(order_column, 'numero_anexo')
         if order_dir == 'desc' and not col.startswith('-'):

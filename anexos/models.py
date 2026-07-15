@@ -26,7 +26,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from mantenedores.models import (
-    ModeloAnexo, Edificio, Piso, Unidad, Institucion, Proveedor,
+    ModeloAnexo, Edificio, Piso, Unidad, Institucion, Proveedor, PMA
 )
 
 
@@ -82,9 +82,13 @@ class Anexo(models.Model):
         related_name='anexos',
         verbose_name="Unidad / Servicio"
     )
-    pma_lugar = models.CharField(
-        max_length=100,
-        verbose_name="PMA / Lugar"
+    pma = models.ForeignKey(
+        PMA,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='anexos',
+        verbose_name="PMA (Punto de Montaje)"
     )
     proveedor = models.ForeignKey(
         Proveedor,

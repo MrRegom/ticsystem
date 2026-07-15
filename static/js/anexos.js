@@ -28,31 +28,53 @@ $(document).ready(function() {
     $('#a-edificio').on('change', function() {
         var edif_id = $(this).val();
         $('#a-piso option').each(function() {
-            if ($(this).val() === "") {
-                $(this).show();
-            } else {
-                if ($(this).data('edificio') == edif_id || edif_id === "") {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
+            if ($(this).val() === "") $(this).show();
+            else {
+                if ($(this).data('edificio') == edif_id || edif_id === "") $(this).show();
+                else $(this).hide();
             }
         });
         $('#a-piso').val('').trigger('change.select2');
+    });
+
+    // Lógica para filtrar Recintos según Piso o Unidad
+    $('#a-piso, #a-unidad').on('change', function() {
+        var piso_id = $('#a-piso').val();
+        var unidad_id = $('#a-unidad').val();
+        $('#a-recinto option').each(function() {
+            if ($(this).val() === "") $(this).show();
+            else {
+                var show = true;
+                if (piso_id && $(this).data('piso') != piso_id) show = false;
+                if (unidad_id && $(this).data('unidad') != unidad_id) show = false;
+                if (show) $(this).show();
+                else $(this).hide();
+            }
+        });
+        $('#a-recinto').val('').trigger('change.select2');
+    });
+
+    // Lógica para filtrar PMA según Recinto
+    $('#a-recinto').on('change', function() {
+        var rec_id = $(this).val();
+        $('#a-pma option').each(function() {
+            if ($(this).val() === "") $(this).show();
+            else {
+                if ($(this).data('recinto') == rec_id || rec_id === "") $(this).show();
+                else $(this).hide();
+            }
+        });
+        $('#a-pma').val('').trigger('change.select2');
     });
 
     // Lógica para filtrar ModeloAnexo según Marca
     $('#a-marca').on('change', function() {
         var marca_id = $(this).find('option:selected').data('id');
         $('#a-modelo-anexo option').each(function() {
-            if ($(this).val() === "") {
-                $(this).show();
-            } else {
-                if ($(this).data('marca') == marca_id || !marca_id) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
+            if ($(this).val() === "") $(this).show();
+            else {
+                if ($(this).data('marca') == marca_id || !marca_id) $(this).show();
+                else $(this).hide();
             }
         });
         $('#a-modelo-anexo').val('').trigger('change.select2');
@@ -167,6 +189,12 @@ $(document).ready(function() {
         $('#anexo-id').val('');
         $('.select2-modal').val('').trigger('change.select2');
         $('#modalAnexoLabel').text('Información Técnica del Equipo');
+        
+        var ciscoOption = $('#a-marca option').filter(function() { return $(this).text().toUpperCase().includes('CISCO'); }).first();
+        if(ciscoOption.length) {
+            $('#a-marca').val(ciscoOption.val()).trigger('change.select2');
+        }
+        
         $('#modalAnexo').modal('show');
     });
 
@@ -187,7 +215,7 @@ $(document).ready(function() {
             unidad: $('#a-unidad').val(),
             ip: $('#a-ip').val(),
             serial_number: $('#a-serial').val(),
-            pma_lugar: $('#a-pma').val(),
+            pma: $('#a-pma').val(),
             estado: $('#a-estado').val(),
             comentario: $('#a-comentario').val()
         };
@@ -233,9 +261,18 @@ $(document).ready(function() {
         $('#a-edificio').val(data.edificio_id).trigger('change.select2');
         $('#a-piso').val(data.piso_id).trigger('change.select2');
         $('#a-unidad').val(data.unidad_id).trigger('change.select2');
+        
+        // Find the recinto corresponding to the pma to auto-fill a-recinto
+        var pmaOption = $('#a-pma option[value="'+data.pma_id+'"]');
+        if (pmaOption.length && pmaOption.data('recinto')) {
+            $('#a-recinto').val(pmaOption.data('recinto')).trigger('change.select2');
+        } else {
+            $('#a-recinto').val('').trigger('change.select2');
+        }
+        
+        $('#a-pma').val(data.pma_id).trigger('change.select2');
         $('#a-ip').val(data.ip);
         $('#a-serial').val(data.serial_number);
-        $('#a-pma').val(data.pma_lugar);
         $('#a-estado').val(data.estado);
         $('#a-comentario').val(data.observacion || data.comentario);
 

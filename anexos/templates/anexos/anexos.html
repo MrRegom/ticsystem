@@ -284,11 +284,17 @@
               </select>
             </div>
 
+            <!-- Ubiacion Jerárquica -->
+            <div class="col-md-12 mb-3">
+              <div style="border-top: 1px solid #e2e8f0; margin: 10px 0;"></div>
+              <h6 class="font-weight-bold" style="font-size: 0.8rem; color: #002a54;"><i class="fas fa-map-marker-alt"></i> Ubicación Topológica</h6>
+            </div>
+
             <!-- EDIFICIO -->
-            <div class="col-md-6 form-group">
+            <div class="col-md-4 form-group">
               <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">EDIFICIO</label>
               <select class="form-control form-control-sm select2-modal" id="a-edificio">
-                <option value="">Seleccionar Edificio</option>
+                <option value="">Todos</option>
                 {% for e in edificios %}
                 <option value="{{ e.id }}">{{ e.nombre }}</option>
                 {% endfor %}
@@ -296,11 +302,10 @@
             </div>
 
             <!-- PISO -->
-            <div class="col-md-6 form-group">
+            <div class="col-md-4 form-group">
               <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">PISO</label>
               <select class="form-control form-control-sm select2-modal" id="a-piso">
-                <option value="">Seleccionar Piso</option>
-                <!-- Opciones se cargarán dinámicamente si se desea, o todos por ahora -->
+                <option value="">Todos</option>
                 {% for p in pisos %}
                 <option value="{{ p.id }}" data-edificio="{{ p.edificio__id }}">{{ p.nombre }}</option>
                 {% endfor %}
@@ -308,14 +313,40 @@
             </div>
 
             <!-- SERVICIO / UNIDAD -->
-            <div class="col-md-12 form-group">
-              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">SERVICIO / UNIDAD</label>
+            <div class="col-md-4 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">UNIDAD / SERVICIO</label>
               <select class="form-control form-control-sm select2-modal" id="a-unidad">
-                <option value="">Seleccionar Unidad</option>
+                <option value="">Todas</option>
                 {% for u in unidades %}
                 <option value="{{ u.id }}">{{ u.nombre }}</option>
                 {% endfor %}
               </select>
+            </div>
+
+            <!-- RECINTO -->
+            <div class="col-md-4 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">RECINTO</label>
+              <select class="form-control form-control-sm select2-modal" id="a-recinto">
+                <option value="">Todos</option>
+                {% for r in recintos %}
+                <option value="{{ r.id }}" data-piso="{{ r.piso_id }}" data-unidad="{{ r.unidad_id }}">{{ r.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- LUGAR / PMA -->
+            <div class="col-md-8 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">PMA <span class="text-danger">*</span></label>
+              <select class="form-control form-control-sm select2-modal" id="a-pma" required>
+                <option value="">Seleccionar PMA</option>
+                {% for pma in pmas %}
+                <option value="{{ pma.id }}" data-recinto="{{ pma.recinto_id }}">{{ pma.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <div style="border-top: 1px solid #e2e8f0; margin: 5px 0;"></div>
             </div>
 
             <!-- IP ADDRESS -->
@@ -333,12 +364,6 @@
             <div class="col-md-6 form-group">
               <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">SERIAL NUMBER</label>
               <input type="text" class="form-control form-control-sm" id="a-serial" placeholder="Serial...">
-            </div>
-
-            <!-- LUGAR / PMA -->
-            <div class="col-md-12 form-group">
-              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">LUGAR / PMA</label>
-              <input type="text" class="form-control form-control-sm" id="a-pma" placeholder="Ubicación específica del puesto">
             </div>
 
             <!-- ESTADO -->
