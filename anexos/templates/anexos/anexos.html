@@ -252,7 +252,7 @@
           
           <div class="row">
             <!-- NÚMERO ANEXO -->
-            <div class="col-md-6 form-group">
+            <div class="col-md-12 form-group">
               <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">NÚMERO ANEXO <span class="text-danger">*</span></label>
               <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
@@ -262,13 +262,24 @@
               </div>
             </div>
 
+            <!-- MARCA -->
+            <div class="col-md-6 form-group">
+              <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">MARCA <span class="text-danger">*</span></label>
+              <select class="form-control form-control-sm select2-modal" id="a-marca" required>
+                <option value="">Seleccionar Marca</option>
+                {% for m in marcas %}
+                <option value="{{ m.nombre }}" data-id="{{ m.id }}">{{ m.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
             <!-- MODELO -->
             <div class="col-md-6 form-group">
               <label class="font-weight-bold" style="font-size: 0.75rem; color:#475569;">MODELO <span class="text-danger">*</span></label>
               <select class="form-control form-control-sm select2-modal" id="a-modelo-anexo" required>
                 <option value="">Seleccionar Modelo</option>
                 {% for ma in modelos_anexos %}
-                <option value="{{ ma.id }}">{{ ma.nombre }}</option>
+                <option value="{{ ma.id }}" data-marca="{{ ma.marca__id|default:'' }}">{{ ma.nombre }}</option>
                 {% endfor %}
               </select>
             </div>

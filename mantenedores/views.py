@@ -26,7 +26,7 @@ MODELOS_INFO = [
     {'key': 'articulo',          'label': 'Artículos',             'icon': 'tag',           'fields': ['nombre', 'imagen'],                    'grupo': 'tecnico'},
     {'key': 'marca',             'label': 'Marcas',                'icon': 'trademark',     'fields': ['nombre'],                              'grupo': 'tecnico'},
     {'key': 'modelo',            'label': 'Modelos',               'icon': 'microchip',     'fields': ['nombre', 'marca', 'imagen'],           'grupo': 'tecnico'},
-    {'key': 'modeloanexo',       'label': 'Modelos de Anexos',     'icon': 'phone',         'fields': ['nombre', 'imagen'],                    'grupo': 'tecnico'},
+    {'key': 'modeloanexo',       'label': 'Modelos de Anexos',     'icon': 'phone',         'fields': ['nombre', 'marca', 'imagen'],           'grupo': 'tecnico'},
     {'key': 'sistemaoperativo',  'label': 'Sistemas Operativos',   'icon': 'desktop',       'fields': ['nombre'],                              'grupo': 'tecnico'},
     {'key': 'fallas_bitacora',   'label': 'Fallas Reportadas / Motivo', 'icon': 'clipboard-list','fields': ['tipo', 'nombre', 'orden'],              'grupo': 'tecnico'},
     # --- Infraestructura Física ---

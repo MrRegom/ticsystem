@@ -41,6 +41,23 @@ $(document).ready(function() {
         $('#a-piso').val('').trigger('change.select2');
     });
 
+    // Lógica para filtrar ModeloAnexo según Marca
+    $('#a-marca').on('change', function() {
+        var marca_id = $(this).find('option:selected').data('id');
+        $('#a-modelo-anexo option').each(function() {
+            if ($(this).val() === "") {
+                $(this).show();
+            } else {
+                if ($(this).data('marca') == marca_id || !marca_id) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            }
+        });
+        $('#a-modelo-anexo').val('').trigger('change.select2');
+    });
+
     // Inicializar DataTable
     var tablaAnexos = $('#tabla-anexos').DataTable({
         serverSide: true,
@@ -163,6 +180,7 @@ $(document).ready(function() {
         var data = {
             id: $('#anexo-id').val(),
             numero_anexo: $('#a-numero').val(),
+            marca: $('#a-marca').val(),
             modelo_anexo: $('#a-modelo-anexo').val(),
             edificio: $('#a-edificio').val(),
             piso: $('#a-piso').val(),
@@ -210,6 +228,7 @@ $(document).ready(function() {
         
         $('#anexo-id').val(data.id);
         $('#a-numero').val(data.numero_anexo);
+        $('#a-marca').val(data.marca).trigger('change.select2');
         $('#a-modelo-anexo').val(data.modelo_anexo_id).trigger('change.select2');
         $('#a-edificio').val(data.edificio_id).trigger('change.select2');
         $('#a-piso').val(data.piso_id).trigger('change.select2');

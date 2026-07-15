@@ -338,6 +338,14 @@ class ModeloAnexo(TimestampedActivo):
         unique=True,
         verbose_name="Nombre del Modelo"
     )
+    marca = models.ForeignKey(
+        'Marca',
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='modelos_anexos',
+        verbose_name="Marca del Modelo"
+    )
     imagen = models.ImageField(
         upload_to='modelos_anexos/',
         null=True,

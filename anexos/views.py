@@ -19,9 +19,10 @@ class AnexosDashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         from mantenedores.models import (
-            ModeloAnexo, Edificio, Piso, Unidad, Proveedor, Institucion,
+            ModeloAnexo, Edificio, Piso, Unidad, Proveedor, Institucion, Marca
         )
-        ctx['modelos_anexos'] = list(ModeloAnexo.objects.filter(activo=True).values('id', 'nombre'))
+        ctx['marcas'] = list(Marca.objects.filter(activo=True).values('id', 'nombre'))
+        ctx['modelos_anexos'] = list(ModeloAnexo.objects.filter(activo=True).values('id', 'nombre', 'marca__id'))
         ctx['edificios'] = list(Edificio.objects.filter(activo=True).values('id', 'nombre'))
         ctx['pisos'] = list(Piso.objects.filter(activo=True).select_related('edificio').values('id', 'nombre', 'edificio__id'))
         ctx['unidades'] = list(Unidad.objects.filter(activo=True).values('id', 'nombre'))
