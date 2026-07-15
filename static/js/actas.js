@@ -154,7 +154,7 @@ $(document).ready(function() {
                 <td>${item.marcamodelo}</td>
                 <td style="font-family: monospace;">${item.serie}</td>
                 <td class="text-right">
-                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-item" data-index="${index}"><i class="fas fa-trash"></i></button>
+                    <button type="button" class="btn btn-sm btn-danger btn-remove-item" data-index="${index}" title="Quitar equipo"><i class="fas fa-trash-alt"></i></button>
                 </td>
             </tr>`;
             tbody.append(tr);
