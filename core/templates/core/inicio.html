@@ -1,116 +1,100 @@
 {% extends 'core/base.html' %}
 {% load auth_extras %}
 
-{% block title %}Inicio{% endblock %}
-{% block module_title %}Panel de Control{% endblock %}
+{% block title %}Panel de Control General{% endblock %}
+{% block module_title %}Portal de Gestión Hospitalaria{% endblock %}
 
 {% block extra_css %}
 <style>
-  body { background-color: #f8fafc; }
-  .dashboard-container { padding: 24px; font-family: 'Inter', sans-serif; }
-
-  /* Premium Header */
+  body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; }
+  .dashboard-container { padding: 16px 24px; }
+  
+  /* Top Bar Header */
   .premium-header {
     background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
-    border-radius: 16px;
-    padding: 32px;
+    border-radius: 12px;
+    padding: 24px 32px;
     color: #fff;
-    margin-bottom: 32px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 30px -5px rgba(15,23,42,.4);
+    margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(15,23,42,.1);
   }
-  .premium-header::before {
-    content: ''; position: absolute; top: -50px; right: -50px;
-    width: 250px; height: 250px;
-    background: radial-gradient(circle, rgba(56,189,248,.15) 0%, transparent 70%);
-  }
-  .ph-title { font-size: 1.8rem; font-weight: 800; margin: 0 0 8px; }
-  .ph-sub { color: #94a3b8; font-size: 0.95rem; margin: 0; }
-  
+  .ph-title { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; }
+  .ph-sub { color: #94a3b8; font-size: 0.9rem; margin: 0; }
   .date-pill {
     background: rgba(255,255,255,.1); backdrop-filter: blur(8px);
     border: 1px solid rgba(255,255,255,.15);
-    padding: 8px 20px; border-radius: 20px;
+    padding: 6px 16px; border-radius: 20px;
     font-size: 0.85rem; font-weight: 600;
   }
 
-  /* Grid System */
-  .modules-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
-  }
-
-  /* Modern Module Card */
-  .module-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 24px;
+  /* Enterprise Cards */
+  .enterprise-card {
+    background: #ffffff;
+    border-radius: 12px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,.02), 0 2px 4px -2px rgba(0,0,0,.02);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    text-decoration: none !important;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 24px;
+    height: calc(100% - 24px);
     display: flex;
     flex-direction: column;
-    position: relative;
-    overflow: hidden;
   }
-  .module-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px -5px rgba(0,0,0,.08), 0 8px 10px -6px rgba(0,0,0,.04);
-    border-color: #bae6fd;
+  .card-title-enterprise {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .module-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-    background: var(--mc-color, #94a3b8);
-    opacity: 0.8;
+  .card-subtitle-enterprise {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 16px;
   }
   
-  .mc-icon {
-    width: 54px; height: 54px;
-    border-radius: 14px;
-    background: var(--mc-bg, #f1f5f9);
-    color: var(--mc-color, #64748b);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    transition: transform 0.3s ease;
+  /* KPI Blocks */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi-box {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   }
-  .module-card:hover .mc-icon {
-    transform: scale(1.05) rotate(-3deg);
-  }
+  .kpi-val { font-size: 1.8rem; font-weight: 800; color: #0f172a; line-height: 1; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
+  .kpi-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+  
+  .c-blue { background: #eff6ff; color: #2563eb; }
+  .c-green { background: #f0fdf4; color: #16a34a; }
+  .c-purple { background: #faf5ff; color: #9333ea; }
+  .c-orange { background: #fff7ed; color: #ea580c; }
 
-  .mc-title {
-    font-size: 1.15rem; font-weight: 700; color: #1e293b; margin: 0 0 8px;
-  }
-  .mc-desc {
-    font-size: 0.85rem; color: #64748b; margin: 0 0 20px; line-height: 1.4; flex-grow: 1;
-  }
-  
-  .mc-footer {
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid #f1f5f9;
-    padding-top: 16px;
-    font-size: 0.8rem; font-weight: 600; color: #0284c7;
-  }
-  .module-card:hover .mc-footer {
-    color: #0369a1;
-  }
+  /* Progress Bars */
+  .progress-wrap { margin-bottom: 12px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #334155; margin-bottom: 4px; }
+  .progress-bar-enterprise { height: 6px; border-radius: 4px; background: #e2e8f0; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; }
 
-  /* Colors */
-  .c-blue { --mc-color: #0284c7; --mc-bg: #e0f2fe; }
-  .c-teal { --mc-color: #0d9488; --mc-bg: #ccfbf1; }
-  .c-purple { --mc-color: #7c3aed; --mc-bg: #ede9fe; }
-  .c-amber { --mc-color: #d97706; --mc-bg: #fef3c7; }
-  .c-rose { --mc-color: #e11d48; --mc-bg: #ffe4e6; }
-  .c-indigo { --mc-color: #4f46e5; --mc-bg: #e0e7ff; }
-  .c-emerald { --mc-color: #059669; --mc-bg: #d1fae5; }
+  /* Dense Table */
+  .dense-table th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; padding: 10px 16px; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+  .dense-table td { font-size: 0.85rem; color: #1e293b; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  .dense-table tbody tr:hover { background: #f8fafc; }
+  .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
   
+  /* Quick Module Grid */
+  .module-btn {
+    display: flex; align-items: center; padding: 12px 16px; border-radius: 8px;
+    background: #f8fafc; border: 1px solid #e2e8f0; color: #334155;
+    text-decoration: none; font-weight: 600; font-size: 0.85rem;
+    transition: all 0.2s; margin-bottom: 10px;
+  }
+  .module-btn:hover { background: #f1f5f9; border-color: #cbd5e1; color: #0f172a; text-decoration: none; transform: translateX(4px); }
+  .module-btn i { font-size: 1.1rem; margin-right: 12px; width: 24px; text-align: center; }
+
 </style>
 {% endblock %}
 
@@ -120,100 +104,171 @@
   <!-- Header -->
   <div class="premium-header">
     <div>
-      <h1 class="ph-title">Portal de Gestión Hospitalaria</h1>
-      <p class="ph-sub">Bienvenido al sistema integrado del Hospital Marga Marga.</p>
+      <h1 class="ph-title">Bienvenido, {{ user.first_name|default:user.username }}</h1>
+      <p class="ph-sub">Portal de Gestión Hospitalaria | Resumen Corporativo</p>
     </div>
     <div class="date-pill" id="inicio-date-pill">--/--/----</div>
   </div>
 
-  <h4 class="mb-4" style="font-weight: 700; color: #334155;">Módulos del Sistema</h4>
-
-  <!-- Módulos Grid -->
-  <div class="modules-grid">
-    
-    {% if user|has_permiso:'VER_EQUIPOS' %}
-    <!-- Equipamiento -->
-    <a href="{% url 'equipos:panel' %}" class="module-card c-blue">
-      <div class="mc-icon"><i class="fas fa-laptop-medical"></i></div>
-      <h3 class="mc-title">Equipamiento TIC</h3>
-      <p class="mc-desc">Inventario completo, control de calidad, asignaciones y meta operativa de mantenciones.</p>
-      <div class="mc-footer">
-        <span>Ingresar al panel</span> <i class="fas fa-arrow-right"></i>
+  <!-- 4 KPIs Top -->
+  <div class="kpi-row">
+    <div class="kpi-box">
+      <div>
+        <div class="kpi-val">{{ kpis.equipos_total|default:"0" }}</div>
+        <div class="kpi-label">Equipos Inventariados</div>
       </div>
-    </a>
-    {% endif %}
-
-    {% if user|has_permiso:'VER_TICKETS' %}
-    <!-- Tickets -->
-    <a href="/tickets/" class="module-card c-purple">
-      <div class="mc-icon"><i class="fas fa-ticket-alt"></i></div>
-      <h3 class="mc-title">Mesa de Ayuda (Tickets)</h3>
-      <p class="mc-desc">Gestión de incidentes, solicitudes de servicio, cronómetros SLA y grupos resolutores.</p>
-      <div class="mc-footer">
-        <span>Ingresar al módulo</span> <i class="fas fa-arrow-right"></i>
+      <div class="kpi-icon c-blue"><i class="fas fa-laptop-medical"></i></div>
+    </div>
+    <div class="kpi-box">
+      <div>
+        <div class="kpi-val">{{ kpis.anexos_activos|default:"0" }}</div>
+        <div class="kpi-label">Anexos Telefónicos</div>
       </div>
-    </a>
-    {% endif %}
-
-    {% if user|has_permiso:'VER_USUARIOS' %}
-    <!-- Usuarios -->
-    <a href="{% url 'usuarios_dashboard' %}" class="module-card c-emerald">
-      <div class="mc-icon"><i class="fas fa-users-cog"></i></div>
-      <h3 class="mc-title">Directorio de Usuarios</h3>
-      <p class="mc-desc">Control de funcionarios, cuentas de acceso y personal interno del hospital.</p>
-      <div class="mc-footer">
-        <span>Gestionar usuarios</span> <i class="fas fa-arrow-right"></i>
+      <div class="kpi-icon c-green"><i class="fas fa-phone-alt"></i></div>
+    </div>
+    <div class="kpi-box">
+      <div>
+        <div class="kpi-val">{{ kpis.actas_emitidas|default:"0" }}</div>
+        <div class="kpi-label">Actas Emitidas</div>
       </div>
-    </a>
-    {% endif %}
-
-    {% if user|has_permiso:'VER_MANTENEDORES' %}
-    <!-- Mantenedores -->
-    <a href="/mantenedores/" class="module-card c-amber">
-      <div class="mc-icon"><i class="fas fa-cogs"></i></div>
-      <h3 class="mc-title">Mantenedores</h3>
-      <p class="mc-desc">Catálogos de hardware, áreas clínicas, edificios, unidades y marcas autorizadas.</p>
-      <div class="mc-footer">
-        <span>Configurar catálogos</span> <i class="fas fa-arrow-right"></i>
+      <div class="kpi-icon c-orange"><i class="fas fa-file-signature"></i></div>
+    </div>
+    <div class="kpi-box">
+      <div>
+        <div class="kpi-val">{{ kpis.indice_salud|default:"0" }}%</div>
+        <div class="kpi-label">Salud Operativa TIC</div>
       </div>
-    </a>
-    {% endif %}
+      <div class="kpi-icon c-purple"><i class="fas fa-heartbeat"></i></div>
+    </div>
+  </div>
 
-    {% if user|has_permiso:'VER_REPORTES' %}
-    <!-- Reportes -->
-    <a href="{% url 'reportes:dashboard' %}" class="module-card c-teal">
-      <div class="mc-icon"><i class="fas fa-chart-pie"></i></div>
-      <h3 class="mc-title">Business Intelligence</h3>
-      <p class="mc-desc">Reportes gerenciales, exportación a Excel y análisis de indicadores TIC.</p>
-      <div class="mc-footer">
-        <span>Ver estadísticas</span> <i class="fas fa-arrow-right"></i>
-      </div>
-    </a>
-    {% endif %}
+  <!-- Row 2 -->
+  <div class="row">
+    <!-- Cumplimiento y Alertas -->
+    <div class="col-lg-4">
+      <div class="enterprise-card">
+        <h5 class="card-title-enterprise">Cumplimiento Operativo</h5>
+        <p class="card-subtitle-enterprise">Métricas de mantenimiento y calidad de datos.</p>
+        
+        <div class="progress-wrap mt-2">
+          <div class="progress-label">
+            <span>Mantenimiento Preventivo</span>
+            <span>{{ kpis.cumplimiento_pct }}%</span>
+          </div>
+          <div class="progress-bar-enterprise">
+            <div class="progress-fill bg-success" style="width: {{ kpis.cumplimiento_pct }}%;"></div>
+          </div>
+        </div>
 
-    {% if user|has_permiso:'VER_ACTAS' %}
-    <!-- Actas -->
-    <a href="/actas/" class="module-card c-rose">
-      <div class="mc-icon"><i class="fas fa-file-signature"></i></div>
-      <h3 class="mc-title">Actas de Entrega</h3>
-      <p class="mc-desc">Generador de actas oficiales para entrega y recepción de equipamiento.</p>
-      <div class="mc-footer">
-        <span>Generar actas</span> <i class="fas fa-arrow-right"></i>
-      </div>
-    </a>
-    {% endif %}
+        <div class="progress-wrap mt-4">
+          <div class="progress-label">
+            <span>Cobertura de Asignación (Usuarios)</span>
+            <span>{% widthratio kpis.equipos_total|add:"-"|add:kpis.equipos_sin_usuario kpis.equipos_total 100 %}%</span>
+          </div>
+          <div class="progress-bar-enterprise">
+            <div class="progress-fill bg-primary" style="width: {% widthratio kpis.equipos_total|add:'-'|add:kpis.equipos_sin_usuario kpis.equipos_total 100 %}%;"></div>
+          </div>
+        </div>
 
-    {% if user.is_superuser or user|has_permiso:'GESTIONAR_ROLES' %}
-    <!-- Configuración / Roles -->
-    <a href="{% url 'roles_dashboard' %}" class="module-card c-indigo">
-      <div class="mc-icon"><i class="fas fa-user-shield"></i></div>
-      <h3 class="mc-title">Seguridad y Roles</h3>
-      <p class="mc-desc">Gestión de perfiles de acceso, permisos granulares y configuración del SLA.</p>
-      <div class="mc-footer">
-        <span>Administrar sistema</span> <i class="fas fa-arrow-right"></i>
+        <hr class="my-4">
+        
+        <h5 class="card-title-enterprise" style="font-size: 0.9rem;">Alertas de Calidad</h5>
+        <div class="d-flex justify-content-between mt-3 mb-2">
+          <span style="font-size: 0.85rem; color: #475569;">Equipos sin responsable</span>
+          <span class="badge badge-warning" style="font-size: 0.8rem;">{{ kpis.equipos_sin_usuario }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span style="font-size: 0.85rem; color: #475569;">Equipos sin ubicación (PMA)</span>
+          <span class="badge badge-danger" style="font-size: 0.8rem;">{{ kpis.equipos_sin_pma }}</span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span style="font-size: 0.85rem; color: #475569;">IPs duplicadas (Colisión)</span>
+          <span class="badge badge-danger" style="font-size: 0.8rem;">{{ kpis.ips_falla|default:"0" }}</span>
+        </div>
       </div>
-    </a>
-    {% endif %}
+    </div>
+
+    <!-- Actividad Reciente -->
+    <div class="col-lg-5">
+      <div class="enterprise-card p-0">
+        <div class="p-4 pb-0">
+          <h5 class="card-title-enterprise">Últimos Equipos Ingresados</h5>
+          <p class="card-subtitle-enterprise">Registro reciente del inventario de hardware.</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table dense-table w-100 mb-0">
+            <thead>
+              <tr>
+                <th>Serial / Equipo</th>
+                <th>Marca</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for eq in kpis.ultimos_equipos %}
+              <tr>
+                <td>
+                  <strong>{{ eq.articulo__nombre }}</strong><br>
+                  <span style="color: #64748b; font-size: 0.75rem;">{{ eq.serial_number }}</span>
+                </td>
+                <td>{{ eq.marca__nombre|default:"N/A" }}</td>
+                <td>
+                  <span class="status-badge 
+                    {% if eq.estado__nombre == 'Funcional' %}bg-success text-white
+                    {% elif eq.estado__nombre == 'En Mantenimiento' %}bg-warning text-dark
+                    {% else %}bg-secondary text-white{% endif %}">
+                    {{ eq.estado__nombre }}
+                  </span>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center">No hay registros recientes.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accesos Directos -->
+    <div class="col-lg-3">
+      <div class="enterprise-card">
+        <h5 class="card-title-enterprise">Accesos Directos</h5>
+        <p class="card-subtitle-enterprise">Módulos principales del sistema.</p>
+        
+        <div class="mt-2">
+          {% if user|has_permiso:'VER_EQUIPOS' %}
+          <a href="{% url 'equipos:panel' %}" class="module-btn" style="border-left: 4px solid #2563eb;">
+            <i class="fas fa-laptop-medical text-primary"></i> Dashboard Equipos
+          </a>
+          {% endif %}
+          
+          {% if user|has_permiso:'VER_TICKETS' %}
+          <a href="/tickets/" class="module-btn" style="border-left: 4px solid #9333ea;">
+            <i class="fas fa-ticket-alt text-purple" style="color: #9333ea;"></i> Mesa de Ayuda
+          </a>
+          {% endif %}
+          
+          {% if user|has_permiso:'VER_USUARIOS' %}
+          <a href="{% url 'usuarios_dashboard' %}" class="module-btn" style="border-left: 4px solid #16a34a;">
+            <i class="fas fa-users-cog text-success"></i> Gestor de Usuarios
+          </a>
+          {% endif %}
+          
+          {% if user|has_permiso:'VER_REPORTES' %}
+          <a href="{% url 'reportes:dashboard' %}" class="module-btn" style="border-left: 4px solid #0d9488;">
+            <i class="fas fa-chart-pie" style="color: #0d9488;"></i> Estadísticas (BI)
+          </a>
+          {% endif %}
+          
+          {% if user|has_permiso:'VER_ACTAS' %}
+          <a href="/actas/" class="module-btn" style="border-left: 4px solid #ea580c;">
+            <i class="fas fa-file-signature text-warning"></i> Control de Actas
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
