@@ -71,7 +71,20 @@ function renderList(users) {
     
     // Role Badge
     const roleText = u.rol || 'Sin Perfil';
-    const roleBadge = `<span class="ms-badge badge-role">${roleText}</span>`;
+    
+    // Asignar colores corporativos según el rol para identificarlos visualmente
+    let roleColorStyle = 'background: #e1dfdd; color: #323130;'; // Gris por defecto
+    if (roleText.includes('Administrador')) {
+      roleColorStyle = 'background: #f4f0fc; color: #5c2d91; border: 1px solid #c9b1f0;'; // Morado
+    } else if (roleText.includes('Mesa de Ayuda') || roleText.includes('Operador')) {
+      roleColorStyle = 'background: #eff6fc; color: #0078d4; border: 1px solid #c7e0f4;'; // Azul
+    } else if (roleText.includes('Técnico') || roleText.includes('Terreno')) {
+      roleColorStyle = 'background: #dff6dd; color: #107c10; border: 1px solid #a3d9a1;'; // Verde
+    } else if (roleText !== 'Sin Perfil') {
+      roleColorStyle = 'background: #fdf3f4; color: #a4262c; border: 1px solid #f8c1c4;'; // Rojo oscuro para otros
+    }
+
+    const roleBadge = `<span class="ms-badge" style="${roleColorStyle}">${roleText}</span>`;
     
     const unidad = u.unidad || 'Sin Asignar';
     
