@@ -22,7 +22,7 @@ class AnexosDashboardView(LoginRequiredMixin, TemplateView):
             ModeloAnexo, Edificio, Piso, Unidad, Proveedor, Institucion, Marca, Recinto, PMA
         )
         ctx['marcas'] = list(Marca.objects.filter(activo=True).values('id', 'nombre'))
-        ctx['modelos_anexos'] = list(ModeloAnexo.objects.filter(activo=True).values('id', 'nombre', 'marca__id'))
+        ctx['modelos_anexos'] = list(ModeloAnexo.objects.filter(activo=True).values('id', 'nombre', 'marca__id', 'imagen'))
         ctx['edificios'] = list(Edificio.objects.filter(activo=True).values('id', 'nombre'))
         ctx['pisos'] = list(Piso.objects.filter(activo=True).select_related('edificio').values('id', 'nombre', 'edificio__id'))
         ctx['unidades'] = list(Unidad.objects.filter(activo=True).values('id', 'nombre'))

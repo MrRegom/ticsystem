@@ -67,7 +67,7 @@ $(document).ready(function() {
         $('#a-pma').val('').trigger('change.select2');
     });
 
-    // Lógica para filtrar ModeloAnexo según Marca
+    // Lógica para filtrar ModeloAnexo según Marca y previsualizar imagen
     $('#a-marca').on('change', function() {
         var marca_id = $(this).find('option:selected').data('id');
         $('#a-modelo-anexo option').each(function() {
@@ -78,6 +78,20 @@ $(document).ready(function() {
             }
         });
         $('#a-modelo-anexo').val('').trigger('change.select2');
+    });
+
+    $('#a-modelo-anexo').on('change', function() {
+        var imgUrl = $(this).find('option:selected').data('imagen');
+        if (imgUrl) {
+            $('#a-imagen-preview').attr('src', imgUrl);
+        } else {
+            $('#a-imagen-preview').attr('src', '/static/img/placeholder_equipo.png');
+        }
+    });
+
+    // Validar IP Address (solo números y puntos)
+    $('#a-ip').on('input', function() {
+        this.value = this.value.replace(/[^0-9.]/g, '');
     });
 
     // Inicializar DataTable
@@ -189,6 +203,7 @@ $(document).ready(function() {
         $('#anexo-id').val('');
         $('.select2-modal').val('').trigger('change.select2');
         $('#modalAnexoLabel').text('Información Técnica del Equipo');
+        $('#a-imagen-preview').attr('src', '/static/img/placeholder_equipo.png');
         
         var ciscoOption = $('#a-marca option').filter(function() { return $(this).text().toUpperCase().includes('CISCO'); }).first();
         if(ciscoOption.length) {
@@ -209,6 +224,7 @@ $(document).ready(function() {
             id: $('#anexo-id').val(),
             numero_anexo: $('#a-numero').val(),
             marca: $('#a-marca').val(),
+            modelo: $('#a-modelo-anexo option:selected').text(),
             modelo_anexo: $('#a-modelo-anexo').val(),
             edificio: $('#a-edificio').val(),
             piso: $('#a-piso').val(),
@@ -257,7 +273,10 @@ $(document).ready(function() {
         $('#anexo-id').val(data.id);
         $('#a-numero').val(data.numero_anexo);
         $('#a-marca').val(data.marca).trigger('change.select2');
-        $('#a-modelo-anexo').val(data.modelo_anexo_id).trigger('change.select2');
+        $('#a-modelo-anexo').val(data.modelo_anexo_id).trigger('change.select2');        
+        var imgUrl = $('#a-modelo-anexo option:selected').data('imagen');
+        $('#a-imagen-preview').attr('src', imgUrl || '/static/img/placeholder_equipo.png');
+        
         $('#a-edificio').val(data.edificio_id).trigger('change.select2');
         $('#a-piso').val(data.piso_id).trigger('change.select2');
         $('#a-unidad').val(data.unidad_id).trigger('change.select2');

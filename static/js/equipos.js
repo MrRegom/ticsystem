@@ -273,6 +273,11 @@ var EquiposApp = (function($) {
         $(f.articulo).on('change', actualizarImagenPreview);
         $(f.modelo).on('change', actualizarImagenPreview);
 
+        // Validar IP Address (solo números y puntos)
+        $(f.ip).on('input', function() {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+
         // Cascadas de Ubicación (Filtros visuales en el modal)
         
         // Piso -> Unidad (A través de los Recintos que comparten ese piso)
