@@ -126,6 +126,7 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
                     'pma': t.activo.pmalugar if t.activo else None,
                     'fecha': t.fecha_creacion.strftime('%d/%m/%Y %H:%M'),
                     'fecha_creacion_corta': t.fecha_creacion.strftime('%d/%m/%Y'),
+                    'fecha_vencimiento_iso': t.fecha_vencimiento_sla.isoformat() if t.fecha_vencimiento_sla else None,
                     'en_pausa_sla': t.en_pausa_sla,
                     'is_sla_vencido': t.is_sla_vencido,
                     'pct_sla': t.porcentaje_tiempo_transcurrido
@@ -179,6 +180,8 @@ class TicketActionView(LoginRequiredMixin, View):
                 'prioridad_color': prio.color_hex if prio else '#64748b',
                 'pma': equipo.pmalugar if equipo else None,
                 'fecha': ticket.fecha_creacion.strftime('%d/%m/%Y %H:%M'),
+                'fecha_vencimiento_iso': ticket.fecha_vencimiento_sla.isoformat() if ticket.fecha_vencimiento_sla else None,
+                'en_pausa_sla': ticket.en_pausa_sla,
             }
 
             return JsonResponse({'success': True, 'ticket': ticket_data})
@@ -234,6 +237,8 @@ class TicketDetailApiView(LoginRequiredMixin, View):
                 'pma': ticket.activo.pmalugar if ticket.activo else 'No registra',
                 'descripcion': ticket.descripcion,
                 'fecha_creacion': ticket.fecha_creacion.strftime('%d/%m/%Y %H:%M'),
+                'fecha_vencimiento_iso': ticket.fecha_vencimiento_sla.isoformat() if ticket.fecha_vencimiento_sla else None,
+                'en_pausa_sla': ticket.en_pausa_sla,
                 'historial': historial
             }
 

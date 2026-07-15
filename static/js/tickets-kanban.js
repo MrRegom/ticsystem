@@ -26,26 +26,19 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.borderLeftColor = t.prioridad_color || '#cbd5e1';
         card.setAttribute('onclick', 'openOffcanvas(' + t.id + ')');
         
-        // Determinar SLA visual
-        var slaHtml = '';
-        if (t.en_pausa_sla) {
-            slaHtml = '<span title="SLA en Pausa" style="color:#94a3b8;"><i class="fas fa-pause-circle"></i></span>';
-        } else if (t.is_sla_vencido) {
-            slaHtml = '<span title="SLA Vencido" style="color:#ef4444;" class="blink-icon"><i class="fas fa-exclamation-circle"></i></span>';
-        } else if (t.pct_sla >= 75) {
-            slaHtml = '<span title="SLA Próximo a vencer" style="color:#f59e0b;"><i class="fas fa-clock"></i></span>';
-        } else {
-            slaHtml = '<span title="SLA Normal" style="color:#10b981;"><i class="fas fa-clock"></i></span>';
-        }
+        card.dataset.vencimiento = t.fecha_vencimiento_iso || '';
+        card.dataset.enPausa = t.en_pausa_sla ? '1' : '';
+        card.dataset.estado = t.estado || ''; // We might need state if it's passed
 
         card.innerHTML =
             '<div class="card-top">' +
                 '<div>' +
-                    '<span class="card-correlativo">' + t.correlativo + ' ' + slaHtml + '</span><br>' +
+                    '<span class="card-correlativo">' + t.correlativo + '</span><br>' +
                     '<span style="font-size:0.6rem; color:#94a3b8; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + '</span>' +
                 '</div>' +
                 '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '">' + t.prioridad + '</span>' +
             '</div>' +
+            '<div class="sla-timer-display" style="font-size:0.7rem; font-weight:600; margin-bottom:8px;"></div>' +
             '<div class="card-desc">' + t.descripcion + '</div>' +
             (t.pma ? '<div class="card-pma"><i class="fas fa-map-marker-alt"></i> ' + t.pma + '</div>' : '') +
             '<div class="card-bottom">' +
@@ -65,8 +58,71 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!col) return;
         col.innerHTML = '';
         if (badge) badge.textContent = tickets.length;
-        tickets.forEach(function(t) { col.appendChild(buildCard(t)); });
+        tickets.forEach(function(t) { 
+            t.estado = estadoId; // Inject state to help timer
+            col.appendChild(buildCard(t)); 
+        });
     });
+
+    /* ---- SLA Timer Engine ---- */
+    function updateSlaTimers() {
+        var now = new Date();
+        
+        // Helper function to calculate SLA text
+        function getSlaHtml(vencimientoIso, enPausa, estado) {
+            var isTerminal = ['RESUELTO', 'CERRADO', 'CANCELADO'].indexOf(estado) !== -1;
+            
+            if (isTerminal) {
+                return '<span style="color:#10b981;"><i class="fas fa-check-circle"></i> SLA Detenido</span>';
+            }
+            if (enPausa) {
+                return '<span style="color:#94a3b8;"><i class="fas fa-pause-circle"></i> SLA en Pausa</span>';
+            }
+            if (!vencimientoIso) {
+                return '';
+            }
+
+            var vencimiento = new Date(vencimientoIso);
+            var diffMs = vencimiento - now;
+            var expired = diffMs < 0;
+            diffMs = Math.abs(diffMs);
+
+            var diffMins = Math.floor(diffMs / 60000);
+            var h = Math.floor(diffMins / 60);
+            var m = diffMins % 60;
+            var timeStr = (h > 0 ? h + 'h ' : '') + m + 'm';
+
+            if (expired) {
+                return '<span style="color:#ef4444;" class="blink-icon"><i class="fas fa-exclamation-triangle"></i> Vencido hace ' + timeStr + '</span>';
+            } else {
+                if (diffMins < 60) {
+                    return '<span style="color:#f97316;"><i class="fas fa-clock"></i> Quedan ' + timeStr + '</span>';
+                } else if (diffMins < 120) {
+                    return '<span style="color:#f59e0b;"><i class="fas fa-clock"></i> Quedan ' + timeStr + '</span>';
+                } else {
+                    return '<span style="color:#10b981;"><i class="fas fa-clock"></i> Quedan ' + timeStr + '</span>';
+                }
+            }
+        }
+
+        // Kanban cards
+        document.querySelectorAll('.kanban-card').forEach(function(card) {
+            var display = card.querySelector('.sla-timer-display');
+            if (!display) return;
+            var estado = card.parentElement.dataset.estado || '';
+            display.innerHTML = getSlaHtml(card.dataset.vencimiento, card.dataset.enPausa, estado);
+        });
+        
+        // Offcanvas detail
+        var ocSla = document.getElementById('oc-tk-sla');
+        if (ocSla && ocSla.dataset.vencimiento) {
+            ocSla.innerHTML = getSlaHtml(ocSla.dataset.vencimiento, ocSla.dataset.enPausa, ocSla.dataset.estado);
+        }
+    }
+
+    // Run SLA Timers immediately and every minute
+    updateSlaTimers();
+    setInterval(updateSlaTimers, 60000);
 
     /* ---- Drag & Drop ---- */
     if (typeof Sortable !== 'undefined') {
@@ -226,6 +282,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('oc-tk-correlativo').textContent = t.correlativo;
                 document.getElementById('oc-tk-estado').textContent = t.estado;
                 document.getElementById('oc-tk-prioridad').textContent = t.prioridad;
+                
+                var slaEl = document.getElementById('oc-tk-sla');
+                if (slaEl) {
+                    slaEl.dataset.vencimiento = t.fecha_vencimiento_iso || '';
+                    slaEl.dataset.enPausa = t.en_pausa_sla ? '1' : '';
+                    slaEl.dataset.estado = t.estado_id || '';
+                }
+                if (typeof updateSlaTimers === 'function') updateSlaTimers();
+
                 document.getElementById('oc-tk-categoria').textContent = t.categoria;
                 document.getElementById('oc-tk-solicitante').textContent = t.solicitante;
                 document.getElementById('oc-tk-activo').textContent = t.activo;
