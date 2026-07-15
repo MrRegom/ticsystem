@@ -1,379 +1,273 @@
 {% extends 'core/base.html' %}
 {% load auth_extras %}
 
-{% block title %}NOC Command Center{% endblock %}
-{% block module_title %}Centro de Operaciones TIC{% endblock %}
+{% block title %}Panel de Control General{% endblock %}
+{% block module_title %}Inicio{% endblock %}
 
 {% block extra_css %}
-<!-- Fuente Monospace Tecnológica para números -->
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  /* NOC Theme Variables */
-  :root {
-    --noc-bg: #0b1120;
-    --noc-surface: #1e293b;
-    --noc-surface-hover: #334155;
-    --noc-border: rgba(56, 189, 248, 0.15);
-    --noc-text-main: #f8fafc;
-    --noc-text-muted: #94a3b8;
-    
-    --noc-cyan: #22d3ee;
-    --noc-blue: #3b82f6;
-    --noc-purple: #a855f7;
-    --noc-green: #22c55e;
-    --noc-red: #ef4444;
-    --noc-orange: #f97316;
-  }
+  body { background: #f1f5f9; font-family: 'Inter', sans-serif; }
+  .dash-wrap { padding: 20px 24px; }
 
-  /* Override global background for this page only */
-  body { background-color: var(--noc-bg) !important; color: var(--noc-text-main); }
-  
-  /* Reset some base template styles that conflict with dark mode */
-  .content-header { background-color: transparent !important; color: white !important; border-bottom: 1px solid var(--noc-border) !important; }
-  .content-header h1 { color: white !important; }
-  .breadcrumb-item a { color: var(--noc-cyan) !important; }
-  .breadcrumb-item.active { color: var(--noc-text-muted) !important; }
-
-  .noc-container { padding: 24px; font-family: 'Inter', sans-serif; }
-
-  /* Premium Glass Cards */
-  .noc-card {
-    background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--noc-border);
+  /* 🎯 PREMIUM HEADER */
+  .premium-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
     border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    padding: 28px 32px;
+    color: #fff;
+    margin-bottom: 20px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 10px 30px -5px rgba(15,23,42,.35);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  /* Reflejo sutil superior */
-  .noc-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  .premium-header::before {
+    content: ''; position: absolute; top: -60px; right: -60px; width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(56,189,248,.15) 0%, transparent 70%);
   }
+  .ph-title { font-size: 1.6rem; font-weight: 800; margin: 0 0 6px; letter-spacing: -.3px; }
+  .ph-sub { color: #94a3b8; font-size: 0.85rem; margin: 0; }
+  .date-pill { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); padding: 7px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; z-index: 1; }
 
-  .noc-card-title {
-    font-size: 1.05rem; font-weight: 600; color: var(--noc-text-main);
-    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .noc-card-title i { color: var(--noc-cyan); }
-
-  /* Top KPIs Grid */
-  .noc-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
-  .noc-kpi-box {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex; flex-direction: column;
-    position: relative;
-  }
-  .noc-kpi-box:hover { border-color: rgba(34, 211, 238, 0.3); background: rgba(30, 41, 59, 0.8); }
+  /* 🎯 KPI GRID */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .kpi-card { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,.03); position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 12px 12px 0 0; }
+  .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.06); }
   
-  .noc-kpi-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 2.2rem; font-weight: 700; color: #fff;
-    margin-bottom: 4px; line-height: 1;
-    text-shadow: 0 0 10px rgba(255,255,255,0.2);
-  }
-  .noc-kpi-label { font-size: 0.8rem; font-weight: 500; color: var(--noc-text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi-blue::before  { background: linear-gradient(90deg,#0284c7,#38bdf8); }
+  .kpi-teal::before  { background: linear-gradient(90deg,#0d9488,#2dd4bf); }
+  .kpi-amber::before { background: linear-gradient(90deg,#d97706,#fbbf24); }
+  .kpi-purple::before { background: linear-gradient(90deg,#7c3aed,#a78bfa); }
+
+  .kpi-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: .5px; margin-bottom: 8px; display:flex; justify-content:space-between;}
+  .kpi-value { font-size: 1.8rem; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
+  .kpi-desc  { font-size: 0.75rem; color: #94a3b8; }
+
+  /* 🎯 MODERN CARD */
+  .mcard { background: #fff; border-radius: 12px; padding: 20px 24px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,.03); transition: transform .2s, box-shadow .2s; margin-bottom: 20px; height: calc(100% - 20px); display: flex; flex-direction: column; }
+  .mcard:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+  .mc-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
+  .mc-title { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0; }
+  .mc-sub { font-size: 0.75rem; color: #64748b; margin: 4px 0 0; }
+
+  /* 🎯 ALERTS & PROGRESS */
+  .alert-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #f8fafc; border-radius: 8px; border: 1px solid #f1f5f9; margin-bottom: 10px; }
+  .alert-label { font-size: 0.8rem; font-weight: 600; color: #334155; }
+  .alert-val { font-size: 0.9rem; font-weight: 800; }
   
-  .noc-kpi-chart { position: absolute; right: 10px; bottom: 10px; width: 80px; height: 40px; opacity: 0.5; }
-
-  /* Glowing Alert Badges */
-  .glow-badge {
-    padding: 6px 12px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
-    display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 10px currentColor;
-  }
-  .glow-red { color: var(--noc-red); background: rgba(239, 68, 68, 0.1); border: 1px solid var(--noc-red); }
-  .glow-green { color: var(--noc-green); background: rgba(34, 197, 94, 0.1); border: 1px solid var(--noc-green); }
-  .glow-orange { color: var(--noc-orange); background: rgba(249, 115, 22, 0.1); border: 1px solid var(--noc-orange); }
-
-  /* Pulse Animation for Critical items */
-  @keyframes pulse-critical {
-    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-  }
-  .critical-pulse { animation: pulse-critical 2s infinite; border-color: var(--noc-red) !important; }
-
-  /* Timeline List (Live Feed) */
-  .live-feed { list-style: none; padding: 0; margin: 0; max-height: 350px; overflow-y: auto; }
-  .live-feed::-webkit-scrollbar { width: 6px; }
-  .live-feed::-webkit-scrollbar-track { background: transparent; }
-  .live-feed::-webkit-scrollbar-thumb { background: var(--noc-surface-hover); border-radius: 3px; }
+  .hbar { margin-bottom: 14px; }
+  .hbar-labels { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 6px; }
+  .hbar-track { height: 6px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+  .hbar-fill { height: 100%; border-radius: 4px; }
   
-  .feed-item {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    display: flex; gap: 16px; align-items: flex-start;
-  }
-  .feed-item:last-child { border-bottom: none; }
-  .feed-icon {
-    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    background: rgba(56, 189, 248, 0.1); color: var(--noc-cyan); font-size: 0.9rem; flex-shrink: 0;
-  }
-  .feed-content h6 { margin: 0 0 4px; font-size: 0.9rem; color: #fff; font-weight: 600; }
-  .feed-content p { margin: 0; font-size: 0.8rem; color: var(--noc-text-muted); }
-  .feed-time { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--noc-text-muted); margin-top: 4px; display: block; }
-
-  /* Module Grid inside NOC */
-  .noc-modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-  .noc-mod-btn {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid var(--noc-border);
-    padding: 16px; border-radius: 12px;
-    text-align: center; color: var(--noc-text-muted);
-    transition: all 0.3s; text-decoration: none !important;
-    display: flex; flex-direction: column; align-items: center; gap: 12px;
-  }
-  .noc-mod-btn i { font-size: 2rem; color: var(--noc-cyan); transition: transform 0.3s; }
-  .noc-mod-btn span { font-size: 0.85rem; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+  /* 🎯 DATA TABLE */
+  .d-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+  .d-table th { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: .5px; padding: 10px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+  .d-table td { font-size: 0.8rem; color: #334155; padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  .d-table tbody tr:hover { background: #f8fafc; }
   
-  .noc-mod-btn:hover {
-    background: rgba(56, 189, 248, 0.1);
-    border-color: var(--noc-cyan);
-    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
-  }
-  .noc-mod-btn:hover i { transform: translateY(-3px); }
-
-  /* ApexCharts Overrides for Dark Mode */
-  .apexcharts-tooltip { background: #1e293b !important; border-color: #334155 !important; color: #fff !important; }
-  .apexcharts-tooltip-title { background: #0f172a !important; border-bottom: 1px solid #334155 !important; }
-
+  /* 🎯 MODULE LINKS */
+  .mod-link { display: flex; align-items: center; padding: 14px 18px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; color: #334155; text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.02); }
+  .mod-link:hover { border-color: #cbd5e1; color: #0f172a; text-decoration: none; transform: translateX(4px); box-shadow: 0 4px 6px rgba(0,0,0,.04); }
+  .mod-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-right: 14px; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="noc-container">
+<div class="dash-wrap">
 
-  <!-- Header NOC -->
-  <div class="d-flex justify-content-between align-items-end mb-4">
+  <!-- Header -->
+  <div class="premium-header">
     <div>
-      <h2 style="font-weight: 800; letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 12px;">
-        <div style="width: 12px; height: 12px; background: var(--noc-green); border-radius: 50%; box-shadow: 0 0 10px var(--noc-green);"></div>
-        SYSTEM STATUS: ONLINE
-      </h2>
-      <p class="text-muted mt-1 mb-0" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
-        HOSPITAL MARGA MARGA - COMMAND CENTER
-      </p>
+      <h1 class="ph-title">Bienvenido, {{ user.first_name|default:user.username }}</h1>
+      <p class="ph-sub">Portal de Gestión Hospitalaria | Resumen Corporativo TIC</p>
     </div>
-    <div style="font-family: 'JetBrains Mono', monospace; color: var(--noc-cyan); font-weight: bold;" id="live-clock">
-      00:00:00
-    </div>
+    <div class="date-pill" id="inicio-date-pill">--/--/----</div>
   </div>
 
-  <!-- KPIs Row -->
-  <div class="noc-kpi-grid">
-    
-    <div class="noc-kpi-box">
-      <div class="noc-kpi-value">{{ kpis.equipos_total|default:"0" }}</div>
-      <div class="noc-kpi-label">Equipos Inventariados</div>
-      <div id="spark1" class="noc-kpi-chart"></div>
+  <!-- 4 KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-blue">
+      <div class="kpi-label">Equipos Inventariados <i class="fas fa-laptop-medical text-primary"></i></div>
+      <div class="kpi-value">{{ kpis.equipos_total|default:"0" }}</div>
+      <div class="kpi-desc">Equipos bajo control</div>
     </div>
-    
-    <div class="noc-kpi-box">
-      <div class="noc-kpi-value">{{ kpis.anexos_activos|default:"0" }}</div>
-      <div class="noc-kpi-label">Anexos Activos</div>
-      <div id="spark2" class="noc-kpi-chart"></div>
+    <div class="kpi-card kpi-teal">
+      <div class="kpi-label">Anexos Activos <i class="fas fa-phone-alt text-info"></i></div>
+      <div class="kpi-value">{{ kpis.anexos_activos|default:"0" }}</div>
+      <div class="kpi-desc">Telefonía institucional</div>
     </div>
-    
-    <div class="noc-kpi-box {% if kpis.mant_abiertas_vencidas > 0 %}critical-pulse{% endif %}">
-      <div class="noc-kpi-value">{{ kpis.mant_abiertas_vencidas|default:"0" }}</div>
-      <div class="noc-kpi-label" style="{% if kpis.mant_abiertas_vencidas > 0 %}color: var(--noc-red);{% endif %}">Mantenimientos Vencidos</div>
-      <div id="spark3" class="noc-kpi-chart"></div>
+    <div class="kpi-card kpi-amber">
+      <div class="kpi-label">Actas Emitidas <i class="fas fa-file-signature text-warning"></i></div>
+      <div class="kpi-value">{{ kpis.actas_emitidas|default:"0" }}</div>
+      <div class="kpi-desc">Documentos oficiales</div>
     </div>
-    
-    <div class="noc-kpi-box">
-      <div class="noc-kpi-value" style="color: var(--noc-cyan);">{{ kpis.indice_salud|default:"0" }}%</div>
-      <div class="noc-kpi-label">Salud Operativa</div>
-      <div id="spark4" class="noc-kpi-chart"></div>
+    <div class="kpi-card kpi-purple">
+      <div class="kpi-label">Salud Operativa <i class="fas fa-heartbeat text-success"></i></div>
+      <div class="kpi-value">{{ kpis.indice_salud|default:"0" }}%</div>
+      <div class="kpi-desc">Índice de calidad de datos</div>
     </div>
-
   </div>
 
   <div class="row">
     
     <!-- Centro de Alertas y Distribución -->
-    <div class="col-lg-7">
-      <div class="noc-card" style="height: 420px;">
-        <div class="noc-card-title"><i class="fas fa-radar"></i> Distribución y Riesgos</div>
-        
-        <div class="row h-100">
-          <div class="col-md-6 d-flex flex-column justify-content-center border-right" style="border-color: rgba(255,255,255,0.05) !important;">
-            <div id="donut-chart"></div>
-          </div>
-          
-          <div class="col-md-6 d-flex flex-column justify-content-center pl-4">
-            <h6 style="color: var(--noc-text-muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 16px;">
-              Vigilancia de Calidad
-            </h6>
-            
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <span style="font-size: 0.9rem;">Equipos sin responsable</span>
-              <span class="glow-badge glow-orange">{{ kpis.equipos_sin_usuario }}</span>
-            </div>
-            
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <span style="font-size: 0.9rem;">Equipos sin PMA (Ubicación)</span>
-              <span class="glow-badge {% if kpis.equipos_sin_pma > 0 %}glow-red{% else %}glow-green{% endif %}">{{ kpis.equipos_sin_pma }}</span>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <span style="font-size: 0.9rem;">IPs Duplicadas (Colisión)</span>
-              <span class="glow-badge {% if kpis.ips_falla > 0 %}glow-red{% else %}glow-green{% endif %}">{{ kpis.ips_falla|default:"0" }}</span>
-            </div>
-
-            <div class="mt-2">
-              <span style="font-size: 0.8rem; color: var(--noc-text-muted);">Cumplimiento Mantenimiento (Meta 72h)</span>
-              <div class="progress mt-2" style="height: 6px; background: rgba(255,255,255,0.1);">
-                <div class="progress-bar bg-info" role="progressbar" style="width: {{ kpis.cumplimiento_pct }}%;" aria-valuenow="{{ kpis.cumplimiento_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              <div class="text-right mt-1" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--noc-cyan);">{{ kpis.cumplimiento_pct }}%</div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Actividad Reciente Live Feed -->
     <div class="col-lg-5">
-      <div class="noc-card" style="height: 420px;">
-        <div class="noc-card-title">
-          <i class="fas fa-satellite-dish" style="animation: pulse-critical 2s infinite;"></i> 
-          Activity Feed Live
+      
+      <div class="mcard">
+        <div class="mc-header">
+          <div>
+            <h2 class="mc-title">Métricas de Cumplimiento</h2>
+            <p class="mc-sub">Mantenimiento preventivo y coberturas</p>
+          </div>
         </div>
         
-        <ul class="live-feed">
-          {% for eq in kpis.actividad_reciente %}
-          <li class="feed-item">
-            <div class="feed-icon"><i class="fas fa-hdd"></i></div>
-            <div class="feed-content w-100">
-              <div class="d-flex justify-content-between">
-                <h6>{{ eq.serial_number }}</h6>
-                <span class="feed-time">{% if eq.fecha_modificacion %}{{ eq.fecha_modificacion|date:"H:i d/m" }}{% else %}Reciente{% endif %}</span>
-              </div>
-              <p>Modificado por {{ eq.modificado_por__first_name }} {{ eq.modificado_por__last_name|default:"" }}</p>
-              <p style="color: var(--noc-cyan); font-size: 0.75rem; margin-top: 2px;"><i class="fas fa-map-marker-alt"></i> {{ eq.pma__nombre|default:"Sin Ubicación" }}</p>
-            </div>
-          </li>
-          {% empty %}
-          <li class="text-muted text-center py-4">No hay actividad reciente en el servidor.</li>
-          {% endfor %}
-        </ul>
+        <div class="hbar">
+          <div class="hbar-labels">
+            <span>Cumplimiento Mantenimiento (72h)</span>
+            <span>{{ kpis.cumplimiento_pct|default:"0" }}%</span>
+          </div>
+          <div class="hbar-track">
+            <div class="hbar-fill bg-info" style="width: {{ kpis.cumplimiento_pct|default:'0' }}%;"></div>
+          </div>
+        </div>
+
+        <div class="hbar mt-4">
+          <div class="hbar-labels">
+            <span>Cobertura de Asignación (Usuarios)</span>
+            <span>{% widthratio kpis.equipos_total|add:"-"|add:kpis.equipos_sin_usuario kpis.equipos_total 100 %}%</span>
+          </div>
+          <div class="hbar-track">
+            <div class="hbar-fill bg-success" style="width: {% widthratio kpis.equipos_total|add:'-'|add:kpis.equipos_sin_usuario kpis.equipos_total 100 %}%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mcard mt-3">
+        <div class="mc-header">
+          <div>
+            <h2 class="mc-title">Vigilancia de Calidad</h2>
+            <p class="mc-sub">Riesgos que impactan trazabilidad</p>
+          </div>
+        </div>
+        
+        <div class="alert-row">
+          <div class="alert-label">Equipos sin responsable asig.</div>
+          <div class="alert-val text-warning">{{ kpis.equipos_sin_usuario|default:"0" }}</div>
+        </div>
+        <div class="alert-row">
+          <div class="alert-label">Equipos sin ubicación (PMA)</div>
+          <div class="alert-val {% if kpis.equipos_sin_pma > 0 %}text-danger{% else %}text-success{% endif %}">{{ kpis.equipos_sin_pma|default:"0" }}</div>
+        </div>
+        <div class="alert-row">
+          <div class="alert-label">IPs duplicadas (Colisión)</div>
+          <div class="alert-val {% if kpis.ips_falla > 0 %}text-danger{% else %}text-success{% endif %}">{{ kpis.ips_falla|default:"0" }}</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Actividad Reciente -->
+    <div class="col-lg-7">
+      <div class="mcard" style="padding:0;">
+        <div class="p-4 border-bottom">
+          <h2 class="mc-title">Actividad Reciente del Inventario</h2>
+          <p class="mc-sub">Últimos equipos ingresados o actualizados por soporte.</p>
+        </div>
+        
+        <div class="table-responsive p-3">
+          <table class="d-table">
+            <thead>
+              <tr>
+                <th>Equipo / Serial</th>
+                <th>Ubicación</th>
+                <th>Operador</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for eq in kpis.actividad_reciente %}
+              <tr>
+                <td>
+                  <strong>{{ eq.articulo__nombre }}</strong><br>
+                  <span style="color: #94a3b8; font-size: 0.7rem;">{{ eq.serial_number }}</span>
+                </td>
+                <td>
+                  <span style="color: #0f172a; font-weight: 500;">{{ eq.pma__nombre|default:"Sin Ubicación" }}</span>
+                </td>
+                <td>{{ eq.modificado_por__first_name }} {{ eq.modificado_por__last_name|default:"" }}</td>
+                <td>
+                  <span class="badge" style="background:#e0f2fe; color:#0284c7; padding:4px 8px;">
+                    Registrado
+                  </span>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted">No hay registros recientes.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
+
   </div>
 
-  <!-- Command Modules -->
-  <h6 style="color: var(--noc-text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1.5px; margin: 16px 0;">Sistemas Tácticos</h6>
-  
-  <div class="noc-modules">
-    {% if user|has_permiso:'VER_EQUIPOS' %}
-    <a href="{% url 'equipos:panel' %}" class="noc-mod-btn">
-      <i class="fas fa-laptop-medical"></i>
-      <span>Equipos</span>
-    </a>
-    {% endif %}
-    
-    {% if user|has_permiso:'VER_TICKETS' %}
-    <a href="/tickets/" class="noc-mod-btn" style="border-bottom: 2px solid var(--noc-purple);">
-      <i class="fas fa-ticket-alt" style="color: var(--noc-purple);"></i>
-      <span>Tickets</span>
-    </a>
-    {% endif %}
-    
-    {% if user|has_permiso:'VER_REPORTES' %}
-    <a href="{% url 'reportes:dashboard' %}" class="noc-mod-btn" style="border-bottom: 2px solid var(--noc-green);">
-      <i class="fas fa-chart-line" style="color: var(--noc-green);"></i>
-      <span>B.I. (Datos)</span>
-    </a>
-    {% endif %}
-    
-    {% if user|has_permiso:'VER_USUARIOS' %}
-    <a href="{% url 'usuarios_dashboard' %}" class="noc-mod-btn">
-      <i class="fas fa-users-cog"></i>
-      <span>Usuarios</span>
-    </a>
-    {% endif %}
-    
-    {% if user|has_permiso:'VER_ACTAS' %}
-    <a href="/actas/" class="noc-mod-btn" style="border-bottom: 2px solid var(--noc-orange);">
-      <i class="fas fa-file-signature" style="color: var(--noc-orange);"></i>
-      <span>Actas</span>
-    </a>
-    {% endif %}
+  <!-- Accesos Directos (Compactos) -->
+  <div class="mt-2 mb-3">
+    <h6 style="color: #64748b; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; margin-bottom: 14px;">Módulos del Sistema</h6>
+    <div class="row">
+      {% if user|has_permiso:'VER_EQUIPOS' %}
+      <div class="col-md-3">
+        <a href="{% url 'equipos:panel' %}" class="mod-link">
+          <div class="mod-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-laptop-medical"></i></div>
+          Equipos TIC
+        </a>
+      </div>
+      {% endif %}
+      
+      {% if user|has_permiso:'VER_TICKETS' %}
+      <div class="col-md-3">
+        <a href="/tickets/" class="mod-link">
+          <div class="mod-icon" style="background: #f3e8ff; color: #9333ea;"><i class="fas fa-ticket-alt"></i></div>
+          Tickets
+        </a>
+      </div>
+      {% endif %}
+      
+      {% if user|has_permiso:'VER_USUARIOS' %}
+      <div class="col-md-3">
+        <a href="{% url 'usuarios_dashboard' %}" class="mod-link">
+          <div class="mod-icon" style="background: #dcfce7; color: #16a34a;"><i class="fas fa-users-cog"></i></div>
+          Usuarios
+        </a>
+      </div>
+      {% endif %}
+      
+      {% if user|has_permiso:'VER_REPORTES' %}
+      <div class="col-md-3">
+        <a href="{% url 'reportes:dashboard' %}" class="mod-link">
+          <div class="mod-icon" style="background: #ccfbf1; color: #0d9488;"><i class="fas fa-chart-pie"></i></div>
+          B.I. (Reportes)
+        </a>
+      </div>
+      {% endif %}
+    </div>
   </div>
 
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<!-- ApexCharts CDN -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-  // Reloj Live
-  setInterval(() => {
+  document.addEventListener('DOMContentLoaded', () => {
     const d = new Date();
-    document.getElementById('live-clock').textContent = d.toLocaleTimeString('es-CL', { hour12: false }) + ' CST';
-  }, 1000);
-
-  // Configuraciones comunes para Sparklines
-  const sparkOptions = {
-    chart: { type: 'area', width: 80, height: 40, sparkline: { enabled: true } },
-    stroke: { curve: 'smooth', width: 2 },
-    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0, stops: [0, 100] } },
-    tooltip: { fixed: { enabled: false }, x: { show: false }, y: { title: { formatter: function () { return '' } } }, marker: { show: false } }
-  };
-
-  // Datos simulados dinámicos para sparklines (darle efecto "vivo")
-  const generateData = () => Array.from({length: 10}, () => Math.floor(Math.random() * 40) + 10);
-
-  // Sparkline 1: Equipos (Azul)
-  new ApexCharts(document.querySelector("#spark1"), {
-    ...sparkOptions, colors: ['#3b82f6'], series: [{ data: generateData() }]
-  }).render();
-
-  // Sparkline 2: Anexos (Verde)
-  new ApexCharts(document.querySelector("#spark2"), {
-    ...sparkOptions, colors: ['#22c55e'], series: [{ data: generateData() }]
-  }).render();
-
-  // Sparkline 3: Crítico (Rojo)
-  new ApexCharts(document.querySelector("#spark3"), {
-    ...sparkOptions, colors: ['#ef4444'], series: [{ data: generateData() }]
-  }).render();
-
-  // Sparkline 4: Salud (Cian)
-  new ApexCharts(document.querySelector("#spark4"), {
-    ...sparkOptions, colors: ['#22d3ee'], series: [{ data: generateData() }]
-  }).render();
-
-  // Donut Chart - Distribución del Parque
-  const donutOptions = {
-    series: [
-      {{ kpis.equipos_funcional|default:0 }}, 
-      {{ kpis.equipos_mantenimiento|default:0 }}, 
-      {{ kpis.equipos_desuso|default:0 }}
-    ],
-    labels: ['Funcional', 'Mantención', 'En Desuso'],
-    chart: { type: 'donut', height: 280, background: 'transparent' },
-    colors: ['#22d3ee', '#f97316', '#ef4444'],
-    plotOptions: {
-      pie: {
-        donut: { size: '75%', background: 'transparent', labels: { show: true, name: { color: '#94a3b8' }, value: { color: '#fff', fontSize: '24px', fontFamily: 'JetBrains Mono' }, total: { show: true, color: '#94a3b8', label: 'Total Parque' } } }
-      }
-    },
-    dataLabels: { enabled: false },
-    stroke: { show: true, colors: ['#1e293b'], width: 2 },
-    legend: { position: 'bottom', labels: { colors: '#94a3b8' }, markers: { radius: 12 } },
-    theme: { mode: 'dark' }
-  };
-  new ApexCharts(document.querySelector("#donut-chart"), donutOptions).render();
+    const pad = n => String(n).padStart(2,'0');
+    document.getElementById('inicio-date-pill').textContent = 
+      `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+  });
 </script>
 {% endblock %}
