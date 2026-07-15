@@ -66,22 +66,17 @@ $(document).ready(function() {
                         data-urgencia="${urgVal}"
                         data-imp-label="${impLabel}"
                         data-urg-label="${urg.label}"
-                        style="cursor:pointer; padding:0; border:1px solid #e2e8f0; transition: transform 0.15s, box-shadow 0.15s;"
-                        onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.18)';this.style.zIndex='10';this.style.position='relative';"
-                        onmouseout="this.style.transform='';this.style.boxShadow='';this.style.zIndex='';this.style.position='';">
-                        <div style="background:${color}; padding:16px 10px;">
-                            <div style="font-weight:700; font-size:1rem; color:white; letter-spacing:0.5px;">${celda.prioridad_nombre}</div>
-                        </div>
-                        <div style="padding:10px 8px; background:white;">
-                            <div style="font-size:0.7rem; color:#64748b; margin-bottom:3px;">
-                                <i class="fas fa-bolt mr-1" style="color:${color}"></i>1ª Resp: <strong>${minutosATexto(celda.tiempo_respuesta_minutos)}</strong>
+                        style="cursor:pointer; padding:0; border:1px solid #e2e8f0; transition: transform 0.15s, box-shadow 0.15s; position:relative;"
+                        onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.1)';this.style.zIndex='10';"
+                        onmouseout="this.style.transform='';this.style.boxShadow='';this.style.zIndex='';">
+                        
+                        <div style="padding: 14px; background: white; border-top: 4px solid ${color}; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;">
+                            <span style="background-color: ${color}15; color: ${color}; padding: 3px 12px; border-radius: 12px; font-weight: 700; font-size: 0.75rem;">${celda.prioridad_nombre}</span>
+                            <div style="font-size:0.7rem; color:#64748b; line-height:1.4;">
+                                <div><i class="fas fa-bolt text-muted mr-1" style="font-size:0.6rem;"></i>1ª Resp: <strong style="color:#1e293b;">${minutosATexto(celda.tiempo_respuesta_minutos)}</strong></div>
+                                <div><i class="fas fa-clock text-muted mr-1" style="font-size:0.6rem;"></i>Resol: <strong style="color:#1e293b;">${celda.tiempo_resolucion_horas}h</strong></div>
                             </div>
-                            <div style="font-size:0.7rem; color:#64748b;">
-                                <i class="fas fa-clock mr-1" style="color:${color}"></i>Resol: <strong>${celda.tiempo_resolucion_horas}h</strong>
-                            </div>
-                            <div class="mt-2">
-                                <i class="fas fa-pencil-alt" style="color:${color}; font-size:0.65rem; opacity:0.7;"></i>
-                            </div>
+                            <i class="fas fa-pencil-alt mt-1" style="color:#cbd5e1; font-size:0.75rem; transition: color 0.2s;" onmouseover="this.style.color='${color}'" onmouseout="this.style.color='#cbd5e1'"></i>
                         </div>
                     </td>`;
                 } else {
@@ -203,12 +198,12 @@ $(document).ready(function() {
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary rounded-pill mr-1 btn-edit-prio" 
-                                    data-id="${p.id}" data-nombre="${p.nombre}" data-sla="${p.sla_horas}" data-color="${p.color_hex}">
-                                    <i class="fas fa-pencil-alt"></i>
+                                <button class="btn btn-link text-primary p-0 mr-3 btn-edit-prio" 
+                                    data-id="${p.id}" data-nombre="${p.nombre}" data-sla="${p.sla_horas}" data-color="${p.color_hex}" title="Editar">
+                                    <i class="fas fa-pencil-alt" style="font-size: 0.9rem;"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger rounded-pill btn-del-prio" data-id="${p.id}" data-nombre="${p.nombre}">
-                                    <i class="fas fa-trash-alt"></i>
+                                <button class="btn btn-link text-danger p-0 btn-del-prio" data-id="${p.id}" data-nombre="${p.nombre}" title="Eliminar">
+                                    <i class="fas fa-trash-alt" style="font-size: 0.9rem;"></i>
                                 </button>
                             </td>
                         </tr>

@@ -1,6 +1,7 @@
   body, .content-wrapper, .wrapper {
       background-color: #f8fafc;
       font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
   }
 
   /* Header Superior */
