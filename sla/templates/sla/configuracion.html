@@ -1,0 +1,219 @@
+{% extends "core/base.html" %}
+{% block title %}Configuración del Sistema{% endblock %}
+{% block module_title %}Configuración del Sistema{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h1 class="h4 mb-0 text-gray-800" style="font-weight: 700;"><i class="fas fa-cog mr-2 text-primary"></i>Configuración del Sistema</h1>
+            <p class="text-muted mb-0" style="font-size: 0.9rem;">Gestión de parámetros de SLA, prioridades y comportamiento del helpdesk.</p>
+        </div>
+    </div>
+
+    <!-- Pestañas -->
+    <ul class="nav nav-tabs border-bottom" id="configTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active font-weight-bold" id="sla-tab" data-toggle="tab" href="#sla" role="tab">
+                <i class="fas fa-table mr-2"></i>Matriz SLA
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link font-weight-bold" id="prio-tab" data-toggle="tab" href="#prioridades" role="tab">
+                <i class="fas fa-flag mr-2"></i>Prioridades
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content bg-white border border-top-0 shadow-sm p-4" id="configTabContent">
+
+        <!-- TAB: MATRIZ SLA -->
+        <div class="tab-pane fade show active" id="sla" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h5 class="mb-1 font-weight-bold" style="color: #002a54;">Matriz de Nivel de Servicio (SLA)</h5>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Basada en ITIL. El cruce de <strong>Impacto</strong> y <strong>Urgencia</strong> determina la Prioridad y los tiempos de atención.</p>
+                </div>
+                <div>
+                    <span class="badge px-3 py-2 mr-1" style="background:#ef4444;color:white;">Crítica</span>
+                    <span class="badge px-3 py-2 mr-1" style="background:#f97316;color:white;">Alta</span>
+                    <span class="badge px-3 py-2 mr-1" style="background:#eab308;color:white;">Media</span>
+                    <span class="badge px-3 py-2" style="background:#3b82f6;color:white;">Baja</span>
+                </div>
+            </div>
+
+            <!-- TABLA VISUAL MATRIZ SLA -->
+            <div class="table-responsive">
+                <table class="table table-bordered text-center" id="tabla-matriz-sla" style="font-size: 0.875rem; border-collapse: separate; border-spacing: 4px;">
+                    <thead>
+                        <tr>
+                            <th style="background:#002a54; color:white; border-radius:4px;" rowspan="2" class="align-middle">
+                                <i class="fas fa-arrows-alt mr-1"></i>IMPACTO / URGENCIA
+                            </th>
+                            {% for urgencia_val, urgencia_label in urgencias %}
+                            <th style="background:#006FB3; color:white; border-radius:4px; padding:12px 20px;">
+                                {{ urgencia_label }}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for impacto_val, impacto_label in impactos %}
+                        <tr>
+                            <td class="font-weight-bold text-left align-middle" style="background:#f8fafc; color:#002a54; padding:14px 16px; min-width:200px;">
+                                {{ impacto_label }}
+                            </td>
+                            {% for urgencia_val, urgencia_label in urgencias %}
+                            {% with celda=matriz_sla|dictsort:impacto_val %}
+                            {% endwith %}
+                            <td class="sla-cell" 
+                                data-impacto="{{ impacto_val }}" 
+                                data-urgencia="{{ urgencia_val }}"
+                                style="cursor:pointer; padding:0; border-radius:6px; overflow:hidden; transition: transform 0.15s ease, box-shadow 0.15s ease;"
+                                onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'"
+                                onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'">
+                                {% with celda=matriz_sla %}
+                                {% endwith %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="text-muted mt-3" style="font-size:0.8rem;"><i class="fas fa-mouse-pointer mr-1"></i> Haga clic en cualquier celda para editar los parámetros de ese cruce.</p>
+        </div>
+
+        <!-- TAB: PRIORIDADES -->
+        <div class="tab-pane fade" id="prioridades" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h5 class="mb-1 font-weight-bold" style="color: #002a54;">Prioridades del Helpdesk</h5>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Define los niveles de atención y su SLA de resolución en horas.</p>
+                </div>
+                <button type="button" class="btn btn-primary rounded-pill px-4" id="btn-nueva-prioridad" style="background:#006FB3;border:none;">
+                    <i class="fas fa-plus mr-2"></i>Nueva Prioridad
+                </button>
+            </div>
+
+            <table class="table table-hover" id="tabla-prioridades" style="font-size: 0.875rem;">
+                <thead style="background:#002a54; color:white;">
+                    <tr>
+                        <th style="width:50px">#</th>
+                        <th>Nombre</th>
+                        <th>Color</th>
+                        <th>SLA Resolución</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="prioridades-tbody">
+                    <tr><td colspan="5" class="text-center text-muted py-3">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- Datos JSON para el JS -->
+<script id="sla-data" type="application/json">{{ matriz_json }}</script>
+
+<!-- Modal Editar Celda SLA -->
+<div class="modal fade" id="modalEditarSLA" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius:0; border:none;">
+            <div class="modal-header" style="background:#002a54; color:white;">
+                <h5 class="modal-title"><i class="fas fa-edit mr-2"></i>Editar Parámetros SLA</h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="sla-edit-id">
+                <div class="p-3 mb-4 rounded" id="sla-cell-label" style="background:#f8fafc; border-left:4px solid #006FB3;">
+                    <strong id="sla-cell-desc"></strong>
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold" style="font-size:0.85rem;">Prioridad Resultante *</label>
+                    <select class="form-control" id="sla-prioridad">
+                        {% for p in prioridades %}
+                        <option value="{{ p.id }}" data-color="{{ p.color_hex }}">{{ p.nombre }} ({{ p.sla_horas }}h)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold" style="font-size:0.85rem;">Primera Respuesta (minutos) *</label>
+                            <input type="number" class="form-control" id="sla-respuesta" min="1" placeholder="ej: 120">
+                            <small class="text-muted">Tiempo máximo para primera respuesta.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold" style="font-size:0.85rem;">Resolución (horas) *</label>
+                            <input type="number" class="form-control" id="sla-resolucion" min="1" placeholder="ej: 4">
+                            <small class="text-muted">Tiempo máximo para resolver el ticket.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary rounded-pill" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" id="btn-guardar-sla" style="background:#006FB3;border:none;">
+                    <i class="fas fa-save mr-2"></i>Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Prioridad (Crear/Editar) -->
+<div class="modal fade" id="modalPrioridad" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius:0; border:none;">
+            <div class="modal-header" style="background:#002a54; color:white;">
+                <h5 class="modal-title" id="modal-prio-title"><i class="fas fa-flag mr-2"></i>Nueva Prioridad</h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="prio-edit-id">
+                <div class="form-group">
+                    <label class="font-weight-bold" style="font-size:0.85rem;">Nombre de la Prioridad *</label>
+                    <input type="text" class="form-control" id="prio-nombre" placeholder="ej: Crítica, Alta, Media, Baja">
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label class="font-weight-bold" style="font-size:0.85rem;">SLA de Resolución (horas) *</label>
+                            <input type="number" class="form-control" id="prio-sla" min="1" placeholder="ej: 4">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="font-weight-bold" style="font-size:0.85rem;">Color Identificador</label>
+                            <input type="color" class="form-control" id="prio-color" value="#ef4444" style="height:38px; padding:2px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary rounded-pill" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" id="btn-guardar-prio" style="background:#006FB3;border:none;">
+                    <i class="fas fa-save mr-2"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pasar datos de la matriz SLA al JS de forma segura
+    window.SLA_DATA = {{ matriz_json|safe }};
+    window.IMPACTOS = {{ impactos_json|safe }};
+    window.URGENCIAS = {{ urgencias_json|safe }};
+</script>
+<script src="/static/js/configuracion.js?v=1.0"></script>
+{% endblock %}
