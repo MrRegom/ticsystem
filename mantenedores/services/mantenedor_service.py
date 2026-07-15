@@ -120,6 +120,9 @@ class MantenedorService:
             return instance
 
         nombre = normalizar_nombre(datos.get('nombre'))
+        # Para modelos de equipos y anexos, el nombre va en MAYÚSCULAS (ej: CP-7841)
+        if modelo_nombre in ('modelo', 'modeloanexo'):
+            nombre = nombre.upper() if nombre else nombre
         if not nombre:
             raise ValidationError("El nombre es obligatorio.")
 
@@ -132,6 +135,7 @@ class MantenedorService:
             'fallas_bitacora':   ['tipo'],
             'institucion':       ['codigo'],
             'modelo':            ['marca'],
+            'modeloanexo':       ['marca'],
             'piso':              ['alias', 'edificio'],
             'proveedor':         ['contacto', 'telefono', 'email', 'direccion', 'rut'],
             'sector':            ['piso'],
@@ -172,7 +176,7 @@ class MantenedorService:
             extra['marca'] = kwargs.get('marca_id')
         MantenedorService._validar_duplicado(cls, nombre, extra)
 
-        if modelo_nombre in ('modelo', 'articulo') and archivos and 'imagen' in archivos:
+        if modelo_nombre in ('modelo', 'modeloanexo', 'articulo') and archivos and 'imagen' in archivos:
             instance.imagen = archivos['imagen']
 
         instance.full_clean()
@@ -355,6 +359,9 @@ class MantenedorService:
             elif modelo_nombre == 'fallas_bitacora':
                 row['tipo'] = item.tipo
             elif modelo_nombre == 'modelo':
+                row['marca'] = item.marca.nombre if item.marca else ''
+                row['imagen_url'] = item.imagen.url if item.imagen else ''
+            elif modelo_nombre == 'modeloanexo':
                 row['marca'] = item.marca.nombre if item.marca else ''
                 row['imagen_url'] = item.imagen.url if item.imagen else ''
             elif modelo_nombre == 'piso':
