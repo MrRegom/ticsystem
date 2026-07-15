@@ -126,7 +126,7 @@ $(document).ready(function() {
         
         // Evitar duplicados
         if(itemsSeleccionados.find(i => i.tipo_item === item.tipo_item && i.id_item === item.id_item)) {
-            alert('El ítem ya fue agregado.');
+            Swal.fire('Atención', 'El ítem ya fue agregado.', 'warning');
             return;
         }
 
@@ -181,15 +181,15 @@ $(document).ready(function() {
         const unidad = $('#rec-unidad').val();
         
         if (!nombre || !rut || !unidad) {
-            alert('Debe completar el Nombre, RUT y Unidad del receptor.');
+            Swal.fire('Faltan Datos', 'Debe completar el Nombre, RUT y Unidad del receptor.', 'warning');
             return;
         }
         if (itemsSeleccionados.length === 0) {
-            alert('Debe seleccionar al menos un equipo o insumo.');
+            Swal.fire('Sin Equipamiento', 'Debe seleccionar al menos un equipo o insumo.', 'warning');
             return;
         }
         if (sigReceptor.isEmpty() || sigTic.isEmpty()) {
-            alert('Ambas firmas (Receptor y encargado TIC) son obligatorias para generar el acta.');
+            Swal.fire('Firmas Incompletas', 'Ambas firmas (Receptor y encargado TIC) son obligatorias para generar el acta.', 'warning');
             return;
         }
 
@@ -224,18 +224,24 @@ $(document).ready(function() {
                     $('#clear-signature-receptor, #clear-signature-tic').click();
                     
                     // Mostrar success y abrir PDF
-                    alert('Acta generada con éxito!');
-                    if (res.pdf_url) {
-                        window.open(res.pdf_url, '_blank');
-                    }
+                    Swal.fire({
+                        title: '¡Acta Generada!',
+                        text: 'El acta ha sido creada y firmada con éxito.',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (res.pdf_url) {
+                            window.open(res.pdf_url, '_blank');
+                        }
+                    });
                     tablaHistorial.ajax.reload();
                     $('#historial-tab').tab('show');
                 } else {
-                    alert('Error: ' + res.message);
+                    Swal.fire('Error', res.message, 'error');
                 }
             },
             error: function(err) {
-                alert('Error al generar el acta.');
+                Swal.fire('Error del Servidor', 'Ocurrió un error inesperado al generar el acta.', 'error');
                 console.error(err);
             },
             complete: function() {

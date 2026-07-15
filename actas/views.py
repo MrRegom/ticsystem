@@ -235,7 +235,7 @@ class ActaGenerateView(LoginRequiredMixin, View):
             if acta.firma_receptor: rutas_firmas['receptor'] = acta.firma_receptor.path
             if acta.firma_encargado: rutas_firmas['tic'] = acta.firma_encargado.path
             
-            pdf_buffer = generar_pdf_acta(acta, firmas_paths=rutas_firmas)
+            pdf_buffer = generar_pdf_acta(acta, firmas_paths=rutas_firmas, datos_ui_detalles=data.get('detalles', []))
             
             # 4. Guardar el PDF en el modelo
             pdf_filename = f"Acta_{acta.codigo}.pdf"
