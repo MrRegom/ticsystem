@@ -147,7 +147,7 @@ def obtener_kpis_generales():
         'unidad', 'edificio', 'piso'
     ).order_by('-creado_en')[:6].values(
         'numero_anexo', 'unidad__nombre', 'ip', 'edificio__nombre', 'piso__nombre',
-        'pma_lugar', 'estado'
+        'pma__nombre', 'estado'
     ))
 
     # ============================================================
