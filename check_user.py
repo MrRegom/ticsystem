@@ -1,0 +1,1 @@
+from core.services.usuario_service import UsuarioService; print('Normalized:', UsuarioService.normalizar_rut('16233406-9')); from django.contrib.auth import get_user_model; User = get_user_model(); users = User.objects.filter(username__icontains='16233406'); print([(u.username, u.is_active) for u in users])

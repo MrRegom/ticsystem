@@ -112,6 +112,9 @@ $(document).ready(function() {
       url: '/login/',
       type: 'POST',
       contentType: 'application/json',
+      headers: {
+        'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+      },
       data: JSON.stringify({
         username: username,
         password: password
