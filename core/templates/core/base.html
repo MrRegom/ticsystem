@@ -76,17 +76,6 @@
             <i class="fas fa-clinic-medical fa-lg" style="color: #00a3e0; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';"></i>
           </a>
           
-          {% if todos_usuarios_dev %}
-          <div class="mr-3" style="border-right: 1px solid rgba(255,255,255,0.2); padding-right: 15px;">
-             <select id="dev-user-switcher" class="form-control form-control-sm" style="background:#003c71; color:#fff; border:1px solid rgba(255,255,255,0.3); font-size:0.75rem; border-radius:15px; width:220px;">
-                <option value="">[Cambiar Usuario]</option>
-                {% for u in todos_usuarios_dev %}
-                   <option value="{{ u.id }}">{{ u.display }}</option>
-                {% endfor %}
-             </select>
-          </div>
-          {% endif %}
-          
           <div class="dropdown">
             <a class="dropdown-toggle text-white font-weight-bold" href="#" id="navbarUserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; font-size: 0.9rem;">
               <i class="fas fa-user-circle mr-1"></i> {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
