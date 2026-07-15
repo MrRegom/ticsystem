@@ -148,42 +148,42 @@ $(document).ready(function() {
             { 
                 data: 'modelo',
                 render: function(data, type, row) {
-                    var mod = row.modelo_anexo_nombre || row.modelo || 'Sin Modelo';
-                    return `
-                    <div>
-                        <div class="cell-primary">${mod}</div>
-                        <div class="cell-secondary"><i class="fas fa-barcode mr-1"></i>${row.serial_number || 'S/N'}</div>
-                    </div>`;
+                    return `<div class="cell-primary">${row.modelo_anexo_nombre || row.modelo || 'Sin Modelo'}</div>`;
+                }
+            },
+            { 
+                data: 'serial_number',
+                render: function(data, type, row) {
+                    return `<div class="cell-secondary"><i class="fas fa-barcode mr-1"></i>${row.serial_number || 'S/N'}</div>`;
                 }
             },
             { 
                 data: 'ubicacion',
                 render: function(data, type, row) {
-                    var ubi = row.unidad_nombre || row.pma_lugar || 'Sin Unidad';
+                    var ubi = row.unidad_nombre || row.pma_nombre || 'Sin Unidad';
                     var edif = [];
                     if (row.edificio_nombre) edif.push(row.edificio_nombre);
                     if (row.piso_nombre) edif.push(row.piso_nombre);
-                    var edif_str = edif.length > 0 ? edif.join(' - ') : 'S/U';
-                    
+                    var edif_str = edif.length > 0 ? edif.join(' - ') : '';
                     return `
                     <div>
                         <div class="cell-primary">${ubi}</div>
-                        <div class="cell-secondary"><i class="fas fa-hospital mr-1"></i>${edif_str}</div>
+                        ${edif_str ? `<div class="cell-secondary"><i class="fas fa-hospital mr-1"></i>${edif_str}</div>` : ''}
                     </div>`;
                 }
             },
             { 
                 data: 'ip',
                 render: function(data, type, row) {
-                    var st = row.estado === 'Activo' 
+                    return row.ip ? `<code class="cell-secondary">${row.ip}</code>` : `<span class="text-muted">S/IP</span>`;
+                }
+            },
+            { 
+                data: 'estado',
+                render: function(data, type, row) {
+                    return row.estado === 'Activo' 
                         ? `<span class="status-badge status-activo"><i class="fas fa-check-circle mr-1"></i>Activo</span>`
                         : `<span class="status-badge status-inactivo"><i class="fas fa-times-circle mr-1"></i>Inactivo</span>`;
-                    var ip_str = row.ip ? `<i class="fas fa-network-wired mr-1"></i>${row.ip}` : '<i class="fas fa-network-wired mr-1"></i>S/IP';
-                    return `
-                    <div>
-                        <div class="mb-1">${st}</div>
-                        <div class="cell-secondary">${ip_str}</div>
-                    </div>`;
                 }
             },
             {
@@ -316,9 +316,45 @@ $(document).ready(function() {
         $('#modalAnexo').modal('show');
     });
 
-    // Ver Anexo (Read Only)
+    // Ver Anexo - Abre el mismo modal pero solo lectura visual
     $('#tabla-anexos').on('click', '.btn-ver-anexo', function() {
-        Swal.fire({ icon: 'info', title: 'Funcionalidad en desarrollo', text: 'Vista detallada de anexo.'});
+        var tr = $(this).closest('tr');
+        var row = tablaAnexos.row(tr);
+        if (tr.hasClass('child')) row = tablaAnexos.row(tr.prev());
+        var data = row.data();
+        if (!data) return;
+
+        // Reusar lógica de editar para precargar campos
+        $('#form-anexo')[0].reset();
+        $('#form-anexo').removeClass('was-validated');
+        $('#anexo-id').val(data.id);
+        $('#a-numero').val(data.numero_anexo);
+        $('#a-marca').val(data.marca).trigger('change.select2');
+        $('#a-modelo-anexo').val(data.modelo_anexo_id).trigger('change.select2');
+        var imgUrl = $('#a-modelo-anexo option:selected').data('imagen');
+        $('#a-imagen-preview').attr('src', imgUrl || '/static/img/placeholder_equipo.png');
+        $('#a-edificio').val(data.edificio_id).trigger('change.select2');
+        $('#a-piso').val(data.piso_id).trigger('change.select2');
+        $('#a-unidad').val(data.unidad_id).trigger('change.select2');
+        var pmaOption = $('#a-pma option[value="'+data.pma_id+'"]');
+        if (pmaOption.length && pmaOption.data('recinto')) {
+            $('#a-recinto').val(pmaOption.data('recinto')).trigger('change.select2');
+        }
+        $('#a-pma').val(data.pma_id).trigger('change.select2');
+        $('#a-ip').val(data.ip);
+        $('#a-serial').val(data.serial_number);
+        $('#a-estado').val(data.estado);
+        $('#a-comentario').val(data.observacion || data.comentario);
+        $('#modalAnexoLabel').html('<i class="fas fa-eye mr-2"></i>Detalle del Anexo');
+        // Deshabilitar campos en modo vista
+        $('#form-anexo input, #form-anexo select, #form-anexo textarea').prop('disabled', true);
+        $('#btn-guardar-anexo').hide();
+        $('#modalAnexo').modal('show');
+        // Al cerrar el modal, re-habilitar campos para el próximo uso
+        $('#modalAnexo').one('hidden.bs.modal', function() {
+            $('#form-anexo input, #form-anexo select, #form-anexo textarea').prop('disabled', false);
+            $('#btn-guardar-anexo').show();
+        });
     });
 
     // Eliminar Anexo
