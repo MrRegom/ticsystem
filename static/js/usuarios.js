@@ -218,14 +218,38 @@ function saveIdentity() {
     if (data.success) {
       closeDrawer();
       loadIdentities(document.getElementById('search-input').value);
-      Swal.fire({ toast:true, position: 'top-end', icon: 'success', title: data.mensaje || 'Guardado correctamente', showConfirmButton: false, timer: 3000 });
+      showToast(data.mensaje || 'Guardado correctamente');
     } else {
-      Swal.fire('Error', data.error || 'Ocurrió un problema.', 'error');
+      showToast(data.error || 'Ocurrió un problema.', true);
     }
   })
   .catch(err => {
-    Swal.fire('Error', 'Fallo de conexión.', 'error');
+    showToast('Fallo de conexión.', true);
   });
+}
+
+// ==========================================
+// 4. Custom Microsoft Toast
+// ==========================================
+function showToast(message, isError = false) {
+  const toast = document.getElementById('ms-toast');
+  const icon = document.getElementById('ms-toast-icon');
+  const text = document.getElementById('ms-toast-text');
+  
+  if (isError) {
+    toast.classList.add('error');
+    icon.className = 'fas fa-exclamation-circle ms-toast-icon';
+  } else {
+    toast.classList.remove('error');
+    icon.className = 'fas fa-check-circle ms-toast-icon';
+  }
+  
+  text.innerText = message;
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3500);
 }
 
 // ==========================================

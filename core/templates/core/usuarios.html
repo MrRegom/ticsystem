@@ -40,27 +40,27 @@
     box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
   }
   .ms-list-header {
-    display: grid; grid-template-columns: 280px 1fr 180px 150px; padding: 12px 20px;
-    border-bottom: 1px solid #edebe9; color: #605e5c; font-size: 12px; font-weight: 600;
+    display: grid; grid-template-columns: 280px 1fr 180px 150px; padding: 10px 20px;
+    border-bottom: 1px solid #edebe9; color: #605e5c; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
   }
   .ms-list-row {
-    display: grid; grid-template-columns: 280px 1fr 180px 150px; padding: 12px 20px;
+    display: grid; grid-template-columns: 280px 1fr 180px 150px; padding: 10px 20px;
     border-bottom: 1px solid #edebe9; align-items: center; cursor: pointer; transition: background 0.15s;
-    position: relative;
+    position: relative; font-size: 13px;
   }
   .ms-list-row:last-child { border-bottom: none; }
   .ms-list-row:hover { background-color: #f3f2f1; }
   
   /* 💎 Identity Avatar */
-  .ms-identity { display: flex; align-items: center; gap: 12px; }
+  .ms-identity { display: flex; align-items: center; gap: 10px; }
   .ms-avatar {
-    width: 40px; height: 40px; border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 600; font-size: 14px; letter-spacing: 0.5px;
+    color: white; font-weight: 600; font-size: 12px; letter-spacing: 0.5px;
   }
   .ms-user-info { display: flex; flex-direction: column; }
-  .ms-user-name { font-weight: 600; font-size: 14px; color: #323130; }
-  .ms-user-email { font-size: 12px; color: #605e5c; }
+  .ms-user-name { font-weight: 600; font-size: 13px; color: #323130; }
+  .ms-user-email { font-size: 11px; color: #605e5c; }
   
   /* 💎 Badges */
   .ms-badge {
@@ -113,6 +113,20 @@
     border: 1px solid #8a8886; border-radius: 2px; padding: 6px 12px; font-size: 14px; width: 100%; margin-bottom: 16px;
   }
   .ms-input:focus { outline: none; border: 1px solid #0078d4; border-bottom: 2px solid #0078d4; padding-bottom: 5px; }
+
+  /* 💎 Microsoft Toast Notification */
+  .ms-toast {
+    position: fixed; bottom: 24px; right: 24px; background: #fff;
+    border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+    transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2000; border-left: 4px solid #107c10;
+  }
+  .ms-toast.show { transform: translateY(0); opacity: 1; }
+  .ms-toast-icon { color: #107c10; font-size: 16px; }
+  .ms-toast-text { color: #323130; font-size: 14px; font-weight: 600; }
+  .ms-toast.error { border-left-color: #a4262c; }
+  .ms-toast.error .ms-toast-icon { color: #a4262c; }
   
 </style>
 {% endblock %}
@@ -202,6 +216,12 @@
     <button type="button" class="ms-btn-primary" style="background:#fff; color:#323130; border: 1px solid #8a8886;" onclick="closeDrawer()">Cancelar</button>
     <button type="button" class="ms-btn-primary" id="btn-save-identity" onclick="saveIdentity()">Guardar Identidad</button>
   </div>
+</div>
+
+<!-- MS Toast Container -->
+<div id="ms-toast" class="ms-toast">
+  <i id="ms-toast-icon" class="fas fa-check-circle ms-toast-icon"></i>
+  <span id="ms-toast-text" class="ms-toast-text"></span>
 </div>
 
 {% endblock %}
