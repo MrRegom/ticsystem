@@ -585,7 +585,7 @@ var EquiposApp = (function($) {
             articulo_id: $(f.articulo).val(),
             marca_id: $(f.marca).val(),
             modelo_id: $(f.modelo).val(),
-            serial_number: $(f.serial).val(),
+            serial_number: $(f.serial_number).val(),
             so_id: $(f.so).val(),
             ip: $(f.ip).val(),
             pma_id: $(f.pma).val(),
@@ -593,7 +593,9 @@ var EquiposApp = (function($) {
             proveedor_id: $(f.proveedor).val()
         };
 
-        $(el.alert).addClass('d-none');
+        // Ocultar alerta de error del drawer
+        var alertEl2 = document.getElementById('equipo-error-alert');
+        if (alertEl2) { alertEl2.style.display = 'none'; }
 
         var isUpdate = data.id ? true : false;
 
