@@ -357,19 +357,15 @@ function eqGuardar() {
     $(form).find('select[required]').each(function() {
         if (!$(this).val()) {
             missingFields = true;
-            $(this).next('.select2-container').find('.select2-selection').css('border-color', '#a4262c');
-        } else {
-            $(this).next('.select2-container').find('.select2-selection').css('border-color', '');
         }
     });
     
     // Validar también los radios de estado
     if ($('input[name="e-estado"]:checked').length === 0) {
         missingFields = true;
-        $('#e-estado-container').css({'border': '1px solid #a4262c', 'padding': '4px', 'border-radius': '4px'});
-    } else {
-        $('#e-estado-container').css({'border': 'none', 'padding': '0'});
     }
+    
+    evaluarBordesObligatorios();
 
     if (missingFields) {
         var alertEl = document.getElementById('equipo-error-alert');
@@ -661,10 +657,34 @@ var EquiposApp = (function($) {
         $(f.recinto).on('change', filterPmas);
     }
 
+    function evaluarBordesObligatorios() {
+        var form = $('#form-equipo');
+        form.find('select[required]').each(function() {
+            var container = $(this).next('.select2-container').find('.select2-selection');
+            if ($(this).val()) {
+                container.removeClass('ms-required-invalid').addClass('ms-required-valid');
+            } else {
+                container.removeClass('ms-required-valid').addClass('ms-required-invalid');
+            }
+        });
+        
+        // Estado operativo
+        if ($('input[name="e-estado"]:checked').length > 0) {
+            $('#e-estado-container').removeClass('ms-required-invalid').addClass('ms-required-valid').css({'padding-left': '8px'});
+        } else {
+            $('#e-estado-container').removeClass('ms-required-valid').addClass('ms-required-invalid').css({'padding-left': '8px'});
+        }
+    }
+
     function initEvents() {
         // Btn Nuevo → Drawer
         $('#btn-nuevo-equipo').on('click', function() {
             abrirModal();
+        });
+        
+        // Validacion en tiempo real
+        $('#form-equipo').on('change', 'select[required], input[name="e-estado"]', function() {
+            evaluarBordesObligatorios();
         });
 
         // Submit del formulario del Drawer
@@ -715,6 +735,10 @@ var EquiposApp = (function($) {
         $(f.recinto).prop('disabled', true);
         $(f.pma).prop('disabled', true);
         document.getElementById('equipo-drawer-title').textContent = 'Registrar Activo';
+        
+        // Reset validacion
+        setTimeout(evaluarBordesObligatorios, 50);
+        
         eqOpenDrawer();
     }
         
@@ -936,6 +960,8 @@ var EquiposApp = (function($) {
                         // Setear el PMA real del equipo
                         $pma.val(eq.pma);
                         $pma.select2({theme: 'bootstrap4', width: '100%', dropdownParent: $(el.modal)});
+                        
+                        setTimeout(evaluarBordesObligatorios, 50);
                         
                     }, 100);
                 }, 100);
