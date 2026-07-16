@@ -1,160 +1,115 @@
 {% extends 'core/base.html' %}
-{% block title %}Dashboard - Helpdesk Enterprise{% endblock %}
+{% block title %}Business Intelligence - TicSystem{% endblock %}
 
 {% block extra_css %}
-<style>
-  .dashboard-wrapper {
-    padding: 24px;
-    background: #f1f5f9;
-    min-height: calc(100vh - 56px);
-  }
-  .dashboard-header {
-    margin-bottom: 24px;
-  }
-  .dashboard-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0;
-  }
-  .dashboard-subtitle {
-    font-size: 0.9rem;
-    color: #64748b;
-    margin: 0;
-  }
-  
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 20px;
-  }
-  
-  .chart-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    border: 1px solid #e2e8f0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .chart-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  }
-
-  .chart-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  /* Distribución de la grilla */
-  .card-sla { grid-column: span 4; }
-  .card-categoria { grid-column: span 8; }
-  .card-tendencia { grid-column: span 8; }
-  .card-top { grid-column: span 4; }
-
-  /* Lista Top Equipos */
-  .top-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .top-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #f1f5f9;
-  }
-  .top-item:last-child {
-    border-bottom: none;
-  }
-  .top-name {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #334155;
-  }
-  .top-meta {
-    font-size: 0.75rem;
-    color: #94a3b8;
-  }
-  .top-badge {
-    background: #fee2e2;
-    color: #ef4444;
-    font-weight: 800;
-    font-size: 0.75rem;
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
-
-  /* Responsivo */
-  @media (max-width: 1024px) {
-    .card-sla, .card-categoria, .card-tendencia, .card-top {
-      grid-column: span 12;
-    }
-  }
-</style>
+<!-- El sistema de diseño ahora usa global-theme.css (Microsoft Fluent) -->
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-wrapper">
-  <div class="dashboard-header">
-    <h1 class="dashboard-title"><i class="fas fa-chart-pie text-primary"></i> Dashboard Gerencial</h1>
-    <p class="dashboard-subtitle">Indicadores de Rendimiento (KPI) y BI</p>
+<div style="padding: 24px; max-width: 1400px; margin: 0 auto;">
+  
+  <!-- Encabezado Microsoft -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+    <div>
+      <h1 style="font-size: 24px; font-weight: 600; color: #323130; margin: 0 0 4px 0;">Inteligencia de Negocios</h1>
+      <p style="font-size: 14px; color: #605e5c; margin: 0;">Indicadores de rendimiento, SLAs y demanda de servicios.</p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="ms-btn-primary" onclick="openDrawer('exportar')" title="Descargar datos en crudo">
+        <i class="fas fa-file-excel"></i> Exportar Datos
+      </button>
+    </div>
   </div>
 
-  <div class="grid-container">
+  <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px;">
     
     <!-- SLA Donut -->
-    <div class="chart-card card-sla">
-      <h3 class="chart-title"><i class="fas fa-stopwatch text-warning"></i> Cumplimiento SLA</h3>
+    <div class="ms-card" style="grid-column: span 4;">
+      <h3 class="ms-card-title"><i class="fas fa-stopwatch" style="color: #f59e0b; margin-right: 8px;"></i> Cumplimiento SLA</h3>
       <div style="position: relative; height: 250px;">
         <canvas id="chartSla"></canvas>
       </div>
     </div>
 
     <!-- Carga por Categoría Bar -->
-    <div class="chart-card card-categoria">
-      <h3 class="chart-title"><i class="fas fa-layer-group text-primary"></i> Demanda por Categoría</h3>
+    <div class="ms-card" style="grid-column: span 8;">
+      <h3 class="ms-card-title"><i class="fas fa-layer-group" style="color: #0078d4; margin-right: 8px;"></i> Demanda por Categoría</h3>
       <div style="position: relative; height: 250px;">
         <canvas id="chartCategoria"></canvas>
       </div>
     </div>
 
     <!-- Tendencia Line -->
-    <div class="chart-card card-tendencia">
-      <h3 class="chart-title"><i class="fas fa-chart-line text-success"></i> Tendencia de Incidentes (6 Meses)</h3>
+    <div class="ms-card" style="grid-column: span 8;">
+      <h3 class="ms-card-title"><i class="fas fa-chart-line" style="color: #107c10; margin-right: 8px;"></i> Tendencia de Incidentes (Últimos 6 Meses)</h3>
       <div style="position: relative; height: 280px;">
         <canvas id="chartTendencia"></canvas>
       </div>
     </div>
 
     <!-- Top Equipos List -->
-    <div class="chart-card card-top">
-      <h3 class="chart-title"><i class="fas fa-desktop text-danger"></i> Top 5: Activos Críticos</h3>
-      <ul class="top-list">
+    <div class="ms-card" style="grid-column: span 4;">
+      <h3 class="ms-card-title"><i class="fas fa-desktop" style="color: #a4262c; margin-right: 8px;"></i> Top 5: Activos Críticos</h3>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
         {% for equipo in top_equipos %}
-        <li class="top-item">
-          <div>
-            <div class="top-name">{{ equipo.nombre }}</div>
-            <div class="top-meta">Serie: {{ equipo.serie }}</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #edebe9;">
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 13px; font-weight: 600; color: #323130;">{{ equipo.nombre }}</span>
+            <span style="font-size: 11px; color: #605e5c;">Serie: {{ equipo.serie }}</span>
           </div>
-          <span class="top-badge">{{ equipo.fallas }} Fallas</span>
-        </li>
+          <span style="background: #fde7e9; color: #a4262c; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 12px;">
+            {{ equipo.fallas }} Fallas
+          </span>
+        </div>
         {% empty %}
-        <li class="top-item">
-          <div class="top-meta">No hay historial de fallas registradas.</div>
-        </li>
+        <div style="font-size: 13px; color: #605e5c;">No hay historial de fallas registradas.</div>
         {% endfor %}
-      </ul>
+      </div>
     </div>
 
+  </div>
+</div>
+
+<!-- Drawer (Panel Lateral) de Exportaciones -->
+<div class="ms-drawer-overlay" id="exportar-drawer-overlay" onclick="closeDrawer('exportar')"></div>
+<div class="ms-drawer" id="exportar-drawer">
+  <div class="ms-drawer-header">
+    <h3 class="ms-drawer-title">Exportar Datos</h3>
+    <button class="ms-drawer-close" onclick="closeDrawer('exportar')"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="ms-drawer-body">
+    <p style="font-size: 13px; color: #605e5c; margin-bottom: 24px;">Seleccione el conjunto de datos que desea descargar. Se generará un archivo Excel (CSV) con la data completa y estructurada.</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      
+      <!-- Exportar Tickets -->
+      <div style="border: 1px solid #edebe9; padding: 16px; border-radius: 4px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <i class="fas fa-ticket-alt" style="font-size: 24px; color: #0078d4;"></i>
+          <div>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #323130;">Historial de Tickets</h4>
+            <span style="font-size: 12px; color: #605e5c;">Todos los tickets y tiempos de resolución.</span>
+          </div>
+        </div>
+        <a href="{% url 'reportes:exportar_tickets' %}" class="ms-btn-primary" style="display: inline-block; width: 100%; text-align: center; text-decoration: none;">Descargar</a>
+      </div>
+
+      <!-- Exportar Activos -->
+      <div style="border: 1px solid #edebe9; padding: 16px; border-radius: 4px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <i class="fas fa-desktop" style="font-size: 24px; color: #107c10;"></i>
+          <div>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #323130;">Inventario de Activos</h4>
+            <span style="font-size: 12px; color: #605e5c;">Catálogo completo de equipos médicos e IT.</span>
+          </div>
+        </div>
+        <a href="{% url 'reportes:exportar_activos' %}" class="ms-btn-primary" style="display: inline-block; width: 100%; text-align: center; text-decoration: none;">Descargar</a>
+      </div>
+
+    </div>
+  </div>
+  <div class="ms-drawer-footer">
+    <button class="ms-btn-primary" style="background: white; color: #323130; border: 1px solid #8a8886;" onclick="closeDrawer('exportar')">Cerrar</button>
   </div>
 </div>
 {% endblock %}
@@ -163,6 +118,17 @@
 <!-- Importar Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  // Funciones para el Drawer (Panel Lateral) de Exportación
+  window.openDrawer = function(id) {
+    document.getElementById(id + '-drawer').classList.add('open');
+    document.getElementById(id + '-drawer-overlay').classList.add('active');
+  };
+  
+  window.closeDrawer = function(id) {
+    document.getElementById(id + '-drawer').classList.remove('open');
+    document.getElementById(id + '-drawer-overlay').classList.remove('active');
+  };
+
   // Cargar datos inyectados por Django
   const slaData = {{ sla_data|safe }};
   const categoriaData = {{ categoria_data|safe }};

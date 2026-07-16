@@ -1,4 +1,8 @@
 from .repositories import ReportesRepository
+import csv
+from django.http import HttpResponse
+from tickets.models import Ticket
+from equipos.models import Equipo
 
 class GraficosService:
     """
@@ -92,3 +96,88 @@ class GraficosService:
                 'fallas': item['total_fallas']
             })
         return equipos
+
+class ExportadorCSVService:
+    """
+    Motor universal de exportación a CSV UTF-8 con BOM.
+    Compatible de forma nativa con Microsoft Excel sin librerías de terceros.
+    """
+    
+    @staticmethod
+    def _crear_respuesta_csv(filename):
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = f'attachment; filename="{filename}.csv"'
+        # Insertar BOM (Byte Order Mark) para que Excel reconozca automáticamente UTF-8
+        response.write('\ufeff')
+        return response
+
+    @classmethod
+    def exportar_tickets(cls):
+        response = cls._crear_respuesta_csv('Historial_Tickets_Enterprise')
+        writer = csv.writer(response, delimiter=';') # Excel en español prefiere punto y coma
+        
+        # Cabeceras
+        writer.writerow([
+            'ID Ticket', 'Asunto', 'Estado', 'Prioridad', 'Categoría',
+            'Equipo Asociado', 'Serie Equipo', 'Servicio / Unidad',
+            'Creador', 'Técnico Asignado', 'Fecha Creación', 'Fecha Cierre'
+        ])
+        
+        # Evitar N+1 queries con select_related
+        tickets = Ticket.objects.select_related(
+            'estado', 'prioridad', 'categoria', 'equipo', 
+            'equipo__id_unidad', 'creador', 'tecnico_asignado'
+        ).all().order_by('-id')
+        
+        for t in tickets:
+            writer.writerow([
+                f"T-{t.id:04d}",
+                t.asunto,
+                t.estado.nombre if t.estado else '',
+                t.prioridad.nombre if t.prioridad else '',
+                t.categoria.nombre if t.categoria else '',
+                t.equipo.id_articulo.nombre if t.equipo and t.equipo.id_articulo else 'Sin Equipo',
+                t.equipo.serial_number if t.equipo else '',
+                t.equipo.id_unidad.nombre if t.equipo and t.equipo.id_unidad else '',
+                t.creador.get_full_name() or t.creador.username if t.creador else '',
+                t.tecnico_asignado.get_full_name() or t.tecnico_asignado.username if t.tecnico_asignado else 'Sin Asignar',
+                t.fecha_creacion.strftime('%Y-%m-%d %H:%M') if t.fecha_creacion else '',
+                t.fecha_cierre.strftime('%Y-%m-%d %H:%M') if t.fecha_cierre else ''
+            ])
+            
+        return response
+
+    @classmethod
+    def exportar_activos(cls):
+        response = cls._crear_respuesta_csv('Inventario_Activos_Enterprise')
+        writer = csv.writer(response, delimiter=';')
+        
+        writer.writerow([
+            'ID', 'Número de Serie', 'Artículo', 'Marca', 'Modelo',
+            'Estado', 'Unidad / Servicio', 'Ubicación Física',
+            'IP', 'Sistema Operativo', 'Fecha de Compra'
+        ])
+        
+        equipos = Equipo.objects.select_related(
+            'id_articulo', 'id_marca', 'id_modelo', 'id_estado',
+            'id_unidad', 'id_edificio', 'id_piso', 'id_so'
+        ).all().order_by('id')
+        
+        for e in equipos:
+            ubicacion = f"{e.id_edificio.nombre if e.id_edificio else ''} - {e.id_piso.nombre if e.id_piso else ''}".strip(' -')
+            
+            writer.writerow([
+                e.id,
+                e.serial_number,
+                e.id_articulo.nombre if e.id_articulo else '',
+                e.id_marca.nombre if e.id_marca else '',
+                e.id_modelo.nombre if e.id_modelo else '',
+                e.id_estado.nombre if e.id_estado else '',
+                e.id_unidad.nombre if e.id_unidad else '',
+                ubicacion,
+                e.ip or '',
+                e.id_so.nombre if e.id_so else '',
+                e.fecha_compra.strftime('%Y-%m-%d') if e.fecha_compra else ''
+            ])
+            
+        return response

@@ -18,3 +18,13 @@ class DashboardReportesView(LoginRequiredMixin, TemplateView):
         context['top_equipos'] = GraficosService.get_top_equipos_data()
         
         return context
+
+class ExportarTicketsView(LoginRequiredMixin, TemplateView):
+    def get(self, request, *args, **kwargs):
+        from .services import ExportadorCSVService
+        return ExportadorCSVService.exportar_tickets()
+
+class ExportarActivosView(LoginRequiredMixin, TemplateView):
+    def get(self, request, *args, **kwargs):
+        from .services import ExportadorCSVService
+        return ExportadorCSVService.exportar_activos()
