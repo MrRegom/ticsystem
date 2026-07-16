@@ -1,699 +1,397 @@
 {% extends "core/base.html" %}
+{% load static %}
 
-{% block title %}Inventario General | Hospital Marga Marga{% endblock %}
+{% block title %}Inventario de Equipamiento | TicSystem{% endblock %}
+{% block module_title %}Inventario de Equipamiento{% endblock %}
 
 {% block extra_css %}
-<!-- Fonts: Inter -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <!-- DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
-<!-- Custom Styles: Marga Marga Enterprise (Referencia) -->
-<style>
-  body, .content-wrapper, .wrapper {
-      background-color: #f8fafc;
-      font-family: 'Inter', sans-serif;
-  }
-
-  /* Header Superior */
-  .page-header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid #e2e8f0;
-  }
-  .page-title {
-      font-weight: 800;
-      color: #0f172a;
-      font-size: 1.4rem;
-      margin-bottom: 2px;
-  }
-  .page-subtitle {
-      color: #64748b;
-      font-size: 0.85rem;
-      margin: 0;
-  }
-
-  /* Botones Principales */
-  .btn-primary-action {
-      background: #0066cc; /* Azul vibrante estilo referencia */
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 0.85rem;
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-  }
-  .btn-primary-action:hover { background: #0052a3; color: #fff; }
-
-  /* Toolbar de Búsqueda y Filtros */
-  .toolbar-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #ffffff;
-      padding: 12px 16px;
-      border: 1px solid #e2e8f0;
-      border-bottom: none;
-      border-radius: 0 !important;
-  }
-  .search-wrapper {
-      position: relative;
-      width: 300px;
-  }
-  .search-wrapper i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #94a3b8;
-  }
-  .search-wrapper input {
-      width: 100%;
-      padding: 6px 12px 6px 36px;
-      border: 1px solid #cbd5e1;
-      border-radius: 0 !important;
-      font-size: 0.8rem;
-      color: #334155;
-      outline: none;
-      transition: border-color 0.2s;
-  }
-  .search-wrapper input:focus { border-color: #0066cc; }
-  
-  .filter-wrapper { display: flex; gap: 8px; align-items: center; }
-  .select-filter {
-      padding: 6px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 0 !important;
-      font-size: 0.8rem;
-      color: #475569;
-      background: #fff;
-      outline: none;
-  }
-
-  .datagrid-container {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 0 !important;
-      overflow: hidden;
-  }
-  table.dataTable { border-collapse: collapse !important; margin-top: 0 !important; width: 100% !important; }
-  
-  /* Header Oscuro */
-  table.dataTable thead th {
-      background: #0f172a !important; /* Azul oscuro casi negro */
-      color: #ffffff !important;
-      font-size: 0.65rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 12px 16px;
-      border: none !important;
-  }
-  
-  /* Filas limpias */
-  table.dataTable tbody td {
-      padding: 12px 16px;
-      font-size: 0.8rem;
-      color: #334155;
-      vertical-align: middle;
-      border-bottom: 1px solid #f1f5f9;
-      border-top: none !important;
-  }
-  table.dataTable tbody tr:hover { background-color: #f8fafc !important; }
-  
-  /* Data Píldoras y Textos */
-  .cell-title { font-weight: 700; color: #1e293b; display: block; font-size: 0.8rem; }
-  .cell-subtitle { color: #64748b; font-size: 0.75rem; display: block; margin-top: 2px; }
-  
-  .pill-serial {
-      color: #0284c7;
-      font-weight: 600;
-      font-family: 'Inter', monospace;
-      font-size: 0.75rem;
-  }
-  
-  .pill-estado {
-      background: #f1f5f9;
-      color: #64748b;
-      border: 1px solid #e2e8f0;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-  }
-  .pill-estado.status-dot { width: 6px; height: 6px; border-radius: 50%; }
-
-  .action-btn-square {
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      color: #64748b;
-      width: 26px;
-      height: 26px;
-      border-radius: 0 !important;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      margin-left: 4px;
-      transition: all 0.2s;
-  }
-  .action-btn-square:hover { background: #f8fafc; color: #0f172a; border-color: #94a3b8; }
-  
-  /* Ocultar elementos por defecto de DataTables para usar los custom */
-  .dataTables_filter { display: none !important; }
-  .dataTables_length { margin: 15px 16px; }
-  .dataTables_info { margin: 15px 16px; font-size: 0.8rem; color: #64748b; }
-  .dataTables_paginate { margin: 15px 16px; }
-
-  /* Modal Enterprise Styling */
-  .modal-content { border: none; border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-  .modal-header-clean { padding: 24px 30px 16px; background: #ffffff; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
-  .modal-header-clean h5 { font-family: 'Inter', sans-serif; font-weight: 800; color: #0f172a; font-size: 1.25rem; margin: 0; }
-  .modal-body-clean { padding: 30px; background: #ffffff; }
-  .modal-footer-clean { padding: 16px 30px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; }
-  
-  .section-label { font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  
-  .form-control-clean { border: 1px solid #cbd5e1; border-radius: 0; font-size: 0.85rem; padding: 8px 12px; color: #334155; transition: border-color 0.2s; background: #f8fafc; }
-  .form-control-clean:focus { background: #fff; border-color: #002855; box-shadow: 0 0 0 3px rgba(0,40,85,0.1); outline: none; }
-  .form-label-clean { font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 6px; }
-  
-  /* Select2 overriding for clean look */
-  .select2-container--bootstrap4 .select2-selection { border-radius: 0 !important; border: 1px solid #cbd5e1 !important; background: #f8fafc !important; font-size: 0.85rem !important; min-height: 36px !important; }
-  .select2-container--bootstrap4.select2-container--focus .select2-selection { background: #fff !important; border-color: #002855 !important; box-shadow: 0 0 0 3px rgba(0,40,85,0.1) !important; }
-</style>
+<!-- El sistema de diseño usa global-theme.css (Microsoft Fluent) -->
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid pb-4 animate__animated animate__fadeIn" style="padding: 0 10px; ">
-  
-  <!-- Header -->
-  <div class="page-header-top" style="margin-bottom: 8px; padding-bottom: 6px;">
-    <div>
-      <h2 class="font-weight-bold text-dark mb-0">Inventario de Equipos</h2>
-      <p class="page-subtitle">Gestión centralizada de activos TI</p>
-    </div>
-    <button id="btn-nuevo" class="btn-primary-action">
-      <i class="fas fa-plus"></i> Nuevo Equipo
-    </button>
-  </div>
+<div style="padding: 24px;">
 
-  <!-- Barra de Herramientas Superior -->
-  <div class="toolbar-container">
-    <div class="search-wrapper">
-      <i class="fas fa-search"></i>
-      <input type="text" id="custom-search-input" placeholder="Buscar por serie, modelo, usuario...">
+  <!-- ================================================================
+    ENCABEZADO MICROSOFT FLUENT
+  ================================================================ -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+    <div>
+      <h1 style="font-size: 24px; font-weight: 600; color: #323130; margin: 0 0 4px 0;">Inventario de Equipamiento</h1>
+      <p style="font-size: 14px; color: #605e5c; margin: 0;">Gestión centralizada de activos TI del Hospital Provincial Marga Marga.</p>
     </div>
-    <div class="filter-wrapper">
-      <select class="select-filter" id="custom-status-filter">
-        <option value="">Todos los Estados</option>
-        {% for es in estados %}<option value="{{ es.nombre }}">{{ es.nombre }}</option>{% endfor %}
-      </select>
-      <button class="action-btn-square" style="color:#0066cc; border-color:#cbd5e1;" title="Más filtros">
-        <i class="fas fa-filter"></i>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <button id="btn-nuevo-equipo" class="ms-btn-primary">
+        <i class="fas fa-plus"></i> Nuevo Activo
       </button>
     </div>
   </div>
 
-  <!-- DataGrid -->
-  <div class="datagrid-container">
-    <div class="table-responsive">
-      <table id="tabla-equipos" class="table" style="width:100%;">
-        <thead>
-          <tr>
-            <th data-col="id" style="width:30px; text-align:center;">#</th>
-            <th data-col="articulo">ARTÍCULO / MODELO</th>
-            <th data-col="piso">UBICACIÓN</th>
-            <th data-col="pma">PMA</th>
-            <th data-col="piso_num">PISO</th>
-            <th data-col="serial_number">N° SERIE</th>
-            <th data-col="ip">IP / RED</th>
-            <th data-col="estado">ESTADO</th>
-            <th data-col="acciones" style="width:120px; text-align:right;">ACCIONES</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Ajax Data -->
-        </tbody>
-      </table>
+  <!-- ================================================================
+    KPIs COMPACTOS (Fila Superior)
+  ================================================================ -->
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+    <div class="ms-card" style="padding: 16px; margin: 0;">
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Activos</div>
+      <div style="font-size: 28px; font-weight: 700; color: #0078d4; line-height: 1;" id="kpi-total">{{ kpi.total }}</div>
+    </div>
+    <div class="ms-card" style="padding: 16px; margin: 0;">
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Operativos</div>
+      <div style="font-size: 28px; font-weight: 700; color: #107c10; line-height: 1;">{{ kpi.operativos }}</div>
+    </div>
+    <div class="ms-card" style="padding: 16px; margin: 0;">
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">En Mantención</div>
+      <div style="font-size: 28px; font-weight: 700; color: #f59e0b; line-height: 1;">{{ kpi.mantenimiento }}</div>
+    </div>
+    <div class="ms-card" style="padding: 16px; margin: 0;">
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Con Alerta</div>
+      <div style="font-size: 28px; font-weight: 700; color: #a4262c; line-height: 1;">{{ kpi.total|add:"-"|add:kpi.operativos }}</div>
     </div>
   </div>
+
+  <!-- ================================================================
+    TOOLBAR: Búsqueda y Filtros
+  ================================================================ -->
+  <div style="background: #fff; border: 1px solid #edebe9; border-bottom: none; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;">
+    <div style="position: relative; width: 320px;">
+      <i class="fas fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #605e5c; font-size: 12px;"></i>
+      <input type="text" id="eq-search" placeholder="Buscar por serie, artículo, modelo, ubicación..."
+        class="ms-input" style="padding-left: 32px; margin-bottom: 0; font-size: 13px;">
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <select id="eq-filter-estado" class="ms-input" style="margin-bottom: 0; font-size: 12px; padding: 5px 10px; width: 180px;">
+        <option value="">Todos los Estados</option>
+        {% for es in estados %}
+        <option value="{{ es.nombre }}">{{ es.nombre }}</option>
+        {% endfor %}
+      </select>
+      <select id="eq-filter-unidad" class="ms-input" style="margin-bottom: 0; font-size: 12px; padding: 5px 10px; width: 200px;">
+        <option value="">Todas las Unidades</option>
+        {% for u in unidades %}
+        <option value="{{ u.nombre }}">{{ u.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <!-- ================================================================
+    LISTA MS-FLUENT (cabecera fija)
+  ================================================================ -->
+  <div class="ms-list-container" style="grid-template-columns: none;">
+
+    <!-- Cabecera -->
+    <div style="display: grid; grid-template-columns: 260px 120px 1fr 200px 140px 80px; gap: 16px; padding: 6px 16px;
+      border-bottom: 1px solid #edebe9; background: #faf9f8;
+      color: #605e5c; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+      <div>Artículo / Modelo</div>
+      <div>N° Serie</div>
+      <div>Ubicación</div>
+      <div>Unidad / Servicio</div>
+      <div>Estado</div>
+      <div></div>
+    </div>
+
+    <!-- Body: filas generadas por JS -->
+    <div id="eq-list-body">
+      <div style="text-align: center; padding: 40px; color: #605e5c; font-size: 14px;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #0078d4; margin-bottom: 12px; display: block;"></i>
+        Cargando inventario...
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-top: 1px solid #edebe9; background: #faf9f8;">
+      <span id="eq-info" style="font-size: 12px; color: #605e5c;"></span>
+      <div id="eq-pagination" style="display: flex; gap: 4px;"></div>
+    </div>
+
+  </div>
+
 </div>
 
-<!-- Modal Detalles del Equipo (Split Layout) -->
-<div class="modal fade" id="modalVerEquipo" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 900px;">
-    <div class="modal-content" style="border-radius: 12px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-      
-      <!-- Cabecera Oscura -->
-      <div style="background: #1f2937; color: white; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;">
-        <h5 style="margin: 0; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 10px;">
-          <i class="far fa-window-maximize"></i> Detalles del Equipo
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 0.8; text-shadow: none;">&times;</button>
+<!-- ================================================================
+  DRAWER: Registrar / Editar Activo
+================================================================ -->
+<div class="ms-drawer-overlay" id="equipo-drawer-overlay" onclick="eqCloseDrawer()"></div>
+<div class="ms-drawer" id="equipo-drawer" style="width: 520px; right: -520px;">
+  <div class="ms-drawer-header">
+    <h3 class="ms-drawer-title" id="equipo-drawer-title">Registrar Activo</h3>
+    <button class="ms-drawer-close" onclick="eqCloseDrawer()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="ms-drawer-body">
+    <div id="equipo-error-alert" style="display:none; background:#fde7e9; border-left: 3px solid #a4262c; padding: 10px 16px; font-size: 13px; color: #a4262c; margin-bottom: 16px;"></div>
+    <form id="form-equipo">
+      <input type="hidden" id="e-id">
+
+      <!-- Sección Identidad -->
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-barcode" style="color: #0078d4;"></i> Identidad del Hardware
       </div>
 
-      <!-- Cuerpo Split -->
-      <div style="display: flex; background: #ffffff; min-height: 400px;">
-        
-        <!-- Panel Izquierdo (Imagen y Resumen) -->
-        <div style="width: 300px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
-          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
-            <img id="v-imagen" src="/static/img/placeholder_equipo.png" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-          </div>
-          
-          <h3 id="v-articulo" style="font-weight: 800; color: #0f172a; margin-bottom: 12px; font-size: 1.5rem;">Cargando...</h3>
-          <div id="v-serial" style="background: #dcfce7; color: #166534; font-family: monospace; font-weight: 700; padding: 6px 20px; border-radius: 6px; border: 1px solid #bbf7d0; font-size: 1rem; margin-bottom: 24px;"></div>
-          
-          <div style="background: white; width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
-            <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px;">ESTADO DEL ACTIVO</div>
-            <div id="v-estado" style="font-size: 1.1rem; font-weight: 600; color: #334155;">-</div>
-          </div>
+      <div class="ms-form-grid" style="margin-bottom: 16px;">
+        <div class="ms-form-group">
+          <label class="ms-label">Artículo <span style="color:#a4262c;">*</span></label>
+          <select class="ms-input select2-eq" id="e-articulo" required style="margin-bottom:0;">
+            <option value="">-- Seleccionar --</option>
+            {% for a in articulos %}<option value="{{ a.id }}" data-imagen="{{ a.imagen }}">{{ a.nombre }}</option>{% endfor %}
+          </select>
         </div>
-
-        <!-- Panel Derecho (Detalles Técnicos) -->
-        <div style="flex: 1; padding: 30px 40px;">
-          
-          <!-- Ubicación -->
-          <h6 style="color: #2563eb; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-map-marker-alt"></i> Ubicación y Asignación
-          </h6>
-          <div style="border-top: 1px solid #e2e8f0; margin-bottom: 16px;"></div>
-          
-          <div class="row mb-3">
-            <div class="col-4">
-              <span class="cell-subtitle"><i class="far fa-building mr-1"></i> Área Hospitalaria</span>
-              <span id="v-edificio" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
-            </div>
-            <div class="col-4">
-              <span class="cell-subtitle"><i class="fas fa-layer-group mr-1"></i> Sector</span>
-              <span id="v-piso" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
-            </div>
-            <div class="col-4">
-              <span class="cell-subtitle"><i class="far fa-hospital mr-1"></i> Unidad Hosp.</span>
-              <span id="v-unidad" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
-            </div>
-          </div>
-          <div class="row mb-4">
-            <div class="col-6">
-              <span class="cell-subtitle"><i class="fas fa-door-open mr-1"></i> Nombre de Recinto</span>
-              <span id="v-recinto" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
-            </div>
-            <div class="col-6">
-              <span class="cell-subtitle"><i class="fas fa-plug mr-1"></i> PMA</span>
-              <span id="v-pma" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
-            </div>
-          </div>
-
-          <!-- Especificaciones -->
-          <h6 style="color: #2563eb; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-microchip"></i> Especificaciones Técnicas
-          </h6>
-          <div style="border-top: 1px solid #e2e8f0; margin-bottom: 16px;"></div>
-
-          <div class="row mb-3">
-            <div class="col-6">
-              <span class="cell-subtitle"><i class="fas fa-tag mr-1"></i> Marca / Modelo</span>
-              <span id="v-marca-modelo" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
-            </div>
-            <div class="col-6">
-              <span class="cell-subtitle"><i class="fas fa-network-wired mr-1"></i> Dirección IP</span>
-              <span id="v-ip" class="cell-title mt-1" style="font-size: 0.9rem; font-family: monospace;">-</span>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-6">
-              <span class="cell-subtitle"><i class="fab fa-windows mr-1"></i> S. Operativo</span>
-              <span id="v-so" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
-            </div>
-            <div class="col-6">
-              <span class="cell-subtitle"><i class="fas fa-file-contract mr-1"></i> Proveedor</span>
-              <span id="v-proveedor" class="cell-title mt-1" style="font-size: 0.9rem;">-</span>
-            </div>
-          </div>
-
+        <div class="ms-form-group">
+          <label class="ms-label">N° Serie (S/N) <span style="color:#a4262c;">*</span></label>
+          <input type="text" class="ms-input" id="e-serial_number" required placeholder="Ej: 5CG01234..." style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Marca <span style="color:#a4262c;">*</span></label>
+          <select class="ms-input select2-eq" id="e-marca" required style="margin-bottom:0;">
+            <option value="">-- Seleccionar --</option>
+            {% for m in marcas %}<option value="{{ m.id }}">{{ m.nombre }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Modelo <span style="color:#a4262c;">*</span></label>
+          <select class="ms-input select2-eq" id="e-modelo" required disabled style="margin-bottom:0;">
+            <option value="">-- Marca primero --</option>
+            {% for mo in modelos %}<option value="{{ mo.id }}" data-marca="{{ mo.marca_id }}" data-imagen="{{ mo.imagen }}">{{ mo.nombre }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">S. Operativo</label>
+          <select class="ms-input select2-eq" id="e-so" style="margin-bottom:0;">
+            <option value="">-- No Aplica --</option>
+            {% for so in sos %}<option value="{{ so.id }}">{{ so.nombre }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Dirección IPv4</label>
+          <input type="text" class="ms-input" id="e-ip" placeholder="10.x.x.x" style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Correlativo Interno</label>
+          <input type="text" class="ms-input" id="e-correlativo" placeholder="Opcional" style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Proveedor</label>
+          <select class="ms-input select2-eq" id="e-proveedor" style="margin-bottom:0;">
+            <option value="">-- No Asignado --</option>
+            {% for prov in proveedores %}<option value="{{ prov.id }}">{{ prov.nombre }}</option>{% endfor %}
+          </select>
         </div>
       </div>
 
-      <!-- Footer Oscuro (Auditoría) -->
-      <div style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;">
-        <div style="font-size: 0.75rem; color: #64748b;">
-          ID Sistema: <strong id="v-sysid">#</strong> | Última mod: <strong id="v-fecha">-</strong>
-        </div>
-        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" style="font-weight: 600; background: #64748b; border: none;">Cerrar</button>
+      <!-- Sección Ubicación -->
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-map-marker-alt" style="color: #0078d4;"></i> Ubicación Topológica
       </div>
 
+      <div class="ms-form-grid" style="margin-bottom: 16px;">
+        <div class="ms-form-group">
+          <label class="ms-label">Área / Piso (Filtro)</label>
+          <select class="ms-input select2-eq" id="e-piso" style="margin-bottom:0;">
+            <option value="">Todos</option>
+            {% for p in pisos %}<option value="{{ p.id }}">{{ p.edificio__nombre }} - P{{ p.nombre }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Unidad Hospitalaria</label>
+          <select class="ms-input select2-eq" id="e-unidad" style="margin-bottom:0;">
+            <option value="">Todas</option>
+            {% for u in unidades %}<option value="{{ u.id }}">{{ u.nombre }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Recinto (Filtro)</label>
+          <select class="ms-input select2-eq" id="e-recinto" style="margin-bottom:0;">
+            <option value="">Todos</option>
+            {% for r in recintos %}<option value="{{ r.id }}" data-piso="{{ r.piso_id }}" data-unidad="{{ r.unidad_id }}">{{ r.nombre }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">PMA <span style="color:#a4262c;">*</span></label>
+          <select class="ms-input select2-eq" id="e-pma" required style="margin-bottom:0;">
+            <option value="">-- Seleccionar conector --</option>
+            {% for pma in pmas %}<option value="{{ pma.id }}" data-recinto="{{ pma.recinto_id }}">{{ pma.nombre }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <!-- Sección Estado -->
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-shield-alt" style="color: #0078d4;"></i> Estado Operativo
+      </div>
+      <div>
+        <label class="ms-label">Disponibilidad <span style="color:#a4262c;">*</span></label>
+        <select class="ms-input select2-eq" id="e-estado" required>
+          <option value="">-- Seleccionar --</option>
+          {% for es in estados %}<option value="{{ es.id }}">{{ es.nombre }}</option>{% endfor %}
+        </select>
+      </div>
+    </form>
+  </div>
+  <div class="ms-drawer-footer">
+    <button class="ms-btn-primary" style="background: white; color: #323130; border: 1px solid #8a8886;" onclick="eqCloseDrawer()">Cancelar</button>
+    <button class="ms-btn-primary" id="btn-guardar-equipo" onclick="eqGuardar()">
+      <i class="fas fa-save"></i> Guardar
+    </button>
+  </div>
+</div>
+
+<!-- ================================================================
+  MODAL: Detalles del Equipo (Contact Card expandida)
+================================================================ -->
+<div class="ms-modal-overlay" id="eq-view-overlay" onclick="eqCloseView()">
+  <div class="ms-modal" style="width: 620px;" onclick="event.stopPropagation()">
+    <div class="ms-modal-header" style="border-bottom: none; padding-bottom: 0;">
+      <div style="flex: 1;"></div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="ms-icon-btn" id="btn-view-bitacora" title="Ver Bitácora / Mantenciones" style="color:#0078d4;">
+          <i class="fas fa-history"></i>
+        </button>
+        <button class="ms-icon-btn" id="btn-view-edit" title="Editar este Activo" style="color:#0078d4;">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="ms-modal-close" onclick="eqCloseView()"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="ms-modal-body" style="padding-top: 0;">
+      <!-- Header de la tarjeta: Imagen + Nombre + Serie -->
+      <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 24px; padding: 0 12px;">
+        <div style="width: 72px; height: 72px; background: #f3f2f1; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <img id="ev-imagen" src="/static/img/placeholder_equipo.png" style="max-width: 64px; max-height: 64px; object-fit: contain;">
+        </div>
+        <div>
+          <h2 id="ev-articulo" style="margin: 0 0 4px 0; font-size: 20px; font-weight: 600; color: #201f1e;"></h2>
+          <span id="ev-marca-modelo" style="font-size: 13px; color: #605e5c;"></span>
+          <div style="margin-top: 6px;">
+            <span id="ev-estado-badge" style="font-size: 11px; font-weight: 600; padding: 3px 10px; background: #dff6dd; color: #107c10;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detalles divididos en dos columnas -->
+      <div style="padding: 0 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px;">
+        <div>
+          <div style="font-size: 11px; font-weight: 600; color: #0078d4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #edebe9;">Identificación</div>
+          <div class="ms-detail-list">
+            <div class="ms-detail-item" style="grid-template-columns: 90px 1fr;">
+              <span class="ms-detail-label">Serie</span>
+              <span class="ms-detail-value" id="ev-serial" style="font-family: monospace; color: #0078d4;"></span>
+            </div>
+            <div class="ms-detail-item" style="grid-template-columns: 90px 1fr;">
+              <span class="ms-detail-label">S.O.</span>
+              <span class="ms-detail-value" id="ev-so"></span>
+            </div>
+            <div class="ms-detail-item" style="grid-template-columns: 90px 1fr;">
+              <span class="ms-detail-label">IP</span>
+              <span class="ms-detail-value" id="ev-ip" style="font-family: monospace;"></span>
+            </div>
+            <div class="ms-detail-item" style="grid-template-columns: 90px 1fr;">
+              <span class="ms-detail-label">Proveedor</span>
+              <span class="ms-detail-value" id="ev-proveedor"></span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size: 11px; font-weight: 600; color: #0078d4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #edebe9;">Ubicación</div>
+          <div class="ms-detail-list">
+            <div class="ms-detail-item" style="grid-template-columns: 90px 1fr;">
+              <span class="ms-detail-label">Edificio</span>
+              <span class="ms-detail-value" id="ev-edificio"></span>
+            </div>
+            <div class="ms-detail-item" style="grid-template-columns: 90px 1fr;">
+              <span class="ms-detail-label">Unidad</span>
+              <span class="ms-detail-value" id="ev-unidad"></span>
+            </div>
+            <div class="ms-detail-item" style="grid-template-columns: 90px 1fr;">
+              <span class="ms-detail-label">Recinto</span>
+              <span class="ms-detail-value" id="ev-recinto"></span>
+            </div>
+            <div class="ms-detail-item" style="grid-template-columns: 90px 1fr;">
+              <span class="ms-detail-label">PMA</span>
+              <span class="ms-detail-value" id="ev-pma"></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Modal Formulario Enterprise -->
-<div class="modal fade" id="modalEquipo" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-  <div class="modal-dialog modal-xl modal-dialog-centered" role="document" style="max-width: 950px;">
-    <div class="modal-content modal-content-premium">
-      <form id="form-equipo">
-        
-        <div class="modal-header modal-header-premium">
-          <h5 class="modal-title" id="modalEquipoLabel" style="color: white;"><i class="fas fa-desktop mr-2"></i> Registrar Activo Físico</h5>
-          <button type="button" class="close" data-dismiss="modal" style="opacity: 0.8; outline:none; color: white; text-shadow: none;">&times;</button>
+<!-- ================================================================
+  MODAL: Bitácora del Equipo
+================================================================ -->
+<div class="ms-modal-overlay" id="eq-bitacora-overlay" onclick="eqCloseBitacora()">
+  <div class="ms-modal" style="width: 700px; max-height: 90vh;" onclick="event.stopPropagation()">
+    <div class="ms-modal-header">
+      <h3 class="ms-modal-title"><i class="fas fa-history" style="color:#0078d4; margin-right: 8px;"></i> Bitácora — <span id="b-equipo-sn-header"></span></h3>
+      <button class="ms-modal-close" onclick="eqCloseBitacora()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="ms-modal-body" style="overflow-y: auto; max-height: calc(90vh - 180px);">
+      <!-- Formulario nueva actividad -->
+      <div style="border: 1px solid #edebe9; margin-bottom: 20px;">
+        <div style="background: #faf9f8; padding: 10px 16px; border-bottom: 1px solid #edebe9; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" 
+          onclick="document.getElementById('collapse-bitacora').style.display = document.getElementById('collapse-bitacora').style.display === 'none' ? 'block' : 'none'">
+          <span style="font-size: 12px; font-weight: 600; color: #0078d4;"><i class="fas fa-plus"></i> REGISTRAR NUEVA ACTIVIDAD</span>
+          <i class="fas fa-chevron-down" style="font-size: 11px; color: #605e5c;"></i>
         </div>
-        
-        <div class="modal-body modal-body-clean">
-          <div id="equipo-error-alert" class="alert alert-danger d-none" style="font-size: 0.85rem; border-radius: 8px;"></div>
-          <input type="hidden" id="e-id" value="">
-
-          <!-- SECCIÓN 1 -->
-          <div class="row mb-4">
-            <div class="col-md-3 text-center border-right" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-              <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                <img id="e-imagen-preview" src="/static/img/placeholder_equipo.png" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+        <div id="collapse-bitacora" style="display: none; padding: 16px;">
+          <form id="form-bitacora">
+            <input type="hidden" id="b-equipo-id">
+            <div class="ms-form-grid" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 12px;">
+              <div>
+                <label class="ms-label">Fecha Ingreso <span style="color:#a4262c;">*</span></label>
+                <input type="datetime-local" class="ms-input" id="b-fecha-mtto" required style="margin-bottom:0;">
               </div>
-              <small class="text-muted font-weight-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">VISTA PREVIA</small>
+              <div>
+                <label class="ms-label">Servicio / Unidad</label>
+                <select class="ms-input select2-bitacora" id="b-unidad" style="margin-bottom:0;">
+                  <option value="">-- Seleccionar --</option>
+                  {% for u in unidades %}<option value="{{ u.nombre }}">{{ u.nombre }}</option>{% endfor %}
+                </select>
+              </div>
+              <div>
+                <label class="ms-label">Falla / Motivo</label>
+                <select class="ms-input select2-bitacora" id="b-falla" style="margin-bottom:0;">
+                  <option value="">-- Seleccionar --</option>
+                  {% for f in fallas_motivos %}<option value="{{ f.id }}">{{ f.nombre }}</option>{% endfor %}
+                </select>
+              </div>
             </div>
-            
-            <div class="col-md-9">
-                <div class="section-label mt-0"><i class="fas fa-barcode"></i> Identidad del Hardware</div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label-clean">Artículo</label>
-                      <select class="form-control-clean select2" id="e-articulo" required>
-                        <option value="">-- Seleccionar --</option>
-                        {% for a in articulos %}<option value="{{ a.id }}" data-imagen="{{ a.imagen }}">{{ a.nombre }}</option>{% endfor %}
-                      </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label-clean">Número de Serie (S/N)</label>
-                      <input type="text" class="form-control-clean w-100" id="e-serial_number" required placeholder="Ej: 5CG01234...">
-                    </div>
-                    
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label-clean">Marca</label>
-                      <select class="form-control-clean select2" id="e-marca" required>
-                        <option value="">-- Seleccionar --</option>
-                        {% for m in marcas %}<option value="{{ m.id }}">{{ m.nombre }}</option>{% endfor %}
-                      </select>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label-clean">Modelo</label>
-                      <select class="form-control-clean select2" id="e-modelo" required disabled>
-                        <option value="">-- Marca Primero --</option>
-                        {% for mo in modelos %}<option value="{{ mo.id }}" data-marca="{{ mo.marca_id }}" data-imagen="{{ mo.imagen }}">{{ mo.nombre }}</option>{% endfor %}
-                      </select>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label-clean">Correlativo Interno</label>
-                      <input type="text" class="form-control-clean w-100" id="e-correlativo" placeholder="Opcional">
-                    </div>
-                    
-                    <div class="col-md-6 mb-0">
-                      <label class="form-label-clean">Sistema Operativo</label>
-                      <select class="form-control-clean select2" id="e-so">
-                        <option value="">-- No Aplica --</option>
-                        {% for so in sos %}<option value="{{ so.id }}">{{ so.nombre }}</option>{% endfor %}
-                      </select>
-                    </div>
-                    <div class="col-md-6 mb-0">
-                      <label class="form-label-clean">Dirección IPv4</label>
-                      <input type="text" class="form-control-clean w-100" id="e-ip" placeholder="10.x.x.x">
-                    </div>
-                </div>
+            <div style="margin-bottom: 12px;">
+              <label class="ms-label">Solicitante</label>
+              <select class="ms-input select2-ajax" id="b-solicitante" style="width: 100%; margin-bottom:0;"></select>
             </div>
-          </div>
-
-          <!-- SECCIÓN 2 -->
-          <div class="section-label mt-2"><i class="fas fa-map-marker-alt"></i> Ubicación Topológica</div>
-          <div class="row mb-4">
-            <div class="col-md-4 mb-3">
-              <label class="form-label-clean">Área Hospitalaria / Sector (Filtro)</label>
-              <select class="form-control-clean select2" id="e-piso">
-                <option value="">Todos</option>
-                {% for p in pisos %}<option value="{{ p.id }}">{{ p.edificio__nombre }} - P{{ p.nombre }}</option>{% endfor %}
-              </select>
+            <div style="margin-bottom: 12px;">
+              <label class="ms-label">Actividades Realizadas <span style="color:#a4262c;">*</span></label>
+              <textarea class="ms-input" id="b-actividades" rows="3" placeholder="Detalle técnico de lo realizado..." required style="margin-bottom:0; resize: vertical;"></textarea>
             </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label-clean">Unidad Hospitalaria (Filtro)</label>
-              <select class="form-control-clean select2" id="e-unidad">
-                <option value="">Todas</option>
-                {% for u in unidades %}<option value="{{ u.id }}">{{ u.nombre }}</option>{% endfor %}
-              </select>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" class="ms-btn-primary" style="background:white;color:#323130;border:1px solid #8a8886;" onclick="document.getElementById('collapse-bitacora').style.display='none'">Cancelar</button>
+              <button type="submit" class="ms-btn-primary" id="btn-guardar-bitacora"><i class="fas fa-save"></i> Guardar</button>
             </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label-clean">Nombre de Recinto (Filtro)</label>
-              <select class="form-control-clean select2" id="e-recinto">
-                <option value="">Todos</option>
-                {% for r in recintos %}<option value="{{ r.id }}" data-piso="{{ r.piso_id }}" data-unidad="{{ r.unidad_id }}">{{ r.nombre }}</option>{% endfor %}
-              </select>
-            </div>
-            <div class="col-md-12 mb-0">
-              <label class="form-label-clean">PMA <span style="color:#ef4444;">*</span></label>
-              <select class="form-control-clean select2" id="e-pma" required>
-                <option value="">-- Seleccionar el conector exacto --</option>
-                {% for pma in pmas %}<option value="{{ pma.id }}" data-recinto="{{ pma.recinto_id }}">{{ pma.nombre }}</option>{% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <!-- SECCIÓN 3 -->
-          <div class="section-label mt-2"><i class="fas fa-shield-alt"></i> Estado Operativo</div>
-          <div class="row">
-            <div class="col-md-6 mb-0">
-              <label class="form-label-clean">Disponibilidad <span style="color:#ef4444;">*</span></label>
-              <select class="form-control-clean select2" id="e-estado" required>
-                <option value="">-- Seleccionar --</option>
-                {% for es in estados %}<option value="{{ es.id }}">{{ es.nombre }}</option>{% endfor %}
-              </select>
-            </div>
-            <div class="col-md-6 mb-0">
-              <label class="form-label-clean">Proveedor</label>
-              <select class="form-control-clean select2" id="e-proveedor">
-                <option value="">-- No Asignado --</option>
-                {% for prov in proveedores %}<option value="{{ prov.id }}">{{ prov.nombre }}</option>{% endfor %}
-              </select>
-            </div>
-          </div>
-
+          </form>
         </div>
-        
-        <div class="modal-footer-clean">
-          <button type="button" class="btn" data-dismiss="modal" style="font-weight:600; color:#64748b; background:transparent;">Descartar</button>
-          <button type="submit" class="btn-primary-action" id="btn-guardar">
-            Confirmar Registro
-          </button>
-        </div>
-      </form>
+      </div>
+
+      <!-- Timeline de registros -->
+      <div style="font-size: 12px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">Historial de Registros</div>
+      <div id="bitacora-timeline">
+        <div style="text-align: center; padding: 24px; color: #605e5c;">Cargando bitácora...</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Modal Bitácora -->
-<div class="modal fade" id="modalBitacora" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-  <div class="modal-dialog modal-xl modal-dialog-centered" role="document" style="max-width: 1350px; width: 95%;">
-    <div class="modal-content modal-content-premium">
-        <!-- Header -->
-        <div class="modal-header modal-header-premium">
-          <div>
-            <h5 class="modal-title" style="color: white; margin:0;"><i class="fas fa-history mr-2"></i> Bitácora de Movimientos y Mantenciones</h5>
-            <p style="margin: 0; font-size: 0.8rem; opacity: 0.8; color:white;">Historial técnico del equipo con trazabilidad de acciones</p>
-          </div>
-          <button type="button" class="close" data-dismiss="modal" style="opacity: 0.8; outline:none; color: white; position:absolute; right:20px; top:15px;">&times;</button>
-        </div>
-
-        <div class="modal-body" style="background:#f1f5f9; padding: 24px;">
-
-          <!-- Tarjeta del Equipo Seleccionado -->
-          <div class="card shadow-sm mb-4" style="border-radius: 0; border: none;">
-            <div class="card-body py-3 px-4">
-              <div class="row align-items-center">
-                <div class="col-auto">
-                  <img id="b-imagen" src="/static/img/placeholder_equipo.png" style="max-height: 55px; max-width: 80px; object-fit: contain;">
-                </div>
-                <div class="col border-right">
-                  <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing:1px;">EQUIPO SELECCIONADO</div>
-                  <h4 id="b-equipo-sn-header" style="font-weight: 800; color: #0f172a; margin: 0; font-size: 1.4rem;">Cargando...</h4>
-                </div>
-                <div class="col-auto px-4" style="border-right: 1px solid #e2e8f0;">
-                  <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase;">ESTADO</div>
-                  <div id="b-equipo-estado" style="font-size: 0.9rem; font-weight: 700; color: #166534;">-</div>
-                </div>
-                <div class="col-auto px-4">
-                  <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase;">UBICACIÓN</div>
-                  <div id="b-equipo-ubicacion" style="font-size: 0.9rem; font-weight: 600; color: #334155;">-</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Formulario Ancho (colapsable) -->
-          <div class="card shadow-sm mb-4" style="border-radius: 0; border: none; border-top: 4px solid #0066cc;">
-            <div class="card-header bg-white" style="padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #e2e8f0;"
-                 data-toggle="collapse" data-target="#collapseFormBitacora" aria-expanded="false">
-              <h6 class="m-0 d-flex justify-content-between align-items-center" style="color: #0066cc; font-weight: 700; font-size: 0.85rem;">
-                <span><i class="fas fa-edit mr-1"></i> REGISTRAR NUEVA ACTIVIDAD</span>
-                <i class="fas fa-chevron-down"></i>
-              </h6>
-            </div>
-            <div class="collapse" id="collapseFormBitacora">
-              <div class="card-body p-4">
-                <form id="form-bitacora">
-                  <input type="hidden" id="b-equipo-id" value="">
-
-                  <div class="row">
-                    <div class="col-md-3 mb-3">
-                      <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Tipo de Registro <span class="text-danger">*</span></label>
-                      <select class="form-control-clean w-100" id="b-tipo" style="background-color: #f1f5f9; pointer-events: none;" readonly>
-                        <option value="MANTENCION" selected>Soporte / Intervención Técnica</option>
-                      </select>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                      <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Fecha Ingreso <span class="text-danger">*</span></label>
-                      <input type="datetime-local" class="form-control-clean w-100" id="b-fecha-mtto" required>
-                    </div>
-                    <!-- Fecha Devolución removida, ahora se setea solo al Cerrar Mantención -->
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Servicio / Unidad</label>
-                      <select class="form-control-clean select2 w-100" id="b-unidad">
-                        <option value="">-- Seleccionar unidad --</option>
-                        {% for u in unidades %}<option value="{{ u.nombre }}">{{ u.nombre }}</option>{% endfor %}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Solicitante (Opcional)</label>
-                      <select class="form-control-clean select2-ajax w-100" id="b-solicitante" style="width:100%;"></select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Falla Reportada o Motivo</label>
-                      <select class="form-control-clean select2 w-100" id="b-falla">
-                        <option value="">-- Seleccionar falla/motivo --</option>
-                        {% for f in fallas_motivos %}<option value="{{ f.id }}">{{ f.nombre }}</option>{% endfor %}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-12 mb-3">
-                      <label class="form-label-clean" style="font-size:0.7rem; text-transform:uppercase;">Actividades Realizadas <span class="text-danger">*</span></label>
-                      <textarea class="form-control-clean w-100" id="b-actividades" rows="2" placeholder="Detalle técnico de lo realizado..." required></textarea>
-                    </div>
-                  </div>
-
-                  <div class="text-right mt-2">
-                    <button type="button" class="btn btn-light border mr-2" data-toggle="collapse" data-target="#collapseFormBitacora">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="btn-guardar-bitacora" style="padding: 8px 20px; font-weight: 600;">
-                      <i class="fas fa-save mr-1"></i> Guardar Registro
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <!-- Historial de Registros -->
-          <div class="card shadow-sm" style="border-radius: 0; border: none;">
-            <div class="card-header bg-white" style="padding: 12px 20px; border-bottom: 1px solid #e2e8f0;">
-              <h6 class="m-0" style="font-size: 0.85rem; font-weight:700; color: #475569;">
-                <i class="fas fa-list-ul mr-1 text-muted"></i> Historial de registros
-                <small class="text-muted font-weight-normal ml-1">Datos ordenados cronológicamente</small>
-              </h6>
-            </div>
-            <div class="card-body p-3">
-              <div id="bitacora-timeline" style="max-height: 380px; overflow-y: auto; padding-right: 5px;">
-                <div class="text-center py-4 text-muted">
-                  <div class="spinner-border text-primary mb-2" role="status"></div>
-                  <p>Cargando bitácora...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="modal-footer" style="background: white; border-top: 1px solid #e2e8f0; padding: 12px 24px;">
-          <button type="button" class="btn btn-light border" data-dismiss="modal" style="font-weight:600;">Cerrar</button>
-        </div>
-    </div>
-  </div>
+<!-- Toast -->
+<div id="ms-toast" class="ms-toast">
+  <i id="ms-toast-icon" class="fas fa-check-circle ms-toast-icon"></i>
+  <span id="ms-toast-text" class="ms-toast-text"></span>
 </div>
-
-<!-- Modal Funcionario -->
-<div class="modal fade" id="modalFuncionario" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content modal-content-premium">
-        <div class="modal-header modal-header-premium">
-            <h5 class="modal-title" style="color: white;"><i class="fas fa-user-plus mr-2"></i> Añadir Funcionario Rápido</h5>
-            <button type="button" class="close text-white" data-dismiss="modal" style="opacity:0.8;">&times;</button>
-        </div>
-        <div class="modal-body p-4">
-            <form id="form-funcionario">
-                <div class="form-group mb-3">
-                    <label class="form-label-clean">RUT <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control-clean w-100" id="f-rut" required placeholder="Ej: 12345678-9" oninput="formatearRut(this)">
-                    <small class="text-muted">Ingresa el RUT con guion y dígito verificador.</small>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label-clean">Nombres <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control-clean w-100" id="f-nombres" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label-clean">Apellidos <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control-clean w-100" id="f-apellidos" required>
-                    </div>
-                </div>
-                <div class="form-group mb-3">
-                    <label class="form-label-clean">Correo Electrónico <span class="text-muted">(opcional)</span></label>
-                    <input type="email" class="form-control-clean w-100" id="f-correo" placeholder="usuario@correo.cl">
-                    <small class="text-muted">Opcional, pero recomendado.</small>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label-clean">Cargo / Rol</label>
-                        <select class="form-control-clean select2 w-100" id="f-cargo">
-                            <option value="">-- Seleccionar Cargo --</option>
-                            {% for c in cargos %}<option value="{{ c.id }}">{{ c.nombre }}</option>{% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label-clean">Unidad / Servicio</label>
-                        <select class="form-control-clean select2 w-100" id="f-unidad">
-                            <option value="">-- Seleccionar Unidad --</option>
-                            {% for u in unidades %}<option value="{{ u.id }}">{{ u.nombre }}</option>{% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <button type="button" class="btn btn-light border" data-dismiss="modal" style="color:#ef4444; font-weight:600;">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="btn-guardar-funcionario" style="padding: 8px 20px; font-weight: 600;">
-                        <i class="fas fa-save mr-1"></i> Guardar Funcionario
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>
-</div>
-
 
 {% endblock %}
 
 {% block extra_js %}
-<!-- DataTables & Plugins -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
-<!-- Logic -->
-<script src="/static/js/equipos.js?v=30"></script>
+<script src="{% static 'js/equipos.js' %}?v=40"></script>
 {% endblock %}

@@ -1,21 +1,218 @@
                                                                                                                              /**
  * equipos.js
  * Controlador frontend para el módulo de Inventario de Equipos.
+ * Refactorizado a Microsoft Fluent Design (ms-list) — v40
  */
 
+// ============================================================
+// MOTOR MS-LIST (paginación client-side sobre respuesta del API)
+// ============================================================
+var EqState = {
+    data: [],           // Todos los registros cargados
+    filtered: [],       // Filtrados por búsqueda/estado/unidad
+    page: 1,
+    pageSize: 20,
+    currentEquipoId: null
+};
+
+function eqShowToast(msg, isError) {
+    var icon = document.getElementById('ms-toast-icon');
+    var text = document.getElementById('ms-toast-text');
+    var toast = document.getElementById('ms-toast');
+    icon.className = isError ? 'fas fa-exclamation-triangle ms-toast-icon' : 'fas fa-check-circle ms-toast-icon';
+    icon.style.color = isError ? '#a4262c' : '#107c10';
+    text.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 3500);
+}
+
+function csrfToken() {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = $.trim(cookies[i]);
+            if (cookie.substring(0, 10) === ('csrftoken=')) {
+                cookieValue = decodeURIComponent(cookie.substring(10));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function eqAvatarColor(seed) {
+    var colors = ['#0078d4','#d13438','#107c10','#881798','#038387','#498205','#c19c00'];
+    var hash = 0;
+    for (var i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+    return colors[Math.abs(hash) % colors.length];
+}
+
+function eqRenderRows() {
+    var start = (EqState.page - 1) * EqState.pageSize;
+    var rows = EqState.filtered.slice(start, start + EqState.pageSize);
+    var body = document.getElementById('eq-list-body');
+    if (!body) return;
+    if (rows.length === 0) {
+        body.innerHTML = '<div style="text-align:center;padding:48px;color:#605e5c;font-size:14px;"><i class="fas fa-box-open" style="font-size:32px;color:#edebe9;display:block;margin-bottom:12px;"></i>No se encontraron equipos con los filtros aplicados.</div>';
+        document.getElementById('eq-info').textContent = '';
+        document.getElementById('eq-pagination').innerHTML = '';
+        return;
+    }
+    var html = '';
+    rows.forEach(function(eq) {
+        var img = eq.imagen ? eq.imagen : '/static/img/placeholder_equipo.png';
+        var articulo = eq.articulo || 'Desconocido';
+        var marca = eq.marca || '';
+        var modelo = eq.modelo || '';
+        var color = eq.estado_color || '#edebe9';
+        var ubicacion = eq.edificio ? eq.edificio : 'Sin Edificio';
+        var piso = eq.piso ? '· P' + eq.piso : '';
+        var unidad = eq.unidad || 'Sin Unidad';
+        var estado = eq.estado || 'S/E';
+        var serial = eq.serial_number || 'N/A';
+        var ip = eq.ip || 'N/A';
+        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 260px 120px 1fr 200px 140px 80px;">';
+        // Col 1: Artículo / Modelo
+        html += '<div class="ms-identity">';
+        html += '  <img src="' + img + '" style="width:28px;height:28px;object-fit:contain;flex-shrink:0;background:#f3f2f1;padding:2px;">';
+        html += '  <div class="ms-user-info">';
+        html += '    <span class="ms-user-name">' + articulo + '</span>';
+        html += '    <span class="ms-user-email" style="color:#605e5c;">' + marca + ' ' + modelo + '</span>';
+        html += '  </div>';
+        html += '</div>';
+        // Col 2: Serie
+        html += '<div style="font-size:12px;color:#0078d4;font-weight:600;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + serial + '</div>';
+        // Col 3: Ubicación
+        html += '<div style="min-width:0;"><div class="ms-user-name">' + ubicacion + ' ' + piso + '</div></div>';
+        // Col 4: Unidad
+        html += '<div style="font-size:12px;color:#323130;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + unidad + '</div>';
+        // Col 5: Estado
+        html += '<div><span class="ms-status"><span class="ms-status-dot" style="background:' + color + ';"></span>' + estado + '</span></div>';
+        // Col 6: Acciones
+        html += '<div class="ms-row-actions" onclick="event.stopPropagation();">';
+        html += '  <button class="ms-icon-btn" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')"><i class="fas fa-history"></i></button>';
+        html += '  <button class="ms-icon-btn" title="Editar" onclick="eqEdit(' + eq.id + ')"><i class="fas fa-edit"></i></button>';
+        html += '</div>';
+        html += '</div>';
+    });
+    body.innerHTML = html;
+    // Info
+    var total = EqState.filtered.length;
+    var from = start + 1;
+    var to = Math.min(start + EqState.pageSize, total);
+    document.getElementById('eq-info').textContent = 'Mostrando ' + from + '-' + to + ' de ' + total + ' equipos';
+    // Paginación
+    var pages = Math.ceil(total / EqState.pageSize);
+    var pag = document.getElementById('eq-pagination');
+    var ph = '';
+    for (var p = 1; p <= pages; p++) {
+        var active = (p === EqState.page) ? 'background:#0078d4;color:white;border-color:#0078d4;' : '';
+        ph += '<button onclick="eqGoPage(' + p + ')" style="width:28px;height:28px;border:1px solid #edebe9;background:white;font-size:12px;cursor:pointer;' + active + '">' + p + '</button>';
+    }
+    pag.innerHTML = ph;
+}
+
+function eqGoPage(p) { EqState.page = p; eqRenderRows(); }
+
+function eqApplyFilters() {
+    var q = (document.getElementById('eq-search').value || '').toLowerCase();
+    var estado = (document.getElementById('eq-filter-estado').value || '').toLowerCase();
+    var unidad = (document.getElementById('eq-filter-unidad').value || '').toLowerCase();
+    EqState.filtered = EqState.data.filter(function(eq) {
+        var text = [eq.articulo, eq.serial_number, eq.marca, eq.modelo, eq.edificio, eq.unidad, eq.ip].join(' ').toLowerCase();
+        var matchQ = !q || text.indexOf(q) !== -1;
+        var matchE = !estado || (eq.estado || '').toLowerCase() === estado;
+        var matchU = !unidad || (eq.unidad || '').toLowerCase() === unidad;
+        return matchQ && matchE && matchU;
+    });
+    EqState.page = 1;
+    eqRenderRows();
+}
+
+function eqLoadList() {
+    $.ajax({
+        url: '/equipos/api/',
+        type: 'POST',
+        headers: { 'X-CSRFToken': csrfToken() },
+        data: JSON.stringify({ draw: 1, start: 0, length: 9999, search: { value: '' }, order: [{ column: 0, dir: 'desc' }], columns: [] }),
+        contentType: 'application/json',
+        success: function(resp) {
+            EqState.data = resp.data || [];
+            EqState.filtered = EqState.data.slice();
+            eqRenderRows();
+        },
+        error: function() {
+            document.getElementById('eq-list-body').innerHTML = '<div style="text-align:center;padding:32px;color:#a4262c;">Error al cargar el inventario.</div>';
+        }
+    });
+}
+
+// ============================================================
+// DRAWER (Registrar / Editar)
+// ============================================================
+function eqOpenDrawer() {
+    document.getElementById('equipo-drawer').style.right = '0';
+    document.getElementById('equipo-drawer-overlay').classList.add('active');
+}
+function eqCloseDrawer() {
+    document.getElementById('equipo-drawer').style.right = '-520px';
+    document.getElementById('equipo-drawer-overlay').classList.remove('active');
+}
+
+// ============================================================
+// MODAL VISTA (Contact Card)
+// ============================================================
+function eqOpenView(id) {
+    EqState.currentEquipoId = id;
+    $.ajax({
+        url: '/equipos/api/' + id + '/ver/',
+        type: 'GET',
+        success: function(resp) {
+            var eq = resp.data;
+            document.getElementById('ev-imagen').src = eq.imagen || '/static/img/placeholder_equipo.png';
+            document.getElementById('ev-articulo').textContent = eq.articulo || '-';
+            document.getElementById('ev-marca-modelo').textContent = (eq.marca || '') + ' ' + (eq.modelo || '');
+            var badge = document.getElementById('ev-estado-badge');
+            badge.textContent = eq.estado || '-';
+            badge.style.background = eq.estado_color ? eq.estado_color + '22' : '#dff6dd';
+            badge.style.color = eq.estado_color || '#107c10';
+            document.getElementById('ev-serial').textContent = eq.serial_number || 'N/A';
+            document.getElementById('ev-so').textContent = eq.so_nombre || 'N/A';
+            document.getElementById('ev-ip').textContent = eq.ip || 'N/A';
+            document.getElementById('ev-proveedor').textContent = eq.proveedor_nombre || 'N/A';
+            document.getElementById('ev-edificio').textContent = eq.edificio || 'N/A';
+            document.getElementById('ev-unidad').textContent = eq.unidad || 'N/A';
+            document.getElementById('ev-recinto').textContent = eq.recinto_nombre || 'N/A';
+            document.getElementById('ev-pma').textContent = eq.pma_nombre || 'N/A';
+            document.getElementById('eq-view-overlay').classList.add('active');
+        }
+    });
+}
+function eqCloseView() { document.getElementById('eq-view-overlay').classList.remove('active'); }
+
+// ============================================================
+// MODAL BITÁCORA
+// ============================================================
+function eqOpenBitacora(id, serial) {
+    EqState.currentEquipoId = id;
+    document.getElementById('b-equipo-sn-header').textContent = serial || '';
+    document.getElementById('b-equipo-id').value = id;
+    document.getElementById('eq-bitacora-overlay').classList.add('active');
+    cargarBitacora(id);
+}
+function eqCloseBitacora() { document.getElementById('eq-bitacora-overlay').classList.remove('active'); }
+
+function eqEdit(id) {
+    eqCloseView();
+    cargarEquipo(id);
+}
+
+function eqGuardar() {
+    document.getElementById('form-equipo').dispatchEvent(new Event('submit'));
+}
+
 var EquiposApp = (function($) {
-
-    var dtEquipos = null;
-
-    // Elementos DOM
-    var el = {
-        table: '#tabla-equipos',
-        btnNuevo: '#btn-nuevo',
-        modal: '#modalEquipo',
-        form: '#form-equipo',
-        alert: '#equipo-error-alert',
-        kpiTotal: '#kpi-total span'
-    };
 
     // Campos del formulario
     var f = {
@@ -52,128 +249,29 @@ var EquiposApp = (function($) {
         return cookieValue;
     }
 
-    function initDataTable() {
-        dtEquipos = $(el.table).DataTable({
-            responsive: true,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                url: '/equipos/api/',
-                type: 'POST',
-                headers: { 'X-CSRFToken': csrfToken() },
-                dataSrc: function(json) {
-                    $(el.kpiTotal).text(json.recordsTotal || 0);
-                    return json.data;
-                }
-            },
-            language: { url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" },
-            order: [[6, 'desc']], // Por fecha creacion
-            columns: [
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        return '<span style="font-size:0.75rem; color:#64748b;">'+(meta.row + meta.settings._iDisplayStart + 1)+'</span>';
-                    }
-                },
-                { 
-                    data: 'articulo',
-                    render: function(data, type, row) {
-                        var img = row.imagen ? row.imagen : '/static/img/placeholder_equipo.png';
-                        var art = data || 'Desconocido';
-                        var m = row.marca || 'Genérica';
-                        var mod = row.modelo || 'Genérico';
-                        return '<div style="display:flex; align-items:center; gap:12px;">' +
-                               '<img src="'+img+'" style="width:28px; height:28px; object-fit:contain;">' +
-                               '<div>' +
-                                 '<span class="cell-title">'+art+'</span>' +
-                                 '<span class="cell-subtitle">'+m+' '+mod+'</span>' +
-                               '</div></div>';
-                    }
-                },
-                { 
-                    data: 'edificio',
-                    render: function(data, type, row) {
-                        var ed = data || 'SIN EDIFICIO';
-                        var u = row.unidad || 'Sin Unidad';
-                        return '<span class="cell-title" style="text-transform:uppercase;">'+ed+'</span>' +
-                               '<span class="cell-subtitle">'+u+'</span>';
-                    }
-                },
-                { 
-                    data: 'pma',
-                    render: function(data) {
-                        return '<span style="font-size:0.8rem; color:#334155; font-weight:500;">'+(data || 'N/A')+'</span>';
-                    }
-                },
-                { 
-                    data: 'piso',
-                    className: 'text-center',
-                    render: function(data) {
-                        return '<span style="font-size:0.8rem; font-weight:600; color:#475569;">'+(data || '-')+'</span>';
-                    }
-                },
-                { 
-                    data: 'serial_number',
-                    className: 'text-center',
-                    render: function(data) {
-                        return '<span class="pill-serial">'+(data || 'N/A')+'</span>';
-                    }
-                },
-                { 
-                    data: 'ip',
-                    className: 'text-center',
-                    render: function(data) {
-                        return '<span style="font-size:0.75rem; color:#64748b;">'+(data || 'N/A')+'</span>';
-                    }
-                },
-                { 
-                    data: 'estado',
-                    className: 'text-center',
-                    render: function(data, type, row) {
-                        return '<span class="pill-estado"><span class="pill-estado status-dot" style="background-color:'+(row.estado_color||'#cbd5e1')+'; padding:0; border:none; width:6px; height:6px;"></span>'+(data || 'S/E')+'</span>';
-                    }
-                },
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    className: 'text-right',
-                    render: function(data, type, row) {
-                        return '<div class="actions-cell">' +
-                               '<a href="#" class="action-icon ic-view" data-id="'+row.id+'" title="Ver Detalles"><i class="fas fa-eye"></i></a>' +
-                               '<a href="#" class="action-icon ic-bitacora" data-id="'+row.id+'" data-sn="'+(row.serial_number||'S/N')+'" title="Bitácora / Historial"><i class="fas fa-history"></i></a>' +
-                               '<a href="#" class="action-icon ic-edit" data-id="'+row.id+'" title="Editar"><i class="fas fa-pencil-alt"></i></a>' +
-                               '<a href="#" class="action-icon ic-delete delete" data-id="'+row.id+'" title="Eliminar"><i class="fas fa-trash-alt"></i></a>' +
-                               '</div>';
-                    }
-                }
-            ]
-        });
-    }
+    // initDataTable reemplazado por eqLoadList() (motor ms-list)
 
     function initSelect2() {
         if ($.fn.select2) {
-            // Inicializar selects de Equipo
-            $(el.modal + ' .select2').select2({
+            // Selects del Drawer de Equipo
+            $('#equipo-drawer .select2-eq').select2({
                 theme: 'bootstrap4',
                 width: '100%',
-                dropdownParent: $(el.modal)
+                dropdownParent: $('#equipo-drawer')
             });
             
-            // Inicializar selects de Bitacora
-            $('#modalBitacora .select2:not(.select2-ajax)').select2({
+            // Selects del Modal de Bitácora
+            $('#eq-bitacora-overlay .select2-bitacora').select2({
                 theme: 'bootstrap4',
-                width: '100%',
-                dropdownParent: $('#modalBitacora')
+                width: '100%'
             });
             
-            // Inicializar Select2 con AJAX para Funcionario (Solicitante)
+            // Select2 AJAX para Funcionario (Solicitante) en Bitácora
             $('#b-solicitante').select2({
                 theme: 'bootstrap4',
-                dropdownParent: $('#modalBitacora'),
+                dropdownParent: $('body'),
+                placeholder: '-- Buscar por RUT o Nombre --',
+                allowClear: true,
                 width: '100%',
                 ajax: {
                     url: '/api/funcionarios/search/',
@@ -391,55 +489,55 @@ var EquiposApp = (function($) {
     }
 
     function initEvents() {
-        $(el.btnNuevo).on('click', function() {
+        // Btn Nuevo → Drawer
+        $('#btn-nuevo-equipo').on('click', function() {
             abrirModal();
         });
 
-        $(el.form).on('submit', function(e) {
+        // Submit del formulario del Drawer
+        $('#form-equipo').on('submit', function(e) {
             e.preventDefault();
             guardarEquipo();
         });
 
-        // Delegación de clics en la tabla
-        $(el.table).on('click', '.ic-view', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            verEquipoInfo(id);
-        });
-
-        $(el.table).on('click', '.ic-edit', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            cargarEquipo(id);
-        });
-
-        $(el.table).on('click', '.ic-delete', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            if(confirm("¿Seguro que desea eliminar este equipo?")) {
-                eliminarEquipo(id);
+        // Botones del modal de vista (Contact Card)
+        $('#btn-view-edit').on('click', function() {
+            if (EqState.currentEquipoId) {
+                eqCloseView();
+                cargarEquipo(EqState.currentEquipoId);
             }
         });
+        $('#btn-view-bitacora').on('click', function() {
+            if (EqState.currentEquipoId) {
+                var sn = document.getElementById('ev-serial').textContent || '';
+                eqCloseView();
+                eqOpenBitacora(EqState.currentEquipoId, sn);
+            }
+        });
+
+        // Filtros de búsqueda
+        $('#eq-search').on('input', eqApplyFilters);
+        $('#eq-filter-estado').on('change', eqApplyFilters);
+        $('#eq-filter-unidad').on('change', eqApplyFilters);
     }
 
     function abrirModal() {
-        $(el.alert).addClass('d-none').text('');
-        $(el.form)[0].reset();
+        var alertEl = document.getElementById('equipo-error-alert');
+        if (alertEl) { alertEl.style.display = 'none'; alertEl.textContent = ''; }
+        document.getElementById('form-equipo').reset();
         $(f.id).val('');
-        
-        // Reset select2
-        $('.select2').val('').trigger('change.select2');
-        $('#e-imagen-preview').show().attr('src', '/static/img/placeholder_equipo.png');
-        
-        // Disable dependientes
+        // Reset Select2 del Drawer
+        $('#equipo-drawer .select2-eq').val('').trigger('change.select2');
+        // Disable cascadas
         $(f.modelo).prop('disabled', true);
         $(f.unidad).prop('disabled', true);
-        $(f.sector).prop('disabled', true);
         $(f.recinto).prop('disabled', true);
         $(f.pma).prop('disabled', true);
-        
-        $(el.modal).modal('show');
+        document.getElementById('equipo-drawer-title').textContent = 'Registrar Activo';
+        eqOpenDrawer();
     }
+        
+
 
     function guardarEquipo() {
         var data = {
@@ -468,26 +566,21 @@ var EquiposApp = (function($) {
                 headers: { 'X-CSRFToken': csrfToken() },
                 success: function(resp) {
                     if(resp.success) {
-                        $(el.modal).modal('hide');
-                        dtEquipos.ajax.reload(null, false);
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: resp.message || 'Registro guardado con éxito',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
+                        eqCloseDrawer();
+                        eqLoadList(); // Refrescar lista ms-list
+                        eqShowToast(resp.message || 'Activo guardado correctamente.');
                     } else {
-                        $(el.alert).removeClass('d-none').text(resp.message || 'Error al guardar.');
+                        var alertEl = document.getElementById('equipo-error-alert');
+                        alertEl.style.display = 'block';
+                        alertEl.textContent = resp.message || 'Error al guardar.';
                     }
                 },
                 error: function(err) {
-                    var msg = "Error de conexión o validación.";
-                    if (err.responseJSON && err.responseJSON.message) {
-                        msg = err.responseJSON.message;
-                    }
-                    $(el.alert).removeClass('d-none').text(msg);
+                    var msg = 'Error de conexión o validación.';
+                    if (err.responseJSON && err.responseJSON.message) msg = err.responseJSON.message;
+                    var alertEl = document.getElementById('equipo-error-alert');
+                    alertEl.style.display = 'block';
+                    alertEl.textContent = msg;
                 }
             });
         };
@@ -533,10 +626,11 @@ var EquiposApp = (function($) {
             url: '/equipos/api/' + id + '/',
             type: 'GET',
             success: function(resp) {
-                abrirModal();
+                abrirModal(); // Limpia y abre el Drawer
                 var eq = resp.data;
+                document.getElementById('equipo-drawer-title').textContent = 'Editar Activo';
                 
-                // Guardamos el PMA original para comparar luego en guardarEquipo
+                // Guardamos el PMA original para comparar luego
                 window.original_pma_id = eq.pma;
                 
                 $(f.id).val(eq.id);
@@ -1010,4 +1104,6 @@ var EquiposApp = (function($) {
 
 $(document).ready(function() {
     EquiposApp.init();
+    // Cargar la lista ms-list al iniciar la página
+    eqLoadList();
 });
