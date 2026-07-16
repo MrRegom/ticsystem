@@ -61,30 +61,30 @@ function renderList(users) {
     const initials = (initial1 + initial2) || u.rut.charAt(0) || '?';
     const color = colors[i % colors.length];
 
-    // Status Badge
+    // Status Badge (Fluent UI Dot)
     let statusBadge = '';
     if (u.is_active === "Sí" || u.is_active === true || u.is_active === "Activo") {
-      statusBadge = '<span class="ms-badge badge-active">Activo</span>';
+      statusBadge = '<div class="ms-status"><span class="ms-status-dot dot-active"></span>Activo</div>';
     } else {
-      statusBadge = '<span class="ms-badge badge-inactive">Inactivo</span>';
+      statusBadge = '<div class="ms-status"><span class="ms-status-dot dot-inactive"></span>Inactivo</div>';
     }
     
-    // Role Badge
+    // Role Badge (Fluent UI Clean Text)
     const roleText = u.rol || 'Sin Perfil';
     
-    // Asignar colores corporativos según el rol para identificarlos visualmente
-    let roleColorStyle = 'background: #e1dfdd; color: #323130;'; // Gris por defecto
+    // Asignar colores corporativos según el rol usando puntos de color sutiles en lugar de píldoras gigantes
+    let roleDotStyle = 'background-color: #605e5c;'; // Gris por defecto
     if (roleText.includes('Administrador')) {
-      roleColorStyle = 'background: #f4f0fc; color: #5c2d91; border: 1px solid #c9b1f0;'; // Morado
+      roleDotStyle = 'background-color: #5c2d91;'; // Morado
     } else if (roleText.includes('Mesa de Ayuda') || roleText.includes('Operador')) {
-      roleColorStyle = 'background: #eff6fc; color: #0078d4; border: 1px solid #c7e0f4;'; // Azul
+      roleDotStyle = 'background-color: #0078d4;'; // Azul
     } else if (roleText.includes('Técnico') || roleText.includes('Terreno')) {
-      roleColorStyle = 'background: #dff6dd; color: #107c10; border: 1px solid #a3d9a1;'; // Verde
+      roleDotStyle = 'background-color: #107c10;'; // Verde
     } else if (roleText !== 'Sin Perfil') {
-      roleColorStyle = 'background: #fdf3f4; color: #a4262c; border: 1px solid #f8c1c4;'; // Rojo oscuro para otros
+      roleDotStyle = 'background-color: #a4262c;'; // Rojo oscuro para otros
     }
 
-    const roleBadge = `<span class="ms-badge" style="${roleColorStyle}">${roleText}</span>`;
+    const roleBadge = `<div class="ms-role-text"><span class="ms-status-dot" style="${roleDotStyle}"></span>${roleText}</div>`;
     
     const unidad = u.unidad || 'Sin Asignar';
     
