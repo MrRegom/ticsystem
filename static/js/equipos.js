@@ -72,27 +72,27 @@ function eqRenderRows() {
         var estado = eq.estado || 'S/E';
         var serial = eq.serial_number || 'N/A';
         var ip = eq.ip || 'N/A';
-        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 260px 120px 1fr 200px 140px 80px;">';
+        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 260px 120px 1fr 200px 140px 80px; font-size: 11px;">';
         // Col 1: Artículo / Modelo
         html += '<div class="ms-identity">';
-        html += '  <img src="' + img + '" style="width:28px;height:28px;object-fit:contain;flex-shrink:0;background:#f3f2f1;padding:2px;">';
+        html += '  <img src="' + img + '" style="width:24px;height:24px;object-fit:contain;flex-shrink:0;background:#f3f2f1;padding:2px;">';
         html += '  <div class="ms-user-info">';
-        html += '    <span class="ms-user-name">' + articulo + '</span>';
-        html += '    <span class="ms-user-email" style="color:#605e5c;">' + marca + ' ' + modelo + '</span>';
+        html += '    <span class="ms-user-name" style="font-size: 11px;">' + articulo + '</span>';
+        html += '    <span class="ms-user-email" style="color:#605e5c; font-size: 10px;">' + marca + ' ' + modelo + '</span>';
         html += '  </div>';
         html += '</div>';
         // Col 2: Serie
-        html += '<div style="font-size:12px;color:#0078d4;font-weight:600;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + serial + '</div>';
+        html += '<div style="font-size:11px;color:#0078d4;font-weight:600;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + serial + '</div>';
         // Col 3: Ubicación
-        html += '<div style="min-width:0;"><div class="ms-user-name">' + ubicacion + ' ' + piso + '</div></div>';
+        html += '<div style="min-width:0;"><div class="ms-user-name" style="font-size:11px;">' + ubicacion + ' ' + piso + '</div></div>';
         // Col 4: Unidad
-        html += '<div style="font-size:12px;color:#323130;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + unidad + '</div>';
+        html += '<div style="font-size:11px;color:#323130;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + unidad + '</div>';
         // Col 5: Estado
-        html += '<div><span class="ms-status"><span class="ms-status-dot" style="background:' + color + ';"></span>' + estado + '</span></div>';
+        html += '<div><span class="ms-status"><span class="ms-status-dot" style="background:' + color + ';"></span><span style="font-size:11px;">' + estado + '</span></span></div>';
         // Col 6: Acciones
         html += '<div class="ms-row-actions" onclick="event.stopPropagation();">';
-        html += '  <button class="ms-icon-btn" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')"><i class="fas fa-history"></i></button>';
-        html += '  <button class="ms-icon-btn" title="Editar" onclick="eqEdit(' + eq.id + ')"><i class="fas fa-edit"></i></button>';
+        html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')"><i class="fas fa-history"></i></button>';
+        html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Editar" onclick="eqEdit(' + eq.id + ')"><i class="fas fa-edit"></i></button>';
         html += '</div>';
         html += '</div>';
     });
@@ -956,6 +956,10 @@ var EquiposApp = (function($) {
     // Constructor/Init
     return {
         init: function() {
+            // Exponer funciones necesarias al scope global
+            window.cargarEquipo = cargarEquipo;
+            window.cargarBitacora = cargarBitacora;
+            
             initSelect2();
             initCascades();
             // initDataTable() — reemplazado por eqLoadList() (motor ms-list)
