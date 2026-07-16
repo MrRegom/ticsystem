@@ -220,6 +220,31 @@ function eqCloseDrawer() {
 // ============================================================
 function eqOpenView(id) {
     EqState.currentEquipoId = id;
+    
+    // Carga "Optimista": usar datos ya disponibles en memoria para abrir de inmediato
+    var eqList = EqState.filtered.find(function(e) { return e.id === id; });
+    if (eqList) {
+        document.getElementById('ev-imagen').src = eqList.imagen || '/static/img/placeholder_equipo.png';
+        document.getElementById('ev-articulo').textContent = eqList.articulo || '-';
+        document.getElementById('ev-marca-modelo').textContent = (eqList.marca || '') + ' ' + (eqList.modelo || '');
+        var badge = document.getElementById('ev-estado-badge');
+        badge.textContent = eqList.estado || '-';
+        badge.style.background = eqList.estado_color ? eqList.estado_color + '22' : '#dff6dd';
+        badge.style.color = eqList.estado_color || '#107c10';
+        document.getElementById('ev-serial').textContent = eqList.serial_number || 'N/A';
+        document.getElementById('ev-so').textContent = eqList.so || 'Cargando...';
+        document.getElementById('ev-ip').textContent = eqList.ip || 'N/A';
+        document.getElementById('ev-proveedor').textContent = 'Cargando...';
+        document.getElementById('ev-edificio').textContent = eqList.edificio || 'N/A';
+        document.getElementById('ev-unidad').textContent = eqList.unidad || 'N/A';
+        document.getElementById('ev-recinto').textContent = 'Cargando...';
+        document.getElementById('ev-pma').textContent = eqList.pma || 'N/A';
+    }
+
+    // Mostrar el modal INMEDIATAMENTE al hacer click (Cero delay para el usuario)
+    document.getElementById('eq-view-overlay').classList.add('active');
+
+    // Cargar detalles completos silenciosamente en segundo plano
     $.ajax({
         url: '/equipos/api/' + id + '/ver/',
         type: 'GET',
@@ -233,14 +258,13 @@ function eqOpenView(id) {
             badge.style.background = eq.estado_color ? eq.estado_color + '22' : '#dff6dd';
             badge.style.color = eq.estado_color || '#107c10';
             document.getElementById('ev-serial').textContent = eq.serial_number || 'N/A';
-            document.getElementById('ev-so').textContent = eq.so_nombre || 'N/A';
+            document.getElementById('ev-so').textContent = eq.so || 'N/A';
             document.getElementById('ev-ip').textContent = eq.ip || 'N/A';
-            document.getElementById('ev-proveedor').textContent = eq.proveedor_nombre || 'N/A';
+            document.getElementById('ev-proveedor').textContent = eq.proveedor || 'N/A';
             document.getElementById('ev-edificio').textContent = eq.edificio || 'N/A';
             document.getElementById('ev-unidad').textContent = eq.unidad || 'N/A';
-            document.getElementById('ev-recinto').textContent = eq.recinto_nombre || 'N/A';
-            document.getElementById('ev-pma').textContent = eq.pma_nombre || 'N/A';
-            document.getElementById('eq-view-overlay').classList.add('active');
+            document.getElementById('ev-recinto').textContent = eq.recinto || 'N/A';
+            document.getElementById('ev-pma').textContent = eq.pma || 'N/A';
         }
     });
 }
