@@ -71,12 +71,12 @@ class EquiposDashboardView(LoginRequiredMixin, TemplateView):
         from equipos.models import Equipo
         total = Equipo.objects.count()
         operativos = Equipo.objects.filter(estado__nombre__icontains='inventario').count() + Equipo.objects.filter(estado__nombre__icontains='funcional').count()
-        mantenimiento = Equipo.objects.filter(estado__nombre__icontains='mantenimiento').count()
+        soporte = Equipo.objects.filter(estado__nombre__icontains='soporte').count()
         
         context['kpi'] = {
             'total': total,
             'operativos': operativos,
-            'mantenimiento': mantenimiento
+            'soporte': soporte
         }
         
         from equipos.models import BitacoraEquipo, BitacoraOpcion

@@ -31,22 +31,22 @@
   <!-- ================================================================
     KPIs COMPACTOS (Fila Superior)
   ================================================================ -->
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
-    <div class="ms-card" style="padding: 16px; margin: 0;">
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Activos</div>
-      <div style="font-size: 28px; font-weight: 700; color: #0078d4; line-height: 1;" id="kpi-total">{{ kpi.total }}</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+    <div class="ms-card" style="padding: 12px 20px; margin: 0; min-width: 160px;">
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Total Activos</div>
+      <div style="font-size: 26px; font-weight: 700; color: #0078d4; line-height: 1;" id="kpi-total">{{ kpi.total }}</div>
     </div>
-    <div class="ms-card" style="padding: 16px; margin: 0;">
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Operativos</div>
-      <div style="font-size: 28px; font-weight: 700; color: #107c10; line-height: 1;">{{ kpi.operativos }}</div>
+    <div class="ms-card" style="padding: 12px 20px; margin: 0; min-width: 160px;">
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Operativos</div>
+      <div style="font-size: 26px; font-weight: 700; color: #107c10; line-height: 1;">{{ kpi.operativos }}</div>
     </div>
-    <div class="ms-card" style="padding: 16px; margin: 0;">
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">En Mantención</div>
-      <div style="font-size: 28px; font-weight: 700; color: #f59e0b; line-height: 1;">{{ kpi.mantenimiento }}</div>
+    <div class="ms-card" style="padding: 12px 20px; margin: 0; min-width: 160px;">
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Soporte</div>
+      <div style="font-size: 26px; font-weight: 700; color: #f59e0b; line-height: 1;">{{ kpi.soporte }}</div>
     </div>
-    <div class="ms-card" style="padding: 16px; margin: 0;">
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Con Alerta</div>
-      <div style="font-size: 28px; font-weight: 700; color: #a4262c; line-height: 1;">{{ kpi.total|add:"-"|add:kpi.operativos }}</div>
+    <div class="ms-card" style="padding: 12px 20px; margin: 0; min-width: 160px;">
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Con Alerta</div>
+      <div style="font-size: 26px; font-weight: 700; color: #a4262c; line-height: 1;">{{ kpi.total|add:"-"|add:kpi.operativos }}</div>
     </div>
   </div>
 
