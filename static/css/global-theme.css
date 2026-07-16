@@ -1,6 +1,6 @@
   body, .content-wrapper, .wrapper {
       background-color: #f8fafc;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       font-size: 0.8rem;
   }
 
@@ -128,7 +128,7 @@
   .pill-serial {
       color: #0284c7;
       font-weight: 600;
-      font-family: 'Inter', monospace;
+      font-family: 'Segoe UI', monospace;
       font-size: 0.75rem;
   }
   
