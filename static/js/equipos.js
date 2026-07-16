@@ -1095,7 +1095,7 @@ var EquiposApp = (function($) {
             });
             
             // Accion: Cerrar Mantención pendiente
-            $(document).on('click', '.btn-cerrar-mantencion', function(e) {
+            $('#bitacora-timeline').on('click', '.btn-cerrar-mantencion', function(e) {
                 e.preventDefault();
                 var bitacoraId = $(this).data('id');
                 var eqId = $(this).data('eq');
