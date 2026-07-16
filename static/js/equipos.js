@@ -957,13 +957,15 @@ var EquiposApp = (function($) {
             headers: { 'X-CSRFToken': csrfToken() },
             success: function(resp) {
                 if(resp.success) {
-                    dtEquipos.ajax.reload(null, false);
+                    // Recargar el ms-list (reemplaza dtEquipos.ajax.reload)
+                    eqLoadList();
+                    eqShowToast('Equipo eliminado correctamente.');
                 } else {
-                    alert(resp.message);
+                    Swal.fire('Error', resp.message, 'error');
                 }
             },
             error: function() {
-                alert("Error al intentar eliminar.");
+                Swal.fire('Error', 'Error al intentar eliminar.', 'error');
             }
         });
     }
@@ -1222,6 +1224,9 @@ var EquiposApp = (function($) {
                 $('#f-rut').removeClass('is-valid is-invalid');
                 $('#rut_feedback_eq').attr('class', 'form-text text-muted').html('Ingresa el RUT con guion y dígito verificador.');
             });
+
+        }  // ← fin de initEvents()
+    };     // ← fin de return { init: function() {...} }
 
 })(jQuery);
 
