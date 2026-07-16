@@ -246,12 +246,12 @@
   box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
 }
 .ms-list-header {
-  display: grid; grid-template-columns: 240px 1fr 240px 100px; padding: 6px 16px;
+  display: grid; grid-template-columns: 240px 120px 1fr 200px 100px; padding: 6px 16px;
   border-bottom: 1px solid #edebe9; background-color: #faf9f8; 
   color: #605e5c; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
 }
 .ms-list-row {
-  display: grid; grid-template-columns: 240px 1fr 240px 100px; padding: 6px 16px;
+  display: grid; grid-template-columns: 240px 120px 1fr 200px 100px; padding: 6px 16px;
   border-bottom: 1px solid #edebe9; align-items: center; cursor: pointer; transition: background 0.15s;
   position: relative; font-size: 12px;
 }
@@ -426,13 +426,17 @@ h5, .h5 { font-size: 0.85rem !important; }
   padding: 16px 24px; border-bottom: 1px solid #edebe9; display: flex; justify-content: space-between; align-items: center;
 }
 .ms-modal-title { font-size: 18px; font-weight: 600; color: #323130; margin: 0; }
-.ms-modal-close { background: none; border: none; font-size: 16px; color: #605e5c; cursor: pointer; }
-.ms-modal-close:hover { color: #323130; }
-.ms-modal-body { padding: 24px; }
+.ms-modal-close { background: none; border: none; font-size: 18px; color: #605e5c; cursor: pointer; padding: 4px; }
+.ms-modal-close:hover { color: #201f1e; background-color: #f3f2f1; }
+.ms-modal-body { padding: 32px; }
 .ms-modal-footer { padding: 16px 24px; background: #faf9f8; border-top: 1px solid #edebe9; display: flex; justify-content: flex-end; }
 
 /* Microsoft Detail List (pares de clave-valor) */
-.ms-detail-list { display: flex; flex-direction: column; gap: 16px; }
-.ms-detail-item { display: grid; grid-template-columns: 140px 1fr; align-items: baseline; }
-.ms-detail-label { font-size: 12px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; }
-.ms-detail-value { font-size: 14px; color: #323130; }
+.ms-detail-list { display: flex; flex-direction: column; gap: 0; }
+.ms-detail-item { 
+  display: grid; grid-template-columns: 160px 1fr; align-items: center; 
+  padding: 12px 0; border-bottom: 1px solid #f3f2f1; 
+}
+.ms-detail-item:last-child { border-bottom: none; padding-bottom: 0; }
+.ms-detail-label { font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; }
+.ms-detail-value { font-size: 14px; color: #201f1e; font-weight: 500; }

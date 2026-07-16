@@ -100,6 +100,7 @@ function renderList(users) {
             <span class="ms-user-email">${u.email || u.rut}</span>
           </div>
         </div>
+        <div style="font-size: 13px; color: #323130;">${u.rut}</div>
         <div style="font-size: 13px; color: #323130;">${unidad}</div>
         <div>${roleBadge}</div>
         <div>${statusBadge}</div>
