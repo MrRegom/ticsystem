@@ -181,13 +181,18 @@
         </a>
       </li>
       {% endif %}
-      {% if user.is_superuser %}
-      <li class="sidebar-item">
-        <a href="{% url 'sla:config' %}" class="sidebar-link {% if '/sla/' in request.path %}active{% endif %}">
-          <i class="fas fa-cog"></i> Configuración
-        </a>
-      </li>
-      {% endif %}
+        {% if user.is_superuser %}
+        <li class="sidebar-item">
+          <a href="{% url 'sla:config' %}" class="sidebar-link {% if '/sla/' in request.path %}active{% endif %}">
+            <i class="fas fa-cog"></i> Configuración SLA
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{% url 'correos:configuracion_smtp' %}" class="sidebar-link {% if '/correos/' in request.path %}active{% endif %}">
+            <i class="fas fa-envelope-open-text"></i> Correos SMTP
+          </a>
+        </li>
+        {% endif %}
       <li class="sidebar-item">
         <a href="#" class="sidebar-link text-danger" id="logout-sidebar-link">
           <i class="fas fa-sign-out-alt"></i> Cerrar Sesión

@@ -16,6 +16,7 @@ urlpatterns = [
     path('tickets/', include('tickets.urls')),
     path('reportes/', include('reportes.urls')),
     path('sla/', include('sla.urls')),
+    path('correos/', include('correos.urls')),
 ]
 
 if settings.DEBUG:

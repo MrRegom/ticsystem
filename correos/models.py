@@ -118,3 +118,30 @@ class CredencialCorreo(models.Model):
 
     def __str__(self):
         return self.email
+
+class ConfiguracionSMTP(models.Model):
+    """
+    Configuración centralizada para el servidor SMTP (Singleton).
+    Permite a los administradores cambiar credenciales desde la UI.
+    """
+    host = models.CharField(max_length=150, default='smtp.office365.com', verbose_name="Servidor SMTP (Host)")
+    puerto = models.IntegerField(default=587, verbose_name="Puerto")
+    usuario = models.CharField(max_length=150, verbose_name="Usuario / Email", blank=True, null=True)
+    password = models.CharField(max_length=255, verbose_name="Contraseña", blank=True, null=True)
+    use_tls = models.BooleanField(default=True, verbose_name="Usar TLS")
+    remitente_por_defecto = models.EmailField(verbose_name="Remitente por Defecto (From)", blank=True, null=True)
+    
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Configuración SMTP"
+        verbose_name_plural = "Configuraciones SMTP"
+
+    def __str__(self):
+        return f"Configuración SMTP: {self.host}:{self.puerto}"
+
+    @classmethod
+    def load(cls):
+        """Devuelve la única instancia de configuración o la crea si no existe (Patrón Singleton)"""
+        obj, created = cls.objects.get_or_create(id=1)
+        return obj

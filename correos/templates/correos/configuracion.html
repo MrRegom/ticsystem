@@ -1,0 +1,139 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Configuración de Correos{% endblock %}
+{% block module_title %}Configuración de Correos SMTP{% endblock %}
+
+{% block extra_css %}
+<!-- Fluent Design Base CSS -->
+<style>
+  body { background-color: #faf9f8; }
+  .ms-wrap { padding: 24px 32px; max-width: 900px; margin: 0 auto; }
+  
+  .ms-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+  .ms-title-area h2 { font-size: 24px; font-weight: 600; color: #323130; margin: 0; }
+  .ms-title-area p { font-size: 14px; color: #605e5c; margin-top: 4px; }
+
+  .ms-card {
+    background: #ffffff; border-radius: 4px; border: 1px solid #edebe9;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+    padding: 24px; margin-bottom: 24px;
+  }
+  
+  .ms-card-title {
+    font-size: 16px; font-weight: 600; color: #323130; margin-bottom: 16px;
+    border-bottom: 1px solid #edebe9; padding-bottom: 12px;
+  }
+
+  .ms-form-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+
+  .ms-form-group { display: flex; flex-direction: column; }
+  .ms-form-label { font-size: 13px; font-weight: 600; color: #323130; margin-bottom: 6px; }
+  .ms-input {
+    border: 1px solid #8a8886; border-radius: 2px; padding: 6px 12px; font-size: 14px;
+    color: #323130; transition: border-color 0.2s;
+  }
+  .ms-input:focus { outline: none; border-color: #0078d4; border-bottom: 2px solid #0078d4; padding-bottom: 5px; }
+  
+  .ms-checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .ms-checkbox { width: 16px; height: 16px; accent-color: #0078d4; }
+
+  .ms-command-bar { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+  
+  .ms-btn-primary {
+    background: #0078d4; color: white; border: none; border-radius: 2px;
+    padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+  }
+  .ms-btn-primary:hover { background: #106ebe; }
+  
+  .ms-btn-secondary {
+    background: #ffffff; color: #323130; border: 1px solid #8a8886; border-radius: 2px;
+    padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+  }
+  .ms-btn-secondary:hover { background: #f3f2f1; }
+
+  /* 💎 Microsoft Toast Notification */
+  .ms-toast {
+    position: fixed; bottom: 24px; right: 24px; background: #fff;
+    border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+    transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2000; border-left: 4px solid #107c10;
+  }
+  .ms-toast.show { transform: translateY(0); opacity: 1; }
+  .ms-toast-icon { color: #107c10; font-size: 16px; }
+  .ms-toast-text { color: #323130; font-size: 14px; font-weight: 600; }
+  .ms-toast.error { border-left-color: #a4262c; }
+  .ms-toast.error .ms-toast-icon { color: #a4262c; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ms-wrap">
+  
+  <!-- Encabezado -->
+  <div class="ms-header">
+    <div class="ms-title-area">
+      <h2>Configuración de Correos (SMTP)</h2>
+      <p>Administra las credenciales del servidor de correos institucional para el envío automático de notificaciones.</p>
+    </div>
+  </div>
+
+  <!-- Formulario SMTP -->
+  <div class="ms-card">
+    <h3 class="ms-card-title">Configuración del Servidor</h3>
+    <div class="ms-form-grid">
+      <div class="ms-form-group">
+        <label class="ms-form-label">Servidor SMTP (Host)</label>
+        <input type="text" class="ms-input" id="smtp-host" placeholder="ej: smtp.office365.com">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">Puerto</label>
+        <input type="number" class="ms-input" id="smtp-port" placeholder="ej: 587">
+      </div>
+      
+      <div class="ms-form-group">
+        <label class="ms-form-label">Usuario / Email de Autenticación</label>
+        <input type="email" class="ms-input" id="smtp-user" placeholder="ej: notificaciones@hospital.cl">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">Contraseña</label>
+        <input type="password" class="ms-input" id="smtp-pass" placeholder="Contraseña de aplicación">
+      </div>
+
+      <div class="ms-form-group" style="grid-column: span 2;">
+        <label class="ms-form-label">Remitente por Defecto (From)</label>
+        <input type="email" class="ms-input" id="smtp-sender" placeholder="ej: TicSystem <notificaciones@hospital.cl>">
+      </div>
+      
+      <div class="ms-form-group ms-checkbox-group" style="grid-column: span 2;">
+        <input type="checkbox" class="ms-checkbox" id="smtp-tls" checked>
+        <label class="ms-form-label" style="margin:0; font-weight:normal;">Usar seguridad TLS (Recomendado)</label>
+      </div>
+    </div>
+
+    <div class="ms-command-bar">
+      <button class="ms-btn-secondary" id="btn-test" onclick="testConnection()">
+        <i class="fas fa-paper-plane"></i> Enviar Correo de Prueba
+      </button>
+      <button class="ms-btn-primary" id="btn-save" onclick="saveConfig()">
+        <i class="fas fa-save"></i> Guardar Configuración
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- MS Toast Container -->
+<div id="ms-toast" class="ms-toast">
+  <i id="ms-toast-icon" class="fas fa-check-circle ms-toast-icon"></i>
+  <span id="ms-toast-text" class="ms-toast-text"></span>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/correos_config.js' %}"></script>
+{% endblock %}
