@@ -84,7 +84,7 @@ header .navbar {
   main.with-fixed-navbar {
     margin-left: 200px;
     margin-top: 70px;
-    padding: 24px 10px;
+    padding: 10px 10px;
     flex: 1 0 auto;
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -111,7 +111,7 @@ header .navbar {
   main.with-fixed-navbar {
     margin-left: 0;
     margin-top: 70px;
-    padding: 20px 15px;
+    padding: 10px 15px;
     flex: 1 0 auto;
   }
   .sidebar-backdrop {
