@@ -246,12 +246,12 @@
   box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
 }
 .ms-list-header {
-  display: grid; grid-template-columns: 240px 120px 1fr 200px 100px; padding: 6px 16px;
+  display: grid; grid-template-columns: 280px 130px 1fr 220px 100px; padding: 6px 16px;
   border-bottom: 1px solid #edebe9; background-color: #faf9f8; 
   color: #605e5c; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
 }
 .ms-list-row {
-  display: grid; grid-template-columns: 240px 120px 1fr 200px 100px; padding: 6px 16px;
+  display: grid; grid-template-columns: 280px 130px 1fr 220px 100px; padding: 6px 16px;
   border-bottom: 1px solid #edebe9; align-items: center; cursor: pointer; transition: background 0.15s;
   position: relative; font-size: 12px;
 }
@@ -291,15 +291,15 @@
 .ms-role-text { font-size: 12px; color: #323130; display: inline-flex; align-items: center; gap: 6px; }
 
 /* 💎 Avatares (Identity) */
-.ms-identity { display: flex; align-items: center; gap: 8px; }
+.ms-identity { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .ms-avatar {
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   color: white; font-weight: 600; font-size: 11px; letter-spacing: 0.5px;
 }
-.ms-user-info { display: flex; flex-direction: column; line-height: 1.2; }
-.ms-user-name { font-weight: 600; font-size: 12px; color: #323130; }
-.ms-user-email { font-size: 11px; color: #605e5c; }
+.ms-user-info { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; overflow: hidden; }
+.ms-user-name { font-weight: 600; font-size: 12px; color: #323130; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-user-email { font-size: 11px; color: #605e5c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* 💎 Offcanvas / Drawers (Paneles Laterales Microsoft) */
 .ms-drawer-overlay {
