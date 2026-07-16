@@ -238,6 +238,7 @@ class EquipoDetailView(LoginRequiredMixin, View):
                 'recinto': equipo.pma.recinto_id if equipo.pma else '',
                 'piso': equipo.pma.recinto.piso_id if equipo.pma and equipo.pma.recinto else '',
                 'unidad': equipo.pma.recinto.unidad_id if equipo.pma and equipo.pma.recinto else '',
+                'unidad_nombre': equipo.pma.recinto.unidad.nombre if equipo.pma and equipo.pma.recinto and equipo.pma.recinto.unidad else '',
                 
                 'so': equipo.so_id,
                 'estado': equipo.estado_id,

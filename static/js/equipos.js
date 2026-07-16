@@ -254,6 +254,27 @@ function eqOpenBitacora(id, serial) {
     document.getElementById('b-equipo-sn-header').textContent = serial || '';
     document.getElementById('b-equipo-id').value = id;
     document.getElementById('eq-bitacora-overlay').classList.add('active');
+    
+    // Autocompletar Fecha Ingreso con la fecha/hora actual
+    var now = new Date();
+    var pad = function(n) { return n < 10 ? '0' + n : n; };
+    var nowStr = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + 'T' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+    document.getElementById('b-fecha-mtto').value = nowStr;
+
+    // Obtener datos del equipo para pre-seleccionar la Unidad
+    $.ajax({
+        url: '/equipos/api/' + id + '/ver/',
+        type: 'GET',
+        success: function(resp) {
+            if (resp.success && resp.data.unidad_nombre) {
+                var $sel = $('#b-unidad');
+                if ($sel.find("option[value='" + resp.data.unidad_nombre + "']").length) {
+                    $sel.val(resp.data.unidad_nombre).trigger('change');
+                }
+            }
+        }
+    });
+
     cargarBitacora(id);
 }
 function eqCloseBitacora() { document.getElementById('eq-bitacora-overlay').classList.remove('active'); }
