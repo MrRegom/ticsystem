@@ -690,7 +690,7 @@ var EquiposApp = (function($) {
             so_id: $(f.so).val(),
             ip: $(f.ip).val(),
             pma_id: $(f.pma).val(),
-            estado_id: $(f.estado).val(),
+            estado_id: $('input[name="e-estado"]:checked').val(),
             proveedor_id: $(f.proveedor).val(),
             correlativo: $('#e-correlativo').val() || null,
             
@@ -799,7 +799,11 @@ var EquiposApp = (function($) {
                 // Set selects simples (no cascada)
                 $(f.articulo).val(eq.articulo).trigger('change');
                 $(f.so).val(eq.so).trigger('change');
-                $(f.estado).val(eq.estado).trigger('change');
+                if (eq.estado) {
+                    $('input[name="e-estado"][value="' + eq.estado + '"]').prop('checked', true);
+                } else {
+                    $('input[name="e-estado"]').prop('checked', false);
+                }
                 $(f.proveedor).val(eq.proveedor).trigger('change');
                 
                 // Marca -> habilitar modelos -> setear modelo -> actualizar imagen

@@ -295,11 +295,15 @@
         <i class="fas fa-shield-alt" style="color: #0078d4;"></i> Estado Operativo
       </div>
       <div>
-        <label class="ms-label">Disponibilidad <span style="color:#a4262c;">*</span></label>
-        <select class="ms-input select2-eq" id="e-estado" required>
-          <option value="">-- Seleccionar --</option>
-          {% for es in estados %}<option value="{{ es.id }}">{{ es.nombre }}</option>{% endfor %}
-        </select>
+        <label class="ms-label" style="display:block; margin-bottom:8px;">Disponibilidad <span style="color:#a4262c;">*</span></label>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;" id="e-estado-container">
+          {% for es in estados %}
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: #323130;">
+            <input type="radio" name="e-estado" value="{{ es.id }}" required style="margin:0; width: 16px; height: 16px; accent-color: #0078d4; cursor: pointer;">
+            {{ es.nombre }}
+          </label>
+          {% endfor %}
+        </div>
       </div>
     </form>
   </div>
@@ -558,5 +562,5 @@
 {% block extra_js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="{% static 'js/equipos.js' %}?v=2.6"></script>
+<script src="{% static 'js/equipos.js' %}?v=2.7"></script>
 {% endblock %}
