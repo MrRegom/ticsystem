@@ -42,7 +42,7 @@ class EquipoRepository:
         equipo.delete()
 
     @classmethod
-    def _apply_search_and_filters(cls, queryset, search_value: str):
+    def _apply_search_and_filters(cls, queryset, search_value: str, estado: str = '', unidad: str = ''):
         if search_value:
             queryset = queryset.filter(
                 Q(serial_number__icontains=search_value) |
@@ -57,17 +57,22 @@ class EquipoRepository:
                 Q(estado__nombre__icontains=search_value) |
                 Q(so__nombre__icontains=search_value)
             )
+        if estado:
+            queryset = queryset.filter(estado__nombre__iexact=estado)
+        if unidad:
+            # Assuming 'unidad' parameter is the name or ID. If it's a name, use iexact.
+            queryset = queryset.filter(pma__recinto__unidad__nombre__iexact=unidad)
         return queryset
 
     @classmethod
     def get_paginated_list(cls, start: int, length: int, search_value: str,
-                           order_column: str, order_dir: str):
+                           order_column: str, order_dir: str, estado: str = '', unidad: str = ''):
         queryset = Equipo.objects.select_related(
             'articulo', 'marca', 'modelo', 'pma', 'pma__recinto', 'pma__recinto__piso', 
             'pma__recinto__unidad', 'pma__recinto__piso__edificio',
             'so', 'estado', 'proveedor'
         ).all()
-        queryset = cls._apply_search_and_filters(queryset, search_value)
+        queryset = cls._apply_search_and_filters(queryset, search_value, estado, unidad)
 
         order_mapping = {
             'serial_number': 'serial_number',
@@ -97,7 +102,7 @@ class EquipoRepository:
         return Equipo.objects.count()
 
     @classmethod
-    def count_filtered(cls, search_value: str) -> int:
+    def count_filtered(cls, search_value: str, estado: str = '', unidad: str = '') -> int:
         queryset = Equipo.objects.all()
-        queryset = cls._apply_search_and_filters(queryset, search_value)
+        queryset = cls._apply_search_and_filters(queryset, search_value, estado, unidad)
         return queryset.count()

@@ -99,10 +99,13 @@ class EquipoListView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         dt = parse_datatables_params(request)
+        estado = request.POST.get('estado', '')
+        unidad = request.POST.get('unidad', '')
         from equipos.services.equipo_service import EquipoService
         result = EquipoService.obtener_equipos_para_datatable(
             dt['start'], dt['length'], dt['search_value'],
-            dt['order_column_index'], dt['order_dir'], dt['columns_data']
+            dt['order_column_index'], dt['order_dir'], dt['columns_data'],
+            estado=estado, unidad=unidad
         )
         return JsonResponse({
             'draw': dt['draw'],

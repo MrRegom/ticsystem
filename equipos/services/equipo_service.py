@@ -215,7 +215,7 @@ class EquipoService:
     @classmethod
     def obtener_equipos_para_datatable(cls, start: int, length: int, search_value: str,
                                        order_column_index: int, order_dir: str,
-                                       columns_data: list) -> dict:
+                                       columns_data: list, estado: str = '', unidad: str = '') -> dict:
         """Caso de uso para DataTables Server-side de Equipos."""
         order_column_name = '-fecha_creacion'
         if 0 <= order_column_index < len(columns_data):
@@ -224,9 +224,10 @@ class EquipoService:
         records = EquipoRepository.get_paginated_list(
             start=start, length=length, search_value=search_value,
             order_column=order_column_name, order_dir=order_dir,
+            estado=estado, unidad=unidad
         )
         total_records = EquipoRepository.count_total()
-        filtered_records = EquipoRepository.count_filtered(search_value)
+        filtered_records = EquipoRepository.count_filtered(search_value, estado=estado, unidad=unidad)
 
         data = []
         for e in records:

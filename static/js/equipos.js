@@ -49,8 +49,7 @@ function eqAvatarColor(seed) {
 }
 
 function eqRenderRows() {
-    var start = (EqState.page - 1) * EqState.pageSize;
-    var rows = EqState.filtered.slice(start, start + EqState.pageSize);
+    var rows = EqState.data;
     var body = document.getElementById('eq-list-body');
     if (!body) return;
     if (rows.length === 0) {
@@ -112,50 +111,66 @@ function eqRenderRows() {
         html += '</div>';
     });
     body.innerHTML = html;
+    
     // Info
-    var total = EqState.filtered.length;
-    var from = start + 1;
+    var total = EqState.totalRecords || 0;
+    var start = (EqState.page - 1) * EqState.pageSize;
+    var from = total > 0 ? start + 1 : 0;
     var to = Math.min(start + EqState.pageSize, total);
     document.getElementById('eq-info').textContent = 'Mostrando ' + from + '-' + to + ' de ' + total + ' equipos';
-    // Paginación
+    
+    // Paginación Windowed
     var pages = Math.ceil(total / EqState.pageSize);
     var pag = document.getElementById('eq-pagination');
     var ph = '';
-    for (var p = 1; p <= pages; p++) {
-        var active = (p === EqState.page) ? 'background:#0078d4;color:white;border-color:#0078d4;' : '';
-        ph += '<button onclick="eqGoPage(' + p + ')" style="width:28px;height:28px;border:1px solid #edebe9;background:white;font-size:12px;cursor:pointer;' + active + '">' + p + '</button>';
+    
+    if (pages > 1) {
+        ph += '<button onclick="eqGoPage(1)" style="width:28px;height:28px;border:1px solid #edebe9;background:white;font-size:12px;cursor:pointer;" title="Primera">&laquo;</button>';
+        ph += '<button onclick="eqGoPage(' + Math.max(1, EqState.page - 1) + ')" style="width:28px;height:28px;border:1px solid #edebe9;background:white;font-size:12px;cursor:pointer;margin-right:8px;" title="Anterior">&lsaquo;</button>';
+        
+        var startPage = Math.max(1, EqState.page - 2);
+        var endPage = Math.min(pages, EqState.page + 2);
+        
+        for (var p = startPage; p <= endPage; p++) {
+            var active = (p === EqState.page) ? 'background:#0078d4;color:white;border-color:#0078d4;' : '';
+            ph += '<button onclick="eqGoPage(' + p + ')" style="width:28px;height:28px;border:1px solid #edebe9;background:white;font-size:12px;cursor:pointer;' + active + '">' + p + '</button>';
+        }
+        
+        ph += '<button onclick="eqGoPage(' + Math.min(pages, EqState.page + 1) + ')" style="width:28px;height:28px;border:1px solid #edebe9;background:white;font-size:12px;cursor:pointer;margin-left:8px;" title="Siguiente">&rsaquo;</button>';
+        ph += '<button onclick="eqGoPage(' + pages + ')" style="width:28px;height:28px;border:1px solid #edebe9;background:white;font-size:12px;cursor:pointer;" title="Última">&raquo;</button>';
     }
     pag.innerHTML = ph;
 }
 
-function eqGoPage(p) { EqState.page = p; eqRenderRows(); }
+function eqGoPage(p) { 
+    if (EqState.page !== p) {
+        EqState.page = p; 
+        eqLoadList(); // Fetch nueva página al servidor
+    }
+}
 
 function eqApplyFilters() {
-    var q = (document.getElementById('eq-search').value || '').toLowerCase();
-    var estado = (document.getElementById('eq-filter-estado').value || '').toLowerCase();
-    var unidad = (document.getElementById('eq-filter-unidad').value || '').toLowerCase();
-    EqState.filtered = EqState.data.filter(function(eq) {
-        var text = [eq.articulo, eq.serial_number, eq.marca, eq.modelo, eq.edificio, eq.unidad, eq.ip].join(' ').toLowerCase();
-        var matchQ = !q || text.indexOf(q) !== -1;
-        var matchE = !estado || (eq.estado || '').toLowerCase() === estado;
-        var matchU = !unidad || (eq.unidad || '').toLowerCase() === unidad;
-        return matchQ && matchE && matchU;
-    });
-    EqState.page = 1;
-    eqRenderRows();
+    EqState.page = 1; // Reiniciar a la página 1 cuando cambia algún filtro
+    eqLoadList();
 }
 
 function eqLoadList() {
+    var q = (document.getElementById('eq-search').value || '').toLowerCase();
+    var estado = (document.getElementById('eq-filter-estado').value || '');
+    var unidad = (document.getElementById('eq-filter-unidad').value || '');
+    var start = (EqState.page - 1) * EqState.pageSize;
+
     $.ajax({
         url: '/equipos/api/',
         type: 'POST',
         headers: { 'X-CSRFToken': csrfToken() },
-        // La API usa request.POST estilo DataTables (form-urlencoded), no JSON
         data: {
             'draw': 1,
-            'start': 0,
-            'length': 9999,
-            'search[value]': '',
+            'start': start,
+            'length': EqState.pageSize,
+            'search[value]': q,
+            'estado': estado,
+            'unidad': unidad,
             'order[0][column]': 0,
             'order[0][dir]': 'desc',
             'columns[0][data]': 'id',
@@ -193,12 +208,13 @@ function eqLoadList() {
         },
         success: function(resp) {
             EqState.data = resp.data || [];
-            EqState.filtered = EqState.data.slice();
+            EqState.filtered = EqState.data; // Para compatibilidad con Optimistic UI
+            EqState.totalRecords = resp.recordsFiltered || 0;
             eqRenderRows();
         },
         error: function(xhr, status, err) {
             console.error('Error cargando inventario:', status, err, xhr.responseText);
-            document.getElementById('eq-list-body').innerHTML = '<div style="text-align:center;padding:32px;color:#a4262c;"><i class="fas fa-exclamation-triangle"></i> Error al cargar el inventario. Revisa la consola.</div>';
+            document.getElementById('eq-list-body').innerHTML = '<div style="text-align:center;padding:32px;color:#a4262c;"><i class="fas fa-exclamation- tectonic-triangle"></i> Error al cargar el inventario. Revisa la consola.</div>';
         }
     });
 }
