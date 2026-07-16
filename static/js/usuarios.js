@@ -97,10 +97,10 @@ function renderList(users) {
           <div class="ms-avatar" style="background-color: ${color}">${initials}</div>
           <div class="ms-user-info">
             <span class="ms-user-name">${u.nombres || ''} ${u.apellidos || ''}</span>
-            <span class="ms-user-email">${u.email || u.rut}</span>
+            <span class="ms-user-email" style="font-weight: 600; color: #323130;">${u.rut}</span>
           </div>
         </div>
-        <div style="font-size: 13px; color: #323130;">${u.rut}</div>
+        <div style="font-size: 13px; color: #323130; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${u.email || ''}">${u.email || 'Sin correo'}</div>
         <div style="font-size: 13px; color: #323130;">${unidad}</div>
         <div>${roleBadge}</div>
         <div>${statusBadge}</div>

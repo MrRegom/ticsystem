@@ -246,12 +246,12 @@
   box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
 }
 .ms-list-header {
-  display: grid; grid-template-columns: 280px 130px 1fr 220px 100px; padding: 6px 16px;
+  display: grid; grid-template-columns: 240px 200px 1fr 200px 100px; padding: 6px 16px;
   border-bottom: 1px solid #edebe9; background-color: #faf9f8; 
   color: #605e5c; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
 }
 .ms-list-row {
-  display: grid; grid-template-columns: 280px 130px 1fr 220px 100px; padding: 6px 16px;
+  display: grid; grid-template-columns: 240px 200px 1fr 200px 100px; padding: 6px 16px;
   border-bottom: 1px solid #edebe9; align-items: center; cursor: pointer; transition: background 0.15s;
   position: relative; font-size: 12px;
 }
