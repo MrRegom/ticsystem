@@ -384,6 +384,61 @@
   </div>
 </div>
 
+<!-- ================================================================
+  MODAL BOOTSTRAP: Registrar Nuevo Funcionario (se abre desde Bitácora)
+================================================================ -->
+<div class="modal fade" id="modalFuncionario" tabindex="-1" role="dialog" aria-labelledby="modalFuncionarioLabel" aria-hidden="true" style="z-index: 1060;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="border-radius: 0;">
+      <div class="modal-header modal-header-premium" style="background: #002855; color: #fff;">
+        <h5 class="modal-title" id="modalFuncionarioLabel">
+          <i class="fas fa-user-plus mr-2"></i> Registrar Nuevo Funcionario
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-funcionario">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="ms-label">Nombres <span style="color:#a4262c;">*</span></label>
+              <input type="text" class="form-control form-control-sm" id="f-nombres" placeholder="Nombres" required style="border-radius:0;">
+            </div>
+            <div class="form-group col-md-6">
+              <label class="ms-label">Apellidos <span style="color:#a4262c;">*</span></label>
+              <input type="text" class="form-control form-control-sm" id="f-apellidos" placeholder="Apellidos" required style="border-radius:0;">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="ms-label">RUT <span style="color:#a4262c;">*</span></label>
+              <input type="text" class="form-control form-control-sm" id="f-rut" placeholder="12345678-9" required style="border-radius:0;">
+            </div>
+            <div class="form-group col-md-6">
+              <label class="ms-label">Cargo</label>
+              <input type="text" class="form-control form-control-sm" id="f-cargo" placeholder="Cargo" style="border-radius:0;">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label class="ms-label">Unidad / Servicio</label>
+              <input type="text" class="form-control form-control-sm" id="f-unidad" placeholder="Unidad de trabajo" style="border-radius:0;">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" style="border-radius:0;" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-sm btn-primary" id="btn-guardar-funcionario" style="border-radius:0;">
+          <i class="fas fa-save mr-1"></i> Guardar Funcionario
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="ms-toast" class="ms-toast">
   <i id="ms-toast-icon" class="fas fa-check-circle ms-toast-icon"></i>

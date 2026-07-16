@@ -103,9 +103,10 @@ function eqRenderRows() {
         html += '<div><span class="ms-status"><span class="ms-status-dot" style="background:' + color + ';"></span><span style="font-size:11px;">' + estado + '</span></span></div>';
         
         // Col 8: Acciones
-        html += '<div class="ms-row-actions" onclick="event.stopPropagation();">';
-        html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')"><i class="fas fa-history"></i></button>';
-        html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Editar" onclick="eqEdit(' + eq.id + ')"><i class="fas fa-edit"></i></button>';
+        html += '<div class="ms-row-actions" onclick="event.stopPropagation();" style="position:static; opacity:1; background:transparent; padding:0;">';
+        html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Ver Detalle" onclick="eqOpenView(' + eq.id + ')"><i class="fas fa-eye"></i></button>';
+        html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')" ><i class="fas fa-history"></i></button>';
+        html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Editar" onclick="eqEdit(' + eq.id + ')" ><i class="fas fa-edit"></i></button>';
         html += '</div>';
         
         html += '</div>';
