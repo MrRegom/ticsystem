@@ -31,23 +31,52 @@
   <!-- ================================================================
     KPIs COMPACTOS (Fila Superior)
   ================================================================ -->
-  <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-    <div class="ms-card" style="padding: 12px 20px; margin: 0; min-width: 160px;">
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Total Activos</div>
-      <div style="font-size: 26px; font-weight: 700; color: #0078d4; line-height: 1;" id="kpi-total">{{ kpi.total }}</div>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
+    
+    <!-- Card 1: Total -->
+    <div class="ms-card" style="margin: 0; padding: 0; display: flex; align-items: center; overflow: hidden; height: 68px;">
+      <div style="width: 68px; height: 100%; background-color: #0078d4; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+        <i class="fas fa-desktop" style="color: white; font-size: 24px;"></i>
+      </div>
+      <div style="padding: 0 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Total Activos</div>
+        <div style="font-size: 22px; font-weight: 700; color: #323130; line-height: 1;" id="kpi-total">{{ kpi.total }}</div>
+      </div>
     </div>
-    <div class="ms-card" style="padding: 12px 20px; margin: 0; min-width: 160px;">
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Operativos</div>
-      <div style="font-size: 26px; font-weight: 700; color: #107c10; line-height: 1;">{{ kpi.operativos }}</div>
+
+    <!-- Card 2: Operativos -->
+    <div class="ms-card" style="margin: 0; padding: 0; display: flex; align-items: center; overflow: hidden; height: 68px;">
+      <div style="width: 68px; height: 100%; background-color: #107c10; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+        <i class="fas fa-check-circle" style="color: white; font-size: 24px;"></i>
+      </div>
+      <div style="padding: 0 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Operativos</div>
+        <div style="font-size: 22px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.operativos }}</div>
+      </div>
     </div>
-    <div class="ms-card" style="padding: 12px 20px; margin: 0; min-width: 160px;">
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Soporte</div>
-      <div style="font-size: 26px; font-weight: 700; color: #f59e0b; line-height: 1;">{{ kpi.soporte }}</div>
+
+    <!-- Card 3: Soporte -->
+    <div class="ms-card" style="margin: 0; padding: 0; display: flex; align-items: center; overflow: hidden; height: 68px;">
+      <div style="width: 68px; height: 100%; background-color: #f59e0b; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+        <i class="fas fa-tools" style="color: white; font-size: 24px;"></i>
+      </div>
+      <div style="padding: 0 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Soporte</div>
+        <div style="font-size: 22px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.soporte }}</div>
+      </div>
     </div>
-    <div class="ms-card" style="padding: 12px 20px; margin: 0; min-width: 160px;">
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Con Alerta</div>
-      <div style="font-size: 26px; font-weight: 700; color: #a4262c; line-height: 1;">{{ kpi.total|add:"-"|add:kpi.operativos }}</div>
+
+    <!-- Card 4: Alerta -->
+    <div class="ms-card" style="margin: 0; padding: 0; display: flex; align-items: center; overflow: hidden; height: 68px;">
+      <div style="width: 68px; height: 100%; background-color: #a4262c; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+        <i class="fas fa-exclamation-triangle" style="color: white; font-size: 24px;"></i>
+      </div>
+      <div style="padding: 0 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Con Alerta</div>
+        <div style="font-size: 22px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.total|add:"-"|add:kpi.operativos }}</div>
+      </div>
     </div>
+
   </div>
 
   <!-- ================================================================
