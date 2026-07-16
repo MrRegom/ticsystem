@@ -135,15 +135,55 @@ function eqLoadList() {
         url: '/equipos/api/',
         type: 'POST',
         headers: { 'X-CSRFToken': csrfToken() },
-        data: JSON.stringify({ draw: 1, start: 0, length: 9999, search: { value: '' }, order: [{ column: 0, dir: 'desc' }], columns: [] }),
-        contentType: 'application/json',
+        // La API usa request.POST estilo DataTables (form-urlencoded), no JSON
+        data: {
+            'draw': 1,
+            'start': 0,
+            'length': 9999,
+            'search[value]': '',
+            'order[0][column]': 0,
+            'order[0][dir]': 'desc',
+            'columns[0][data]': 'id',
+            'columns[0][name]': '',
+            'columns[0][searchable]': 'false',
+            'columns[0][orderable]': 'true',
+            'columns[1][data]': 'articulo',
+            'columns[1][name]': '',
+            'columns[1][searchable]': 'true',
+            'columns[1][orderable]': 'true',
+            'columns[2][data]': 'edificio',
+            'columns[2][name]': '',
+            'columns[2][searchable]': 'true',
+            'columns[2][orderable]': 'true',
+            'columns[3][data]': 'pma',
+            'columns[3][name]': '',
+            'columns[3][searchable]': 'true',
+            'columns[3][orderable]': 'false',
+            'columns[4][data]': 'piso',
+            'columns[4][name]': '',
+            'columns[4][searchable]': 'true',
+            'columns[4][orderable]': 'false',
+            'columns[5][data]': 'serial_number',
+            'columns[5][name]': '',
+            'columns[5][searchable]': 'true',
+            'columns[5][orderable]': 'false',
+            'columns[6][data]': 'ip',
+            'columns[6][name]': '',
+            'columns[6][searchable]': 'true',
+            'columns[6][orderable]': 'false',
+            'columns[7][data]': 'estado',
+            'columns[7][name]': '',
+            'columns[7][searchable]': 'true',
+            'columns[7][orderable]': 'false'
+        },
         success: function(resp) {
             EqState.data = resp.data || [];
             EqState.filtered = EqState.data.slice();
             eqRenderRows();
         },
-        error: function() {
-            document.getElementById('eq-list-body').innerHTML = '<div style="text-align:center;padding:32px;color:#a4262c;">Error al cargar el inventario.</div>';
+        error: function(xhr, status, err) {
+            console.error('Error cargando inventario:', status, err, xhr.responseText);
+            document.getElementById('eq-list-body').innerHTML = '<div style="text-align:center;padding:32px;color:#a4262c;"><i class="fas fa-exclamation-triangle"></i> Error al cargar el inventario. Revisa la consola.</div>';
         }
     });
 }
