@@ -290,16 +290,28 @@
         </div>
       </div>
 
-      <!-- Sección Estado -->
+      <!-- Sección Estado Operativo -->
       <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
         <i class="fas fa-shield-alt" style="color: #0078d4;"></i> Estado Operativo
       </div>
       <div>
-        <label class="ms-label" style="display:block; margin-bottom:8px;">Disponibilidad <span style="color:#a4262c;">*</span></label>
-        <div style="display: flex; gap: 16px; flex-wrap: wrap;" id="e-estado-container">
+        <label class="ms-label" style="display:block; margin-bottom:10px;">Disponibilidad <span style="color:#a4262c;">*</span></label>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="e-estado-container">
           {% for es in estados %}
-          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: #323130;">
-            <input type="radio" name="e-estado" value="{{ es.id }}" required style="margin:0; width: 16px; height: 16px; accent-color: #0078d4; cursor: pointer;">
+          <label id="estado-chip-{{ es.id }}" style="
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+            padding: 8px 14px; border: 1.5px solid #edebe9;
+            background: #faf9f8; transition: all 0.15s ease;
+            font-size: 13px; font-weight: 500; color: #323130;
+          ">
+            <input type="radio" name="e-estado" value="{{ es.id }}"
+              data-color="{% if es.nombre == 'Operativo' %}#107c10{% elif es.nombre == 'Baja' %}#a4262c{% else %}#797775{% endif %}"
+              style="display:none;"
+              onchange="eqEstadoChipSelect(this)">
+            <span class="estado-chip-dot" style="
+              width:10px; height:10px; border-radius:50%; flex-shrink:0;
+              background: {% if es.nombre == 'Operativo' %}#107c10{% elif es.nombre == 'Baja' %}#a4262c{% else %}#797775{% endif %};
+            "></span>
             {{ es.nombre }}
           </label>
           {% endfor %}
@@ -562,5 +574,5 @@
 {% block extra_js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="{% static 'js/equipos.js' %}?v=2.7"></script>
+<script src="{% static 'js/equipos.js' %}?v=2.8"></script>
 {% endblock %}

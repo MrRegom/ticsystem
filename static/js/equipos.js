@@ -669,6 +669,9 @@ var EquiposApp = (function($) {
         $(f.id).val('');
         // Reset Select2 del Drawer
         $('#equipo-drawer .select2-eq').val('').trigger('change.select2');
+        // Reset chips de estado
+        $('input[name="e-estado"]').prop('checked', false);
+        $('#e-estado-container label').css({'border-color': '#edebe9', 'background': '#faf9f8', 'color': '#323130', 'font-weight': '500'});
         // Disable cascadas
         $(f.modelo).prop('disabled', true);
         $(f.unidad).prop('disabled', true);
@@ -800,7 +803,10 @@ var EquiposApp = (function($) {
                 $(f.articulo).val(eq.articulo).trigger('change');
                 $(f.so).val(eq.so).trigger('change');
                 if (eq.estado) {
-                    $('input[name="e-estado"][value="' + eq.estado + '"]').prop('checked', true);
+                    var $radio = $('input[name="e-estado"][value="' + eq.estado + '"]');
+                    $radio.prop('checked', true);
+                    // Activar el visual del chip
+                    eqEstadoChipSelect($radio[0]);
                 } else {
                     $('input[name="e-estado"]').prop('checked', false);
                 }
@@ -1419,4 +1425,23 @@ window.eqExportExcel = function() {
               '&unidad=' + encodeURIComponent(unidad);
               
     window.location.href = url;
+};
+
+// Función Global para el visual de chips de estado
+window.eqEstadoChipSelect = function(radio) {
+    // Reset todos
+    $('input[name="e-estado"]').closest('label').css({
+        'border-color': '#edebe9',
+        'background': '#faf9f8',
+        'color': '#323130',
+        'font-weight': '500'
+    });
+    // Activar el seleccionado
+    var color = $(radio).data('color') || '#0078d4';
+    $(radio).closest('label').css({
+        'border-color': color,
+        'background': color + '15',
+        'color': color,
+        'font-weight': '600'
+    });
 };
