@@ -884,43 +884,64 @@ var EquiposApp = (function($) {
                 if(resp.success && resp.data.length > 0) {
                     var html = '';
                     resp.data.forEach(function(b) {
-                        html += '<div style="border-left: 2px solid #3b82f6; padding-left: 15px; position: relative; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">';
-                        html += '<div style="position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: white; border: 2px solid #3b82f6;"></div>';
+                        html += '<div style="border-left: 2px solid #edebe9; padding-left: 20px; position: relative; margin-bottom: 24px; padding-bottom: 8px;">';
+                        html += '<div style="position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #0078d4; border: 2px solid #ffffff; box-shadow: 0 0 0 1px #0078d4;"></div>';
                         
                         if (b.source === 'SISTEMA') {
                             html += '<div style="display:flex; justify-content:space-between; align-items:center;">';
-                            html += '  <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">Registro #' + b.id + ' <span class="badge" style="background:#fef08a; color:#854d0e; margin-left:10px;">' + b.tipo_registro + '</span></div>';
-                            html += '  <div style="font-size: 0.75rem; color: #64748b;">Ingreso: ' + b.fecha + '</div>';
+                            html += '  <div style="font-weight: 600; font-size: 14px; color: #323130;">Registro #' + b.id + ' <span style="display:inline-block; margin-left: 8px; padding: 2px 6px; font-size: 11px; font-weight: 600; border-radius: 2px; background: #fff4ce; color: #795548;">' + b.tipo_registro + '</span></div>';
+                            html += '  <div style="font-size: 12px; color: #605e5c;">Ingreso: ' + b.fecha + '</div>';
                             html += '</div>';
-                            html += '<div style="font-size: 0.8rem; color: #64748b; margin-top:5px; margin-bottom: 8px;">Tecnico: ' + b.tecnico + ' | Solicitante: ' + b.solicitante + '</div>';
-                            html += '<div style="font-size: 0.85rem; color: #475569; margin-bottom: 3px;"><i class="fas fa-microchip text-secondary mr-1"></i><b>Acción:</b> ' + b.accion + '</div>';
-                            html += '<div style="font-size: 0.85rem; color: #475569; padding: 6px; background: #f1f5f9; border-radius: 4px; border: 1px dashed #cbd5e1;"><i class="fas fa-tools text-secondary mr-1"></i><b>Detalles:</b> ' + b.detalles + '</div>';
+                            
+                            html += '<div style="font-size: 12px; color: #605e5c; margin-top:6px; margin-bottom: 12px; display:flex; flex-wrap:wrap; gap:16px;">';
+                            html += '  <span><i class="fas fa-user-tie" style="color:#0078d4; width:16px;"></i> <b>Técnico:</b> ' + b.tecnico + '</span>';
+                            html += '  <span><i class="fas fa-user" style="color:#0078d4; width:16px;"></i> <b>Solicitante:</b> ' + b.solicitante + '</span>';
+                            html += '</div>';
+                            
+                            html += '<div style="background: #ffffff; border: 1px solid #edebe9; border-radius: 4px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.065), 0 0.3px 0.9px 0 rgba(0,0,0,0.06);">';
+                            html += '  <div style="font-size: 13px; font-weight: 600; color: #323130; margin-bottom: 4px;"><i class="fas fa-microchip" style="color:#0078d4; margin-right:6px;"></i> Acción: ' + b.accion + '</div>';
+                            html += '  <div style="font-size: 13px; color: #605e5c; padding-top: 4px; border-top: 1px solid #edebe9; margin-top: 6px;">' + b.detalles + '</div>';
+                            html += '</div>';
                         } else {
                             var isMantencion = (b.tipo_registro === 'Mantención');
                             var displayTipo = isMantencion ? 'Soporte' : b.tipo_registro;
-                            var badgeClass = isMantencion ? 'badge-warning' : 'badge-primary';
-                            html += '<div style="display:flex; justify-content:space-between; align-items:center;">';
-                            html += '  <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">Registro #' + b.id + ' <span class="badge ' + badgeClass + '" style="margin-left:10px;">' + displayTipo + '</span></div>';
+                            
+                            var badgeStyle = isMantencion ? 'background: #fff4ce; color: #795548;' : 'background: #deecf9; color: #005a9e;';
+                            
+                            html += '<div style="display:flex; justify-content:space-between; align-items:flex-start;">';
+                            html += '  <div style="font-weight: 600; font-size: 14px; color: #323130;">Registro #' + b.id + ' <span style="display:inline-block; margin-left: 8px; padding: 2px 6px; font-size: 11px; font-weight: 600; border-radius: 2px; ' + badgeStyle + '">' + displayTipo + '</span></div>';
                             var entregaText = '';
                             if (isMantencion) {
-                                entregaText = ' | Entrega: ' + (b.fecha_devolucion || '<span class="text-danger font-weight-bold"><i class="fas fa-clock mr-1"></i>Pendiente</span>');
+                                entregaText = ' | Entrega: ' + (b.fecha_devolucion || '<span style="color:#a4262c; font-weight:600;"><i class="fas fa-clock" style="margin-right:4px;"></i>Pendiente</span>');
                             }
-                            html += '  <div style="font-size: 0.75rem; color: #64748b;">Ingreso: ' + b.fecha_mantenimiento + entregaText + '</div>';
+                            html += '  <div style="font-size: 12px; color: #605e5c; text-align:right;">Ingreso: ' + b.fecha_mantenimiento + '<br>' + entregaText + '</div>';
                             html += '</div>';
-                            html += '<div style="font-size: 0.8rem; color: #64748b; margin-top:5px; margin-bottom: 8px;">Técnico: ' + b.tecnico + ' | Solicitante: ' + b.solicitante + ' | Unidad: ' + b.servicio_unidad + '</div>';
+                            
+                            html += '<div style="font-size: 12px; color: #605e5c; margin-top:2px; margin-bottom: 12px; display:flex; flex-wrap:wrap; gap:16px;">';
+                            html += '  <span><i class="fas fa-user-tie" style="color:#0078d4; width:16px;"></i> <b>Técnico:</b> ' + b.tecnico + '</span>';
+                            html += '  <span><i class="fas fa-user" style="color:#0078d4; width:16px;"></i> <b>Solicitante:</b> ' + b.solicitante + '</span>';
+                            html += '  <span><i class="fas fa-building" style="color:#0078d4; width:16px;"></i> <b>Unidad:</b> ' + b.servicio_unidad + '</span>';
+                            html += '</div>';
+                            
                             if(b.falla_reportada) {
-                                html += '<div style="font-size: 0.85rem; color: #475569; margin-bottom: 3px;"><i class="fas fa-exclamation-triangle text-warning mr-1"></i><b>Falla/Motivo:</b> ' + b.falla_reportada + '</div>';
+                                html += '<div style="background: #ffffff; border: 1px solid #edebe9; border-radius: 4px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.065), 0 0.3px 0.9px 0 rgba(0,0,0,0.06); border-left: 3px solid #d13438;">';
+                                html += '  <div style="font-size: 13px; font-weight: 600; color: #d13438; margin-bottom: 4px;"><i class="fas fa-exclamation-circle" style="margin-right:6px;"></i> Falla o Motivo Reportado</div>';
+                                html += '  <div style="font-size: 13px; color: #323130;">' + b.falla_reportada + '</div>';
+                                html += '</div>';
                             }
                             if(b.actividades_realizadas) {
-                                var actHtml = b.actividades_realizadas.replace(/\[Cierre\]/g, '<strong>[Cierre]</strong>');
-                                html += '<div style="font-size: 0.85rem; color: #475569; padding: 6px; background: #f0fdf4; border-radius: 4px; border: 1px dashed #bbf7d0;"><i class="fas fa-tools text-success mr-1"></i><b>Acción Realizada:</b> ' + actHtml + '</div>';
+                                var actHtml = b.actividades_realizadas.replace(/\[Cierre\]/g, '<span style="background:#107c10; color:white; padding:2px 6px; border-radius:2px; font-size:11px; font-weight:600; margin: 0 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">CIERRE</span>');
+                                html += '<div style="background: #f3f2f1; border: 1px solid #e1dfdd; border-radius: 4px; padding: 12px; margin-bottom: 8px;">';
+                                html += '  <div style="font-size: 13px; font-weight: 600; color: #0078d4; margin-bottom: 4px;"><i class="fas fa-wrench" style="margin-right:6px;"></i> Acción Realizada</div>';
+                                html += '  <div style="font-size: 13px; color: #323130; line-height:1.4;">' + actHtml + '</div>';
+                                html += '</div>';
                             }
                             
                             // Boton para cerrar mantención pendiente
                             if (b.tipo_registro === 'Mantención' && !b.fecha_devolucion) {
-                                html += '<div class="mt-2 text-right">';
-                                html += '  <button type="button" class="btn btn-sm btn-outline-success btn-cerrar-mantencion" data-id="' + b.id + '" data-eq="' + id + '">';
-                                html += '    <i class="fas fa-check-circle mr-1"></i> Cerrar Mantención';
+                                html += '<div class="mt-3 text-right">';
+                                html += '  <button type="button" class="ms-btn-primary btn-cerrar-mantencion" data-id="' + b.id + '" data-eq="' + id + '" style="display:inline-flex;">';
+                                html += '    <i class="fas fa-check"></i> Cerrar Mantención';
                                 html += '  </button>';
                                 html += '</div>';
                             }
