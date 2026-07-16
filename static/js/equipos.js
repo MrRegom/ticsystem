@@ -1102,7 +1102,6 @@ var EquiposApp = (function($) {
                 
                 Swal.fire({
                     title: 'Cerrar Mantención',
-                    target: document.getElementById('modalBitacora'),
                     html: `
                         <div class="text-left mt-2">
                             <label style="font-size:0.85rem; font-weight:bold;">Nuevas Actividades / Resolución (Opcional)</label>
