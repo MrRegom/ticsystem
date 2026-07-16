@@ -349,7 +349,10 @@ function eqEdit(id) {
 }
 
 function eqGuardar() {
-    document.getElementById('form-equipo').dispatchEvent(new Event('submit'));
+    var form = document.getElementById('form-equipo');
+    if (form.reportValidity()) {
+        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
 }
 
 var EquiposApp = (function($) {
