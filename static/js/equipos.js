@@ -66,13 +66,15 @@ function eqRenderRows() {
         var marca = eq.marca || '';
         var modelo = eq.modelo || '';
         var color = eq.estado_color || '#edebe9';
-        var ubicacion = eq.edificio ? eq.edificio : 'Sin Edificio';
-        var piso = eq.piso ? '· P' + eq.piso : '';
+        var edificio = eq.edificio ? eq.edificio : 'Sin Edificio';
         var unidad = eq.unidad || 'Sin Unidad';
+        var pma = eq.pma || '-';
+        var piso = eq.piso || '-';
         var estado = eq.estado || 'S/E';
         var serial = eq.serial_number || 'N/A';
         var ip = eq.ip || 'N/A';
-        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 260px 120px 1fr 200px 140px 80px; font-size: 11px;">';
+        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 240px 1fr 120px 70px 120px 110px 110px 70px; font-size: 11px;">';
+        
         // Col 1: Artículo / Modelo
         html += '<div class="ms-identity">';
         html += '  <img src="' + img + '" style="width:24px;height:24px;object-fit:contain;flex-shrink:0;background:#f3f2f1;padding:2px;">';
@@ -81,19 +83,31 @@ function eqRenderRows() {
         html += '    <span class="ms-user-email" style="color:#605e5c; font-size: 10px;">' + marca + ' ' + modelo + '</span>';
         html += '  </div>';
         html += '</div>';
-        // Col 2: Serie
+        
+        // Col 2: Ubicación
+        html += '<div style="min-width:0;"><div class="ms-user-name" style="font-size:11px;">' + edificio + '</div><div class="ms-user-email" style="font-size:10px;">' + unidad + '</div></div>';
+        
+        // Col 3: PMA
+        html += '<div style="font-size:11px;color:#323130;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + pma + '</div>';
+        
+        // Col 4: Piso
+        html += '<div style="font-size:11px;color:#323130;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + piso + '</div>';
+        
+        // Col 5: N° Serie
         html += '<div style="font-size:11px;color:#0078d4;font-weight:600;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + serial + '</div>';
-        // Col 3: Ubicación
-        html += '<div style="min-width:0;"><div class="ms-user-name" style="font-size:11px;">' + ubicacion + ' ' + piso + '</div></div>';
-        // Col 4: Unidad
-        html += '<div style="font-size:11px;color:#323130;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + unidad + '</div>';
-        // Col 5: Estado
+        
+        // Col 6: IP / Red
+        html += '<div style="font-size:11px;color:#323130;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + ip + '</div>';
+        
+        // Col 7: Estado
         html += '<div><span class="ms-status"><span class="ms-status-dot" style="background:' + color + ';"></span><span style="font-size:11px;">' + estado + '</span></span></div>';
-        // Col 6: Acciones
+        
+        // Col 8: Acciones
         html += '<div class="ms-row-actions" onclick="event.stopPropagation();">';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')"><i class="fas fa-history"></i></button>';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Editar" onclick="eqEdit(' + eq.id + ')"><i class="fas fa-edit"></i></button>';
         html += '</div>';
+        
         html += '</div>';
     });
     body.innerHTML = html;
