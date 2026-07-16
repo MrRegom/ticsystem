@@ -1161,6 +1161,46 @@ var EquiposApp = (function($) {
                 }
             });
 
+            // Verificar existencia del RUT en la BD al perder el foco (blur)
+            // — alerta inmediata antes de que el usuario llene el resto del formulario
+            $(document).on('blur', '#f-rut', function() {
+                var val = $(this).val().trim();
+                var $fb = $('#rut_feedback_eq');
+                if (!validarRutEq(val)) return; // Ya está marcado como inválido, nada que verificar
+
+                $fb.attr('class', 'form-text text-muted').html('<i class="fas fa-spinner fa-spin"></i> Verificando RUT en el sistema...');
+
+                $.ajax({
+                    url: '/api/funcionarios/search/?q=' + encodeURIComponent(val),
+                    type: 'GET',
+                    success: function(data) {
+                        // El endpoint de búsqueda devuelve {results: [{id, text}]}
+                        var existe = data.results && data.results.length > 0 &&
+                            data.results.some(function(r) {
+                                // Verificar si el texto del resultado contiene el RUT exacto
+                                return r.text && r.text.indexOf('(' + val + ')') !== -1;
+                            });
+
+                        if (existe) {
+                            $('#f-rut').removeClass('is-valid').addClass('is-invalid');
+                            $fb.attr('class', 'form-text text-danger font-weight-bold')
+                               .html('<i class="fas fa-exclamation-triangle"></i> Este RUT ya está registrado en el sistema. Selecciónalo en la búsqueda del solicitante.');
+                            // Deshabilitar el botón guardar para evitar duplicados
+                            $('#btn-guardar-funcionario').prop('disabled', true);
+                        } else {
+                            $('#f-rut').removeClass('is-invalid').addClass('is-valid');
+                            $fb.attr('class', 'form-text text-success font-weight-bold')
+                               .html('<i class="fas fa-check-circle"></i> RUT Válido · No existe en el sistema');
+                            $('#btn-guardar-funcionario').prop('disabled', false);
+                        }
+                    },
+                    error: function() {
+                        // Si falla la verificación, permitir continuar (el backend validará al guardar)
+                        $fb.attr('class', 'form-text text-muted').html('Ingresa el RUT con guion y dígito verificador.');
+                    }
+                });
+            });
+
             // Botón Guardar del modal Funcionario
             $('#btn-guardar-funcionario').on('click', function() {
                 var rut = $('#f-rut').val().trim();

@@ -534,7 +534,8 @@ class FuncionarioCreateAPIView(LoginRequiredMixin, View):
             from mantenedores.models import Cargo
             cargo = None
             if cargo_id:
-                cargo = Cargo.objects.filter(id=cargo_id).first()
+                # El frontend envía el nombre del cargo (del select por value="{{ cargo.nombre }}")
+                cargo = Cargo.objects.filter(nombre=cargo_id).first()
                 
             func = Funcionario.objects.create(
                 rut=rut_norm,
