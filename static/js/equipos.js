@@ -643,6 +643,11 @@ var EquiposApp = (function($) {
                 cargarEquipo(EqState.currentEquipoId);
             }
         });
+        $('#btn-view-qr').on('click', function() {
+            if (EqState.currentEquipoId) {
+                window.open('/equipos/' + EqState.currentEquipoId + '/qr/', '_blank');
+            }
+        });
         $('#btn-view-bitacora').on('click', function() {
             if (EqState.currentEquipoId) {
                 var sn = document.getElementById('ev-serial').textContent || '';
@@ -686,7 +691,17 @@ var EquiposApp = (function($) {
             ip: $(f.ip).val(),
             pma_id: $(f.pma).val(),
             estado_id: $(f.estado).val(),
-            proveedor_id: $(f.proveedor).val()
+            proveedor_id: $(f.proveedor).val(),
+            correlativo: $('#e-correlativo').val() || null,
+            
+            // Campos Enterprise
+            mac_address: $('#e-mac_address').val() || null,
+            switch_ip: $('#e-switch_ip').val() || null,
+            patch_panel: $('#e-patch_panel').val() || null,
+            puerto_red: $('#e-puerto_red').val() || null,
+            orden_compra: $('#e-orden_compra').val() || null,
+            fecha_compra: $('#e-fecha_compra').val() || null,
+            vencimiento_garantia: $('#e-vencimiento_garantia').val() || null
         };
 
         $(el.alert).addClass('d-none');
@@ -773,6 +788,14 @@ var EquiposApp = (function($) {
                 $(f.serial).val(eq.serial_number);
                 $(f.ip).val(eq.ip);
                 
+                // Nuevos campos Enterprise
+                $('#e-mac_address').val(eq.mac_address || '');
+                $('#e-switch_ip').val(eq.switch_ip || '');
+                $('#e-patch_panel').val(eq.patch_panel || '');
+                $('#e-puerto_red').val(eq.puerto_red || '');
+                $('#e-orden_compra').val(eq.orden_compra || '');
+                $('#e-fecha_compra').val(eq.fecha_compra || '');
+                $('#e-vencimiento_garantia').val(eq.vencimiento_garantia || '');
                 // Set selects simples (no cascada)
                 $(f.articulo).val(eq.articulo).trigger('change');
                 $(f.so).val(eq.so).trigger('change');
@@ -1380,3 +1403,16 @@ $(document).ready(function() {
     // Cargar la lista ms-list al iniciar la página
     eqLoadList();
 });
+
+// Función Global para exportar a Excel
+window.eqExportExcel = function() {
+    var q = $('#eq-search').val() || '';
+    var estado = $('#eq-filter-estado').val() || '';
+    var unidad = $('#eq-filter-unidad').val() || '';
+    
+    var url = '/equipos/exportar/?q=' + encodeURIComponent(q) + 
+              '&estado=' + encodeURIComponent(estado) + 
+              '&unidad=' + encodeURIComponent(unidad);
+              
+    window.location.href = url;
+};

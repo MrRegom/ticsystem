@@ -253,6 +253,17 @@ class EquipoDetailView(LoginRequiredMixin, View):
                 'activador': equipo.activador or '',
                 'pmalugar': equipo.pmalugar or '',
                 'comentario': equipo.comentario or '',
+                'correlativo': equipo.correlativo or '',
+                
+                # Campos Enterprise
+                'mac_address': equipo.mac_address or '',
+                'switch_ip': equipo.switch_ip or '',
+                'patch_panel': equipo.patch_panel or '',
+                'puerto_red': equipo.puerto_red or '',
+                'orden_compra': equipo.orden_compra or '',
+                'fecha_compra': equipo.fecha_compra.strftime('%Y-%m-%d') if equipo.fecha_compra else '',
+                'vencimiento_garantia': equipo.vencimiento_garantia.strftime('%Y-%m-%d') if equipo.vencimiento_garantia else '',
+                
                 'imagen': img_url,
             }
         })
@@ -703,3 +714,107 @@ class EquiposPanelControlView(LoginRequiredMixin, TemplateView):
         context['heatmap_max'] = max_hm
         
         return context
+
+
+import io
+import openpyxl
+from openpyxl.styles import Font, Alignment
+from django.http import HttpResponse
+import qrcode
+import base64
+
+class EquipoExportExcelView(LoginRequiredMixin, View):
+    """Genera un archivo Excel con el inventario filtrado actual."""
+    def get(self, request, *args, **kwargs):
+        from equipos.models import Equipo
+        from equipos.services.equipo_repository import EquipoRepository
+        q = request.GET.get('q', '').strip()
+        estado = request.GET.get('estado', '')
+        unidad = request.GET.get('unidad', '')
+        
+        records = EquipoRepository.get_paginated_list(
+            start=0, length=99999, search_value=q,
+            order_column='-fecha_creacion', order_dir='desc',
+            estado=estado, unidad=unidad
+        )
+        
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Inventario TIC"
+        
+        headers = ["ID", "Serie/Correlativo", "Artículo", "Marca", "Modelo", "Edificio", "Piso", "Unidad", "Estado", "IP", "PMA", "MAC", "Switch", "Patch Panel", "Puerto", "Orden Compra", "Fecha Compra", "Venc. Garantía"]
+        for col_num, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col_num)
+            cell.value = header
+            cell.font = Font(bold=True)
+            cell.alignment = Alignment(horizontal="center")
+            
+        for row_num, e in enumerate(records, 2):
+            recinto = e.pma.recinto if e.pma else None
+            piso = recinto.piso if recinto else None
+            edificio = piso.edificio if piso else None
+            uni = recinto.unidad if recinto else None
+            
+            ws.cell(row=row_num, column=1, value=e.id)
+            ws.cell(row=row_num, column=2, value=e.serial_number or e.correlativo or '')
+            ws.cell(row=row_num, column=3, value=e.articulo.nombre if e.articulo else '')
+            ws.cell(row=row_num, column=4, value=e.marca.nombre if e.marca else '')
+            ws.cell(row=row_num, column=5, value=e.modelo.nombre if e.modelo else '')
+            ws.cell(row=row_num, column=6, value=edificio.nombre if edificio else '')
+            ws.cell(row=row_num, column=7, value=piso.nombre if piso else '')
+            ws.cell(row=row_num, column=8, value=uni.nombre if uni else '')
+            ws.cell(row=row_num, column=9, value=e.estado.nombre if e.estado else '')
+            ws.cell(row=row_num, column=10, value=str(e.ip) if e.ip else '')
+            ws.cell(row=row_num, column=11, value=e.pma.nombre if e.pma else '')
+            ws.cell(row=row_num, column=12, value=e.mac_address or '')
+            ws.cell(row=row_num, column=13, value=e.switch_ip or '')
+            ws.cell(row=row_num, column=14, value=e.patch_panel or '')
+            ws.cell(row=row_num, column=15, value=e.puerto_red or '')
+            ws.cell(row=row_num, column=16, value=e.orden_compra or '')
+            ws.cell(row=row_num, column=17, value=e.fecha_compra.strftime('%d/%m/%Y') if e.fecha_compra else '')
+            ws.cell(row=row_num, column=18, value=e.vencimiento_garantia.strftime('%d/%m/%Y') if e.vencimiento_garantia else '')
+            
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="Inventario_Equipos.xlsx"'
+        wb.save(response)
+        return response
+
+
+class EquipoQRView(LoginRequiredMixin, View):
+    """Genera una etiqueta QR lista para imprimir de un equipo."""
+    def get(self, request, equipo_id, *args, **kwargs):
+        from equipos.services.equipo_service import EquipoService
+        equipo = EquipoService.obtener_equipo_por_id(equipo_id)
+        if not equipo:
+            return HttpResponse("Equipo no encontrado", status=404)
+            
+        url = request.build_absolute_uri(f"/equipos/?open_eq={equipo.id}")
+        qr = qrcode.make(url)
+        buf = io.BytesIO()
+        qr.save(buf, format='PNG')
+        img_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+        
+        html = f'''
+        <html><head><title>QR #{equipo.id} {equipo.serial_number}</title></head>
+        <body style="margin:0; padding:20px; font-family:'Segoe UI', sans-serif; text-align:center; background:#f3f2f1;">
+            <div style="background:#fff; border: 2px solid #323130; padding: 20px; display: inline-block; width: 320px; box-sizing:border-box;">
+                <h2 style="margin:0; font-size:18px; color:#323130;">HOSPITAL MARGA MARGA</h2>
+                <div style="font-size:14px; margin-top:8px; color:#605e5c;">ID: #{equipo.id} - SN: {equipo.serial_number or '-'}</div>
+                <img src="data:image/png;base64,{img_b64}" style="width:220px; height:220px; margin: 12px 0;">
+                <div style="font-size:15px; font-weight:600; color:#323130;">{equipo.articulo.nombre if equipo.articulo else ''} {equipo.marca.nombre if equipo.marca else ''}</div>
+                <div style="font-size:12px; margin-top:6px; color:#605e5c;">{equipo.pma.nombre if equipo.pma else ''}</div>
+            </div>
+            <br>
+            <button onclick="window.print()" style="margin-top:24px; padding:10px 24px; background:#0078d4; color:white; border:none; border-radius:4px; font-size:14px; font-weight:600; cursor:pointer;">
+                🖨️ Imprimir Etiqueta
+            </button>
+            <style>
+                @media print {{
+                    body {{ background: white !important; padding: 0 !important; }}
+                    button {{ display: none !important; }}
+                    div {{ border-color: black !important; }}
+                }}
+            </style>
+        </body></html>
+        '''
+        return HttpResponse(html)

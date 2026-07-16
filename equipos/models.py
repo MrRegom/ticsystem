@@ -150,6 +150,17 @@ class Equipo(models.Model):
         blank=True,
         verbose_name="PMA / Lugar"
     )
+    
+    # Nuevos campos Enterprise (Garantía y Compras)
+    orden_compra = models.CharField(max_length=100, null=True, blank=True, verbose_name="Orden de Compra")
+    fecha_compra = models.DateField(null=True, blank=True, verbose_name="Fecha de Compra")
+    vencimiento_garantia = models.DateField(null=True, blank=True, verbose_name="Vencimiento Garantía")
+    
+    # Nuevos campos Enterprise (Conectividad / Red)
+    mac_address = models.CharField(max_length=100, null=True, blank=True, verbose_name="MAC Address")
+    switch_ip = models.CharField(max_length=100, null=True, blank=True, verbose_name="Switch (Nombre/IP)")
+    patch_panel = models.CharField(max_length=100, null=True, blank=True, verbose_name="Patch Panel")
+    puerto_red = models.CharField(max_length=50, null=True, blank=True, verbose_name="Puerto / Boca")
     comentario = models.TextField(
         null=True,
         blank=True,

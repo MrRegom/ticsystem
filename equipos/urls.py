@@ -12,6 +12,8 @@ from equipos.views import (
     EquipoCheckView,
     ImportarMargaMargaView,
     EquiposPanelControlView,
+    EquipoExportExcelView,
+    EquipoQRView,
 )
 
 app_name = 'equipos'
@@ -19,6 +21,8 @@ app_name = 'equipos'
 urlpatterns = [
     path('', EquiposDashboardView.as_view(), name='dashboard'),
     path('panel/', EquiposPanelControlView.as_view(), name='panel'),
+    path('exportar/', EquipoExportExcelView.as_view(), name='exportar_excel'),
+    path('<int:equipo_id>/qr/', EquipoQRView.as_view(), name='qr'),
     path('api/', EquipoListView.as_view(), name='list_api'),
     path('api/action/', EquipoActionView.as_view(), name='action_api'),
     path('api/<int:equipo_id>/', EquipoDetailView.as_view(), name='detail_api'),

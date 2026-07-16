@@ -101,6 +101,9 @@
         <option value="{{ u.nombre }}">{{ u.nombre }}</option>
         {% endfor %}
       </select>
+      <button class="ms-btn-secondary" id="btn-export-excel" onclick="eqExportExcel()" style="height: 28px; padding: 0 12px; display: flex; align-items: center; gap: 6px;">
+        <i class="fas fa-file-excel" style="color: #107c10;"></i> <span style="font-size: 12px;">Exportar a Excel</span>
+      </button>
     </div>
   </div>
 
@@ -245,6 +248,47 @@
           </select>
         </div>
       </div>
+      <!-- Sección Conectividad y Red -->
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-network-wired" style="color: #0078d4;"></i> Conectividad y Red
+      </div>
+      <div class="ms-form-grid" style="margin-bottom: 16px;">
+        <div class="ms-form-group">
+          <label class="ms-label">MAC Address</label>
+          <input type="text" class="ms-input" id="e-mac_address" placeholder="Ej: 00:1A:2B..." style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Switch (Nombre / IP)</label>
+          <input type="text" class="ms-input" id="e-switch_ip" placeholder="Ej: SW-Piso3" style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Patch Panel</label>
+          <input type="text" class="ms-input" id="e-patch_panel" placeholder="Ej: PP-A" style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Puerto / Boca</label>
+          <input type="text" class="ms-input" id="e-puerto_red" placeholder="Ej: 24" style="margin-bottom:0;">
+        </div>
+      </div>
+
+      <!-- Sección Garantías y Compras -->
+      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-file-invoice-dollar" style="color: #0078d4;"></i> Garantías y Adquisición
+      </div>
+      <div class="ms-form-grid" style="margin-bottom: 16px;">
+        <div class="ms-form-group">
+          <label class="ms-label">Orden de Compra</label>
+          <input type="text" class="ms-input" id="e-orden_compra" placeholder="Ej: OC-123456" style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Fecha de Compra</label>
+          <input type="date" class="ms-input" id="e-fecha_compra" style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group" style="grid-column: span 2;">
+          <label class="ms-label">Vencimiento Garantía</label>
+          <input type="date" class="ms-input" id="e-vencimiento_garantia" style="margin-bottom:0;">
+        </div>
+      </div>
 
       <!-- Sección Estado -->
       <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
@@ -275,6 +319,9 @@
     <div class="ms-modal-header" style="border-bottom: none; padding-bottom: 0;">
       <div style="flex: 1;"></div>
       <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="ms-icon-btn" id="btn-view-qr" title="Imprimir Código QR" style="color:#0078d4;">
+          <i class="fas fa-qrcode"></i>
+        </button>
         <button class="ms-icon-btn" id="btn-view-bitacora" title="Ver Bitácora / Mantenciones" style="color:#0078d4;">
           <i class="fas fa-history"></i>
         </button>
@@ -511,5 +558,5 @@
 {% block extra_js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="{% static 'js/equipos.js' %}?v=2.5"></script>
+<script src="{% static 'js/equipos.js' %}?v=2.6"></script>
 {% endblock %}

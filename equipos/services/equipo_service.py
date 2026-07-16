@@ -156,6 +156,14 @@ class EquipoService:
             activador=(datos.get('activador') or '').strip() or None,
             pmalugar=(datos.get('pmalugar') or '').strip() or None,
             comentario=(datos.get('comentario') or '').strip() or None,
+            correlativo=(datos.get('correlativo') or '').strip() or None,
+            mac_address=(datos.get('mac_address') or '').strip() or None,
+            switch_ip=(datos.get('switch_ip') or '').strip() or None,
+            patch_panel=(datos.get('patch_panel') or '').strip() or None,
+            puerto_red=(datos.get('puerto_red') or '').strip() or None,
+            orden_compra=(datos.get('orden_compra') or '').strip() or None,
+            fecha_compra=datos.get('fecha_compra') or None,
+            vencimiento_garantia=datos.get('vencimiento_garantia') or None,
             modificado_por=usuario,
         )
         equipo.full_clean()
@@ -191,6 +199,20 @@ class EquipoService:
         equipo.activador = (datos.get('activador') or '').strip() or None
         equipo.pmalugar = (datos.get('pmalugar') or '').strip() or None
         equipo.comentario = (datos.get('comentario') or '').strip() or None
+        equipo.correlativo = (datos.get('correlativo') or '').strip() or None
+        equipo.mac_address = (datos.get('mac_address') or '').strip() or None
+        equipo.switch_ip = (datos.get('switch_ip') or '').strip() or None
+        equipo.patch_panel = (datos.get('patch_panel') or '').strip() or None
+        equipo.puerto_red = (datos.get('puerto_red') or '').strip() or None
+        equipo.orden_compra = (datos.get('orden_compra') or '').strip() or None
+        
+        # Las fechas pueden venir vacías, si es string vacío se asigna None para DB
+        f_compra = datos.get('fecha_compra')
+        equipo.fecha_compra = f_compra if f_compra else None
+        
+        f_garantia = datos.get('vencimiento_garantia')
+        equipo.vencimiento_garantia = f_garantia if f_garantia else None
+
         equipo.modificado_por = usuario
         
         # Volatile property para signals.py
