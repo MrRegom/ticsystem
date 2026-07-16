@@ -70,9 +70,10 @@ function eqRenderRows() {
         var pma = eq.pma || '-';
         var piso = eq.piso || '-';
         var estado = eq.estado || 'S/E';
+        var inv = eq.num_inventario || '-';
         var serial = eq.serial_number || 'N/A';
         var ip = eq.ip || 'N/A';
-        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 240px 1fr 120px 70px 120px 110px 110px 70px; font-size: 11px;">';
+        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 200px 1fr 120px 70px 120px 120px 110px 110px 70px; font-size: 11px;">';
         
         // Col 1: Artículo / Modelo
         html += '<div class="ms-identity">';
@@ -92,16 +93,19 @@ function eqRenderRows() {
         // Col 4: Piso
         html += '<div style="font-size:11px;color:#323130;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + piso + '</div>';
         
-        // Col 5: N° Serie
+        // Col 5: N° Inventario
+        html += '<div style="font-size:11px;color:#107c10;font-weight:600;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + inv + '</div>';
+        
+        // Col 6: N° Serie
         html += '<div style="font-size:11px;color:#0078d4;font-weight:600;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + serial + '</div>';
         
-        // Col 6: IP / Red
+        // Col 7: IP / Red
         html += '<div style="font-size:11px;color:#323130;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + ip + '</div>';
         
-        // Col 7: Estado
+        // Col 8: Estado
         html += '<div><span class="ms-status"><span class="ms-status-dot" style="background:' + color + ';"></span><span style="font-size:11px;">' + estado + '</span></span></div>';
         
-        // Col 8: Acciones
+        // Col 9: Acciones
         html += '<div class="ms-row-actions" onclick="event.stopPropagation();" style="position:static; opacity:1; background:transparent; padding:0;">';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Ver Detalle" onclick="eqOpenView(' + eq.id + ')"><i class="fas fa-eye"></i></button>';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')" ><i class="fas fa-history"></i></button>';

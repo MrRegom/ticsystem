@@ -789,7 +789,7 @@ class EquipoQRView(LoginRequiredMixin, View):
         if not equipo:
             return HttpResponse("Equipo no encontrado", status=404)
             
-        url = request.build_absolute_uri(f"/equipos/?open_eq={equipo.id}")
+        url = request.build_absolute_uri(f"/equipos/{equipo.id}/ficha/")
         qr = qrcode.make(url)
         buf = io.BytesIO()
         qr.save(buf, format='PNG')
@@ -819,3 +819,19 @@ class EquipoQRView(LoginRequiredMixin, View):
         </body></html>
         '''
         return HttpResponse(html)
+
+class EquipoFichaPublicaView(View):
+    """Vista pública (sin login) para escaneo de QR."""
+    def get(self, request, equipo_id):
+        from equipos.models import Equipo
+        equipo = Equipo.objects.select_related(
+            'articulo', 'marca', 'modelo', 'estado', 'pma__recinto__unidad', 'pma__recinto__piso__edificio'
+        ).filter(id=equipo_id).first()
+        
+        if not equipo:
+            return HttpResponse("Equipo no encontrado", status=404)
+            
+        context = {
+            'equipo': equipo
+        }
+        return render(request, 'equipos/ficha_publica.html', context)

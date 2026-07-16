@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Equipo #{{ equipo.id }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f3f2f1;
+            margin: 0;
+            padding: 0;
+            color: #323130;
+        }
+        .header {
+            background-color: #0078d4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 4px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .card {
+            background: white;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+            padding: 20px;
+        }
+        .item {
+            margin-bottom: 16px;
+        }
+        .item:last-child {
+            margin-bottom: 0;
+        }
+        .label {
+            font-size: 12px;
+            color: #605e5c;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .value {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>HOSPITAL MARGA MARGA</h1>
+        <p>Ficha de Activo TIC</p>
+    </div>
+
+    <div class="card">
+        <div class="item">
+            <div class="label">Identificación</div>
+            <div class="value" style="font-size: 18px; font-weight: 600; color: #0078d4;">
+                {{ equipo.articulo.nombre|default:'Equipo' }} {{ equipo.marca.nombre|default:'' }} {{ equipo.modelo.nombre|default:'' }}
+            </div>
+        </div>
+
+        <div class="item" style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <div class="label">N° Serie (S/N)</div>
+                <div class="value">{{ equipo.serial_number|default:'N/A' }}</div>
+            </div>
+            <div style="flex: 1;">
+                <div class="label">N° Inventario</div>
+                <div class="value">{{ equipo.num_inventario|default:'-' }}</div>
+            </div>
+        </div>
+        
+        <hr style="border: 0; border-top: 1px solid #edebe9; margin: 16px 0;">
+
+        <div class="item">
+            <div class="label">Ubicación Actual</div>
+            <div class="value">
+                {% if equipo.pma %}
+                    <div style="font-weight: 600;">{{ equipo.pma.nombre }}</div>
+                    <div style="font-size: 13px; color: #605e5c; margin-top: 2px;">
+                        {{ equipo.pma.recinto.unidad.nombre }} | {{ equipo.pma.recinto.piso.edificio.nombre }} ({{ equipo.pma.recinto.piso.nombre }})
+                    </div>
+                {% else %}
+                    Sin asignar
+                {% endif %}
+            </div>
+        </div>
+        
+        <hr style="border: 0; border-top: 1px solid #edebe9; margin: 16px 0;">
+
+        <div class="item">
+            <div class="label">Estado Operativo</div>
+            <div style="margin-top: 8px;">
+                {% if equipo.estado %}
+                    <span class="badge" style="background-color: {{ equipo.estado.color_hex|default:'#797775' }};">
+                        <i class="fas fa-circle" style="font-size: 8px;"></i>
+                        {{ equipo.estado.nombre }}
+                    </span>
+                {% else %}
+                    <span style="color:#605e5c;">Sin registro</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -264,6 +264,7 @@ class EquipoService:
 
             data.append({
                 'id': e.id,
+                'num_inventario': e.num_inventario or '',
                 'serial_number': e.serial_number or e.correlativo or str(e.id),
                 'articulo': e.articulo.nombre if e.articulo else '',
                 'marca': e.marca.nombre if e.marca else '',
