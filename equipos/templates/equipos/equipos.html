@@ -34,54 +34,46 @@
   <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
     
     <!-- Card 1: Total -->
-    <div class="ms-card" style="margin: 0; padding: 0; display: flex; align-items: center; overflow: hidden; height: 68px;">
-      <div style="width: 68px; height: 100%; background-color: #0078d4; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
-        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.15); display: flex; justify-content: center; align-items: center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
-        </div>
+    <div class="ms-card" style="margin: 0; padding: 16px; display: flex; align-items: center; height: 76px;">
+      <div style="width: 44px; height: 44px; border-radius: 6px; background-color: rgba(0, 120, 212, 0.1); display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-right: 16px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0078d4" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
       </div>
-      <div style="padding: 0 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
         <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Total Activos</div>
-        <div style="font-size: 22px; font-weight: 700; color: #323130; line-height: 1;" id="kpi-total">{{ kpi.total }}</div>
+        <div style="font-size: 24px; font-weight: 700; color: #323130; line-height: 1;" id="kpi-total">{{ kpi.total }}</div>
       </div>
     </div>
 
     <!-- Card 2: Operativos -->
-    <div class="ms-card" style="margin: 0; padding: 0; display: flex; align-items: center; overflow: hidden; height: 68px;">
-      <div style="width: 68px; height: 100%; background-color: #107c10; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
-        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.15); display: flex; justify-content: center; align-items: center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-        </div>
+    <div class="ms-card" style="margin: 0; padding: 16px; display: flex; align-items: center; height: 76px;">
+      <div style="width: 44px; height: 44px; border-radius: 6px; background-color: rgba(16, 124, 16, 0.1); display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-right: 16px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#107c10" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
       </div>
-      <div style="padding: 0 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
         <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Operativos</div>
-        <div style="font-size: 22px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.operativos }}</div>
+        <div style="font-size: 24px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.operativos }}</div>
       </div>
     </div>
 
     <!-- Card 3: Soporte -->
-    <div class="ms-card" style="margin: 0; padding: 0; display: flex; align-items: center; overflow: hidden; height: 68px;">
-      <div style="width: 68px; height: 100%; background-color: #f59e0b; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
-        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.2); display: flex; justify-content: center; align-items: center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"/><path d="M21 16v2a4 4 0 0 1-4 4h-5"/></svg>
-        </div>
+    <div class="ms-card" style="margin: 0; padding: 16px; display: flex; align-items: center; height: 76px;">
+      <div style="width: 44px; height: 44px; border-radius: 6px; background-color: rgba(245, 158, 11, 0.15); display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-right: 16px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"/><path d="M21 16v2a4 4 0 0 1-4 4h-5"/></svg>
       </div>
-      <div style="padding: 0 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
         <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Soporte</div>
-        <div style="font-size: 22px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.soporte }}</div>
+        <div style="font-size: 24px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.soporte }}</div>
       </div>
     </div>
 
     <!-- Card 4: Alerta -->
-    <div class="ms-card" style="margin: 0; padding: 0; display: flex; align-items: center; overflow: hidden; height: 68px;">
-      <div style="width: 68px; height: 100%; background-color: #a4262c; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
-        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.15); display: flex; justify-content: center; align-items: center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
-        </div>
+    <div class="ms-card" style="margin: 0; padding: 16px; display: flex; align-items: center; height: 76px;">
+      <div style="width: 44px; height: 44px; border-radius: 6px; background-color: rgba(164, 38, 44, 0.1); display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-right: 16px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a4262c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
       </div>
-      <div style="padding: 0 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
         <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Con Alerta</div>
-        <div style="font-size: 22px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.total|add:"-"|add:kpi.operativos }}</div>
+        <div style="font-size: 24px; font-weight: 700; color: #323130; line-height: 1;">{{ kpi.total|add:"-"|add:kpi.operativos }}</div>
       </div>
     </div>
 
