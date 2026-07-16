@@ -101,6 +101,47 @@
   <span id="ms-toast-text" class="ms-toast-text"></span>
 </div>
 
+<!-- Modal de Visualización (Solo Lectura) -->
+<div class="ms-modal-overlay" id="view-modal-overlay" onclick="closeViewModal()">
+  <div class="ms-modal" onclick="event.stopPropagation()">
+    <div class="ms-modal-header">
+      <h3 class="ms-modal-title">Detalles de Identidad</h3>
+      <button class="ms-modal-close" onclick="closeViewModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="ms-modal-body">
+      <div class="ms-detail-list">
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Nombre Completo</span>
+          <span class="ms-detail-value" id="view-nombre"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">RUT</span>
+          <span class="ms-detail-value" id="view-rut"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Correo</span>
+          <span class="ms-detail-value" id="view-email"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Unidad / Servicio</span>
+          <span class="ms-detail-value" id="view-unidad"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Perfil de Acceso</span>
+          <span class="ms-detail-value" id="view-rol"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Estado</span>
+          <span class="ms-detail-value" id="view-estado"></span>
+        </div>
+      </div>
+    </div>
+    <div class="ms-modal-footer">
+      <button class="ms-btn-primary" onclick="closeViewModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}

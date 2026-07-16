@@ -92,7 +92,7 @@ function renderList(users) {
     const userJson = encodeURIComponent(JSON.stringify(u));
 
     html += `
-      <div class="ms-list-row">
+      <div class="ms-list-row" onclick="openViewModal('${userJson}')">
         <div class="ms-identity">
           <div class="ms-avatar" style="background-color: ${color}">${initials}</div>
           <div class="ms-user-info">
@@ -104,7 +104,7 @@ function renderList(users) {
         <div>${roleBadge}</div>
         <div>${statusBadge}</div>
         <div class="ms-row-actions">
-          <button class="ms-icon-btn" onclick="openDrawer('editar', '${userJson}')" title="Modificar Identidad">
+          <button class="ms-icon-btn" onclick="event.stopPropagation(); openDrawer('editar', '${userJson}')" title="Modificar Identidad">
             <i class="fas fa-edit"></i>
           </button>
         </div>
@@ -268,4 +268,26 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+// ==========================================
+// Modal de Visualización
+// ==========================================
+function openViewModal(userJsonStr) {
+  const u = JSON.parse(decodeURIComponent(userJsonStr));
+  
+  document.getElementById('view-nombre').innerText = `${u.nombres || ''} ${u.apellidos || ''}`.trim() || 'Sin Nombre';
+  document.getElementById('view-rut').innerText = u.rut || 'Sin RUT';
+  document.getElementById('view-email').innerText = u.email || 'Sin Correo';
+  document.getElementById('view-unidad').innerText = u.unidad || 'Sin Asignar';
+  document.getElementById('view-rol').innerText = u.rol || 'Sin Perfil';
+  
+  let estadoText = (u.is_active === "Sí" || u.is_active === true || u.is_active === "Activo") ? "Activo" : "Inactivo";
+  document.getElementById('view-estado').innerText = estadoText;
+
+  document.getElementById('view-modal-overlay').classList.add('active');
+}
+
+function closeViewModal() {
+  document.getElementById('view-modal-overlay').classList.remove('active');
 }

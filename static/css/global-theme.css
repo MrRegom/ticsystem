@@ -406,3 +406,33 @@ h5, .h5 { font-size: 0.85rem !important; }
 .alert {
     border-radius: 0 !important;
 }
+
+/* 💎 Modal Microsoft Fluent (Bordes cuadrados por regla) */
+.ms-modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4); z-index: 1040; opacity: 0; visibility: hidden; transition: 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.ms-modal-overlay.active { opacity: 1; visibility: visible; }
+.ms-modal {
+  background: #fff; width: 500px; max-width: 90%; 
+  border-radius: 0; /* Regla AGENTS.md */
+  box-shadow: 0 25.6px 57.6px 0 rgba(0,0,0,0.22), 0 4.8px 14.4px 0 rgba(0,0,0,0.18);
+  transform: scale(0.95); transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex; flex-direction: column;
+}
+.ms-modal-overlay.active .ms-modal { transform: scale(1); }
+.ms-modal-header {
+  padding: 16px 24px; border-bottom: 1px solid #edebe9; display: flex; justify-content: space-between; align-items: center;
+}
+.ms-modal-title { font-size: 18px; font-weight: 600; color: #323130; margin: 0; }
+.ms-modal-close { background: none; border: none; font-size: 16px; color: #605e5c; cursor: pointer; }
+.ms-modal-close:hover { color: #323130; }
+.ms-modal-body { padding: 24px; }
+.ms-modal-footer { padding: 16px 24px; background: #faf9f8; border-top: 1px solid #edebe9; display: flex; justify-content: flex-end; }
+
+/* Microsoft Detail List (pares de clave-valor) */
+.ms-detail-list { display: flex; flex-direction: column; gap: 16px; }
+.ms-detail-item { display: grid; grid-template-columns: 140px 1fr; align-items: baseline; }
+.ms-detail-label { font-size: 12px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; }
+.ms-detail-value { font-size: 14px; color: #323130; }
