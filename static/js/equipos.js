@@ -696,6 +696,7 @@ var EquiposApp = (function($) {
             estado_id: $('input[name="e-estado"]:checked').val(),
             proveedor_id: $(f.proveedor).val(),
             correlativo: $('#e-correlativo').val() || null,
+            num_inventario: $('#e-num_inventario').val() || null,
             
             // Campos Enterprise
             mac_address: $('#e-mac_address').val() || null,
@@ -799,6 +800,8 @@ var EquiposApp = (function($) {
                 $('#e-orden_compra').val(eq.orden_compra || '');
                 $('#e-fecha_compra').val(eq.fecha_compra || '');
                 $('#e-vencimiento_garantia').val(eq.vencimiento_garantia || '');
+                $('#e-correlativo').val(eq.correlativo || '');
+                $('#e-num_inventario').val(eq.num_inventario || '');
                 // Set selects simples (no cascada)
                 $(f.articulo).val(eq.articulo).trigger('change');
                 $(f.so).val(eq.so).trigger('change');

@@ -157,6 +157,7 @@ class EquipoService:
             pmalugar=(datos.get('pmalugar') or '').strip() or None,
             comentario=(datos.get('comentario') or '').strip() or None,
             correlativo=(datos.get('correlativo') or '').strip() or None,
+            num_inventario=(datos.get('num_inventario') or '').strip() or None,
             mac_address=(datos.get('mac_address') or '').strip() or None,
             switch_ip=(datos.get('switch_ip') or '').strip() or None,
             patch_panel=(datos.get('patch_panel') or '').strip() or None,
@@ -200,6 +201,7 @@ class EquipoService:
         equipo.pmalugar = (datos.get('pmalugar') or '').strip() or None
         equipo.comentario = (datos.get('comentario') or '').strip() or None
         equipo.correlativo = (datos.get('correlativo') or '').strip() or None
+        equipo.num_inventario = (datos.get('num_inventario') or '').strip() or None
         equipo.mac_address = (datos.get('mac_address') or '').strip() or None
         equipo.switch_ip = (datos.get('switch_ip') or '').strip() or None
         equipo.patch_panel = (datos.get('patch_panel') or '').strip() or None

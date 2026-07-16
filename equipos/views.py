@@ -254,6 +254,7 @@ class EquipoDetailView(LoginRequiredMixin, View):
                 'pmalugar': equipo.pmalugar or '',
                 'comentario': equipo.comentario or '',
                 'correlativo': equipo.correlativo or '',
+                'num_inventario': equipo.num_inventario or '',
                 
                 # Campos Enterprise
                 'mac_address': equipo.mac_address or '',

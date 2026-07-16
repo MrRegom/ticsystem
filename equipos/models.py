@@ -62,6 +62,15 @@ class Equipo(models.Model):
         related_name='equipos',
         verbose_name="PMA (Punto de Montaje)"
     )
+    num_inventario = models.CharField(
+        max_length=80,
+        null=True,
+        blank=True,
+        unique=True,
+        db_index=True,
+        verbose_name="N° Inventario Institucional",
+        help_text="Número de Activo Fijo asignado por Contabilidad (Ej: AF-000345)"
+    )
     correlativo = models.CharField(
         max_length=50,
         null=True,

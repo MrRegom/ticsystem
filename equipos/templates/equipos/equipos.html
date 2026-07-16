@@ -201,7 +201,11 @@
           <input type="text" class="ms-input" id="e-ip" placeholder="10.x.x.x" style="margin-bottom:0;">
         </div>
         <div class="ms-form-group">
-          <label class="ms-label">Correlativo Interno</label>
+          <label class="ms-label">N° Inventario Institucional</label>
+          <input type="text" class="ms-input" id="e-num_inventario" placeholder="Ej: AF-000345" style="margin-bottom:0;">
+        </div>
+        <div class="ms-form-group">
+          <label class="ms-label">Correlativo Interno TIC</label>
           <input type="text" class="ms-input" id="e-correlativo" placeholder="Opcional" style="margin-bottom:0;">
         </div>
         <div class="ms-form-group">
@@ -268,25 +272,6 @@
         <div class="ms-form-group">
           <label class="ms-label">Puerto / Boca</label>
           <input type="text" class="ms-input" id="e-puerto_red" placeholder="Ej: 24" style="margin-bottom:0;">
-        </div>
-      </div>
-
-      <!-- Sección Garantías y Compras -->
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
-        <i class="fas fa-file-invoice-dollar" style="color: #0078d4;"></i> Garantías y Adquisición
-      </div>
-      <div class="ms-form-grid" style="margin-bottom: 16px;">
-        <div class="ms-form-group">
-          <label class="ms-label">Orden de Compra</label>
-          <input type="text" class="ms-input" id="e-orden_compra" placeholder="Ej: OC-123456" style="margin-bottom:0;">
-        </div>
-        <div class="ms-form-group">
-          <label class="ms-label">Fecha de Compra</label>
-          <input type="date" class="ms-input" id="e-fecha_compra" style="margin-bottom:0;">
-        </div>
-        <div class="ms-form-group" style="grid-column: span 2;">
-          <label class="ms-label">Vencimiento Garantía</label>
-          <input type="date" class="ms-input" id="e-vencimiento_garantia" style="margin-bottom:0;">
         </div>
       </div>
 
@@ -574,5 +559,5 @@
 {% block extra_js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="{% static 'js/equipos.js' %}?v=2.8"></script>
+<script src="{% static 'js/equipos.js' %}?v=2.9"></script>
 {% endblock %}
