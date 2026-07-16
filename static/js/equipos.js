@@ -271,8 +271,8 @@ function eqOpenBitacora(id, serial) {
         url: '/equipos/api/' + id + '/ver/',
         type: 'GET',
         success: function(resp) {
-            if (resp.success && resp.data.unidad_nombre) {
-                var val = resp.data.unidad_nombre;
+            if (resp.success && resp.data.unidad) {
+                var val = resp.data.unidad;
                 var $sel = $('#b-unidad');
                 
                 // Intentar seleccionar por value directo
