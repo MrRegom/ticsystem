@@ -474,7 +474,7 @@ var EquiposApp = (function($) {
             $mod.select2({
                 theme: 'bootstrap4',
                 width: '100%',
-                dropdownParent: $(el.modal)
+                dropdownParent: $('body')
             });
             
             // Forzamos el change para que se actualice la foto
@@ -1102,10 +1102,7 @@ var EquiposApp = (function($) {
                 
                 Swal.fire({
                     title: 'Cerrar Mantención',
-                    didOpen: () => {
-                        const container = document.querySelector('.swal2-container');
-                        if(container) container.style.zIndex = '1080';
-                    },
+                    customClass: { container: 'swal-top-modal' },
                     html: `
                         <div class="text-left mt-2">
                             <label style="font-size:0.85rem; font-weight:bold;">Nuevas Actividades / Resolución (Opcional)</label>

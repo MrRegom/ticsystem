@@ -515,6 +515,10 @@ body.no-sidebar footer#footer-main { margin-left: 0 !important; }
   height: 28px;
   z-index: 1050 !important;
 }
+.ms-dialog-overlay {
+  z-index: 9999 !important; 
+}
+.swal-top-modal { z-index: 999999 !important; }
 #sidebar-toggle i {
   color: #ffffff !important;
   font-size: 0.95rem !important;
