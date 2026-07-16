@@ -238,6 +238,7 @@ class UsuarioService:
                 'foto_url': foto_url,
                 'is_active': r.is_active,
                 'rol_id': getattr(perfil, 'rol_id', None) if perfil else None,
+                'rol': perfil.rol.nombre if (perfil and perfil.rol_id) else 'Sin Perfil',
                 'grupos': [{'id': g.id, 'nombre': g.nombre} for g in r.grupos_resolutores.all()]
             })
 
