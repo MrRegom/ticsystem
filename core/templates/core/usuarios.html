@@ -104,22 +104,25 @@
 <!-- Modal de Visualización (Solo Lectura) -->
 <div class="ms-modal-overlay" id="view-modal-overlay" onclick="closeViewModal()">
   <div class="ms-modal" onclick="event.stopPropagation()">
-    <div class="ms-modal-header">
-      <h3 class="ms-modal-title">Detalles de Identidad</h3>
+    <div class="ms-modal-header" style="border-bottom: none; padding-bottom: 0;">
+      <div style="flex-grow: 1;"></div>
       <button class="ms-modal-close" onclick="closeViewModal()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="ms-modal-body">
-      <div class="ms-detail-list">
-        <div class="ms-detail-item">
-          <span class="ms-detail-label">Nombre Completo</span>
-          <span class="ms-detail-value" id="view-nombre"></span>
+    <div class="ms-modal-body" style="padding-top: 0;">
+      <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 32px; padding: 0 12px;">
+        <div class="ms-avatar" id="view-avatar" style="width: 72px; height: 72px; font-size: 24px; flex-shrink: 0;"></div>
+        <div style="display: flex; flex-direction: column;">
+          <h2 style="margin: 0 0 4px 0; font-size: 22px; font-weight: 600; color: #201f1e; line-height: 1.2;" id="view-nombre"></h2>
+          <span style="font-size: 14px; color: #605e5c;" id="view-rol-header"></span>
         </div>
+      </div>
+      <div class="ms-detail-list" style="padding: 0 12px;">
         <div class="ms-detail-item">
           <span class="ms-detail-label">RUT</span>
           <span class="ms-detail-value" id="view-rut"></span>
         </div>
         <div class="ms-detail-item">
-          <span class="ms-detail-label">Correo</span>
+          <span class="ms-detail-label">Correo Electrónico</span>
           <span class="ms-detail-value" id="view-email"></span>
         </div>
         <div class="ms-detail-item">
@@ -127,17 +130,10 @@
           <span class="ms-detail-value" id="view-unidad"></span>
         </div>
         <div class="ms-detail-item">
-          <span class="ms-detail-label">Perfil de Acceso</span>
-          <span class="ms-detail-value" id="view-rol"></span>
-        </div>
-        <div class="ms-detail-item">
           <span class="ms-detail-label">Estado</span>
           <span class="ms-detail-value" id="view-estado"></span>
         </div>
       </div>
-    </div>
-    <div class="ms-modal-footer">
-      <button class="ms-btn-primary" onclick="closeViewModal()">Cerrar</button>
     </div>
   </div>
 </div>

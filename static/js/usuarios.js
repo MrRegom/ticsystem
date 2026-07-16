@@ -276,11 +276,28 @@ function getCookie(name) {
 function openViewModal(userJsonStr) {
   const u = JSON.parse(decodeURIComponent(userJsonStr));
   
-  document.getElementById('view-nombre').innerText = `${u.nombres || ''} ${u.apellidos || ''}`.trim() || 'Sin Nombre';
+  const nombres = u.nombres || '';
+  const apellidos = u.apellidos || '';
+  const initial1 = nombres.charAt(0).toUpperCase();
+  const initial2 = apellidos.charAt(0).toUpperCase();
+  const initials = (initial1 + initial2) || u.rut.charAt(0) || '?';
+  
+  // Hash simple para dar color al avatar
+  let hash = 0;
+  const str = u.rut;
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  const colors = ['#0078d4', '#d13438', '#107c10', '#881798', '#038387', '#498205'];
+  const color = colors[Math.abs(hash) % colors.length];
+
+  const avatar = document.getElementById('view-avatar');
+  avatar.innerText = initials;
+  avatar.style.backgroundColor = color;
+
+  document.getElementById('view-nombre').innerText = `${nombres} ${apellidos}`.trim() || 'Sin Nombre';
+  document.getElementById('view-rol-header').innerText = u.rol || 'Sin Perfil';
   document.getElementById('view-rut').innerText = u.rut || 'Sin RUT';
   document.getElementById('view-email').innerText = u.email || 'Sin Correo';
   document.getElementById('view-unidad').innerText = u.unidad || 'Sin Asignar';
-  document.getElementById('view-rol').innerText = u.rol || 'Sin Perfil';
   
   let estadoText = (u.is_active === "Sí" || u.is_active === true || u.is_active === "Activo") ? "Activo" : "Inactivo";
   document.getElementById('view-estado').innerText = estadoText;
