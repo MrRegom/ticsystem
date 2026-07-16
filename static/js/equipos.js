@@ -1115,21 +1115,77 @@ var EquiposApp = (function($) {
                 });
             });
             
-            // Eventos Funcionario
-            $('#form-funcionario').on('submit', function(e) {
-                e.preventDefault();
-                var btn = $('#btn-guardar-funcionario');
+            // ============================================================
+            // Validador de RUT Chileno (idéntico al de Tickets)
+            // ============================================================
+            function validarRutEq(rut) {
+                if (!/^[0-9]+[-]{1}[0-9kK]{1}$/.test(rut)) return false;
+                var tmp = rut.split('-');
+                var digv = tmp[1];
+                var rutNum = tmp[0];
+                if (digv === 'K') digv = 'k';
+                return (dvEq(rutNum) === digv);
+            }
+            function dvEq(T) {
+                var M = 0, S = 1;
+                for (; T; T = Math.floor(T / 10))
+                    S = (S + T % 10 * (9 - M++ % 6)) % 11;
+                return S ? String(S - 1) : 'k';
+            }
+
+            // Live validation del RUT al tipear en el modal de Funcionario
+            $(document).on('input', '#f-rut', function() {
+                var valLimpio = this.value.replace(/[^0-9kK]/gi, '').toUpperCase();
+                if (valLimpio.length > 1) {
+                    var cuerpo = valLimpio.slice(0, -1);
+                    var dv    = valLimpio.slice(-1);
+                    this.value = cuerpo + '-' + dv;
+                } else {
+                    this.value = valLimpio;
+                }
+                var val = this.value.trim();
+                var $fb = $('#rut_feedback_eq');
+                if (val === '') {
+                    $(this).removeClass('is-valid is-invalid');
+                    $fb.attr('class', 'form-text text-muted').html('Ingresa el RUT con guion y dígito verificador.');
+                    return;
+                }
+                if (validarRutEq(val)) {
+                    $(this).removeClass('is-invalid').addClass('is-valid');
+                    $fb.attr('class', 'form-text text-success font-weight-bold').html('<i class="fas fa-check-circle"></i> RUT Válido');
+                } else {
+                    $(this).removeClass('is-valid').addClass('is-invalid');
+                    $fb.attr('class', 'form-text text-danger font-weight-bold').html('<i class="fas fa-times-circle"></i> RUT Inválido');
+                }
+            });
+
+            // Botón Guardar del modal Funcionario
+            $('#btn-guardar-funcionario').on('click', function() {
+                var rut = $('#f-rut').val().trim();
+                if (!validarRutEq(rut)) {
+                    Swal.fire('RUT Inválido', 'Por favor ingresa un RUT chileno válido (Ej: 12345678-9).', 'warning');
+                    $('#f-rut').focus();
+                    return;
+                }
+                var nombres   = $('#f-nombres').val().trim();
+                var apellidos = $('#f-apellidos').val().trim();
+                if (!nombres || !apellidos) {
+                    Swal.fire('Campos requeridos', 'Nombres y Apellidos son obligatorios.', 'warning');
+                    return;
+                }
+
+                var btn = $(this);
                 btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
-                
+
                 var data = {
-                    rut: $('#f-rut').val(),
-                    nombres: $('#f-nombres').val(),
-                    apellidos: $('#f-apellidos').val(),
-                    correo: $('#f-correo').val(),
-                    cargo: $('#f-cargo').val(),
-                    unidad: $('#f-unidad').val()
+                    rut:       rut,
+                    nombres:   nombres,
+                    apellidos: apellidos,
+                    correo:    $('#f-correo').val().trim(),
+                    cargo:     $('#f-cargo').val(),
+                    unidad:    $('#f-unidad-func').val()
                 };
-                
+
                 $.ajax({
                     url: '/api/funcionarios/crear/',
                     type: 'POST',
@@ -1138,26 +1194,34 @@ var EquiposApp = (function($) {
                     headers: { 'X-CSRFToken': csrfToken() },
                     success: function(resp) {
                         btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Funcionario');
-                        if(resp.success) {
+                        if (resp.success) {
                             $('#modalFuncionario').modal('hide');
-                            // Agregar y seleccionar la nueva opcion en Select2
+                            $('#form-funcionario')[0].reset();
+                            $('#f-rut').removeClass('is-valid is-invalid');
+                            $('#rut_feedback_eq').attr('class', 'form-text text-muted').html('Ingresa el RUT con guion y dígito verificador.');
+                            // Agregar y seleccionar la nueva opción en Select2
                             var newOption = new Option(resp.data.text, resp.data.id, true, true);
                             $('#b-solicitante').append(newOption).trigger('change');
+                            Swal.fire({icon: 'success', title: 'Funcionario creado', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
                         } else {
-                            alert(resp.message);
+                            Swal.fire('Error', resp.message || 'Error al guardar.', 'error');
                         }
                     },
                     error: function(err) {
                         btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Funcionario');
-                        var msg = "Error al guardar funcionario.";
-                        if(err.responseJSON && err.responseJSON.message) msg = err.responseJSON.message;
-                        alert(msg);
+                        var msg = 'Error al guardar funcionario.';
+                        if (err.responseJSON && err.responseJSON.message) msg = err.responseJSON.message;
+                        Swal.fire('Error', msg, 'error');
                     }
                 });
             });
-            
-        }
-    };
+
+            // Limpiar el modal al cerrarse
+            $('#modalFuncionario').on('hidden.bs.modal', function() {
+                $('#form-funcionario')[0].reset();
+                $('#f-rut').removeClass('is-valid is-invalid');
+                $('#rut_feedback_eq').attr('class', 'form-text text-muted').html('Ingresa el RUT con guion y dígito verificador.');
+            });
 
 })(jQuery);
 

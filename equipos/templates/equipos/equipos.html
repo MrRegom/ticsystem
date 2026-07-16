@@ -386,51 +386,83 @@
 
 <!-- ================================================================
   MODAL BOOTSTRAP: Registrar Nuevo Funcionario (se abre desde Bitácora)
+  — Idéntico al modal de Tickets, con validador RUT en tiempo real.
 ================================================================ -->
 <div class="modal fade" id="modalFuncionario" tabindex="-1" role="dialog" aria-labelledby="modalFuncionarioLabel" aria-hidden="true" style="z-index: 1060;">
   <div class="modal-dialog" role="document">
     <div class="modal-content" style="border-radius: 0;">
       <div class="modal-header modal-header-premium" style="background: #002855; color: #fff;">
         <h5 class="modal-title" id="modalFuncionarioLabel">
-          <i class="fas fa-user-plus mr-2"></i> Registrar Nuevo Funcionario
+          <i class="fas fa-user-plus mr-2"></i> Añadir Funcionario Rápido
         </h5>
         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form id="form-funcionario">
+        <form id="form-funcionario" autocomplete="off">
           {% csrf_token %}
+
+          <!-- RUT con validador en tiempo real -->
+          <div class="form-group">
+            <label class="ms-label">RUT <span style="color:#a4262c;">*</span></label>
+            <input type="text" class="form-control form-control-sm" id="f-rut" name="rut_nuevo"
+              placeholder="Ej: 12345678-9" required maxlength="12" style="border-radius:0;">
+            <small id="rut_feedback_eq" class="form-text text-muted">
+              Ingresa el RUT con guion y dígito verificador.
+            </small>
+          </div>
+
+          <!-- Nombres / Apellidos -->
           <div class="form-row">
             <div class="form-group col-md-6">
               <label class="ms-label">Nombres <span style="color:#a4262c;">*</span></label>
-              <input type="text" class="form-control form-control-sm" id="f-nombres" placeholder="Nombres" required style="border-radius:0;">
+              <input type="text" class="form-control form-control-sm" id="f-nombres" name="nombres_nuevo"
+                placeholder="Nombres" required style="border-radius:0;">
             </div>
             <div class="form-group col-md-6">
               <label class="ms-label">Apellidos <span style="color:#a4262c;">*</span></label>
-              <input type="text" class="form-control form-control-sm" id="f-apellidos" placeholder="Apellidos" required style="border-radius:0;">
+              <input type="text" class="form-control form-control-sm" id="f-apellidos" name="apellidos_nuevo"
+                placeholder="Apellidos" required style="border-radius:0;">
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label class="ms-label">RUT <span style="color:#a4262c;">*</span></label>
-              <input type="text" class="form-control form-control-sm" id="f-rut" placeholder="12345678-9" required style="border-radius:0;">
-            </div>
-            <div class="form-group col-md-6">
-              <label class="ms-label">Cargo</label>
-              <input type="text" class="form-control form-control-sm" id="f-cargo" placeholder="Cargo" style="border-radius:0;">
-            </div>
+
+          <!-- Correo (opcional) -->
+          <div class="form-group">
+            <label class="ms-label">Correo Electrónico <span style="color:#605e5c;">(opcional)</span></label>
+            <input type="email" class="form-control form-control-sm" id="f-correo" name="correo_nuevo"
+              placeholder="usuario@correo.cl" style="border-radius:0;">
+            <small class="form-text text-muted">Opcional, pero recomendado.</small>
           </div>
+
+          <!-- Cargo / Unidad -->
           <div class="form-row">
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-6">
+              <label class="ms-label">Cargo / Rol</label>
+              <select class="form-control form-control-sm" id="f-cargo" name="cargo_nuevo" style="border-radius:0;">
+                <option value="">-- Seleccionar Cargo --</option>
+                {% for cargo in cargos %}
+                <option value="{{ cargo.nombre }}">{{ cargo.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group col-md-6">
               <label class="ms-label">Unidad / Servicio</label>
-              <input type="text" class="form-control form-control-sm" id="f-unidad" placeholder="Unidad de trabajo" style="border-radius:0;">
+              <select class="form-control form-control-sm" id="f-unidad-func" name="unidad_nuevo" style="border-radius:0;">
+                <option value="">-- Seleccionar Unidad --</option>
+                {% for u in unidades %}
+                <option value="{{ u.nombre }}">{{ u.nombre }}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
+
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-secondary" style="border-radius:0;" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-sm btn-secondary" style="border-radius:0;" data-dismiss="modal">
+          <i class="fas fa-times mr-1"></i> Cancelar
+        </button>
         <button type="button" class="btn btn-sm btn-primary" id="btn-guardar-funcionario" style="border-radius:0;">
           <i class="fas fa-save mr-1"></i> Guardar Funcionario
         </button>
