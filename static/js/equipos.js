@@ -1102,6 +1102,10 @@ var EquiposApp = (function($) {
                 
                 Swal.fire({
                     title: 'Cerrar Mantención',
+                    didOpen: () => {
+                        const container = document.querySelector('.swal2-container');
+                        if(container) container.style.zIndex = '1080';
+                    },
                     html: `
                         <div class="text-left mt-2">
                             <label style="font-size:0.85rem; font-weight:bold;">Nuevas Actividades / Resolución (Opcional)</label>
