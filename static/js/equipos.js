@@ -251,6 +251,11 @@ function eqCloseView() { document.getElementById('eq-view-overlay').classList.re
 // ============================================================
 function eqOpenBitacora(id, serial) {
     EqState.currentEquipoId = id;
+    
+    // Limpiar formulario y resetear selects antes de llenarlos
+    $('#form-bitacora')[0].reset();
+    $('#b-falla, #b-unidad, #b-solicitante').val(null).trigger('change');
+    
     document.getElementById('b-equipo-sn-header').textContent = serial || '';
     document.getElementById('b-equipo-id').value = id;
     document.getElementById('eq-bitacora-overlay').classList.add('active');
@@ -267,10 +272,25 @@ function eqOpenBitacora(id, serial) {
         type: 'GET',
         success: function(resp) {
             if (resp.success && resp.data.unidad_nombre) {
+                var val = resp.data.unidad_nombre;
                 var $sel = $('#b-unidad');
-                if ($sel.find("option[value='" + resp.data.unidad_nombre + "']").length) {
-                    $sel.val(resp.data.unidad_nombre).trigger('change');
+                
+                // Intentar seleccionar por value directo
+                $sel.val(val);
+                
+                // Si falló por diferencias de espacios, usar filter y extraer el value real
+                if (!$sel.val()) {
+                    var exactVal = $sel.find('option').filter(function() {
+                        return $(this).text().trim().toLowerCase() === val.trim().toLowerCase();
+                    }).attr('value');
+                    
+                    if (exactVal) {
+                        $sel.val(exactVal);
+                    }
                 }
+                
+                // IMPORTANTE: Forzar actualización de UI para Select2 y DOM
+                $sel.trigger('change').trigger('change.select2');
             }
         }
     });
