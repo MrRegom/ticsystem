@@ -1102,18 +1102,21 @@ var EquiposApp = (function($) {
                 
                 Swal.fire({
                     title: 'Cerrar Mantención',
-                    customClass: { container: 'swal-top-modal' },
+                    customClass: { 
+                        container: 'swal-top-modal',
+                        confirmButton: 'ms-btn-primary',
+                        cancelButton: 'ms-btn-secondary ml-2'
+                    },
+                    buttonsStyling: false,
                     html: `
                         <div class="text-left mt-2">
-                            <label style="font-size:0.85rem; font-weight:bold;">Nuevas Actividades / Resolución (Opcional)</label>
-                            <textarea id="swal-actividades" class="form-control-clean w-100" rows="3" placeholder="Detalles de la entrega o resolución técnica..."></textarea>
-                            <small class="text-muted">Este texto se añadirá a las actividades que ya existen en el registro.</small>
+                            <label style="font-size:0.95rem; font-weight:600; color:#323130;">Escribe la Resolución del problema antes de cerrar el caso</label>
+                            <textarea id="swal-actividades" class="ms-input w-100 mt-2" style="resize:vertical;" rows="5" placeholder="Detalles de la entrega o resolución técnica..."></textarea>
                         </div>
                     `,
                     showCancelButton: true,
-                    confirmButtonText: '<i class="fas fa-check-circle mr-1"></i> Confirmar Cierre',
+                    confirmButtonText: '<i class="fas fa-check"></i> Cerrar Mantención',
                     cancelButtonText: 'Cancelar',
-                    confirmButtonColor: '#10b981',
                     preConfirm: () => {
                         return {
                             actividades: document.getElementById('swal-actividades').value
