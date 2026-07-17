@@ -551,11 +551,9 @@ var EquiposApp = (function($) {
             }
             
             if (img) {
-                $('#e-imagen-preview').attr('src', img);
+                $('#e-modelo-preview').attr('src', img);
             } else {
-                // FontAwesome fallback icon inside HTML if we don't have a reliable placeholder image,
-                // but for now we rely on the placeholder.
-                $('#e-imagen-preview').attr('src', '/static/img/placeholder_equipo.png');
+                $('#e-modelo-preview').attr('src', '/static/img/placeholder_equipo.png');
             }
         }
 

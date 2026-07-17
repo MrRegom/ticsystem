@@ -236,6 +236,9 @@
             {% for prov in proveedores %}<option value="{{ prov.id }}">{{ prov.nombre }}</option>{% endfor %}
           </select>
         </div>
+        <div class="ms-form-group" style="display: flex; align-items: center; justify-content: center; background: #faf9f8; border: 1px dashed #edebe9; border-radius: 4px; min-height: 60px;">
+          <img id="e-modelo-preview" src="/static/img/placeholder_equipo.png" style="max-height: 50px; max-width: 100%; object-fit: contain;" alt="Vista previa">
+        </div>
       </div>
 
       <!-- Sección Ubicación -->
@@ -580,5 +583,5 @@
 {% block extra_js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="{% static 'js/equipos.js' %}?v=3.8"></script>
+<script src="{% static 'js/equipos.js' %}?v=3.9"></script>
 {% endblock %}
