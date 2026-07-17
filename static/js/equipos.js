@@ -660,7 +660,9 @@ var EquiposApp = (function($) {
     function evaluarBordesObligatorios() {
         var form = $('#form-equipo');
         form.find('select[required]').each(function() {
-            var container = $(this).next('.select2-container').find('.select2-selection');
+            var container = $(this).next('.select2-container');
+            if (!container.length) container = $(this).siblings('.select2-container');
+            
             if ($(this).val()) {
                 container.removeClass('ms-required-invalid').addClass('ms-required-valid');
             } else {

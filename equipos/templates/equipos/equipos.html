@@ -17,13 +17,15 @@
     border-left: 3px solid #107c10 !important;
 }
 /* Clases JS para Select2 y otros contenedores personalizados */
-.ms-required-invalid {
+.ms-required-invalid .select2-selection, 
+.ms-required-invalid.select2-selection {
     border-left: 3px solid #a4262c !important;
-    border-radius: 4px;
+    border-radius: 4px !important;
 }
-.ms-required-valid {
+.ms-required-valid .select2-selection,
+.ms-required-valid.select2-selection {
     border-left: 3px solid #107c10 !important;
-    border-radius: 4px;
+    border-radius: 4px !important;
 }
 </style>
 {% endblock %}
@@ -578,5 +580,5 @@
 {% block extra_js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="{% static 'js/equipos.js' %}?v=3.3"></script>
+<script src="{% static 'js/equipos.js' %}?v=3.4"></script>
 {% endblock %}
