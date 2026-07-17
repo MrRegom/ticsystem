@@ -106,13 +106,24 @@ class EquipoListView(LoginRequiredMixin, View):
         result = EquipoService.obtener_equipos_para_datatable(
             dt['start'], dt['length'], dt['search_value'],
             dt['order_column_index'], dt['order_dir'], dt['columns_data'],
-            estado=estado, unidad=unidad
         )
+        
+        from equipos.models import Equipo
+        total = Equipo.objects.count()
+        operativos = Equipo.objects.filter(estado__nombre__icontains='inventario').count() + Equipo.objects.filter(estado__nombre__icontains='funcional').count()
+        soporte = Equipo.objects.filter(estado__nombre__icontains='soporte').count()
+
         return JsonResponse({
             'draw': dt['draw'],
             'recordsTotal': result['recordsTotal'],
             'recordsFiltered': result['recordsFiltered'],
             'data': result['data'],
+            'kpi': {
+                'total': total,
+                'operativos': operativos,
+                'soporte': soporte,
+                'alertas': total - operativos - soporte
+            }
         })
 
 

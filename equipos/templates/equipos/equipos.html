@@ -71,7 +71,7 @@
       </div>
       <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
         <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Operativos</div>
-        <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 26px; font-weight: 700; color: #201f1e; line-height: 1;">{{ kpi.operativos }}</div>
+        <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 26px; font-weight: 700; color: #201f1e; line-height: 1;" id="kpi-operativos">{{ kpi.operativos }}</div>
       </div>
     </div>
 
@@ -82,7 +82,7 @@
       </div>
       <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
         <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Soporte</div>
-        <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 26px; font-weight: 700; color: #201f1e; line-height: 1;">{{ kpi.soporte }}</div>
+        <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 26px; font-weight: 700; color: #201f1e; line-height: 1;" id="kpi-soporte">{{ kpi.soporte }}</div>
       </div>
     </div>
 
@@ -93,7 +93,7 @@
       </div>
       <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
         <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Con Alerta</div>
-        <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 26px; font-weight: 700; color: #201f1e; line-height: 1;">{{ kpi.alertas }}</div>
+        <div style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 26px; font-weight: 700; color: #201f1e; line-height: 1;" id="kpi-alertas">{{ kpi.alertas }}</div>
       </div>
     </div>
 
@@ -580,5 +580,5 @@
 {% block extra_js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="{% static 'js/equipos.js' %}?v=3.7"></script>
+<script src="{% static 'js/equipos.js' %}?v=3.8"></script>
 {% endblock %}

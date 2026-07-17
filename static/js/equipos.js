@@ -214,6 +214,19 @@ function eqLoadList() {
             EqState.data = resp.data || [];
             EqState.filtered = EqState.data; // Para compatibilidad con Optimistic UI
             EqState.totalRecords = resp.recordsFiltered || 0;
+            
+            // Actualizar KPIs si el backend los envía
+            if (resp.kpi) {
+                var eTotal = document.getElementById('kpi-total');
+                var eOp = document.getElementById('kpi-operativos');
+                var eSop = document.getElementById('kpi-soporte');
+                var eAle = document.getElementById('kpi-alertas');
+                if (eTotal) eTotal.textContent = resp.kpi.total;
+                if (eOp) eOp.textContent = resp.kpi.operativos;
+                if (eSop) eSop.textContent = resp.kpi.soporte;
+                if (eAle) eAle.textContent = resp.kpi.alertas;
+            }
+
             eqRenderRows();
         },
         error: function(xhr, status, err) {
