@@ -406,6 +406,12 @@ var EquiposApp = (function($) {
         proveedor: '#e-proveedor'
     };
 
+    // Elementos UI principales
+    var el = {
+        modal: '#equipo-drawer',
+        alert: '#equipo-error-alert'
+    };
+
     function csrfToken() {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
