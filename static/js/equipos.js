@@ -660,7 +660,7 @@ var EquiposApp = (function($) {
         $(f.recinto).on('change', filterPmas);
     }
 
-    function evaluarBordesObligatorios() {
+    window.evaluarBordesObligatorios = function() {
         var form = $('#form-equipo');
         form.find('select[required]').each(function() {
             var container = $(this).next('.select2-container');
