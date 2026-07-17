@@ -76,7 +76,8 @@ class EquiposDashboardView(LoginRequiredMixin, TemplateView):
         context['kpi'] = {
             'total': total,
             'operativos': operativos,
-            'soporte': soporte
+            'soporte': soporte,
+            'alertas': total - operativos
         }
         
         from equipos.models import BitacoraEquipo, BitacoraOpcion
