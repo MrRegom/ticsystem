@@ -77,7 +77,7 @@ class EquiposDashboardView(LoginRequiredMixin, TemplateView):
             'total': total,
             'operativos': operativos,
             'soporte': soporte,
-            'alertas': total - operativos
+            'alertas': total - operativos - soporte
         }
         
         from equipos.models import BitacoraEquipo, BitacoraOpcion
