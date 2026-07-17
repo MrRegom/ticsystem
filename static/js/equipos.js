@@ -353,31 +353,34 @@ function eqGuardar() {
     
     // Los Select2 ocultan el <select> original. Si es required y está vacío,
     // HTML5 reportValidity() falla silenciosamente sin mostrar el tooltip.
-    var missingFields = false;
-    $(form).find('select[required]').each(function() {
+    var missingFieldNames = [];
+    
+    $(form).find('select[required], input[required]').each(function() {
         if (!$(this).val()) {
-            missingFields = true;
+            var label = $(this).closest('.ms-form-group').find('.ms-label').text().replace('*', '').trim();
+            if (!label) label = $(this).attr('placeholder') || 'Campo sin nombre';
+            if (!missingFieldNames.includes(label)) missingFieldNames.push(label);
         }
     });
     
     // Validar también los radios de estado
     if ($('input[name="e-estado"]:checked').length === 0) {
-        missingFields = true;
+        missingFieldNames.push('Disponibilidad');
     }
     
     evaluarBordesObligatorios();
 
-    if (missingFields) {
+    if (missingFieldNames.length > 0) {
         var alertEl = document.getElementById('equipo-error-alert');
         if (alertEl) {
             alertEl.style.display = 'block';
-            alertEl.textContent = 'Faltan campos obligatorios (marcados en rojo).';
+            alertEl.textContent = 'Faltan campos obligatorios: ' + missingFieldNames.join(', ');
         }
         return; // Detenemos aquí para evitar el fallo silencioso
     }
 
     if (form.reportValidity()) {
-        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        $(form).trigger('submit');
     }
 }
 
