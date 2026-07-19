@@ -60,7 +60,7 @@
     min-width: 300px;
     max-width: 400px;
     background: #ffffff;
-    border-radius: 6px;
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -75,7 +75,7 @@
     border-bottom: 1px solid #e2e8f0;
   }
   .kanban-column[data-estado="NUEVO"]               { border-top-color: #3b82f6; }
-  .kanban-column[data-estado="ASIGNADO"]            { border-top-color: #8b5cf6; }
+  .kanban-column[data-estado="ASIGNADO"]            { border-top-color: #ca8a04; }
   .kanban-column[data-estado="EN_PROCESO"]          { border-top-color: #10b981; }
   .kanban-column[data-estado="PENDIENTE_USUARIO"]   { border-top-color: #f59e0b; }
   .kanban-column[data-estado="PENDIENTE_PROVEEDOR"] { border-top-color: #ec4899; }
@@ -83,7 +83,7 @@
   .kanban-column[data-estado="RESUELTO"]            { border-top-color: #14b8a6; }
   
   .kanban-column[data-estado="NUEVO"]               i.estado-icon { color: #3b82f6; }
-  .kanban-column[data-estado="ASIGNADO"]            i.estado-icon { color: #8b5cf6; }
+  .kanban-column[data-estado="ASIGNADO"]            i.estado-icon { color: #ca8a04; }
   .kanban-column[data-estado="EN_PROCESO"]          i.estado-icon { color: #10b981; }
   .kanban-column[data-estado="PENDIENTE_USUARIO"]   i.estado-icon { color: #f59e0b; }
   .kanban-column[data-estado="PENDIENTE_PROVEEDOR"] i.estado-icon { color: #ec4899; }
@@ -108,22 +108,22 @@
     font-size: 0.75rem;
     font-weight: 700;
     padding: 2px 8px;
-    border-radius: 12px;
+    border-radius: 0;
     min-width: 24px;
     text-align: center;
   }
   .kanban-items {
-    padding: 8px;
+    padding: 6px;
     flex-grow: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
   .kanban-card {
     background: #fff;
-    border-radius: 8px;
-    padding: 14px 16px;
+    border-radius: 0;
+    padding: 10px 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
     cursor: pointer;
     border: 1px solid #e2e8f0;
