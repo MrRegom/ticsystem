@@ -12,14 +12,74 @@
 }
 .grupo-titulo i { margin-right:5px; }
 
-/* Cards */
-.card-modelo { cursor: pointer; border: 1px solid #edebe9 !important; border-radius: 4px; transition: all .2s; background: #ffffff; box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108); }
-.card-modelo:hover { border-color: #0078d4 !important; background: #f3f2f1; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-.card-modelo.active { border-color: #0078d4 !important; background: #eff6fc; }
+/* Cards internas (modelos) */
+.card-modelo { 
+    cursor: pointer; 
+    border: 1px solid transparent !important; 
+    border-radius: 4px; 
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); 
+    background: #ffffff; 
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108); 
+}
+.card-modelo:hover { 
+    border-color: #0078d4 !important; 
+    background: #f3f2f1; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+}
+.card-modelo.active { 
+    border: 1px solid #0078d4 !important;
+    background: #eff6fc; 
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.2);
+}
 .card-modelo .card-body { padding: 14px 10px !important; }
-.card-modelo i { display: block; margin-bottom: 6px; }
-.card-modelo .modelo-label { font-size: .8rem; font-weight: 600; color: #323130; font-family: 'Segoe UI', system-ui, sans-serif; }
+.card-modelo i { display: block; margin-bottom: 8px; color: #605e5c; }
+.card-modelo.active i { color: #0078d4; }
+.card-modelo:hover i { color: #0078d4; }
+.card-modelo .modelo-label { font-size: 13px; font-weight: 600; color: #323130; font-family: 'Segoe UI', system-ui, sans-serif; }
 .card-modelo.active .modelo-label { color:#0078d4; }
+
+/* Tabla DataTables Fluent Design Override */
+table.dataTable {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin-top: 10px !important;
+}
+table.dataTable thead th {
+    background: #faf9f8 !important;
+    color: #605e5c !important;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #edebe9 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+table.dataTable tbody td {
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #323130;
+    vertical-align: middle;
+    border-bottom: 1px solid #edebe9 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+table.dataTable tbody tr:hover { background-color: #f3f2f1 !important; }
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: #0078d4;
+    color: white !important;
+    border: 1px solid #0078d4;
+    border-radius: 4px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 4px 10px;
+    margin-left: 4px;
+    border-radius: 4px;
+}
 
 /* Microsoft Fluent Design Categories */
 .ms-category-card {
