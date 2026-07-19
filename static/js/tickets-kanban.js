@@ -208,6 +208,10 @@ document.addEventListener('DOMContentLoaded', function() {
             var descripcion = form.querySelector('[name="descripcion"]').value.trim();
 
             if (!solicitante || !categoria || !descripcion) {
+                if (!solicitante) $('#solicitante-select').next('.select2-container').addClass('ms-val-error');
+                if (!categoria) $('select[name="categoria_id"]').next('.select2-container').addClass('ms-val-error');
+                if (!descripcion) $('[name="descripcion"]').addClass('ms-val-error');
+                
                 Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Solicitante, Categoría y Descripción son obligatorios.', confirmButtonColor: '#002855' });
                 return false;
             }
@@ -863,7 +867,9 @@ $(document).ready(function() {
         if (inputCorreo) {
             inputCorreo.value = data.correo ? data.correo : '';
         }
+        validateFormProgress();
     });
+    $('#solicitante-select').on('change', validateFormProgress);
     
     // Enfocar campo de búsqueda al abrir modal
     $('#modalNuevoTicket').on('shown.bs.modal', function () {
@@ -880,7 +886,7 @@ $(document).ready(function() {
     $('select[name="categoria_id"]').select2({
         dropdownParent: $('#modalNuevoTicket'),
         placeholder: '-- Seleccionar Categoría --'
-    });
+    }).on('change', validateFormProgress);
 
     // Select2 para Impacto y Urgencia
     $('select[name="impacto"], select[name="urgencia"]').select2({
@@ -888,6 +894,44 @@ $(document).ready(function() {
         minimumResultsForSearch: Infinity,
         width: '100%'
     });
+    
+    // Validación de texto
+    var descInput = document.querySelector('[name="descripcion"]');
+    if(descInput) {
+        descInput.addEventListener('input', validateFormProgress);
+    }
+
+    function validateFormProgress() {
+        var sol = $('#solicitante-select').val();
+        var cat = $('select[name="categoria_id"]').val();
+        var desc = $('[name="descripcion"]').val() ? $('[name="descripcion"]').val().trim() : '';
+        
+        var total = 3;
+        var valid = 0;
+        
+        // Solicitante
+        var solContainer = $('#solicitante-select').next('.select2-container');
+        if (sol) { valid++; solContainer.removeClass('ms-val-error').addClass('ms-val-success'); }
+        else if (solContainer.hasClass('ms-val-error') || solContainer.hasClass('ms-val-success')) { solContainer.removeClass('ms-val-success ms-val-error'); }
+        
+        // Categoria
+        var catContainer = $('select[name="categoria_id"]').next('.select2-container');
+        if (cat) { valid++; catContainer.removeClass('ms-val-error').addClass('ms-val-success'); }
+        else if (catContainer.hasClass('ms-val-error') || catContainer.hasClass('ms-val-success')) { catContainer.removeClass('ms-val-success ms-val-error'); }
+        
+        // Descripcion
+        var dInput = $('[name="descripcion"]');
+        if (desc.length > 0) { valid++; dInput.removeClass('ms-val-error').addClass('ms-val-success'); }
+        else if (dInput.hasClass('ms-val-error') || dInput.hasClass('ms-val-success')) { dInput.removeClass('ms-val-success ms-val-error'); }
+        
+        var pct = (valid / total) * 100;
+        var bar = document.getElementById('tk-progress-bar');
+        if(bar) {
+            bar.style.width = pct + '%';
+            if(pct === 100) { bar.style.backgroundColor = '#107c10'; }
+            else { bar.style.backgroundColor = '#0078d4'; }
+        }
+    }
 });
 
 window.abrirModalNuevoUsuario = function() {
