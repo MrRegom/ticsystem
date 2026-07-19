@@ -192,15 +192,7 @@ class UsuarioListView(LoginRequiredMixin, View):
         return JsonResponse(response)
 
 
-class UsuarioActionView(LoginRequiredMixin, View):
-    """
-    API JSON/multipart para acciones CRUD de operadores/usuarios.
-    Soporta tanto JSON como FormData (para upload de foto).
-    """
-    def dispatch(self, request, *args, **kwargs):
-        if request.method == 'POST' and request.POST.get('_method', '').upper() == 'PUT':
-            request.method = 'PUT'
-        return super().dispatch(request, *args, **kwargs)
+
 
 class RolesDashboardView(LoginRequiredMixin, TemplateView):
     """
@@ -262,15 +254,7 @@ class RolesAPIView(LoginRequiredMixin, View):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        is_authorized = request.user.is_superuser or request.user.is_staff
-        if not is_authorized:
-            try:
-                perfil = getattr(request.user, 'perfil', None)
-                if perfil and perfil.rol:
-                    is_authorized = perfil.rol.tiene_permiso('GESTIONAR_ROLES')
-            except Exception:
-                pass
-        if not is_authorized:
+        if not request.user.is_superuser and not (hasattr(request.user, 'perfil') and request.user.perfil.rol and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')):
             return JsonResponse({'success': False, 'message': 'No autorizado'}, status=403)
             
         try:
@@ -288,17 +272,15 @@ class RolesAPIView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
     def put(self, request, *args, **kwargs):
-        # Verificar autorización: superuser O con permiso GESTIONAR_ROLES
-        # En modo desarrollo/staging se permite a is_staff también
-        is_authorized = request.user.is_superuser or request.user.is_staff
-        if not is_authorized:
-            try:
-                perfil = getattr(request.user, 'perfil', None)
-                if perfil and perfil.rol:
-                    is_authorized = perfil.rol.tiene_permiso('GESTIONAR_ROLES')
-            except Exception:
-                pass
-        if not is_authorized:
+        # Permitir a superusers siempre; al resto verificar permiso
+        is_admin = request.user.is_superuser
+        has_perm = (
+            hasattr(request.user, 'perfil')
+            and request.user.perfil
+            and request.user.perfil.rol
+            and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')
+        )
+        if not is_admin and not has_perm:
             return JsonResponse({'success': False, 'message': 'No autorizado para editar roles'}, status=403)
             
         try:
@@ -318,10 +300,18 @@ class RolesAPIView(LoginRequiredMixin, View):
         except Rol.DoesNotExist:
             return JsonResponse({'success': False, 'message': f'Rol con ID {rol_id} no encontrado'}, status=400)
         except Exception as e:
-            import traceback, logging
-            logger = logging.getLogger('django')
-            logger.error('ERROR en RolesAPIView.put: %s', traceback.format_exc())
+            import traceback
             return JsonResponse({'success': False, 'message': str(e), 'detail': traceback.format_exc()}, status=400)
+
+class UsuarioActionView(LoginRequiredMixin, View):
+    """
+    API JSON/multipart para acciones CRUD de operadores/usuarios.
+    Soporta tanto JSON como FormData (para upload de foto).
+    """
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'POST' and request.POST.get('_method', '').upper() == 'PUT':
+            request.method = 'PUT'
+        return super().dispatch(request, *args, **kwargs)
 
     def _parse_request(self, request):
         """Extrae datos del request tanto de JSON como de multipart."""
