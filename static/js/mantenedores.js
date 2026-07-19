@@ -116,7 +116,7 @@ var MantenedoresApp = (function ($) {
 
   /* Campos <select> que necesitan Select2 */
   var SELECT_FIELDS = ['institucion', 'edificio', 'marca', 'piso',
-                       'sector', 'area_hospitalaria', 'unidad', 'recinto', 'miembros', 'cargo'];
+                       'sector', 'area_hospitalaria', 'unidad', 'recinto', 'miembros', 'cargo', 'icono'];
 
   /* Todos los campos del formulario (para ocultar en resetForm) */
   var ALL_FIELDS = ['codigo', 'alias', 'tipo', 'orden', 'color_hex',
@@ -335,6 +335,11 @@ var MantenedoresApp = (function ($) {
     function formatSelect2Result(state) {
       if (!state.id) return state.text;
       
+      // Manejo especial para icono
+      if (fieldId === 'icono') {
+        return $('<span><i class="ms-Icon ' + state.id + '" style="margin-right:8px; font-size:16px;"></i> ' + state.text + '</span>');
+      }
+
       var text = state.text;
       var parts = text.split(/ \– | \- | \— /);
       
@@ -353,6 +358,11 @@ var MantenedoresApp = (function ($) {
 
     function formatSelect2Selection(state) {
       if (!state.id) return state.text;
+      
+      if (fieldId === 'icono') {
+        return $('<span><i class="ms-Icon ' + state.id + '" style="margin-right:8px; font-size:16px;"></i> ' + state.text + '</span>');
+      }
+
       var text = state.text;
       var parts = text.split(/ \– | \- | \— /);
       if (parts.length > 1) {

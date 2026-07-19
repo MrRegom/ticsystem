@@ -8,6 +8,23 @@ $(document).ready(function() {
         order: [[0, 'asc']]
     });
 
+    // Formatear iconos para Select2
+    function formatIcon(icon) {
+        if (!icon.id) return icon.text;
+        var iconClass = icon.id;
+        var $icon = $(
+            '<span><i class="ms-Icon ' + iconClass + '" style="margin-right:8px; font-size:16px;"></i> ' + icon.text + '</span>'
+        );
+        return $icon;
+    }
+
+    $('#icono').select2({
+        theme: 'bootstrap4',
+        templateResult: formatIcon,
+        templateSelection: formatIcon,
+        dropdownParent: $('#modalRol')
+    });
+
     // Función para renderizar los checkboxes de permisos
     function renderPermisos(rolPermisos = {}) {
         const container = $('#permisos-container');
@@ -34,6 +51,7 @@ $(document).ready(function() {
     $('#btn-nuevo-rol').on('click', function() {
         $('#form-rol')[0].reset();
         $('#rol_id').val('');
+        $('#icono').val('ms-Icon--Contact').trigger('change');
         renderPermisos({});
         $('#modalRolLabel').text('Nuevo Rol');
         $('#modalRol').modal('show');
@@ -52,7 +70,11 @@ $(document).ready(function() {
                     $('#rol_id').val(resp.data.id);
                     $('#nombre').val(resp.data.nombre);
                     $('#descripcion').val(resp.data.descripcion);
-                    $('#icono').val(resp.data.icono || '');
+                    if (resp.data.icono) {
+                        $('#icono').val(resp.data.icono).trigger('change');
+                    } else {
+                        $('#icono').val('ms-Icon--Contact').trigger('change');
+                    }
                     $('#activo').val(resp.data.activo.toString());
                     renderPermisos(resp.data.permisos);
                     $('#modalRolLabel').text('Editar Rol: ' + resp.data.nombre);
