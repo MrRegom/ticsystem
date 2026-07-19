@@ -59,7 +59,8 @@ class TicketService:
             impacto=impacto,
             urgencia=urgencia,
             descripcion=datos.get('descripcion', '').strip(),
-            anexo_contacto=datos.get('anexo_contacto', '').strip()
+            anexo_contacto=datos.get('anexo_contacto', '').strip(),
+            correo_contacto=datos.get('correo_contacto', '').strip()
         )
         
         # Calcular SLA si la matriz existe

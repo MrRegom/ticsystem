@@ -201,9 +201,10 @@ document.addEventListener('DOMContentLoaded', function() {
             var solicitante = form.querySelector('[name="solicitante_id"]').value;
             var tipo        = form.querySelector('input[name="tipo"]:checked').value;
             var categoria   = form.querySelector('[name="categoria_id"]').value;
-            var impacto     = form.querySelector('[name="impacto"]').value;
-            var urgencia    = form.querySelector('[name="urgencia"]').value;
+            var impacto     = form.querySelector('input[name="impacto"]:checked') ? form.querySelector('input[name="impacto"]:checked').value : form.querySelector('[name="impacto"]').value;
+            var urgencia    = form.querySelector('input[name="urgencia"]:checked') ? form.querySelector('input[name="urgencia"]:checked').value : form.querySelector('[name="urgencia"]').value;
             var anexo       = form.querySelector('[name="anexo_contacto"]').value;
+            var correo      = form.querySelector('[name="correo_contacto"]').value;
             var descripcion = form.querySelector('[name="descripcion"]').value.trim();
 
             if (!solicitante || !categoria || !descripcion) {
@@ -222,7 +223,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 impacto: impacto,
                 urgencia: urgencia,
                 descripcion: descripcion,
-                anexo_contacto: anexo
+                anexo_contacto: anexo,
+                correo_contacto: correo
             };
             var activoId = form.querySelector('[name="activo_id"]').value;
             if (activoId) payload.activo_id = activoId;

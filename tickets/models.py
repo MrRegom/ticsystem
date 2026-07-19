@@ -99,10 +99,10 @@ class Ticket(models.Model):
     # El Funcionario que reporta el problema (para el cual es el ticket)
     solicitante = models.ForeignKey('core.Funcionario', on_delete=models.PROTECT, related_name='tickets_solicitados', verbose_name="Solicitante")
     
-    # El Activo es el núcleo. De aquí sacamos la ubicación física y clínica en tiempo real.
     activo = models.ForeignKey(Equipo, on_delete=models.PROTECT, related_name='tickets', null=True, blank=True, verbose_name="Activo / Equipo")
     
     anexo_contacto = models.CharField(max_length=50, null=True, blank=True, verbose_name="Anexo/Teléfono de Contacto")
+    correo_contacto = models.EmailField(max_length=150, null=True, blank=True, verbose_name="Correo de Contacto")
     
     descripcion = models.TextField(verbose_name="Descripción del Problema")
     diagnostico = models.TextField(null=True, blank=True, verbose_name="Diagnóstico Técnico")
