@@ -246,20 +246,34 @@
             </div>
             <div class="form-group col-md-4 mb-0">
               <label class="form-label-custom">Impacto</label>
-              <select name="impacto" class="form-control">
-                <option value="4">Bajo / Sin Impacto</option>
-                <option value="3">Usuario Único</option>
-                <option value="2">Servicio / Área</option>
-                <option value="1">Alta Críticidad</option>
-              </select>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
+                  <input type="radio" name="impacto" value="4" checked> Bajo / Sin Impacto
+                </label>
+                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
+                  <input type="radio" name="impacto" value="3"> Usuario Único
+                </label>
+                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
+                  <input type="radio" name="impacto" value="2"> Servicio / Área
+                </label>
+                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
+                  <input type="radio" name="impacto" value="1"> Alta Críticidad
+                </label>
+              </div>
             </div>
             <div class="form-group col-md-4 mb-0">
               <label class="form-label-custom">Urgencia</label>
-              <select name="urgencia" class="form-control">
-                <option value="3">Baja / Normal</option>
-                <option value="2">Media / Degradada</option>
-                <option value="1">Alta / Detenida</option>
-              </select>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
+                  <input type="radio" name="urgencia" value="3" checked> Baja / Normal
+                </label>
+                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
+                  <input type="radio" name="urgencia" value="2"> Media / Degradada
+                </label>
+                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
+                  <input type="radio" name="urgencia" value="1"> Alta / Detenida
+                </label>
+              </div>
             </div>
           </div>
 
@@ -280,8 +294,8 @@
 
         </div>
         <div class="modal-footer bg-white border-top-0 pt-0" style="font-family: 'Segoe UI', system-ui, sans-serif;">
-          <button type="button" class="btn btn-secondary" style="border-radius:0; padding:6px 14px;" data-dismiss="modal">Cancelar</button>
-          <button type="submit" id="btn-submit-ticket" class="ms-btn-primary" style="font-size:13px; border-radius:0; padding:6px 14px;">
+          <button type="button" class="ms-btn-secondary" style="border-radius:0; padding:6px 14px; height: 32px;" data-dismiss="modal">Cancelar</button>
+          <button type="submit" id="btn-submit-ticket" class="ms-btn-primary" style="font-size:13px; border-radius:0; padding:6px 14px; height: 32px;">
             <i class="fas fa-save"></i> Crear Ticket
           </button>
         </div>
@@ -344,8 +358,8 @@
           </div>
         </div>
         <div class="modal-footer" style="border-top:1px solid #e2e8f0; font-family: 'Segoe UI', system-ui, sans-serif;">
-          <button type="button" class="btn btn-secondary" onclick="$('#modalCrearUsuario').modal('hide')" style="border-radius: 0; padding:6px 14px;">Cancelar</button>
-          <button type="submit" class="ms-btn-primary" id="btn-submit-usuario" style="border-radius: 0; padding:6px 14px;"><i class="fas fa-save"></i> Guardar Funcionario</button>
+          <button type="button" class="ms-btn-secondary" onclick="$('#modalCrearUsuario').modal('hide')" style="border-radius: 0; padding:6px 14px; height: 32px;">Cancelar</button>
+          <button type="submit" class="ms-btn-primary" id="btn-submit-usuario" style="border-radius: 0; padding:6px 14px; height: 32px;"><i class="fas fa-save"></i> Guardar Funcionario</button>
         </div>
       </form>
     </div>
@@ -408,8 +422,8 @@
 
         </div>
         <div class="modal-footer" style="border-top:1px solid #e2e8f0; font-family: 'Segoe UI', system-ui, sans-serif;">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="border-radius: 0; padding:6px 14px;">Cerrar</button>
-          <button type="submit" class="ms-btn-primary" id="btn-submit-resolver" style="border-radius: 0; background: #107c10; padding:6px 14px;"><i class="fas fa-check"></i> Finalizar y Resolver Ticket</button>
+          <button type="button" class="ms-btn-secondary" data-dismiss="modal" style="border-radius: 0; padding:6px 14px; height: 32px;">Cerrar</button>
+          <button type="submit" class="ms-btn-primary" id="btn-submit-resolver" style="border-radius: 0; background: #107c10; padding:6px 14px; height: 32px;"><i class="fas fa-check"></i> Finalizar y Resolver Ticket</button>
         </div>
       </form>
     </div>
