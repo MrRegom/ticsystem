@@ -17,6 +17,8 @@ PERMISOS_DISPONIBLES = [
     {'id': 'VER_ANEXOS', 'nombre': 'Ver Anexos', 'modulo': 'Anexos'},
     {'id': 'GESTIONAR_ANEXOS', 'nombre': 'Gestionar Anexos', 'modulo': 'Anexos'},
     {'id': 'GESTIONAR_ROLES', 'nombre': 'Gestionar Roles y Perfiles', 'modulo': 'Sistema'},
+    {'id': 'RECIBIR_TICKETS', 'nombre': 'Recibir y Resolver Tickets (Técnicos)', 'modulo': 'Tickets'},
+    {'id': 'DESPACHAR_TICKETS', 'nombre': 'Derivar y Despachar Tickets (Mesa de Ayuda)', 'modulo': 'Tickets'},
 ]
 
 class RolService:

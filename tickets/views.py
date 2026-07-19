@@ -41,23 +41,28 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
         context['prioridades'] = list(Prioridad.objects.all().values('id', 'nombre', 'color_hex'))
         context['categorias'] = list(Categoria.objects.filter(activa=True).values('id', 'nombre'))
         context['grupos_resolutores'] = list(GrupoResolutor.objects.filter(activo=True).values('id', 'nombre'))
-        # Filtrar técnicos para asignar
+        # Filtrar técnicos para asignar usando permisos dinámicos
         is_dispatcher = False
         if hasattr(self.request.user, 'perfil') and self.request.user.perfil.rol:
-            rol_nombre = self.request.user.perfil.rol.nombre
-            if rol_nombre in ['Super Administrador', 'Operador de Mesa de Ayuda', 'Mesa de Ayuda']:
+            if self.request.user.perfil.rol.tiene_permiso('DESPACHAR_TICKETS'):
                 is_dispatcher = True
+        
+        if self.request.user.is_superuser:
+            is_dispatcher = True
 
+        # Para el JSONField, en la mayoría de DBs se puede buscar una clave.
+        # En Django 3.1+ se puede hacer perfil__rol__permisos__RECIBIR_TICKETS=True
         if is_dispatcher:
-            tecnicos_qs = User.objects.filter(is_active=True, perfil__rol__isnull=False).exclude(perfil__rol__nombre='Operador de Mesa de Ayuda').distinct()
+            tecnicos_qs = User.objects.filter(is_active=True, perfil__rol__permisos__RECIBIR_TICKETS=True).distinct()
         else:
             if hasattr(self.request.user, 'grupos_resolutores'):
                 user_grupos = self.request.user.grupos_resolutores.all()
                 if user_grupos.exists():
-                    tecnicos_qs = User.objects.filter(grupos_resolutores__in=user_grupos, is_active=True).exclude(perfil__rol__nombre='Operador de Mesa de Ayuda').distinct()
+                    tecnicos_qs = User.objects.filter(grupos_resolutores__in=user_grupos, is_active=True, perfil__rol__permisos__RECIBIR_TICKETS=True).distinct()
                 else:
                     tecnicos_qs = User.objects.none()
             else:
+
                 tecnicos_qs = User.objects.none()
             
         tecnicos_list = []
