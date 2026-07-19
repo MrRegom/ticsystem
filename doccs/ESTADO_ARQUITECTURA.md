@@ -97,10 +97,14 @@ Los endpoints API devuelven siempre `{ "success": true/false, "data": {…}, "me
 - **Bitácora automática (Signals):** Django Signals registran cambios de PMA, IP, estado sin intervención del técnico.
 
 ### 4. Tickets (Mesa de Ayuda) (`/tickets/`)
-- Tablero Kanban con columnas por estado.
-- Soporte de SLA, grupos resolutores, categorías, prioridades.
+- Tablero Kanban con columnas por estado (Estilo Enterprise, alta densidad, bordes cuadrados).
+- Tarjetas Kanban optimizadas para alto volumen (5-6 tarjetas visibles sin scroll).
+- Flujo integrado de SLA con cronómetros automáticos e indicadores dinámicos.
+- Solución Integrada KEDB (Base de Errores Conocidos): sugiere soluciones tipificadas antes de crear tickets para promover el auto-servicio.
+- Gestión robusta de correos de contacto (`correo_contacto`) para futuras integraciones de notificaciones.
 - Buscador de Solicitante con el mismo patrón Select2-AJAX que la Bitácora de Equipos.
 - Creación de funcionarios al vuelo desde el formulario de ticket.
+- Offcanvas lateral (`#offcanvasTicket`) para visualización y gestión rápida de detalles y bitácora.
 
 ### 5. Reportes (`/reportes/`)
 - App separada del core por norma de Clean Architecture.
