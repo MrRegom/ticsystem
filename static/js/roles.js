@@ -71,8 +71,13 @@ $(document).ready(function() {
                     closeDrawer();
                     window.location.reload();
                 } else {
-                    alert(resp.message || 'Error al guardar el rol.');
+                    alert('Error: ' + (resp.message || 'No se pudo guardar el rol.'));
                 }
+            },
+            error: function(xhr) {
+                var msg = 'Error del servidor.';
+                try { msg = JSON.parse(xhr.responseText).message || msg; } catch(e) {}
+                alert('Error al guardar: ' + msg + ' (Status: ' + xhr.status + ')');
             }
         });
     });

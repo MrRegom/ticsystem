@@ -280,13 +280,23 @@ class RolesAPIView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
     def put(self, request, *args, **kwargs):
-        if not request.user.is_superuser and not (hasattr(request.user, 'perfil') and request.user.perfil.rol and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')):
-            return JsonResponse({'success': False, 'message': 'No autorizado'}, status=403)
+        # Permitir a superusers siempre; al resto verificar permiso
+        is_admin = request.user.is_superuser
+        has_perm = (
+            hasattr(request.user, 'perfil')
+            and request.user.perfil
+            and request.user.perfil.rol
+            and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')
+        )
+        if not is_admin and not has_perm:
+            return JsonResponse({'success': False, 'message': 'No autorizado para editar roles'}, status=403)
             
         try:
             data = json.loads(request.body)
             from core.models import Rol
             rol_id = data.get('id')
+            if not rol_id:
+                return JsonResponse({'success': False, 'message': 'ID de rol requerido'}, status=400)
             rol = Rol.objects.get(id=rol_id)
             rol.nombre = data.get('nombre', rol.nombre)
             rol.descripcion = data.get('descripcion', rol.descripcion)
@@ -295,8 +305,11 @@ class RolesAPIView(LoginRequiredMixin, View):
             rol.permisos = data.get('permisos', rol.permisos)
             rol.save()
             return JsonResponse({'success': True, 'message': 'Rol actualizado con éxito'})
+        except Rol.DoesNotExist:
+            return JsonResponse({'success': False, 'message': f'Rol con ID {rol_id} no encontrado'}, status=400)
         except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)}, status=400)
+            import traceback
+            return JsonResponse({'success': False, 'message': str(e), 'detail': traceback.format_exc()}, status=400)
 
     def _parse_request(self, request):
         """Extrae datos del request tanto de JSON como de multipart."""
