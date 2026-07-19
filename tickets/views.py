@@ -65,17 +65,45 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
 
                 tecnicos_qs = User.objects.none()
             
-        tecnicos_list = []
-        for u in tecnicos_qs.select_related('perfil__rol').exclude(first_name=''):
-            rol_str = f" ({u.perfil.rol.nombre})" if hasattr(u, 'perfil') and u.perfil.rol else " (Técnico)"
-            tecnicos_list.append({
+        # Agrupar técnicos por Grupo Resolutor para el frontend
+        from mantenedores.models import GrupoResolutor
+        grupos_activos = GrupoResolutor.objects.filter(activo=True).prefetch_related('miembros')
+        
+        tecnicos_por_grupo = []
+        tecnicos_ya_agrupados = set()
+        
+        for g in grupos_activos:
+            miembros = []
+            for u in g.miembros.filter(is_active=True, perfil__rol__permisos__RECIBIR_TICKETS=True).exclude(first_name=''):
+                miembros.append({
+                    'id': u.id,
+                    'first_name': u.first_name,
+                    'last_name': u.last_name,
+                })
+                tecnicos_ya_agrupados.add(u.id)
+                
+            if miembros:
+                tecnicos_por_grupo.append({
+                    'grupo_nombre': g.nombre,
+                    'miembros': miembros
+                })
+        
+        # Buscar los técnicos que tienen permiso pero no están en ningún grupo
+        sin_grupo = []
+        for u in tecnicos_qs.exclude(id__in=tecnicos_ya_agrupados).exclude(first_name=''):
+            sin_grupo.append({
                 'id': u.id,
-                'username': u.username,
                 'first_name': u.first_name,
                 'last_name': u.last_name,
-                'rol_str': rol_str
             })
-        context['tecnicos'] = tecnicos_list
+            
+        if sin_grupo:
+            tecnicos_por_grupo.append({
+                'grupo_nombre': 'Otros Técnicos',
+                'miembros': sin_grupo
+            })
+            
+        context['tecnicos_por_grupo'] = tecnicos_por_grupo
         context['todos_usuarios'] = list(User.objects.filter(is_active=True).values('id', 'username', 'first_name', 'last_name'))
         context['unidades'] = list(Unidad.objects.filter(activo=True).order_by('nombre').values('id', 'nombre'))
         context['cargos'] = list(Cargo.objects.filter(activo=True).order_by('nombre').values('id', 'nombre'))

@@ -150,16 +150,18 @@
           <div style="display:flex; gap:10px;">
             <select class="tk-input" id="oc-select-tecnico" style="flex:1;">
               <option value="">-- Seleccionar Grupo o Técnico --</option>
-              <optgroup label="Equipos Resolutores">
+              <optgroup label="Equipos Resolutores (Cola General)">
                 {% for grp in grupos_resolutores %}
                   <option value="grp_{{ grp.id }}">{{ grp.nombre }}</option>
                 {% endfor %}
               </optgroup>
-              <optgroup label="Técnicos">
-                {% for tec in tecnicos %}
-                <option value="tec_{{ tec.id }}">{{ tec.first_name }} {{ tec.last_name }}{{ tec.rol_str }}</option>
-              {% endfor %}
+              {% for group in tecnicos_por_grupo %}
+              <optgroup label="Técnicos - {{ group.grupo_nombre }}">
+                {% for tec in group.miembros %}
+                <option value="tec_{{ tec.id }}">{{ tec.first_name }} {{ tec.last_name }}</option>
+                {% endfor %}
               </optgroup>
+              {% endfor %}
             </select>
             <button type="submit" class="ms-btn-primary" id="btn-asignar" style="padding:6px 12px; font-size:13px; height: 38px; border-radius:0;">Asignar / Escalar</button>
           </div>
