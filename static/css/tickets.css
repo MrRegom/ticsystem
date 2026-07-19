@@ -154,8 +154,9 @@
     padding: 16px 24px;
     display: flex; justify-content: space-between; align-items: center;
   }
-  .modal-header-tk h5 { font-weight: 700; font-size: 1rem; margin: 0; }
+  .modal-header-tk h5 { font-weight: 700; font-size: 1.1rem; margin: 0; font-family: 'Segoe UI', system-ui, sans-serif !important; }
   .modal-header-tk .close { color: #fff; opacity: 0.8; font-size: 1.4rem; background: none; border: none; cursor: pointer; padding: 0; line-height: 1; }
+  .modal-title { font-family: 'Segoe UI', system-ui, sans-serif !important; }
   .modal-body-tk { padding: 24px; }
   .modal-footer-tk { padding: 14px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px; }
   .tk-label { display: block; font-size: 0.7rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 5px; }
@@ -215,7 +216,7 @@
   .modal-right .modal-dialog {
       position: fixed;
       margin: 0;
-      width: 500px;
+      width: 650px;
       max-width: 100%;
       height: 100%;
       right: 0;
