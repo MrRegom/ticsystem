@@ -856,6 +856,15 @@ $(document).ready(function() {
         escapeMarkup: function (markup) { return markup; } // Permitir HTML en los mensajes
     });
     
+    // Auto-rellenar correo si el funcionario lo tiene
+    $('#solicitante-select').on('select2:select', function (e) {
+        var data = e.params.data;
+        var inputCorreo = document.querySelector('[name="correo_contacto"]');
+        if (inputCorreo) {
+            inputCorreo.value = data.correo ? data.correo : '';
+        }
+    });
+    
     // Enfocar campo de búsqueda al abrir modal
     $('#modalNuevoTicket').on('shown.bs.modal', function () {
         $('#solicitante-select').select2('open');
