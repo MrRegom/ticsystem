@@ -12,7 +12,7 @@ $(document).ready(function() {
         if (!icon.id) return icon.text;
         var iconClass = icon.id;
         var $icon = $(
-            '<span><i class="ms-Icon ' + iconClass + '" style="margin-right:8px; font-size:16px;"></i> ' + icon.text + '</span>'
+            '<span><i class="' + iconClass + '" style="margin-right:8px; font-size:16px;"></i> ' + icon.text + '</span>'
         );
         return $icon;
     }
@@ -89,7 +89,7 @@ function renderList(roles) {
     }
 
     roles.forEach(rol => {
-        const iconHtml = rol.icono ? `<i class="ms-Icon ${rol.icono}" style="margin-right:10px; font-size:18px; color:#0078d4;"></i>` : '';
+        const iconHtml = rol.icono ? `<i class="${rol.icono}" style="margin-right:10px; font-size:18px; color:#0078d4;"></i>` : '';
         const estadoHtml = rol.activo 
             ? `<span style="color:#107c10; font-weight:600;"><i class="fas fa-check-circle"></i> Activo</span>` 
             : `<span style="color:#a4262c; font-weight:600;"><i class="fas fa-times-circle"></i> Inactivo</span>`;
@@ -154,7 +154,7 @@ function openDrawer(action, rolId = null) {
         $('#drawer-title').text('Nuevo Rol');
         $('#form-rol')[0].reset();
         $('#rol_id').val('');
-        $('#icono').val('ms-Icon--Contact').trigger('change');
+        $('#icono').val('fas fa-user-circle').trigger('change');
         renderPermisos({});
         showDrawer();
     } else if (action === 'editar' && rolId) {
@@ -171,7 +171,7 @@ function openDrawer(action, rolId = null) {
                     if (resp.data.icono) {
                         $('#icono').val(resp.data.icono).trigger('change');
                     } else {
-                        $('#icono').val('ms-Icon--Contact').trigger('change');
+                        $('#icono').val('fas fa-user-circle').trigger('change');
                     }
                     $('#activo').val(resp.data.activo.toString());
                     renderPermisos(resp.data.permisos);

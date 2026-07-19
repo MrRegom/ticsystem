@@ -271,7 +271,7 @@ class RolesAPIView(LoginRequiredMixin, View):
             rol = Rol.objects.create(
                 nombre=data.get('nombre', ''),
                 descripcion=data.get('descripcion', ''),
-                icono=data.get('icono', 'ms-Icon--Contact'),
+                icono=data.get('icono', 'fas fa-user-circle'),
                 activo=data.get('activo', True),
                 permisos=data.get('permisos', {})
             )
