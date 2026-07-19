@@ -56,7 +56,7 @@ var MantenedoresApp = (function ($) {
     unidad:          { pre: [{ data: 'area_hospitalaria',title: 'Área Hospitalaria' }] },
     recinto:         { pre: [{ data: 'piso',             title: 'Piso' },
                              { data: 'sector',            title: 'Sector' },
-                             { data: 'unidad',            title: 'Unidad' }] },
+                             { data: 'unidad',            title: 'Unidad Clínica' }] },
     pma:             { pre:  [{ data: 'recinto',           title: 'Recinto Base' }],
                              post: [{ data: 'unidad',            title: 'Unidad Clínica' },
                                     { data: 'piso',              title: 'Piso' }] },
@@ -67,8 +67,8 @@ var MantenedoresApp = (function ($) {
     grupo_resolutor:  { pre:  [{ data: 'icono',             title: '', orderable: false, width: '45px',
                                render: function(d, t) {
                                   if (t === 'display') {
-                                    var iconClass = d || 'ms-Icon--Group';
-                                    return '<div style="height:35px; width:35px; background:#f1f5f9; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#002a54;"><i class="ms-Icon ' + iconClass + '" style="font-size:18px;"></i></div>';
+                                    var iconClass = d || 'fas fa-users';
+                                    return '<div style="height:35px; width:35px; background:#f1f5f9; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#002a54;"><i class="' + iconClass + '" style="font-size:18px;"></i></div>';
                                   }
                                   return d;
                                }
@@ -337,7 +337,7 @@ var MantenedoresApp = (function ($) {
       
       // Manejo especial para icono
       if (fieldId === 'icono') {
-        return $('<span><i class="ms-Icon ' + state.id + '" style="margin-right:8px; font-size:16px;"></i> ' + state.text + '</span>');
+        return $('<span><i class="' + state.id + '" style="margin-right:8px; font-size:16px;"></i> ' + state.text + '</span>');
       }
 
       var text = state.text;
@@ -360,7 +360,7 @@ var MantenedoresApp = (function ($) {
       if (!state.id) return state.text;
       
       if (fieldId === 'icono') {
-        return $('<span><i class="ms-Icon ' + state.id + '" style="margin-right:8px; font-size:16px;"></i> ' + state.text + '</span>');
+        return $('<span><i class="' + state.id + '" style="margin-right:8px; font-size:16px;"></i> ' + state.text + '</span>');
       }
 
       var text = state.text;

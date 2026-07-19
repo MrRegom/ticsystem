@@ -83,8 +83,8 @@ function renderList(users) {
     } else if (roleText !== 'Sin Perfil') {
       roleDotStyle = '#a4262c'; // Rojo oscuro para otros
     }
-    const roleIcon = u.rol_icono || (roleText === 'Sin Perfil' ? 'ms-Icon--Contact' : 'ms-Icon--Permissions');
-    const roleBadge = `<div class="ms-role-text" title="${roleText}" style="cursor: help;"><i class="ms-Icon ${roleIcon}" style="font-size: 20px; color: ${roleDotStyle}"></i></div>`;
+    const roleIcon = u.rol_icono || 'fas fa-user-circle';
+    const roleBadge = `<div class="ms-role-text" title="${roleText}" style="cursor: help;"><i class="${roleIcon}" style="font-size: 20px; color: ${roleDotStyle}"></i></div>`;
     
     const unidad = u.unidad || 'Sin Asignar';
     

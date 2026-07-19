@@ -384,21 +384,20 @@
               <!-- Icono (Grupo Resolutor) -->
               <div class="col-md-6 form-group" id="field-icono" style="display:none;">
                 <label>Icono (Fluent UI)</label>
-                <select class="form-control form-control-sm custom-select" id="m-icono" style="width: 100%;">
-                  <option value="ms-Icon--Contact">Contact (Mesa de Ayuda)</option>
-                  <option value="ms-Icon--ContactInfo">Contact Info (Operador)</option>
-                  <option value="ms-Icon--Shield">Shield (Administrador)</option>
-                  <option value="ms-Icon--Group">Group (Grupo)</option>
-                  <option value="ms-Icon--Wrench">Wrench (Soporte)</option>
-                  <option value="ms-Icon--Build">Build (Terreno)</option>
-                  <option value="ms-Icon--Repair">Repair (Mantenimiento)</option>
-                  <option value="ms-Icon--Devices3">Devices (Hardware)</option>
-                  <option value="ms-Icon--Phone">Phone (Anexos)</option>
-                  <option value="ms-Icon--Settings">Settings (Configuración)</option>
-                  <option value="ms-Icon--Heart">Heart (Salud)</option>
-                  <option value="ms-Icon--Hospital">Hospital (Clínica)</option>
-                  <option value="ms-Icon--Headset">Headset (Call Center)</option>
-                  <option value="ms-Icon--Permissions">Permissions (Permisos)</option>
+              <select class="form-control form-control-sm custom-select" id="m-icono" style="width: 100%;">
+                  <option value="fas fa-users">Users (Grupo Resolutor)</option>
+                  <option value="fas fa-headset">Headset (Mesa de Ayuda / Operador)</option>
+                  <option value="fas fa-shield-alt">Shield (Administrador)</option>
+                  <option value="fas fa-wrench">Wrench (Soporte)</option>
+                  <option value="fas fa-tools">Tools (Terreno / Mantenimiento)</option>
+                  <option value="fas fa-laptop-medical">Laptop Medical (Hardware Clínico)</option>
+                  <option value="fas fa-phone-alt">Phone (Anexos)</option>
+                  <option value="fas fa-cogs">Settings (Configuración)</option>
+                  <option value="fas fa-heartbeat">Heart (Salud)</option>
+                  <option value="fas fa-hospital">Hospital (Clínica)</option>
+                  <option value="fas fa-key">Key (Permisos)</option>
+                  <option value="fas fa-network-wired">Network (Redes)</option>
+                  <option value="fas fa-server">Server (Infraestructura)</option>
                 </select>
               </div>
 
@@ -471,7 +470,7 @@
 
 {% block extra_js %}
 <!-- JS del mantenedor dinámico -->
-<script src="{% static 'js/mantenedores.js' %}?v=4"></script>
+<script src="{% static 'js/mantenedores.js' %}?v=5"></script>
 <script>
   $(document).ready(function() {
     // Forzar el comportamiento tipo acordeón (solo uno abierto a la vez)
