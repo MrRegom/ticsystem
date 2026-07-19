@@ -214,6 +214,20 @@ class RolesDashboardView(LoginRequiredMixin, TemplateView):
         from core.services.rol_service import RolService
         import json
         context['roles'] = Rol.objects.all().order_by('orden', 'nombre').prefetch_related('usuarios')
+        
+        # Preparar data para INITIAL_ROLES
+        roles_list = []
+        for r in context['roles']:
+            roles_list.append({
+                'id': r.id,
+                'nombre': r.nombre,
+                'descripcion': r.descripcion,
+                'icono': r.icono,
+                'activo': r.activo,
+                'permisos_count': len(r.permisos.keys()) if r.permisos else 0,
+                'usuarios_count': r.usuarios.count()
+            })
+        context['roles_json'] = json.dumps(roles_list)
         context['permisos_json'] = json.dumps(RolService.obtener_permisos_disponibles())
         return context
 

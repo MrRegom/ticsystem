@@ -2,143 +2,102 @@
 {% load static %}
 
 {% block title %}Gestión de Roles y Perfiles{% endblock %}
+{% block module_title %}Gestión de Roles y Perfiles{% endblock %}
 
 {% block extra_css %}
-<link href="{% static 'vendor/datatables/css/responsive.bootstrap4.min.css' %}" rel="stylesheet">
+<!-- Fluent Design Roles Directory -->
+<style>
+  .ms-list-header, .ms-list-row {
+    grid-template-columns: 250px 350px 100px 100px 100px 100px !important;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid pb-4 animate__animated animate__fadeIn" style="padding: 0 10px; ">
-  <div class="page-header-top">
-    <div>
-      <h2 class="font-weight-bold text-dark mb-0">Gestión de Roles y Perfiles</h2>
-      <p class="page-subtitle">Administración de perfiles y permisos de acceso al sistema</p>
+<div class="ms-wrap">
+  
+  <!-- Encabezado de Página -->
+  <div class="ms-header">
+    <div class="ms-title-area">
+      <h2>Gestión de Roles y Perfiles</h2>
+      <p>Administración de perfiles y permisos de acceso al sistema</p>
     </div>
-    <div>
-      <button class="btn-primary-action shadow-sm" id="btn-nuevo-rol">
-        <i class="fas fa-plus mr-1"></i> Nuevo Rol
+    <div class="ms-command-bar">
+      <input type="text" class="ms-search-input" id="search-input" placeholder="Buscar rol...">
+      <button class="ms-btn-primary" onclick="openDrawer('crear')">
+        <i class="fas fa-plus"></i> Nuevo Rol
       </button>
     </div>
   </div>
 
-  <div class="datagrid-container">
-    <div class="table-responsive">
-      <table id="roles-table" class="table dataTable align-middle w-100">
-          <thead class="thead-light">
-            <tr>
-              <th class="text-uppercase text-secondary font-weight-bold text-xs">Rol</th>
-              <th class="text-uppercase text-secondary font-weight-bold text-xs">Descripción</th>
-              <th class="text-uppercase text-secondary font-weight-bold text-xs text-center">Permisos Asignados</th>
-              <th class="text-uppercase text-secondary font-weight-bold text-xs text-center">Usuarios</th>
-              <th class="text-uppercase text-secondary font-weight-bold text-xs text-center">Estado</th>
-              <th class="text-uppercase text-secondary font-weight-bold text-xs text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for rol in roles %}
-            <tr>
-              <td class="font-weight-bold align-middle">
-                {% if rol.icono %}
-                  <i class="ms-Icon {{ rol.icono }}" style="margin-right: 8px; font-size: 16px; vertical-align: middle;"></i>
-                {% endif %}
-                {{ rol.nombre }}
-              </td>
-              <td class="text-muted align-middle" style="max-width: 300px;">{{ rol.descripcion|default:"-" }}</td>
-              <td class="text-center">
-                <span class="badge badge-info badge-pill px-2 py-1" style="font-size: 0.7rem;">{{ rol.permisos.keys|length }} permisos</span>
-              </td>
-              <td class="text-center">
-                <span class="badge badge-light badge-pill px-2 py-1 border text-dark" style="font-size: 0.7rem;">{{ rol.usuarios.count }} usuarios</span>
-              </td>
-              <td class="text-center">
-                {% if rol.activo %}
-                  <span class="badge badge-success badge-pill px-2 py-1" style="font-size: 0.7rem;"><i class="fas fa-check-circle mr-1"></i> Activo</span>
-                {% else %}
-                  <span class="badge badge-danger badge-pill px-2 py-1" style="font-size: 0.7rem;"><i class="fas fa-times-circle mr-1"></i> Inactivo</span>
-                {% endif %}
-              </td>
-              <td class="text-right">
-                <a href="#" class="action-icon ic-edit btn-edit-rol" data-id="{{ rol.id }}" title="Editar Rol">
-                  <i class="fas fa-edit"></i>
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+  <!-- Rich List -->
+  <div class="ms-list-container">
+    <div class="ms-list-header">
+      <div>ROL</div>
+      <div>DESCRIPCIÓN</div>
+      <div>PERMISOS</div>
+      <div>USUARIOS</div>
+      <div>ESTADO</div>
+      <div style="text-align:right;">ACCIONES</div>
     </div>
+    <div id="roles-list">
+      <!-- Generado vía JS -->
+      <div style="padding: 40px; text-align: center; color: #605e5c;">Cargando roles...</div>
+    </div>
+  </div>
+
 </div>
 
-<!-- Modal Formulario de Rol -->
-<div class="modal fade" id="modalRol" tabindex="-1" aria-labelledby="modalRolLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content modal-content-premium">
-      <div class="modal-header modal-header-premium">
-        <h5 class="modal-title font-weight-bold" id="modalRolLabel">Rol y Permisos</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form id="form-rol">
-        <div class="modal-body p-4">
-          <input type="hidden" id="rol_id" name="rol_id">
-          
-          <div class="row">
-            <div class="col-md-6 form-group">
-              <label class="font-weight-bold text-dark text-sm">Nombre del Rol *</label>
-              <input type="text" class="form-control form-control-solid rounded" id="nombre" name="nombre" required>
-            </div>
-            <div class="col-md-6 form-group">
-              <label class="font-weight-bold text-dark text-sm">Estado</label>
-              <select class="form-control form-control-solid rounded custom-select" id="activo" name="activo">
-                <option value="true">Activo</option>
-                <option value="false">Inactivo</option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 form-group mb-4">
-              <label class="font-weight-bold text-dark text-sm">Descripción</label>
-              <textarea class="form-control form-control-solid rounded" id="descripcion" name="descripcion" rows="2"></textarea>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 form-group mb-4">
-              <label class="font-weight-bold text-dark text-sm">Icono (Fluent UI)</label>
-              <select class="form-control form-control-solid rounded custom-select" id="icono" name="icono" style="width: 100%;">
-                <option value="ms-Icon--Contact">Contact (Mesa de Ayuda)</option>
-                <option value="ms-Icon--ContactInfo">Contact Info (Operador)</option>
-                <option value="ms-Icon--Shield">Shield (Administrador)</option>
-                <option value="ms-Icon--Group">Group (Grupo)</option>
-                <option value="ms-Icon--Wrench">Wrench (Soporte)</option>
-                <option value="ms-Icon--Build">Build (Terreno)</option>
-                <option value="ms-Icon--Repair">Repair (Mantenimiento)</option>
-                <option value="ms-Icon--Devices3">Devices (Hardware)</option>
-                <option value="ms-Icon--Phone">Phone (Anexos)</option>
-                <option value="ms-Icon--Settings">Settings (Configuración)</option>
-                <option value="ms-Icon--Heart">Heart (Salud)</option>
-                <option value="ms-Icon--Hospital">Hospital (Clínica)</option>
-                <option value="ms-Icon--Headset">Headset (Call Center)</option>
-                <option value="ms-Icon--Permissions">Permissions (Permisos)</option>
-              </select>
-            </div>
-          </div>
+<!-- Drawer (Panel Lateral) -->
+<div class="ms-drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="ms-drawer" id="role-drawer">
+  <div class="ms-drawer-header">
+    <h3 class="ms-drawer-title" id="drawer-title">Nuevo Rol</h3>
+    <button class="ms-drawer-close" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="ms-drawer-body">
+    <form id="form-rol">
+      <input type="hidden" id="rol_id" name="rol_id">
+      
+      <label class="ms-label">Nombre del Rol *</label>
+      <input type="text" id="nombre" name="nombre" class="ms-input" required>
+      
+      <label class="ms-label">Estado</label>
+      <select id="activo" name="activo" class="ms-input">
+        <option value="true">Activo</option>
+        <option value="false">Inactivo</option>
+      </select>
+      
+      <label class="ms-label">Descripción</label>
+      <textarea id="descripcion" name="descripcion" class="ms-input" rows="3"></textarea>
+      
+      <label class="ms-label">Icono (Fluent UI)</label>
+      <select id="icono" name="icono" class="ms-input" style="width: 100%;">
+        <option value="ms-Icon--Contact">Contact (Mesa de Ayuda)</option>
+        <option value="ms-Icon--ContactInfo">Contact Info (Operador)</option>
+        <option value="ms-Icon--Shield">Shield (Administrador)</option>
+        <option value="ms-Icon--Group">Group (Grupo)</option>
+        <option value="ms-Icon--Wrench">Wrench (Soporte)</option>
+        <option value="ms-Icon--Build">Build (Terreno)</option>
+        <option value="ms-Icon--Repair">Repair (Mantenimiento)</option>
+        <option value="ms-Icon--Devices3">Devices (Hardware)</option>
+        <option value="ms-Icon--Phone">Phone (Anexos)</option>
+        <option value="ms-Icon--Settings">Settings (Configuración)</option>
+        <option value="ms-Icon--Heart">Heart (Salud)</option>
+        <option value="ms-Icon--Hospital">Hospital (Clínica)</option>
+        <option value="ms-Icon--Headset">Headset (Call Center)</option>
+        <option value="ms-Icon--Permissions">Permissions (Permisos)</option>
+      </select>
 
-          <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-3 mt-4"><i class="fas fa-key text-warning mr-2"></i> Permisos de Acceso</h6>
-          
-          <div class="row" id="permisos-container">
-            <!-- Renderizado dinámicamente -->
-          </div>
-        </div>
-        <div class="modal-footer bg-light border-top-0 px-4 py-3" style="border-radius: 0;">
-          <button type="button" class="btn btn-light font-weight-bold text-muted px-4" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary-action font-weight-bold px-4" id="btn-save-rol">
-            <i class="fas fa-save mr-2"></i>Guardar Rol
-          </button>
-        </div>
-      </form>
-    </div>
+      <h4 style="margin-top:20px; border-bottom:1px solid #e1dfdd; padding-bottom:10px; font-size:16px; font-weight:600; color:#323130;"><i class="fas fa-key text-warning mr-2"></i> Permisos de Acceso</h4>
+      <div id="permisos-container" style="margin-top:15px; display:flex; flex-direction:column; gap:10px;">
+        <!-- Renderizado vía JS -->
+      </div>
+      
+      <div style="margin-top: 30px;">
+        <button type="submit" class="ms-btn-primary" style="width: 100%; justify-content: center;">Guardar Rol</button>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock %}
@@ -147,5 +106,5 @@
 <script>
   const PERMISOS_DISPONIBLES = {{ permisos_json|safe }};
 </script>
-<script src="{% static 'js/roles.js' %}?v=2"></script>
+<script src="{% static 'js/roles.js' %}?v=3"></script>
 {% endblock %}

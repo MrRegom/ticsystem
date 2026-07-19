@@ -1,14 +1,13 @@
-$(document).ready(function() {
-    // Inicializar DataTable
-    const table = $('#roles-table').DataTable({
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-        },
-        responsive: true,
-        order: [[0, 'asc']]
-    });
+let rolesData = [];
 
-    // Formatear iconos para Select2
+$(document).ready(function() {
+    // Inicializar data
+    if (typeof INITIAL_ROLES !== 'undefined') {
+        rolesData = INITIAL_ROLES;
+        renderList(rolesData);
+    }
+
+    // Inicializar Select2 para el icono
     function formatIcon(icon) {
         if (!icon.id) return icon.text;
         var iconClass = icon.id;
@@ -22,68 +21,17 @@ $(document).ready(function() {
         theme: 'bootstrap4',
         templateResult: formatIcon,
         templateSelection: formatIcon,
-        dropdownParent: $('#modalRol')
+        dropdownParent: $('#role-drawer') // importante para que se vea por encima del drawer
     });
 
-    // Función para renderizar los checkboxes de permisos
-    function renderPermisos(rolPermisos = {}) {
-        const container = $('#permisos-container');
-        container.empty();
-        
-        PERMISOS_DISPONIBLES.forEach(p => {
-            const isChecked = rolPermisos[p.id] ? 'checked' : '';
-            const col = `
-                <div class="col-md-6 mb-3">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input perm-checkbox" id="perm_${p.id}" value="${p.id}" ${isChecked}>
-                        <label class="custom-control-label" for="perm_${p.id}">
-                            <span class="font-weight-bold d-block text-dark" style="font-size: 0.85rem;">${p.nombre}</span>
-                            <span class="text-muted small">Módulo: ${p.modulo}</span>
-                        </label>
-                    </div>
-                </div>
-            `;
-            container.append(col);
-        });
-    }
-
-    // Nuevo Rol
-    $('#btn-nuevo-rol').on('click', function() {
-        $('#form-rol')[0].reset();
-        $('#rol_id').val('');
-        $('#icono').val('ms-Icon--Contact').trigger('change');
-        renderPermisos({});
-        $('#modalRolLabel').text('Nuevo Rol');
-        $('#modalRol').modal('show');
-    });
-
-    // Editar Rol
-    $('.btn-edit-rol').on('click', function() {
-        const rolId = $(this).data('id');
-        
-        // Fetch rol data via API
-        $.ajax({
-            url: `/api/roles/${rolId}/`,
-            type: 'GET',
-            success: function(resp) {
-                if(resp.success) {
-                    $('#rol_id').val(resp.data.id);
-                    $('#nombre').val(resp.data.nombre);
-                    $('#descripcion').val(resp.data.descripcion);
-                    if (resp.data.icono) {
-                        $('#icono').val(resp.data.icono).trigger('change');
-                    } else {
-                        $('#icono').val('ms-Icon--Contact').trigger('change');
-                    }
-                    $('#activo').val(resp.data.activo.toString());
-                    renderPermisos(resp.data.permisos);
-                    $('#modalRolLabel').text('Editar Rol: ' + resp.data.nombre);
-                    $('#modalRol').modal('show');
-                } else {
-                    alert('Error al obtener datos del rol.');
-                }
-            }
-        });
+    // Búsqueda en tiempo real
+    $('#search-input').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        const filtered = rolesData.filter(r => 
+            r.nombre.toLowerCase().includes(query) || 
+            (r.descripcion && r.descripcion.toLowerCase().includes(query))
+        );
+        renderList(filtered);
     });
 
     // Guardar Rol
@@ -95,7 +43,7 @@ $(document).ready(function() {
         const url = '/api/roles/';
         
         const permisos = {};
-        $('.perm-checkbox').each(function() {
+        $('.perm-toggle').each(function() {
             if ($(this).is(':checked')) {
                 permisos[$(this).val()] = true;
             }
@@ -120,7 +68,7 @@ $(document).ready(function() {
             },
             success: function(resp) {
                 if(resp.success) {
-                    $('#modalRol').modal('hide');
+                    closeDrawer();
                     window.location.reload();
                 } else {
                     alert(resp.message || 'Error al guardar el rol.');
@@ -128,19 +76,136 @@ $(document).ready(function() {
             }
         });
     });
+});
 
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+// Renderizar la lista
+function renderList(roles) {
+    const listContainer = $('#roles-list');
+    listContainer.empty();
+
+    if (roles.length === 0) {
+        listContainer.html('<div style="padding: 40px; text-align: center; color: #605e5c;">No se encontraron roles.</div>');
+        return;
+    }
+
+    roles.forEach(rol => {
+        const iconHtml = rol.icono ? `<i class="ms-Icon ${rol.icono}" style="margin-right:10px; font-size:18px; color:#0078d4;"></i>` : '';
+        const estadoHtml = rol.activo 
+            ? `<span style="color:#107c10; font-weight:600;"><i class="fas fa-check-circle"></i> Activo</span>` 
+            : `<span style="color:#a4262c; font-weight:600;"><i class="fas fa-times-circle"></i> Inactivo</span>`;
+        
+        const row = `
+            <div class="ms-list-row" onclick="openDrawer('editar', ${rol.id})">
+                <div style="font-weight:600; color:#323130; display:flex; align-items:center;">
+                    ${iconHtml}
+                    ${rol.nombre}
+                </div>
+                <div style="color:#605e5c; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${rol.descripcion || ''}">
+                    ${rol.descripcion || '-'}
+                </div>
+                <div style="color:#605e5c; font-size: 0.85rem;">
+                    ${rol.permisos_count} permisos
+                </div>
+                <div style="color:#605e5c; font-size: 0.85rem;">
+                    ${rol.usuarios_count} usuarios
+                </div>
+                <div>
+                    ${estadoHtml}
+                </div>
+                <div style="text-align:right;">
+                    <button class="ms-icon-btn" onclick="event.stopPropagation(); openDrawer('editar', ${rol.id})" title="Editar Rol">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        listContainer.append(row);
+    });
+}
+
+// Renderizar Toggle Permisos
+function renderPermisos(rolPermisos = {}) {
+    const container = $('#permisos-container');
+    container.empty();
+    
+    PERMISOS_DISPONIBLES.forEach(p => {
+        const isChecked = rolPermisos[p.id] ? 'checked' : '';
+        const row = `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid #f3f2f1;">
+                <div>
+                    <div style="font-weight:600; font-size:14px; color:#323130;">${p.nombre}</div>
+                    <div style="font-size:12px; color:#605e5c;">Módulo: ${p.modulo}</div>
+                </div>
+                <div>
+                    <label class="ms-toggle">
+                        <input type="checkbox" class="perm-toggle" value="${p.id}" ${isChecked}>
+                        <span class="ms-toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        `;
+        container.append(row);
+    });
+}
+
+// Drawer Functions
+function openDrawer(action, rolId = null) {
+    if (action === 'crear') {
+        $('#drawer-title').text('Nuevo Rol');
+        $('#form-rol')[0].reset();
+        $('#rol_id').val('');
+        $('#icono').val('ms-Icon--Contact').trigger('change');
+        renderPermisos({});
+        showDrawer();
+    } else if (action === 'editar' && rolId) {
+        $('#drawer-title').text('Editar Rol');
+        
+        $.ajax({
+            url: `/api/roles/${rolId}/`,
+            type: 'GET',
+            success: function(resp) {
+                if(resp.success) {
+                    $('#rol_id').val(resp.data.id);
+                    $('#nombre').val(resp.data.nombre);
+                    $('#descripcion').val(resp.data.descripcion);
+                    if (resp.data.icono) {
+                        $('#icono').val(resp.data.icono).trigger('change');
+                    } else {
+                        $('#icono').val('ms-Icon--Contact').trigger('change');
+                    }
+                    $('#activo').val(resp.data.activo.toString());
+                    renderPermisos(resp.data.permisos);
+                    showDrawer();
+                } else {
+                    alert('Error al obtener datos del rol.');
                 }
             }
-        }
-        return cookieValue;
+        });
     }
-});
+}
+
+function showDrawer() {
+    $('#drawer-overlay').fadeIn(200);
+    $('#role-drawer').addClass('open');
+}
+
+function closeDrawer() {
+    $('#role-drawer').removeClass('open');
+    $('#drawer-overlay').fadeOut(200);
+}
+
+// Helpers
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
