@@ -5,8 +5,6 @@
 {% block module_title %}Inventario de Equipamiento{% endblock %}
 
 {% block extra_css %}
-<!-- DataTables -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <!-- El sistema de diseño usa global-theme.css (Microsoft Fluent) -->
 <style>
 /* Bordes dinámicos para campos requeridos */
@@ -581,7 +579,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="{% static 'js/equipos.js' %}?v=4.1"></script>
 {% endblock %}

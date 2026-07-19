@@ -257,7 +257,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Signature Pad CDN -->
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<!-- Signature Pad Local -->
+<script src="{% static 'vendor/signature_pad/signature_pad.umd.min.js' %}"></script>
 <script src="/static/js/actas.js?v=1.0"></script>
 {% endblock %}

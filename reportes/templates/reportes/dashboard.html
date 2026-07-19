@@ -116,7 +116,7 @@
 
 {% block extra_js %}
 <!-- Importar Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'vendor/chartjs/chart.min.js' %}"></script>
 <script>
   // Funciones para el Drawer (Panel Lateral) de Exportación
   window.openDrawer = function(id) {

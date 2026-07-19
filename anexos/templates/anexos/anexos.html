@@ -4,13 +4,11 @@
 {% block title %}Gestión de Anexos Telefónicos | Marga Marga{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'vendor/datatables/css/responsive.bootstrap4.min.css' %}">
 <style>
   body, .content-wrapper, .wrapper {
       background-color: #f8fafc;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Segoe UI', system-ui, sans-serif;
   }
 
   /* Header Superior */
@@ -506,9 +504,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{% static 'vendor/datatables/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'js/anexos.js' %}"></script>
 {% endblock %}

@@ -1,20 +1,61 @@
 /* mantenedores.css */
 /* ===== Layout de secciones ===== */
+.cat-collapse-container .card-body {
+  background: #ffffff;
+  border: 1px solid #edebe9;
+  border-radius: 4px;
+}
 .grupo-titulo {
-  font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;
-  color:#64748b; padding:6px 0 4px; margin-bottom:8px;
-  border-bottom:2px solid #e2e8f0;
+  font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+  color:#323130; padding:6px 0 4px; margin-bottom:12px;
+  border-bottom:1px solid #edebe9;
 }
 .grupo-titulo i { margin-right:5px; }
 
 /* Cards */
-.card-modelo { cursor: pointer; border: 2px solid #e2e8f0 !important; border-radius: 10px; transition: all .2s; }
-.card-modelo:hover { border-color: #002a54 !important; background: #f8faff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,42,84,.1); }
-.card-modelo.active { border-color: #002a54 !important; background: #eef4ff; }
+.card-modelo { cursor: pointer; border: 1px solid #edebe9 !important; border-radius: 4px; transition: all .2s; background: #ffffff; box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108); }
+.card-modelo:hover { border-color: #0078d4 !important; background: #f3f2f1; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.card-modelo.active { border-color: #0078d4 !important; background: #eff6fc; }
 .card-modelo .card-body { padding: 14px 10px !important; }
 .card-modelo i { display: block; margin-bottom: 6px; }
-.card-modelo .modelo-label { font-size: .78rem; font-weight: 600; color: #334155; }
-.card-modelo.active .modelo-label { color:#002a54; }
+.card-modelo .modelo-label { font-size: .8rem; font-weight: 600; color: #323130; font-family: 'Segoe UI', system-ui, sans-serif; }
+.card-modelo.active .modelo-label { color:#0078d4; }
+
+/* Microsoft Fluent Design Categories */
+.ms-category-card {
+    cursor: pointer;
+    border: 1px solid #edebe9 !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 4px;
+    background: #ffffff;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+}
+.ms-category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-color: #0078d4 !important;
+}
+.ms-category-icon-wrap {
+    border-radius: 4px;
+    width: 64px;
+    height: 64px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.ms-category-icon-wrap.tecnico { background: rgba(92, 45, 145, 0.1); color: #5c2d91; }
+.ms-category-icon-wrap.fisica { background: rgba(0, 120, 212, 0.1); color: #0078d4; }
+.ms-category-icon-wrap.hospitalaria { background: rgba(16, 124, 16, 0.1); color: #107c10; }
+.ms-category-icon-wrap.administrativa { background: rgba(216, 59, 1, 0.1); color: #d83b01; }
+
+.ms-category-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #323130;
+    font-size: 15px;
+}
 
 /* Section title */
 .section-title { font-size: .85rem; font-weight: 700; color: #002a54; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }

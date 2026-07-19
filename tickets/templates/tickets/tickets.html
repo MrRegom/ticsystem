@@ -4,7 +4,6 @@
 
 {% block extra_css %}
 {% load static %}
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="{% static 'css/tickets.css' %}?v=1">
 {% endblock %}
 
@@ -420,8 +419,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{% static 'vendor/sortablejs/Sortable.min.js' %}"></script>
 <script>
     window.TICKET_CONFIG = {
         csrfToken: '{{ csrf_token }}',
