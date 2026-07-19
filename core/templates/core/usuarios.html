@@ -81,6 +81,14 @@
         {% endfor %}
       </select>
 
+      <label class="ms-label">Grupos Resolutores (Opcional)</label>
+      <select id="form-grupos" class="ms-input" multiple size="4">
+        {% for g in grupos_disponibles %}
+          <option value="{{ g.id }}">{{ g.nombre }}</option>
+        {% endfor %}
+      </select>
+      <small style="display:block; margin-bottom: 12px; color:#605e5c; font-size: 12px;">Mantén presionada la tecla Ctrl para seleccionar varios grupos.</small>
+
       <label class="ms-label" id="lbl-password">Contraseña</label>
       <input type="password" id="form-password" class="ms-input" placeholder="Ingresar contraseña">
       
@@ -129,6 +137,10 @@
         <div class="ms-detail-item">
           <span class="ms-detail-label">Unidad / Servicio</span>
           <span class="ms-detail-value" id="view-unidad"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Grupos Resolutores</span>
+          <span class="ms-detail-value" id="view-grupos"></span>
         </div>
         <div class="ms-detail-item">
           <span class="ms-detail-label">Estado</span>

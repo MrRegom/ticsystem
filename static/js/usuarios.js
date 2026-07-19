@@ -160,6 +160,19 @@ function openDrawer(action, userJsonStr = null) {
         }
       }
       
+      const gruposSelect = document.getElementById('form-grupos');
+      for (let i = 0; i < gruposSelect.options.length; i++) {
+        gruposSelect.options[i].selected = false;
+      }
+      if (u.grupos && Array.isArray(u.grupos)) {
+        const userGrupoIds = u.grupos.map(g => g.id.toString());
+        for (let i = 0; i < gruposSelect.options.length; i++) {
+          if (userGrupoIds.includes(gruposSelect.options[i].value)) {
+            gruposSelect.options[i].selected = true;
+          }
+        }
+      }
+      
       document.getElementById('form-activo').checked = (u.is_active === "Sí" || u.is_active === true || u.is_active === "Activo");
     }
   }
@@ -184,6 +197,10 @@ function saveIdentity() {
   }
   
   const id = document.getElementById('form-id').value;
+  
+  const gruposSelect = document.getElementById('form-grupos');
+  const selectedGrupos = Array.from(gruposSelect.selectedOptions).map(opt => parseInt(opt.value));
+  
   const payload = {
     rut: document.getElementById('form-rut').value,
     nombres: document.getElementById('form-nombres').value,
@@ -192,7 +209,7 @@ function saveIdentity() {
     unidad: document.getElementById('form-unidad').value,
     rol: document.getElementById('form-rol').value,
     is_active: document.getElementById('form-activo').checked,
-    grupos: [] // Si implementamos grupos despues
+    grupos: selectedGrupos
   };
   
   const pass = document.getElementById('form-password').value;
@@ -298,8 +315,15 @@ function openViewModal(userJsonStr) {
   document.getElementById('view-rol-header').innerText = u.rol || 'Sin Perfil';
   document.getElementById('view-rut').innerText = u.rut || 'Sin RUT';
   document.getElementById('view-email').innerText = u.email || 'Sin Correo';
-  document.getElementById('view-unidad').innerText = u.unidad || 'Sin Asignar';
+  document.getElementById('view-unidad').innerText = u.unidad || 'Sin Unidad';
   
+  const divGrupos = document.getElementById('view-grupos');
+  if (u.grupos && u.grupos.length > 0) {
+    divGrupos.innerHTML = u.grupos.map(g => `<span style="background: #edebe9; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 4px; display: inline-block; margin-bottom: 4px;">${g.nombre}</span>`).join('');
+  } else {
+    divGrupos.innerText = 'No asignado';
+  }
+
   let estadoText = (u.is_active === "Sí" || u.is_active === true || u.is_active === "Activo") ? "Activo" : "Inactivo";
   document.getElementById('view-estado').innerText = estadoText;
 
