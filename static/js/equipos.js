@@ -19,11 +19,20 @@ function eqShowToast(msg, isError) {
     var icon = document.getElementById('ms-toast-icon');
     var text = document.getElementById('ms-toast-text');
     var toast = document.getElementById('ms-toast');
+    
+    if (window.toastTimeout) clearTimeout(window.toastTimeout);
+    
     icon.className = isError ? 'fas fa-exclamation-triangle ms-toast-icon' : 'fas fa-check-circle ms-toast-icon';
     icon.style.color = isError ? '#a4262c' : '#107c10';
+    if (isError) toast.classList.add('error'); else toast.classList.remove('error');
+    
     text.textContent = msg;
+    
+    toast.classList.remove('show');
+    void toast.offsetWidth; // Force reflow to restart animation
     toast.classList.add('show');
-    setTimeout(function() { toast.classList.remove('show'); }, 3500);
+    
+    window.toastTimeout = setTimeout(function() { toast.classList.remove('show'); }, 3500);
 }
 
 function csrfToken() {

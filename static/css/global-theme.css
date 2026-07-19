@@ -336,18 +336,22 @@
 .ms-checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
 .ms-checkbox { width: 16px; height: 16px; accent-color: #0078d4; }
 
-/* 💎 Microsoft Toast Notification */
 .ms-toast {
   position: fixed; top: 24px; left: 50%; background: #fff;
   border-radius: 6px; box-shadow: 0 8px 16px rgba(0,0,0,0.14), 0 0 2px rgba(0,0,0,0.12);
   padding: 14px 24px; display: flex; align-items: center; gap: 12px;
-  transform: translate(-50%, -100px); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 2000; border-left: 4px solid #107c10;
+  transform: translate(-50%, -100px); opacity: 0; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  z-index: 2000; border-left: 4px solid #107c10; overflow: hidden;
 }
 .ms-toast.show { transform: translate(-50%, 0); opacity: 1; }
+.ms-toast::after { content: ''; position: absolute; bottom: 0; left: 0; height: 3px; background-color: #107c10; width: 100%; transform-origin: left; transform: scaleX(0); }
+.ms-toast.show::after { animation: ms-toast-progress 3.5s linear forwards; }
+@keyframes ms-toast-progress { 0% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
+
 .ms-toast-icon { color: #107c10; font-size: 16px; }
 .ms-toast-text { color: #323130; font-size: 14px; font-weight: 600; }
 .ms-toast.error { border-left-color: #a4262c; }
+.ms-toast.error::after { background-color: #a4262c; }
 .ms-toast.error .ms-toast-icon { color: #a4262c; }  }
 
 
