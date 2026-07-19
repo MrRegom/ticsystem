@@ -105,6 +105,7 @@
 {% block extra_js %}
 <script>
   const PERMISOS_DISPONIBLES = {{ permisos_json|safe }};
+  const INITIAL_ROLES = {{ roles_json|default:"[]"|safe }};
 </script>
-<script src="{% static 'js/roles.js' %}?v=3"></script>
+<script src="{% static 'js/roles.js' %}?v=4"></script>
 {% endblock %}
