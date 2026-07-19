@@ -1286,6 +1286,7 @@ var EquiposApp = (function($) {
                                 if (resp.success) {
                                     Swal.fire('Guardado', 'Mantención cerrada correctamente.', 'success');
                                     cargarBitacora(eqId);
+                                    eqLoadList(); // Refrescar lista y KPIs
                                 } else {
                                     Swal.fire('Error', resp.message, 'error');
                                 }
@@ -1330,6 +1331,7 @@ var EquiposApp = (function($) {
                             $('#form-bitacora')[0].reset();
                             $('#b-falla, #b-unidad, #b-solicitante').val(null).trigger('change');
                             cargarBitacora(eq_id); // Recargar timeline
+                            eqLoadList(); // Refrescar lista y KPIs
                         } else {
                             Swal.fire('Error', resp.message, 'error');
                         }
