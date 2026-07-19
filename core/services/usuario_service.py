@@ -159,9 +159,9 @@ class UsuarioService:
 
         # Guardar el RUT en el perfil
         perfil.rut = rut_clean if rut_clean else user.username
-        perfil.unidad = normalizar_nombre(unidad)
-        perfil.cargo = normalizar_nombre(cargo)
-        perfil.grado = normalizar_nombre(grado)
+        perfil.unidad = unidad.strip() if unidad else ''
+        perfil.cargo = cargo.strip() if cargo else ''
+        perfil.grado = grado.strip() if grado else ''
         if rol_id:
             perfil.rol_id = rol_id
         if foto:
