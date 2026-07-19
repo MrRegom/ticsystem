@@ -177,12 +177,8 @@
 
 <div class="modal fade modal-right" id="modalNuevoTicket" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content" style="position: relative;">
-      <!-- Progress Bar (Microsoft Enterprise Style) -->
-      <div class="progress-bar-container" style="height: 4px; background: #edebe9; width: 100%; border-radius: 4px 4px 0 0; overflow: hidden; position: absolute; top: 0; left: 0; z-index: 1060;">
-        <div id="tk-progress-bar" style="height: 100%; width: 0%; background: #0078d4; transition: width 0.4s cubic-bezier(0.1, 0.9, 0.2, 1), background-color 0.4s;"></div>
-      </div>
-      <form id="form-nuevo-ticket" method="POST" action="#" onsubmit="return false;" style="margin-top: 4px;">
+    <div class="modal-content">
+      <form id="form-nuevo-ticket" method="POST" action="#" onsubmit="return false;">
         {% csrf_token %}
         <div class="modal-header-tk">
           <h5><i class="fas fa-ticket-alt mr-2 text-primary"></i> Crear Nuevo Ticket</h5>
@@ -300,7 +296,11 @@
           </div>
 
         </div>
-        <div class="modal-footer bg-white border-top-0 pt-0" style="font-family: 'Segoe UI', system-ui, sans-serif;">
+        <!-- Progress Bar (Moved above buttons) -->
+        <div class="progress-bar-container" style="height: 4px; background: #edebe9; width: calc(100% - 30px); margin: 0 15px; border-radius: 2px; overflow: hidden;">
+          <div id="tk-progress-bar" style="height: 100%; width: 0%; background: #107c10; transition: width 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);"></div>
+        </div>
+        <div class="modal-footer bg-white border-top-0 pt-2" style="font-family: 'Segoe UI', system-ui, sans-serif;">
           <button type="button" class="ms-btn-secondary" style="border-radius:0; padding:6px 14px; height: 32px;" data-dismiss="modal">Cancelar</button>
           <button type="submit" id="btn-submit-ticket" class="ms-btn-primary" style="font-size:13px; border-radius:0; padding:6px 14px; height: 32px;">
             <i class="fas fa-save"></i> Crear Ticket

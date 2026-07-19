@@ -928,8 +928,6 @@ $(document).ready(function() {
         var bar = document.getElementById('tk-progress-bar');
         if(bar) {
             bar.style.width = pct + '%';
-            if(pct === 100) { bar.style.backgroundColor = '#107c10'; }
-            else { bar.style.backgroundColor = '#0078d4'; }
         }
     }
 });
