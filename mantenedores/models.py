@@ -189,6 +189,11 @@ class Unidad(TimestampedActivo):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class Recinto(TimestampedActivo):
     """Recinto o sala específica (ej. Sala Informes, Oficina Modular)."""
