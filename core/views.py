@@ -303,6 +303,47 @@ class RolesAPIView(LoginRequiredMixin, View):
             import traceback
             return JsonResponse({'success': False, 'message': str(e), 'detail': traceback.format_exc()}, status=400)
 
+    def delete(self, request, *args, **kwargs):
+        """
+        Elimina un rol SOLO si no está asignado a ningún usuario activo.
+        Aplica Tercera Forma Normal: integridad referencial antes de eliminar.
+        """
+        is_admin = request.user.is_superuser
+        has_perm = (
+            hasattr(request.user, 'perfil')
+            and request.user.perfil
+            and request.user.perfil.rol
+            and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')
+        )
+        if not is_admin and not has_perm:
+            return JsonResponse({'success': False, 'message': 'No autorizado para eliminar roles'}, status=403)
+
+        try:
+            data = json.loads(request.body)
+            from core.models import Rol
+            rol_id = data.get('id')
+            if not rol_id:
+                return JsonResponse({'success': False, 'message': 'ID de rol requerido'}, status=400)
+
+            rol = Rol.objects.get(id=rol_id)
+
+            # 3FN: Verificar integridad referencial antes de eliminar
+            usuarios_con_rol = rol.usuarios.count()
+            if usuarios_con_rol > 0:
+                return JsonResponse({
+                    'success': False,
+                    'message': f'No se puede eliminar el rol "{rol.nombre}" porque está asignado a {usuarios_con_rol} usuario(s). Reasigne los usuarios antes de eliminar.'
+                }, status=400)
+
+            nombre_rol = rol.nombre
+            rol.delete()
+            return JsonResponse({'success': True, 'message': f'Rol "{nombre_rol}" eliminado correctamente.'})
+
+        except Rol.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Rol no encontrado'}, status=404)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=400)
+
 class UsuarioActionView(LoginRequiredMixin, View):
     """
     API JSON/multipart para acciones CRUD de operadores/usuarios.

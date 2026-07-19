@@ -92,8 +92,9 @@
         <!-- Renderizado vía JS -->
       </div>
       
-      <div style="margin-top: 30px;">
-        <button type="submit" class="ms-btn-primary" style="width: 100%; justify-content: center;">Guardar Rol</button>
+      <div style="margin-top: 30px; display: flex; gap: 10px;">
+        <button type="submit" class="ms-btn-primary" style="flex: 1; justify-content: center;">Guardar Rol</button>
+        <button type="button" class="ms-btn-secondary" onclick="closeDrawer()" style="flex: 1; justify-content: center;">Cancelar</button>
       </div>
     </form>
   </div>
@@ -105,5 +106,5 @@
   const PERMISOS_DISPONIBLES = {{ permisos_json|safe }};
   const INITIAL_ROLES = {{ roles_json|default:"[]"|safe }};
 </script>
-<script src="{% static 'js/roles.js' %}?v=4"></script>
+<script src="{% static 'js/roles.js' %}?v=5"></script>
 {% endblock %}

@@ -117,9 +117,12 @@ function renderList(roles) {
                 <div>
                     ${estadoHtml}
                 </div>
-                <div style="text-align:right;">
-                    <button class="ms-icon-btn" onclick="event.stopPropagation(); openDrawer('editar', ${rol.id})" title="Editar Rol">
+                <div style="text-align:right; display:flex; justify-content:flex-end; gap:8px; align-items:center;">
+                    <button class="ms-icon-btn" onclick="event.stopPropagation(); openDrawer('editar', ${rol.id})" title="Editar Rol" style="color:#0078d4;">
                         <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="ms-icon-btn" onclick="event.stopPropagation(); eliminarRol(${rol.id}, '${rol.nombre.replace(/'/g, "\\'")}'  , ${rol.usuarios_count})" title="Eliminar Rol" style="color:#a4262c;">
+                        <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
             </div>
@@ -197,6 +200,60 @@ function showDrawer() {
 function closeDrawer() {
     $('#role-drawer').removeClass('open');
     $('#drawer-overlay').fadeOut(200);
+}
+
+// Eliminar Rol
+function eliminarRol(rolId, rolNombre, usuariosCount) {
+    // Validación previa en frontend (3FN)
+    if (usuariosCount > 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Rol en uso',
+            html: `El rol <strong>${rolNombre}</strong> está asignado a <strong>${usuariosCount}</strong> usuario(s).<br>Debe reasignarlos antes de eliminar este rol.`,
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#0078d4'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: '¿Eliminar Rol?',
+        html: `¿Está seguro que desea eliminar el rol <strong>${rolNombre}</strong>? Esta acción no se puede deshacer.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#a4262c',
+        cancelButtonColor: '#0078d4'
+    }).then(function(result) {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: '/api/roles/',
+            type: 'DELETE',
+            data: JSON.stringify({ id: rolId }),
+            contentType: 'application/json',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
+            success: function(resp) {
+                if (resp.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Rol eliminado',
+                        text: resp.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => window.location.reload());
+                } else {
+                    Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: resp.message });
+                }
+            },
+            error: function(xhr) {
+                var msg = 'Error del servidor.';
+                try { msg = JSON.parse(xhr.responseText).message || msg; } catch(e) {}
+                Swal.fire({ icon: 'error', title: 'Error', text: msg });
+            }
+        });
+    });
 }
 
 // Helpers
