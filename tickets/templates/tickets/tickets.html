@@ -10,29 +10,28 @@
 {% block content %}
 <div class="helpdesk-wrapper">
 
-  <div class="helpdesk-header">
+  <!-- ENCABEZADO MICROSOFT FLUENT -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 24px 24px 0 24px;">
     <div>
-      <h2 class="font-weight-bold text-dark mb-0">Helpdesk Enterprise</h2>
-      <p class="page-subtitle">Gestión de Incidentes — Hospital Marga Marga</p>
+      <h1 style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 24px; font-weight: 600; color: #323130; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1;">Gestión de Incidentes</h1>
+      <p style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; color: #605e5c; margin: 4px 0 0 0; line-height: 1;">Helpdesk Enterprise — Hospital Provincial Marga Marga.</p>
     </div>
-    <div class="header-actions">
-      <div class="view-toggle">
-        <button class="view-toggle-btn active" id="btn-view-kanban" onclick="switchView('kanban')">
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <div class="view-toggle" style="border-radius: 0;">
+        <button class="view-toggle-btn active" id="btn-view-kanban" onclick="switchView('kanban')" style="border-radius: 0; font-family: 'Segoe UI', system-ui, sans-serif;">
           <i class="fas fa-th-large"></i> Kanban
         </button>
-        <button class="view-toggle-btn" id="btn-view-historial" onclick="switchView('historial')">
+        <button class="view-toggle-btn" id="btn-view-historial" onclick="switchView('historial')" style="border-radius: 0; font-family: 'Segoe UI', system-ui, sans-serif;">
           <i class="fas fa-history"></i> Historial
         </button>
       </div>
-      <div class="view-toggle">
-        <select id="kanban-filtro-fecha" class="form-control form-control-sm" style="width: auto; display: inline-block; border: 1px solid #cbd5e1; font-weight: 600; color: #475569;" onchange="window.location.href='?rango=' + this.value;">
-          <option value="hoy" {% if rango_filtro == 'hoy' %}selected{% endif %}>Hoy</option>
-          <option value="semana" {% if rango_filtro == 'semana' %}selected{% endif %}>Últimos 7 Días</option>
-          <option value="mes" {% if rango_filtro == 'mes' %}selected{% endif %}>Últimos 30 Días</option>
-          <option value="todos" {% if rango_filtro == 'todos' %}selected{% endif %}>Todos (Histórico)</option>
-        </select>
-      </div>
-      <button class="btn-primary-action" data-toggle="modal" data-target="#modalNuevoTicket">
+      <select id="kanban-filtro-fecha" class="ms-input" style="width: auto; padding: 6px 12px; border: 1px solid #cbd5e1; font-weight: 600; color: #475569; border-radius: 0; outline: none; font-family: 'Segoe UI', system-ui, sans-serif;" onchange="window.location.href='?rango=' + this.value;">
+        <option value="hoy" {% if rango_filtro == 'hoy' %}selected{% endif %}>Hoy</option>
+        <option value="semana" {% if rango_filtro == 'semana' %}selected{% endif %}>Últimos 7 Días</option>
+        <option value="mes" {% if rango_filtro == 'mes' %}selected{% endif %}>Últimos 30 Días</option>
+        <option value="todos" {% if rango_filtro == 'todos' %}selected{% endif %}>Todos (Histórico)</option>
+      </select>
+      <button class="ms-btn-primary" data-toggle="modal" data-target="#modalNuevoTicket" style="border-radius: 0;">
         <i class="fas fa-plus"></i> Nuevo Ticket
       </button>
     </div>
@@ -57,12 +56,12 @@
   <div class="view-panel" id="panel-historial">
     <div class="historial-panel">
       <div class="historial-header">
-        <h2><i class="fas fa-archive mr-2" style="color:#6b7280;"></i> Historial de Tickets Terminados</h2>
-        <small class="text-muted">{{ historial|length }} registro(s)</small>
+        <h2 style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 16px; font-weight: 600; color: #323130;"><i class="fas fa-archive mr-2" style="color:#605e5c;"></i> Historial de Tickets Terminados</h2>
+        <small class="text-muted" style="font-family: 'Segoe UI', system-ui, sans-serif;">{{ historial|length }} registro(s)</small>
       </div>
-      <div class="card-premium">
+      <div class="card-premium" style="border-radius: 0; border: none; box-shadow: none;">
         <div class="card-body p-0">
-          <table id="tabla-historial" class="table table-hover mb-0" style="width:100%">
+          <table id="tabla-historial" class="table mb-0" style="width:100%">
             <thead class="thead-light">
               <tr>
                 <th>Correlativo</th>
@@ -104,10 +103,10 @@
     <div>
       <h5 class="oc-title" id="oc-tk-correlativo">Cargando...</h5>
       <div style="display:flex; gap:10px; margin-top:8px;">
-        <button class="btn btn-sm btn-primary" id="btn-tomar-tk" style="display:none; font-size:0.75rem; font-weight:bold; background-color:#0284c7; border:none;">
+        <button class="ms-btn-primary" id="btn-tomar-tk" style="display:none; font-size:12px; font-weight:600; border-radius:0; border:none; padding:4px 10px;">
           <i class="fas fa-hand-paper"></i> Tomar Ticket
         </button>
-        <button class="btn btn-sm btn-success" id="btn-resolver-tk" style="display:none; font-size:0.75rem; font-weight:bold;">
+        <button class="ms-btn-primary" id="btn-resolver-tk" style="display:none; font-size:12px; font-weight:600; border-radius:0; background:#107c10; padding:4px 10px;">
           <i class="fas fa-check-circle"></i> Resolver Incidente
         </button>
       </div>
@@ -116,8 +115,8 @@
   </div>
   <div class="oc-body">
     <!-- INFO BÁSICA -->
-    <div class="oc-section">
-      <div class="oc-section-title">Detalles del Incidente</div>
+    <div class="oc-section" style="border-radius: 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+      <div class="oc-section-title" style="font-family: 'Segoe UI', system-ui, sans-serif;">Detalles del Incidente</div>
       <div class="oc-info-row"><span class="oc-info-label">Estado</span><span class="oc-info-val badge-estado" id="oc-tk-estado" style="background:#3b82f6;">-</span></div>
       <div class="oc-info-row"><span class="oc-info-label">Prioridad</span><span class="oc-info-val" id="oc-tk-prioridad">-</span></div>
       <div class="oc-info-row"><span class="oc-info-label">SLA</span><span class="oc-info-val font-weight-bold" id="oc-tk-sla">-</span></div>
@@ -125,12 +124,12 @@
       <div class="oc-info-row"><span class="oc-info-label">Solicitante</span><span class="oc-info-val" id="oc-tk-solicitante">-</span></div>
       <div class="oc-info-row"><span class="oc-info-label">Activo</span><span class="oc-info-val" id="oc-tk-activo">-</span></div>
       <div class="oc-info-row"><span class="oc-info-label">Ubicación</span><span class="oc-info-val" id="oc-tk-pma">-</span></div>
-      <div style="margin-top:12px; font-size:0.85rem; color:#374151; line-height:1.4; padding:10px; background:#f8fafc; border-radius:6px; border:1px solid #e2e8f0;" id="oc-tk-desc"></div>
+      <div style="margin-top:12px; font-size:13px; color:#323130; line-height:1.4; padding:10px; background:#f8fafc; border-radius:0; border:1px solid #cbd5e1; font-family: 'Segoe UI', system-ui, sans-serif;" id="oc-tk-desc"></div>
     </div>
 
     <!-- ASIGNACIÓN -->
-    <div class="oc-section">
-      <div class="oc-section-title">Asignación</div>
+    <div class="oc-section" style="border-radius: 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+      <div class="oc-section-title" style="font-family: 'Segoe UI', system-ui, sans-serif;">Asignación</div>
       <form id="form-asignar" method="POST" onsubmit="return false;">
         <input type="hidden" id="oc-tk-id">
         <div style="display:flex; flex-direction:column; gap:10px;">
@@ -148,7 +147,7 @@
               {% endfor %}
               </optgroup>
             </select>
-            <button type="submit" class="btn-primary-action" id="btn-asignar" style="padding:6px 12px; font-size:0.8rem; height: 38px;">Asignar / Escalar</button>
+            <button type="submit" class="ms-btn-primary" id="btn-asignar" style="padding:6px 12px; font-size:13px; height: 38px; border-radius:0;">Asignar / Escalar</button>
           </div>
           <textarea class="tk-input" id="oc-asignar-comentario" rows="2" placeholder="Obligatorio: Escriba el motivo de la reasignación o mensaje para el técnico/grupo..." style="min-height:50px; resize:none; display:none;"></textarea>
         </div>
@@ -162,7 +161,7 @@
       <form id="form-comentario" method="POST" onsubmit="return false;" style="margin-bottom:15px;">
         <textarea class="tk-input" id="oc-comentario-texto" rows="2" placeholder="Escribe un nuevo comentario o actualización..." required style="min-height:60px; margin-bottom:8px;"></textarea>
         <div style="text-align:right;">
-          <button type="submit" class="btn btn-sm btn-success" id="btn-comentar" style="font-weight:600;"><i class="fas fa-paper-plane"></i> Enviar</button>
+          <button type="submit" class="ms-btn-primary" id="btn-comentar" style="font-weight:600; border-radius:0; background:#107c10; padding:6px 14px;"><i class="fas fa-paper-plane"></i> Enviar</button>
         </div>
       </form>
 
@@ -344,9 +343,9 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer" style="border-top:1px solid #e2e8f0;">
-          <button type="button" class="btn btn-secondary" onclick="$('#modalCrearUsuario').modal('hide')">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btn-submit-usuario"><i class="fas fa-save"></i> Guardar Funcionario</button>
+        <div class="modal-footer" style="border-top:1px solid #e2e8f0; font-family: 'Segoe UI', system-ui, sans-serif;">
+          <button type="button" class="btn btn-secondary" onclick="$('#modalCrearUsuario').modal('hide')" style="border-radius: 0;">Cancelar</button>
+          <button type="submit" class="ms-btn-primary" id="btn-submit-usuario" style="border-radius: 0; padding:6px 14px;"><i class="fas fa-save"></i> Guardar Funcionario</button>
         </div>
       </form>
     </div>
@@ -408,9 +407,9 @@
           </div>
 
         </div>
-        <div class="modal-footer" style="border-top:1px solid #e2e8f0;">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-success" id="btn-submit-resolver"><i class="fas fa-check"></i> Finalizar y Resolver Ticket</button>
+        <div class="modal-footer" style="border-top:1px solid #e2e8f0; font-family: 'Segoe UI', system-ui, sans-serif;">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="border-radius: 0;">Cerrar</button>
+          <button type="submit" class="ms-btn-primary" id="btn-submit-resolver" style="border-radius: 0; background: #107c10; padding:6px 14px;"><i class="fas fa-check"></i> Finalizar y Resolver Ticket</button>
         </div>
       </form>
     </div>

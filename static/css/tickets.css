@@ -20,13 +20,13 @@
   .view-toggle {
     display: flex;
     background: #f1f5f9;
-    border-radius: 8px;
+    border-radius: 0;
     padding: 3px;
     gap: 2px;
   }
   .view-toggle-btn {
     padding: 6px 14px;
-    border-radius: 6px;
+    border-radius: 0;
     border: none;
     background: transparent;
     font-size: 0.8rem;
@@ -56,8 +56,8 @@
     align-items: start;
   }
   .kanban-column {
-    background: #e8edf2;
-    border-radius: 10px;
+    background: #f3f2f1;
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -68,14 +68,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 3px solid transparent;
+    border-bottom: 2px solid transparent;
   }
-  .kanban-column[data-estado="NUEVO"]               .kanban-col-header { border-color: #3b82f6; background: #eff6ff; }
-  .kanban-column[data-estado="ASIGNADO"]            .kanban-col-header { border-color: #8b5cf6; background: #f5f3ff; }
-  .kanban-column[data-estado="EN_PROCESO"]          .kanban-col-header { border-color: #f59e0b; background: #fffbeb; }
-  .kanban-column[data-estado="PENDIENTE_USUARIO"]   .kanban-col-header { border-color: #f97316; background: #fff7ed; }
-  .kanban-column[data-estado="PENDIENTE_PROVEEDOR"] .kanban-col-header { border-color: #ec4899; background: #fdf2f8; }
-  .kanban-column[data-estado="ESCALADO"]            .kanban-col-header { border-color: #ef4444; background: #fef2f2; }
+  .kanban-column[data-estado="NUEVO"]               .kanban-col-header { border-color: #0078d4; background: #ffffff; }
+  .kanban-column[data-estado="ASIGNADO"]            .kanban-col-header { border-color: #5c2d91; background: #ffffff; }
+  .kanban-column[data-estado="EN_PROCESO"]          .kanban-col-header { border-color: #107c10; background: #ffffff; }
+  .kanban-column[data-estado="PENDIENTE_USUARIO"]   .kanban-col-header { border-color: #d83b01; background: #ffffff; }
+  .kanban-column[data-estado="PENDIENTE_PROVEEDOR"] .kanban-col-header { border-color: #ec4899; background: #ffffff; }
+  .kanban-column[data-estado="ESCALADO"]            .kanban-col-header { border-color: #a4262c; background: #ffffff; }
   .kanban-col-title {
     font-weight: 700;
     font-size: 0.72rem;
@@ -90,7 +90,7 @@
     font-size: 0.7rem;
     font-weight: 700;
     padding: 1px 7px;
-    border-radius: 10px;
+    border-radius: 0;
     min-width: 22px;
     text-align: center;
   }
@@ -103,19 +103,21 @@
   }
   .kanban-card {
     background: #fff;
-    border-radius: 7px;
+    border-radius: 0;
     padding: 10px 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
     cursor: pointer;
+    border: 1px solid transparent;
     border-left: 3px solid #cbd5e1;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    font-family: 'Segoe UI', system-ui, sans-serif;
   }
-  .kanban-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.12); transform: translateY(-1px); }
+  .kanban-card:hover { border-color: #0078d4; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-2px); }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
   .card-correlativo { font-weight: 800; font-size: 0.72rem; color: #1e293b; }
   .card-prio-badge {
     font-size: 0.6rem; font-weight: 700;
-    padding: 2px 6px; border-radius: 3px;
+    padding: 2px 6px; border-radius: 0;
     color: #fff; white-space: nowrap;
   }
   .card-desc {
@@ -134,8 +136,8 @@
   .historial-panel { padding: 20px 24px; overflow-y: auto; flex-grow: 1; }
   .historial-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .historial-header h2 { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0; }
-  #tabla-historial thead th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
-  .badge-estado { font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; color: #fff; }
+  #tabla-historial thead th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; font-family: 'Segoe UI', system-ui, sans-serif; }
+  .badge-estado { font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 0; color: #fff; font-family: 'Segoe UI', system-ui, sans-serif; }
   .badge-RESUELTO  { background: #10b981; }
   .badge-CERRADO   { background: #6b7280; }
   .badge-CANCELADO { background: #f87171; }
@@ -155,8 +157,8 @@
   .tk-input {
     display: block; width: 100%; padding: 8px 12px;
     font-size: 0.88rem; color: #1e293b;
-    background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px;
-    transition: border-color 0.15s, box-shadow 0.15s; box-sizing: border-box;
+    background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 0;
+    transition: border-color 0.15s, box-shadow 0.15s; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif;
   }
   .tk-input:focus { outline: none; background: #fff; border-color: #002855; box-shadow: 0 0 0 3px rgba(0,40,85,0.1); }
   textarea.tk-input { resize: vertical; min-height: 100px; }
@@ -186,7 +188,7 @@
   .oc-close { background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; opacity: 0.8; }
   .oc-close:hover { opacity: 1; }
   .oc-body { padding: 20px; overflow-y: auto; flex-grow: 1; background: #f8fafc; }
-  .oc-section { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
+  .oc-section { background: #fff; border-radius: 0; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
   .oc-section-title { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 12px; }
   .oc-info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
   .oc-info-label { color: #64748b; font-weight: 600; }
@@ -197,219 +199,12 @@
   .tl-item { position: relative; margin-bottom: 16px; font-size: 0.82rem; }
   .tl-item::before {
     content: ''; position: absolute; left: -21px; top: 4px;
-    width: 10px; height: 10px; border-radius: 50%; background: #3b82f6; border: 2px solid #fff;
+    width: 10px; height: 10px; border-radius: 0; background: #0078d4; border: 2px solid #fff;
   }
-  .tl-meta { font-size: 0.7rem; color: #94a3b8; margin-bottom: 3px; display: flex; justify-content: space-between; }
-  .tl-user { font-weight: 700; color: #374151; }
-  .tl-content { background: #f1f5f9; padding: 8px 10px; border-radius: 6px; color: #1e293b; margin-top: 4px; border: 1px solid #e2e8f0; }
+  .tl-meta { font-size: 0.7rem; color: #94a3b8; margin-bottom: 3px; display: flex; justify-content: space-between; font-family: 'Segoe UI', system-ui, sans-serif; }
+  .tl-user { font-weight: 700; color: #323130; font-family: 'Segoe UI', system-ui, sans-serif; }
+  .tl-content { background: #f3f2f1; padding: 8px 10px; border-radius: 0; color: #323130; margin-top: 4px; border: 1px solid #edebe9; font-family: 'Segoe UI', system-ui, sans-serif; }
   .tl-action { font-weight: 600; color: #002855; }
-
-  /* ANIMATIONS */
-    border-bottom: 1px solid #e2e8f0;
-    flex-shrink: 0;
-    gap: 12px;
-  }
-  .helpdesk-title { margin: 0; font-size: 1.3rem; font-weight: 800; color: #0f172a; }
-  .helpdesk-subtitle { margin: 0; font-size: 0.78rem; color: #64748b; }
-  .header-actions { display: flex; gap: 10px; align-items: center; }
-  .view-toggle {
-    display: flex;
-    background: #f1f5f9;
-    border-radius: 8px;
-    padding: 3px;
-    gap: 2px;
-  }
-  .view-toggle-btn {
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #64748b;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .view-toggle-btn.active {
-    background: #fff;
-    color: #0f172a;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-  }
-  .view-panel { display: none; flex-grow: 1; overflow: hidden; flex-direction: column; }
-  .view-panel.active { display: flex; }
-
-  /* KANBAN */
-  .kanban-board {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    padding: 16px 20px;
-    flex-grow: 1;
-    overflow-y: auto;
-    background: #f1f5f9;
-    align-items: start;
-  }
-  .kanban-column {
-    background: #e8edf2;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    overflow: hidden;
-  }
-  .kanban-col-header {
-    padding: 10px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 3px solid transparent;
-  }
-  .kanban-column[data-estado="NUEVO"]               .kanban-col-header { border-color: #3b82f6; background: #eff6ff; }
-  .kanban-column[data-estado="ASIGNADO"]            .kanban-col-header { border-color: #8b5cf6; background: #f5f3ff; }
-  .kanban-column[data-estado="EN_PROCESO"]          .kanban-col-header { border-color: #f59e0b; background: #fffbeb; }
-  .kanban-column[data-estado="PENDIENTE_USUARIO"]   .kanban-col-header { border-color: #f97316; background: #fff7ed; }
-  .kanban-column[data-estado="PENDIENTE_PROVEEDOR"] .kanban-col-header { border-color: #ec4899; background: #fdf2f8; }
-  .kanban-column[data-estado="ESCALADO"]            .kanban-col-header { border-color: #ef4444; background: #fef2f2; }
-  .kanban-col-title {
-    font-weight: 700;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #374151;
-    margin: 0;
-  }
-  .kanban-col-count {
-    background: rgba(0,0,0,0.1);
-    color: #374151;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 1px 7px;
-    border-radius: 10px;
-    min-width: 22px;
-    text-align: center;
-  }
-  .kanban-items {
-    padding: 8px;
-    min-height: 80px;
-    max-height: calc(100vh - 215px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .kanban-items::-webkit-scrollbar { width: 5px; }
-  .kanban-items::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
-  .kanban-items::-webkit-scrollbar-track { background: transparent; }
-  .kanban-card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    cursor: pointer;
-    border: 1px solid #e2e8f0;
-    border-left: 4px solid #cbd5e1;
-    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-  }
-  .kanban-card:hover { 
-    box-shadow: 0 6px 14px rgba(0,0,0,0.08); 
-    transform: translateY(-2px); 
-    border-color: #cbd5e1;
-  }
-  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-  .card-correlativo { font-weight: 800; font-size: 0.72rem; color: #1e293b; letter-spacing: 0.3px; }
-  .card-prio-badge {
-    font-size: 0.6rem; font-weight: 700;
-    padding: 2px 6px; border-radius: 3px;
-    color: #fff; white-space: nowrap;
-  }
-  .card-desc {
-    font-size: 0.72rem; color: #475569; margin-bottom: 10px; line-height: 1.45;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  }
-  .card-pma { font-size: 0.65rem; color: #94a3b8; margin-bottom: 6px; }
-  .card-bottom {
-    display: flex; justify-content: space-between;
-    padding-top: 8px; border-top: 1px solid #f1f5f9;
-  }
-  .card-meta { font-size: 0.65rem; font-weight: 500; color: #64748b; display: flex; align-items: center; gap: 4px; }
-  .sortable-ghost { opacity: 0.3; background: #dbeafe; border: 2px dashed #3b82f6; }
-
-  /* HISTORIAL */
-  .historial-panel { padding: 20px 24px; overflow-y: auto; flex-grow: 1; }
-  .historial-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .historial-header h2 { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0; }
-  #tabla-historial thead th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
-  .badge-estado { font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; color: #fff; }
-  .badge-RESUELTO  { background: #10b981; }
-  .badge-CERRADO   { background: #6b7280; }
-  .badge-CANCELADO { background: #f87171; }
-
-  /* MODAL */
-  .modal-content { border: none; border-radius: 4px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
-  .modal-header-tk {
-    background: #002855; color: #fff;
-    padding: 16px 24px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .modal-header-tk h5 { font-weight: 700; font-size: 1rem; margin: 0; }
-  .modal-header-tk .close { color: #fff; opacity: 0.8; font-size: 1.4rem; background: none; border: none; cursor: pointer; padding: 0; line-height: 1; }
-  .modal-body-tk { padding: 24px; }
-  .modal-footer-tk { padding: 14px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px; }
-  .tk-label { display: block; font-size: 0.7rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 5px; }
-  .tk-input {
-    display: block; width: 100%; padding: 8px 12px;
-    font-size: 0.88rem; color: #1e293b;
-    background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px;
-    transition: border-color: 0.15s, box-shadow: 0.15s; box-sizing: border-box;
-  }
-  .tk-input:focus { outline: none; background: #fff; border-color: #002855; box-shadow: 0 0 0 3px rgba(0,40,85,0.1); }
-  textarea.tk-input { resize: vertical; min-height: 100px; }
-  .tk-row { display: flex; gap: 16px; margin-bottom: 18px; }
-  .tk-row .tk-field { flex: 1; min-width: 0; }
-  .tk-field-full { margin-bottom: 18px; }
-
-  /* OFFCANVAS */
-  .offcanvas-ticket {
-    position: fixed; top: 0; right: -500px; width: 450px; height: 100vh;
-    background: #fff; box-shadow: -5px 0 25px rgba(0,0,0,0.15);
-    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1050;
-    display: flex; flex-direction: column;
-  }
-  .offcanvas-ticket.show { right: 0; }
-  .offcanvas-backdrop-tk {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.4); z-index: 1040; opacity: 0; pointer-events: none;
-    transition: opacity 0.3s;
-  }
-  .offcanvas-backdrop-tk.show { opacity: 1; pointer-events: auto; }
-  .oc-header {
-    background: #002855; color: #fff; padding: 16px 20px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .oc-title { margin: 0; font-size: 1.1rem; font-weight: 700; }
-  .oc-close { background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; opacity: 0.8; }
-  .oc-close:hover { opacity: 1; }
-  .oc-body { padding: 20px; overflow-y: auto; flex-grow: 1; background: #f8fafc; }
-  .oc-section { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
-  .oc-section-title { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 12px; }
-  .oc-info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
-  .oc-info-label { color: #64748b; font-weight: 600; }
-  .oc-info-val { color: #1e293b; font-weight: 500; text-align: right; }
-  
-  /* TIMELINE */
-  .timeline { position: relative; margin: 10px 0 0 10px; padding-left: 15px; border-left: 2px solid #e2e8f0; }
-  .tl-item { position: relative; margin-bottom: 16px; font-size: 0.82rem; }
-  .tl-item::before {
-    content: ''; position: absolute; left: -21px; top: 4px;
-    width: 10px; height: 10px; border-radius: 50%; background: #3b82f6; border: 2px solid #fff;
-  }
-  .tl-meta { font-size: 0.7rem; color: #94a3b8; margin-bottom: 3px; display: flex; justify-content: space-between; }
-  .tl-user { font-weight: 700; color: #374151; }
-  .tl-content { background: #f1f5f9; padding: 8px 10px; border-radius: 6px; color: #1e293b; margin-top: 4px; border: 1px solid #e2e8f0; }
-  .tl-action { font-weight: 600; color: #002855; }
-
   /* ANIMATIONS */
   @keyframes blinkSLA {
     0% { opacity: 1; transform: scale(1); }
@@ -424,7 +219,7 @@
   /* Premium Enterprise Form Styles */
   #modalNuevoTicket .modal-content {
     border: none;
-    border-radius: 4px;
+    border-radius: 0;
     box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.25);
     overflow: hidden;
   }
@@ -474,7 +269,7 @@
   #modalNuevoTicket .form-control {
     background-color: #f8fafc;
     border: 1px solid #cbd5e1;
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px 12px;
     font-size: 14px;
     color: #0f172a;
@@ -492,10 +287,9 @@
     outline: none;
   }
   
-  /* Segmented Control */
   .segment-control {
     background: #f1f5f9;
-    border-radius: 4px;
+    border-radius: 0;
     padding: 4px;
     display: flex;
     gap: 4px;
@@ -510,7 +304,7 @@
     font-size: 13px;
     font-weight: 600;
     color: #64748b;
-    border-radius: 2px;
+    border-radius: 0;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -535,7 +329,7 @@
   #modalNuevoTicket .select2-container--default .select2-selection--single {
     background-color: #f8fafc;
     border: 1px solid #cbd5e1;
-    border-radius: 4px;
+    border-radius: 0;
     height: 38px;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.01);
   }
@@ -571,7 +365,7 @@
   /* Select2 Dropdown Panel Styling */
   .select2-dropdown {
     border: 1px solid #cbd5e1;
-    border-radius: 4px !important;
+    border-radius: 0 !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     margin-top: 4px;
@@ -583,7 +377,7 @@
   }
   .select2-search__field {
     border: 1px solid #cbd5e1 !important;
-    border-radius: 4px !important;
+    border-radius: 0 !important;
     padding: 8px 12px !important;
     font-size: 14px !important;
     outline: none !important;
