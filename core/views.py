@@ -318,7 +318,9 @@ class RolesAPIView(LoginRequiredMixin, View):
         except Rol.DoesNotExist:
             return JsonResponse({'success': False, 'message': f'Rol con ID {rol_id} no encontrado'}, status=400)
         except Exception as e:
-            import traceback
+            import traceback, logging
+            logger = logging.getLogger('django')
+            logger.error('ERROR en RolesAPIView.put: %s', traceback.format_exc())
             return JsonResponse({'success': False, 'message': str(e), 'detail': traceback.format_exc()}, status=400)
 
     def _parse_request(self, request):
