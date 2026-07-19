@@ -444,5 +444,18 @@
 
 {% block extra_js %}
 <!-- JS del mantenedor dinámico -->
-<script src="/static/js/mantenedores.js?v=3"></script>
+<script src="{% static 'js/mantenedores.js' %}?v=3"></script>
+<script>
+  $(document).ready(function() {
+    // Forzar el comportamiento tipo acordeón (solo uno abierto a la vez)
+    $('#accordionCategorias .collapse').on('show.bs.collapse', function () {
+      var currentId = $(this).attr('id');
+      $('#accordionCategorias .collapse').each(function() {
+        if ($(this).attr('id') !== currentId && $(this).hasClass('show')) {
+          $(this).collapse('hide');
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}
