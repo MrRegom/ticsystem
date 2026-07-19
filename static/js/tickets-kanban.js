@@ -31,26 +31,19 @@ document.addEventListener('DOMContentLoaded', function() {
         card.dataset.estado = t.estado || ''; // We might need state if it's passed
 
         card.innerHTML =
-            '<div class="card-top" style="align-items: center; margin-bottom: 6px;">' +
-                '<span style="font-size:0.7rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' | <i class="far fa-clock"></i> ' + (t.fecha_creacion_hora || '') + '</span>' +
-            '</div>' +
             '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">' +
-                '<span class="card-correlativo" style="background: #f1f5f9; color: #475569; padding: 2px 6px; border-radius: 0; font-size: 0.7rem;">' + t.correlativo + '</span>' +
-                '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 6px; border-radius: 0; font-size: 0.65rem;">' + t.prioridad + '</span>' +
+                '<div style="display: flex; gap: 6px; align-items: center;">' +
+                    '<span class="card-correlativo" style="background: #f1f5f9; color: #475569; padding: 2px 6px; font-size: 0.7rem; font-weight: 700;">' + t.correlativo + '</span>' +
+                    '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 6px; font-size: 0.65rem; font-weight: 700;">' + t.prioridad + '</span>' +
+                '</div>' +
+                '<span style="font-size:0.65rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' ' + (t.fecha_creacion_hora || '') + '</span>' +
             '</div>' +
             '<div class="card-desc" style="font-weight: 800; color: #0f172a; margin-bottom: 4px; font-size: 0.8rem; line-height: 1.2;">' + t.descripcion + '</div>' +
             '<div class="sla-timer-display" style="font-size:0.7rem; font-weight:600; margin-bottom:6px;"></div>' +
             (t.pma ? '<div class="card-pma" style="font-size:0.7rem; color:#64748b; margin-bottom:6px;"><i class="fas fa-map-marker-alt"></i> ' + t.pma + '</div>' : '') +
-            '<div class="card-meta" style="font-size: 0.7rem; color: #64748b; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">' +
+            '<div class="card-meta" style="font-size: 0.7rem; color: #64748b; display: flex; justify-content: space-between; align-items: center;">' +
                 '<span><i class="fas fa-user"></i> ' + t.solicitante + '</span>' +
                 '<span><i class="fas fa-users"></i> ' + (t.tecnico === 'Sin asignar' ? 'Sin asignar' : t.tecnico) + '</span>' +
-            '</div>' +
-            '<div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 6px; color: #64748b; font-size: 0.75rem;">' +
-                '<div style="display: flex; gap: 12px;">' +
-                    '<span><i class="far fa-comment"></i> 0</span>' +
-                    '<span><i class="fas fa-paperclip"></i> 0</span>' +
-                '</div>' +
-                '<i class="fas fa-ellipsis-h" style="cursor:pointer; color: #94a3b8;"></i>' +
             '</div>';
         return card;
     }
