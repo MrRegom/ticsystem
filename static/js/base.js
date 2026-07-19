@@ -109,3 +109,69 @@ function formatearRut(input) {
         input.value = value;
     }
 }
+
+// --- Notificaciones Globales de Tickets ---
+function checkNotificaciones() {
+    if ($('#navbarNotifDropdown').length === 0) return;
+    
+    $.ajax({
+        url: '/tickets/api/notificaciones/',
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                let currentCount = parseInt($('#notif-badge').text()) || 0;
+                let newCount = response.count;
+                
+                if (newCount > 0) {
+                    $('#notif-badge').text(newCount).show();
+                    
+                    // Solo mostramos toast si hay NUEVOS tickets que antes no estaban
+                    if (newCount > currentCount && currentCount > 0) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'info',
+                                title: 'Tienes ' + (newCount - currentCount) + ' nueva(s) notificación(es)',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    }
+                } else {
+                    $('#notif-badge').hide().text('0');
+                }
+                
+                // Actualizar la lista en el dropdown
+                let notifHtml = '';
+                if (response.tickets.length > 0) {
+                    response.tickets.forEach(function(t) {
+                        notifHtml += `
+                            <a class="dropdown-item border-bottom py-2" href="/tickets/">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1 font-weight-bold text-dark" style="font-size: 0.85rem;">${t.correlativo}</h6>
+                                    <span class="badge badge-warning" style="font-size: 0.65rem;">${t.estado}</span>
+                                </div>
+                                <p class="mb-1 small text-muted text-truncate" style="max-width: 280px;" title="${t.descripcion}">${t.descripcion}</p>
+                            </a>
+                        `;
+                    });
+                } else {
+                    notifHtml = '<span class="dropdown-item-text text-muted small py-3 text-center d-block">No tienes notificaciones nuevas.</span>';
+                }
+                $('#notif-list').html(notifHtml);
+            }
+        },
+        error: function(xhr) {
+            console.error("Error al obtener notificaciones", xhr);
+        }
+    });
+}
+
+$(document).ready(function() {
+    // Check inicial
+    checkNotificaciones();
+    // Polling cada 60 segundos
+    setInterval(checkNotificaciones, 60000);
+});
+

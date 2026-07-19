@@ -16,4 +16,5 @@ urlpatterns = [
     path('api/search/users/create/', views.UserCreateApiView.as_view(), name='api_create_user'),
     path('api/search/kedb/', views.KEDBSearchApiView.as_view(), name='api_search_kedb'),
     path('api/sync/', views.TicketSyncApiView.as_view(), name='api_ticket_sync'),
+    path('api/notificaciones/', views.TicketNotificacionesApiView.as_view(), name='api_ticket_notificaciones'),
 ]

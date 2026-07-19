@@ -473,3 +473,45 @@ class KEDBSearchApiView(LoginRequiredMixin, View):
             })
             
         return JsonResponse({'results': results})
+
+
+class TicketNotificacionesApiView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        from django.db.models import Q
+        
+        # Obtenemos los tickets activos que podrian requerir atencion
+        base_query = Ticket.objects.filter(estado__in=[Ticket.Estado.NUEVO, Ticket.Estado.ASIGNADO])
+        
+        user = request.user
+        
+        # Logica basada en el rol
+        is_dispatcher = False
+        if hasattr(user, 'perfil') and user.perfil.rol:
+            rol_nombre = user.perfil.rol.nombre
+            if rol_nombre in ['Super Administrador', 'Operador de Mesa de Ayuda', 'Mesa de Ayuda']:
+                is_dispatcher = True
+                
+        if is_dispatcher:
+            # Los dispatcher ven todos los nuevos sin asignar
+            tickets = base_query.filter(responsable__isnull=True, grupo_resolutor__isnull=True)
+        else:
+            # Los tecnicos ven los asignados a ellos o a sus grupos resolutores
+            grupos = user.grupos_resolutores.all() if hasattr(user, 'grupos_resolutores') else []
+            tickets = base_query.filter(
+                Q(responsable=user) | 
+                Q(grupo_resolutor__in=grupos, responsable__isnull=True)
+            ).distinct()
+            
+        count = tickets.count()
+        recent_tickets = list(tickets.order_by('-fecha_creacion')[:5].values('id', 'correlativo', 'estado', 'descripcion'))
+        
+        # Limitar descripcion para la vista previa
+        for rt in recent_tickets:
+            if len(rt['descripcion']) > 50:
+                rt['descripcion'] = rt['descripcion'][:47] + '...'
+                
+        return JsonResponse({
+            'success': True,
+            'count': count,
+            'tickets': recent_tickets
+        })
