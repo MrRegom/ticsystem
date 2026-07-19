@@ -40,6 +40,7 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
 
         context['prioridades'] = list(Prioridad.objects.all().values('id', 'nombre', 'color_hex'))
         context['categorias'] = list(Categoria.objects.filter(activa=True).values('id', 'nombre'))
+        from mantenedores.models import GrupoResolutor
         context['grupos_resolutores'] = list(GrupoResolutor.objects.filter(activo=True).values('id', 'nombre'))
         # Filtrar técnicos para asignar usando permisos dinámicos
         is_dispatcher = False
@@ -66,7 +67,6 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
                 tecnicos_qs = User.objects.none()
             
         # Agrupar técnicos por Grupo Resolutor para el frontend
-        from mantenedores.models import GrupoResolutor
         grupos_activos = GrupoResolutor.objects.filter(activo=True).prefetch_related('miembros')
         
         tecnicos_por_grupo = []
