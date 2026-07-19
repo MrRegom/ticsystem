@@ -46,22 +46,25 @@
 
   /* KANBAN */
   .kanban-board {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
+    display: flex;
+    gap: 16px;
     padding: 16px 20px;
     flex-grow: 1;
-    overflow-y: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     background: #f1f5f9;
-    align-items: start;
+    align-items: stretch;
   }
   .kanban-column {
+    flex: 1;
+    min-width: 280px;
+    max-width: 400px;
     background: #f3f2f1;
     border-radius: 0;
     display: flex;
     flex-direction: column;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    overflow: hidden;
+    height: 100%;
   }
   .kanban-col-header {
     padding: 10px 12px;
@@ -96,7 +99,8 @@
   }
   .kanban-items {
     padding: 8px;
-    min-height: 80px;
+    flex-grow: 1;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -205,6 +209,31 @@
   .tl-user { font-weight: 700; color: #323130; font-family: 'Segoe UI', system-ui, sans-serif; }
   .tl-content { background: #f3f2f1; padding: 8px 10px; border-radius: 0; color: #323130; margin-top: 4px; border: 1px solid #edebe9; font-family: 'Segoe UI', system-ui, sans-serif; }
   .tl-action { font-weight: 600; color: #002855; }
+
+  /* RIGHT MODAL FOR FLUENT DESIGN */
+  .modal-right .modal-dialog {
+      position: fixed;
+      margin: 0;
+      width: 500px;
+      max-width: 100%;
+      height: 100%;
+      right: 0;
+      transform: translate3d(100%, 0, 0) !important;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .modal-right.show .modal-dialog {
+      transform: translate3d(0, 0, 0) !important;
+  }
+  .modal-right .modal-content {
+      height: 100%;
+      border: none;
+      border-radius: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+  .modal-right .modal-body {
+      overflow-y: auto;
+  }
+
   /* ANIMATIONS */
   @keyframes blinkSLA {
     0% { opacity: 1; transform: scale(1); }

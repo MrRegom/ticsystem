@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="helpdesk-wrapper">
+<div class="helpdesk-wrapper" style="font-family: 'Segoe UI', system-ui, sans-serif;">
 
   <!-- ENCABEZADO MICROSOFT FLUENT -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 24px 24px 0 24px;">
@@ -175,7 +175,7 @@
 
 <!-- MODAL NUEVO TICKET -->
 
-<div class="modal fade" id="modalNuevoTicket" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade modal-right" id="modalNuevoTicket" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <form id="form-nuevo-ticket" method="POST" action="#" onsubmit="return false;">
@@ -290,10 +290,10 @@
   </div>
 </div>
 
-<!-- MODAL CREAR USUARIO AL VUELO -->
-<div class="modal fade" id="modalCrearUsuario" tabindex="-1" role="dialog" style="z-index: 1060;">
+<!-- MODAL CREAR USUARIO RAPIDO -->
+<div class="modal fade modal-right" id="modalCrearUsuario" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:1060;">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
+    <div class="modal-content" style="font-family: 'Segoe UI', system-ui, sans-serif;">
       <form id="form-crear-usuario" method="POST" onsubmit="return false;">
         <div class="modal-header" style="background:#f1f5f9; border-bottom:1px solid #e2e8f0;">
           <h5 class="modal-title" style="font-size:1.1rem; color:#0f172a; font-weight:600;"><i class="fas fa-user-plus text-primary mr-2"></i> Añadir Funcionario Rápido</h5>
@@ -353,7 +353,7 @@
 </div>
 
 <!-- MODAL RESOLVER TICKET CON BITÁCORA -->
-<div class="modal fade" id="modalResolverTicket" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade modal-right" id="modalResolverTicket" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <form id="form-resolver-ticket" method="POST" onsubmit="return false;">
