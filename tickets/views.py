@@ -74,7 +74,7 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
         
         for g in grupos_activos:
             miembros = []
-            for u in g.miembros.filter(is_active=True, perfil__rol__permisos__RECIBIR_TICKETS=True).exclude(first_name=''):
+            for u in tecnicos_qs.filter(grupos_resolutores=g).exclude(first_name=''):
                 miembros.append({
                     'id': u.id,
                     'first_name': u.first_name,
