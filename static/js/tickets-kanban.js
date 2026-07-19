@@ -677,6 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Live Validation para Modal de Usuario
+    var rutTimeout = null;
     var rutInput = document.getElementById('rut_nuevo');
     var rutFeedback = document.getElementById('rut_feedback');
     if (rutInput) {
@@ -696,18 +697,51 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.classList.remove('is-valid', 'is-invalid');
                 rutFeedback.className = 'form-text text-muted';
                 rutFeedback.innerHTML = 'Ingresa el RUT con guion y dígito verificador.';
+                var btnSubmit = document.getElementById('btn-submit-usuario');
+                if(btnSubmit) btnSubmit.disabled = false;
                 return;
             }
             if (validarRut(val)) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-                rutFeedback.className = 'form-text text-success font-weight-bold';
-                rutFeedback.innerHTML = '<i class="fas fa-check-circle"></i> RUT Válido';
+                rutFeedback.className = 'form-text text-info font-weight-bold';
+                rutFeedback.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando disponibilidad...';
+                this.classList.remove('is-invalid', 'is-valid');
+                
+                clearTimeout(rutTimeout);
+                var inputElem = this;
+                rutTimeout = setTimeout(function() {
+                    fetch('/tickets/api/search/users/?q=' + val)
+                    .then(r => r.json())
+                    .then(res => {
+                        var exists = res.results && res.results.some(u => u.rut.toUpperCase() === val.toUpperCase());
+                        if (exists) {
+                            inputElem.classList.remove('is-valid');
+                            inputElem.classList.add('is-invalid');
+                            rutFeedback.className = 'form-text text-danger font-weight-bold';
+                            rutFeedback.innerHTML = '<i class="fas fa-exclamation-triangle"></i> El RUT ya se encuentra registrado.';
+                            var btnSubmit = document.getElementById('btn-submit-usuario');
+                            if(btnSubmit) btnSubmit.disabled = true;
+                        } else {
+                            inputElem.classList.remove('is-invalid');
+                            inputElem.classList.add('is-valid');
+                            rutFeedback.className = 'form-text text-success font-weight-bold';
+                            rutFeedback.innerHTML = '<i class="fas fa-check-circle"></i> RUT Válido y Disponible';
+                            var btnSubmit = document.getElementById('btn-submit-usuario');
+                            if(btnSubmit) btnSubmit.disabled = false;
+                        }
+                    }).catch(err => {
+                        inputElem.classList.add('is-valid');
+                        rutFeedback.className = 'form-text text-success font-weight-bold';
+                        rutFeedback.innerHTML = '<i class="fas fa-check-circle"></i> RUT Válido';
+                    });
+                }, 400);
             } else {
+                clearTimeout(rutTimeout);
                 this.classList.remove('is-valid');
                 this.classList.add('is-invalid');
                 rutFeedback.className = 'form-text text-danger font-weight-bold';
                 rutFeedback.innerHTML = '<i class="fas fa-times-circle"></i> RUT Inválido';
+                var btnSubmit = document.getElementById('btn-submit-usuario');
+                if(btnSubmit) btnSubmit.disabled = true;
             }
         });
     }
