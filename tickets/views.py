@@ -126,6 +126,7 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
                     'pma': t.activo.pmalugar if t.activo else None,
                     'fecha': t.fecha_creacion.strftime('%d/%m/%Y %H:%M'),
                     'fecha_creacion_corta': t.fecha_creacion.strftime('%d/%m/%Y'),
+                    'fecha_creacion_hora': t.fecha_creacion.strftime('%H:%M'),
                     'fecha_vencimiento_iso': t.fecha_vencimiento_sla.isoformat() if t.fecha_vencimiento_sla else None,
                     'en_pausa_sla': t.en_pausa_sla,
                     'is_sla_vencido': t.is_sla_vencido,

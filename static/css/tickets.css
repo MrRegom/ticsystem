@@ -57,45 +57,59 @@
   }
   .kanban-column {
     flex: 1;
-    min-width: 280px;
+    min-width: 300px;
     max-width: 400px;
-    background: #f3f2f1;
-    border-radius: 0;
+    background: #ffffff;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     height: 100%;
+    border-top: 3px solid transparent;
   }
   .kanban-col-header {
-    padding: 10px 12px;
+    padding: 14px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid transparent;
+    border-bottom: 1px solid #e2e8f0;
   }
-  .kanban-column[data-estado="NUEVO"]               .kanban-col-header { border-color: #0078d4; background: #ffffff; }
-  .kanban-column[data-estado="ASIGNADO"]            .kanban-col-header { border-color: #5c2d91; background: #ffffff; }
-  .kanban-column[data-estado="EN_PROCESO"]          .kanban-col-header { border-color: #107c10; background: #ffffff; }
-  .kanban-column[data-estado="PENDIENTE_USUARIO"]   .kanban-col-header { border-color: #d83b01; background: #ffffff; }
-  .kanban-column[data-estado="PENDIENTE_PROVEEDOR"] .kanban-col-header { border-color: #ec4899; background: #ffffff; }
-  .kanban-column[data-estado="ESCALADO"]            .kanban-col-header { border-color: #a4262c; background: #ffffff; }
+  .kanban-column[data-estado="NUEVO"]               { border-top-color: #3b82f6; }
+  .kanban-column[data-estado="ASIGNADO"]            { border-top-color: #8b5cf6; }
+  .kanban-column[data-estado="EN_PROCESO"]          { border-top-color: #10b981; }
+  .kanban-column[data-estado="PENDIENTE_USUARIO"]   { border-top-color: #f59e0b; }
+  .kanban-column[data-estado="PENDIENTE_PROVEEDOR"] { border-top-color: #ec4899; }
+  .kanban-column[data-estado="ESCALADO"]            { border-top-color: #ef4444; }
+  .kanban-column[data-estado="RESUELTO"]            { border-top-color: #14b8a6; }
+  
+  .kanban-column[data-estado="NUEVO"]               i.estado-icon { color: #3b82f6; }
+  .kanban-column[data-estado="ASIGNADO"]            i.estado-icon { color: #8b5cf6; }
+  .kanban-column[data-estado="EN_PROCESO"]          i.estado-icon { color: #10b981; }
+  .kanban-column[data-estado="PENDIENTE_USUARIO"]   i.estado-icon { color: #f59e0b; }
+  .kanban-column[data-estado="PENDIENTE_PROVEEDOR"] i.estado-icon { color: #ec4899; }
+  .kanban-column[data-estado="ESCALADO"]            i.estado-icon { color: #ef4444; }
+  .kanban-column[data-estado="RESUELTO"]            i.estado-icon { color: #14b8a6; }
+
   .kanban-col-title {
-    font-weight: 700;
-    font-size: 0.75rem;
+    font-weight: 800;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #374151;
+    color: #0f172a;
     margin: 0;
     font-family: 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .kanban-col-count {
-    background: rgba(0,0,0,0.1);
-    color: #374151;
-    font-size: 0.7rem;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.75rem;
     font-weight: 700;
-    padding: 1px 7px;
-    border-radius: 0;
-    min-width: 22px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    min-width: 24px;
     text-align: center;
   }
   .kanban-items {
@@ -108,16 +122,15 @@
   }
   .kanban-card {
     background: #fff;
-    border-radius: 0;
+    border-radius: 8px;
     padding: 14px 16px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
     cursor: pointer;
-    border: 1px solid transparent;
-    border-left: 3px solid #cbd5e1;
+    border: 1px solid #e2e8f0;
     transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
     font-family: 'Segoe UI', system-ui, sans-serif;
   }
-  .kanban-card:hover { border-color: #0078d4; box-shadow: 0 4px 12px rgba(0,0,0,0.12); transform: translateY(-2px); }
+  .kanban-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transform: translateY(-2px); }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
   .card-correlativo { font-weight: 700; font-size: 0.8rem; color: #1e293b; }
   .card-prio-badge {
@@ -436,3 +449,10 @@
     color: #0f172a;
     font-weight: 600;
   }
+ 
+ / *   E M P T Y   S T A T E S   * /  
+ . k a n b a n - e m p t y - s t a t e   {   d i s p l a y :   f l e x ;   f l e x - d i r e c t i o n :   c o l u m n ;   a l i g n - i t e m s :   c e n t e r ;   j u s t i f y - c o n t e n t :   c e n t e r ;   p a d d i n g :   4 0 p x   2 0 p x ;   t e x t - a l i g n :   c e n t e r ;   h e i g h t :   1 0 0 % ;   c o l o r :   # 6 4 7 4 8 b ;   f o n t - f a m i l y :   ' S e g o e   U I ' ,   s y s t e m - u i ,   s a n s - s e r i f ;   }  
+ . e m p t y - i c o n   {   f o n t - s i z e :   2 . 5 r e m ;   m a r g i n - b o t t o m :   1 6 p x ;   o p a c i t y :   0 . 8 ;   }  
+ . e m p t y - t i t l e   {   f o n t - w e i g h t :   8 0 0 ;   f o n t - s i z e :   1 r e m ;   c o l o r :   # 0 f 1 7 2 a ;   m a r g i n - b o t t o m :   8 p x ;   }  
+ . e m p t y - t e x t   {   f o n t - s i z e :   0 . 8 5 r e m ;   l i n e - h e i g h t :   1 . 5 ;   }  
+ 

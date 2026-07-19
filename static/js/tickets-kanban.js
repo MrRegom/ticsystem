@@ -31,21 +31,26 @@ document.addEventListener('DOMContentLoaded', function() {
         card.dataset.estado = t.estado || ''; // We might need state if it's passed
 
         card.innerHTML =
-            '<div class="card-top">' +
-                '<div>' +
-                    '<span class="card-correlativo">' + t.correlativo + '</span><br>' +
-                    '<span style="font-size:0.6rem; color:#94a3b8; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + '</span>' +
-                '</div>' +
-                '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '">' + t.prioridad + '</span>' +
+            '<div class="card-top" style="align-items: center; margin-bottom: 10px;">' +
+                '<span style="font-size:0.75rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' | <i class="far fa-clock"></i> ' + (t.fecha_creacion_hora || '') + '</span>' +
             '</div>' +
-            '<div class="sla-timer-display" style="font-size:0.7rem; font-weight:600; margin-bottom:8px;"></div>' +
-            '<div class="card-desc">' + t.descripcion + '</div>' +
-            (t.pma ? '<div class="card-pma"><i class="fas fa-map-marker-alt"></i> ' + t.pma + '</div>' : '') +
-            '<div class="card-bottom">' +
-                '<div class="card-meta"><i class="fas fa-user"></i> ' + t.solicitante + '</div>' +
-                '<div class="card-meta" style="color:' + (t.tecnico === 'Sin asignar' ? '#f87171' : '#0ea5e9') + '">' +
-                    '<i class="fas fa-wrench"></i> ' + t.tecnico +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">' +
+                '<span class="card-correlativo" style="background: #f3e8ff; color: #7e22ce; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">' + t.correlativo + '</span>' +
+                '<span class="card-prio-badge" style="background:#fef3c7; color: #d97706; padding: 3px 8px; border-radius: 12px;">' + t.prioridad + '</span>' +
+            '</div>' +
+            '<div class="card-desc" style="font-weight: 800; color: #0f172a; margin-bottom: 4px;">' + t.descripcion + '</div>' +
+            '<div class="sla-timer-display" style="font-size:0.75rem; font-weight:600; margin-bottom:12px;"></div>' +
+            (t.pma ? '<div class="card-pma" style="font-size:0.75rem; color:#64748b; margin-bottom:12px;"><i class="fas fa-map-marker-alt"></i> ' + t.pma + '</div>' : '') +
+            '<div class="card-meta" style="font-size: 0.75rem; color: #64748b; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">' +
+                '<span><i class="fas fa-user"></i> ' + t.solicitante + '</span>' +
+                '<span><i class="fas fa-users"></i> ' + (t.tecnico === 'Sin asignar' ? 'Sin asignar' : t.tecnico) + '</span>' +
+            '</div>' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 8px; color: #64748b; font-size: 0.8rem;">' +
+                '<div style="display: flex; gap: 12px;">' +
+                    '<span><i class="far fa-comment"></i> 0</span>' +
+                    '<span><i class="fas fa-paperclip"></i> 0</span>' +
                 '</div>' +
+                '<i class="fas fa-ellipsis-h" style="cursor:pointer; color: #94a3b8;"></i>' +
             '</div>';
         return card;
     }
@@ -58,11 +63,61 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!col) return;
         col.innerHTML = '';
         if (badge) badge.textContent = tickets.length;
-        tickets.forEach(function(t) { 
-            t.estado = estadoId; // Inject state to help timer
-            col.appendChild(buildCard(t)); 
-        });
+        
+        if (tickets.length === 0) {
+            col.innerHTML = getEmptyStateHtml(estadoId);
+        } else {
+            tickets.forEach(function(t) { 
+                t.estado = estadoId; // Inject state to help timer
+                col.appendChild(buildCard(t)); 
+            });
+        }
     });
+
+    function getEmptyStateHtml(estadoId) {
+        var icons = {
+            'NUEVO': '<i class="fas fa-inbox"></i>',
+            'ASIGNADO': '<i class="fas fa-user"></i>',
+            'EN_PROCESO': '<i class="fas fa-cogs"></i>',
+            'ESCALADO': '<i class="fas fa-arrow-up"></i>'
+        };
+        var colors = {
+            'NUEVO': '#3b82f6',
+            'ASIGNADO': '#8b5cf6',
+            'EN_PROCESO': '#10b981',
+            'ESCALADO': '#ef4444'
+        };
+        var texts = {
+            'NUEVO': 'Cuando se creen nuevos tickets,<br>aparecerán aquí.',
+            'ASIGNADO': 'Tickets asignados a técnicos.',
+            'EN_PROCESO': 'Arrastra un ticket aquí<br>para marcarlo como en proceso.',
+            'ESCALADO': 'Arrastra un ticket aquí<br>si requiere escalamiento.'
+        };
+        
+        var icon = icons[estadoId] || '<i class="fas fa-box-open"></i>';
+        var color = colors[estadoId] || '#64748b';
+        var text = texts[estadoId] || 'No hay tickets en este estado.';
+        
+        return '<div class="kanban-empty-state">' +
+               '<div class="empty-icon" style="color: ' + color + ';">' + icon + '</div>' +
+               '<div class="empty-title">No hay tickets</div>' +
+               '<div class="empty-text">' + text + '</div>' +
+               '</div>';
+    }
+
+    function updateColumnEmptyState(colContainer, estadoId) {
+        var cards = colContainer.querySelectorAll('.kanban-card');
+        var empty = colContainer.querySelector('.kanban-empty-state');
+        if (cards.length === 0) {
+            if (!empty) {
+                colContainer.innerHTML = getEmptyStateHtml(estadoId);
+            }
+        } else {
+            if (empty) {
+                empty.remove();
+            }
+        }
+    }
 
     /* ---- SLA Timer Engine ---- */
     function updateSlaTimers() {
@@ -1022,11 +1077,16 @@ $('#tk-descripcion').on('input', function() {
                             evt.from.appendChild(itemEl);
                             Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'No se pudo cambiar el estado.', confirmButtonColor: '#002855' });
                         } else {
-                            // Update badges
-                            var countFrom = document.getElementById('count-' + evt.from.id.replace('column-', ''));
+                            // Update badges and empty states
+                            var fromStatus = evt.from.id.replace('column-', '');
+                            var countFrom = document.getElementById('count-' + fromStatus);
                             var countTo = document.getElementById('count-' + newStatus);
-                            if (countFrom) countFrom.textContent = evt.from.children.length;
-                            if (countTo) countTo.textContent = toList.children.length;
+                            
+                            updateColumnEmptyState(evt.from, fromStatus);
+                            updateColumnEmptyState(evt.to, newStatus);
+                            
+                            if (countFrom) countFrom.textContent = evt.from.querySelectorAll('.kanban-card').length;
+                            if (countTo) countTo.textContent = evt.to.querySelectorAll('.kanban-card').length;
                         }
                     })
                     .catch(err => {

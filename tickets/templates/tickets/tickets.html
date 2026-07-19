@@ -43,8 +43,19 @@
       {% for estado in estados_kanban %}
       <div class="kanban-column" data-estado="{{ estado.id }}">
         <div class="kanban-col-header">
-          <h3 class="kanban-col-title">{{ estado.nombre }}</h3>
-          <span class="kanban-col-count" id="count-{{ estado.id }}">0</span>
+          <h3 class="kanban-col-title">
+            {% if estado.id == 'NUEVO' %}<i class="fas fa-file-alt estado-icon"></i>
+            {% elif estado.id == 'ASIGNADO' %}<i class="fas fa-user estado-icon"></i>
+            {% elif estado.id == 'EN_PROCESO' %}<i class="fas fa-cogs estado-icon"></i>
+            {% elif estado.id == 'ESCALADO' %}<i class="fas fa-arrow-up estado-icon"></i>
+            {% elif estado.id == 'RESUELTO' %}<i class="fas fa-check estado-icon"></i>
+            {% else %}<i class="fas fa-circle estado-icon"></i>{% endif %}
+            {{ estado.nombre }}
+          </h3>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="kanban-col-count" id="count-{{ estado.id }}">0</span>
+            <i class="fas fa-ellipsis-h" style="color: #64748b; cursor: pointer;"></i>
+          </div>
         </div>
         <div class="kanban-items" id="column-{{ estado.id }}"></div>
       </div>
