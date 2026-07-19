@@ -49,12 +49,12 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
                 is_dispatcher = True
 
         if is_dispatcher:
-            tecnicos_qs = User.objects.filter(is_active=True, perfil__rol__isnull=False).distinct()
+            tecnicos_qs = User.objects.filter(is_active=True, perfil__rol__isnull=False).exclude(perfil__rol__nombre='Operador de Mesa de Ayuda').distinct()
         else:
             if hasattr(self.request.user, 'grupos_resolutores'):
                 user_grupos = self.request.user.grupos_resolutores.all()
                 if user_grupos.exists():
-                    tecnicos_qs = User.objects.filter(grupos_resolutores__in=user_grupos, is_active=True).distinct()
+                    tecnicos_qs = User.objects.filter(grupos_resolutores__in=user_grupos, is_active=True).exclude(perfil__rol__nombre='Operador de Mesa de Ayuda').distinct()
                 else:
                     tecnicos_qs = User.objects.none()
             else:
@@ -194,11 +194,12 @@ class TicketActionView(LoginRequiredMixin, View):
             data = json.loads(request.body)
             ticket_id = data.get('id')
             nuevo_estado = data.get('estado')
+            comentario = data.get('comentario', '')
             
             if not ticket_id or not nuevo_estado:
                 return JsonResponse({'success': False, 'message': 'Faltan datos'}, status=400)
                 
-            TicketService.cambiar_estado(ticket_id, nuevo_estado, usuario=request.user)
+            TicketService.cambiar_estado(ticket_id, nuevo_estado, usuario=request.user, comentario=comentario)
             return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)

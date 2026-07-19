@@ -371,9 +371,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 var btnResolver = document.getElementById('btn-resolver-tk');
                 var btnTomar = document.getElementById('btn-tomar-tk');
+                var btnPausar = document.getElementById('btn-pausar-tk');
 
                 // Lógica de visibilidad
                 btnResolver.style.display = (t.estado_id !== 'RESUELTO' && t.estado_id !== 'CERRADO') ? 'inline-block' : 'none';
+                if (btnPausar) {
+                    btnPausar.style.display = (t.estado_id !== 'RESUELTO' && t.estado_id !== 'CERRADO' && t.estado_id !== 'PENDIENTE_PROVEEDOR') ? 'inline-block' : 'none';
+                }
                 if (btnTomar) {
                     btnTomar.style.display = (t.estado_id === 'NUEVO' || t.estado_id === 'ESCALADO') ? 'inline-block' : 'none';
                 }
@@ -574,6 +578,54 @@ document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire('Error', 'Error de red', 'error');
                 btnTomarAction.disabled = false;
                 btnTomarAction.innerHTML = '<i class="fas fa-hand-paper"></i> Tomar Ticket';
+            });
+        });
+    }
+
+    // Modal Pausar Ticket
+    var btnPausar = document.getElementById('btn-pausar-tk');
+    if (btnPausar) {
+        btnPausar.addEventListener('click', function() {
+            var tkId = document.getElementById('oc-tk-id').value;
+            document.getElementById('pau_ticket_id').value = tkId;
+            document.getElementById('form-pausar-ticket').reset();
+        });
+    }
+
+    var formPausar = document.getElementById('form-pausar-ticket');
+    if (formPausar) {
+        formPausar.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var tkId = document.getElementById('pau_ticket_id').value;
+            var comentario = document.getElementById('pau_comentario').value.trim();
+            var btnSubmit = document.getElementById('btn-submit-pausar');
+            
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            
+            fetch('/tickets/api/action/', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+                body: JSON.stringify({ id: tkId, estado: 'PENDIENTE_PROVEEDOR', comentario: comentario })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+                if (res.success) {
+                    Swal.fire({
+                        icon: 'success', title: 'Ticket Pausado',
+                        text: 'El SLA se ha detenido y el motivo ha sido registrado.',
+                        confirmButtonColor: '#002855'
+                    }).then(() => window.location.reload());
+                } else {
+                    Swal.fire('Error', res.message, 'error');
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<i class="fas fa-pause"></i> Confirmar Pausa';
+                }
+            })
+            .catch(function(err) {
+                Swal.fire('Error', 'Error de red', 'error');
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="fas fa-pause"></i> Confirmar Pausa';
             });
         });
     }
