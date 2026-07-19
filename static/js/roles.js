@@ -52,6 +52,7 @@ $(document).ready(function() {
                     $('#rol_id').val(resp.data.id);
                     $('#nombre').val(resp.data.nombre);
                     $('#descripcion').val(resp.data.descripcion);
+                    $('#icono').val(resp.data.icono || '');
                     $('#activo').val(resp.data.activo.toString());
                     renderPermisos(resp.data.permisos);
                     $('#modalRolLabel').text('Editar Rol: ' + resp.data.nombre);
@@ -82,6 +83,7 @@ $(document).ready(function() {
             id: rolId,
             nombre: $('#nombre').val(),
             descripcion: $('#descripcion').val(),
+            icono: $('#icono').val(),
             activo: $('#activo').val() === 'true',
             permisos: permisos
         };

@@ -375,6 +375,18 @@
                 </select>
               </div>
 
+              <!-- Descripción (Grupo Resolutor) -->
+              <div class="col-md-12 form-group" id="field-descripcion" style="display:none;">
+                <label>Descripción</label>
+                <textarea class="form-control form-control-sm" id="m-descripcion" rows="2" maxlength="255"></textarea>
+              </div>
+
+              <!-- Icono (Grupo Resolutor) -->
+              <div class="col-md-6 form-group" id="field-icono" style="display:none;">
+                <label>Icono (Fluent UI)</label>
+                <input type="text" class="form-control form-control-sm" id="m-icono" placeholder="Ej: ms-Icon--Group" maxlength="50">
+              </div>
+
               <!-- Orden (Bitácora) -->
               <div class="col-md-6 form-group" id="field-orden" style="display:none;">
                 <label>Orden de Prioridad</label>
@@ -444,7 +456,7 @@
 
 {% block extra_js %}
 <!-- JS del mantenedor dinámico -->
-<script src="{% static 'js/mantenedores.js' %}?v=3"></script>
+<script src="{% static 'js/mantenedores.js' %}?v=4"></script>
 <script>
   $(document).ready(function() {
     // Forzar el comportamiento tipo acordeón (solo uno abierto a la vez)

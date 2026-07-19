@@ -6,6 +6,11 @@
 
 {% block extra_css %}
 <!-- Fluent Design Identity Directory -->
+<style>
+  .ms-list-header, .ms-list-row {
+    grid-template-columns: 320px 280px 1fr 100px 100px !important;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -154,5 +159,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/usuarios.js' %}"></script>
+<script src="{% static 'js/usuarios.js' %}?v=2"></script>
 {% endblock %}

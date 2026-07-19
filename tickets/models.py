@@ -27,6 +27,7 @@ class Prioridad(models.Model):
 class GrupoResolutor(models.Model):
     nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre del Grupo")
     descripcion = models.TextField(null=True, blank=True, verbose_name="Descripción")
+    icono = models.CharField(max_length=50, null=True, blank=True, default="ms-Icon--Group", verbose_name="Icono Fluent UI")
     # Los usuarios que pertenecen a este grupo
     miembros = models.ManyToManyField(User, related_name='grupos_resolutores', blank=True, verbose_name="Técnicos Miembros")
     activo = models.BooleanField(default=True, verbose_name="Activo")

@@ -239,7 +239,8 @@ class UsuarioService:
                 'is_active': r.is_active,
                 'rol_id': getattr(perfil, 'rol_id', None) if perfil else None,
                 'rol': perfil.rol.nombre if (perfil and perfil.rol_id) else 'Sin Perfil',
-                'grupos': [{'id': g.id, 'nombre': g.nombre} for g in r.grupos_resolutores.all()]
+                'rol_icono': perfil.rol.icono if (perfil and perfil.rol_id) else 'ms-Icon--Contact',
+                'grupos': [{'id': g.id, 'nombre': g.nombre, 'icono': getattr(g, 'icono', 'ms-Icon--Group')} for g in r.grupos_resolutores.all()]
             })
 
         return {

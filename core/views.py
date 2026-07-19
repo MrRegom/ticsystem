@@ -230,6 +230,7 @@ class RolesDetailAPIView(LoginRequiredMixin, View):
                     'id': rol.id,
                     'nombre': rol.nombre,
                     'descripcion': rol.descripcion,
+                    'icono': rol.icono,
                     'activo': rol.activo,
                     'permisos': rol.permisos
                 }
@@ -256,6 +257,7 @@ class RolesAPIView(LoginRequiredMixin, View):
             rol = Rol.objects.create(
                 nombre=data.get('nombre', ''),
                 descripcion=data.get('descripcion', ''),
+                icono=data.get('icono', 'ms-Icon--Contact'),
                 activo=data.get('activo', True),
                 permisos=data.get('permisos', {})
             )
@@ -274,6 +276,7 @@ class RolesAPIView(LoginRequiredMixin, View):
             rol = Rol.objects.get(id=rol_id)
             rol.nombre = data.get('nombre', rol.nombre)
             rol.descripcion = data.get('descripcion', rol.descripcion)
+            rol.icono = data.get('icono', rol.icono)
             rol.activo = data.get('activo', rol.activo)
             rol.permisos = data.get('permisos', rol.permisos)
             rol.save()

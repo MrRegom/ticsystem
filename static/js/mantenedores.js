@@ -63,7 +63,16 @@ var MantenedoresApp = (function ($) {
     funcionario:      { pre:  [{ data: 'rut',               title: 'RUT' }],
                              post: [{ data: 'correo',            title: 'Correo' },
                                     { data: 'cargo',             title: 'Cargo' },
-                                    { data: 'unidad',            title: 'Unidad Clínica' }] }
+                                    { data: 'unidad',            title: 'Unidad Clínica' }] },
+    grupo_resolutor:  { pre:  [{ data: 'icono',             title: '', orderable: false, width: '45px',
+                               render: function(d, t) {
+                                  if (t === 'display') {
+                                    var iconClass = d || 'ms-Icon--Group';
+                                    return '<div style="height:35px; width:35px; background:#f1f5f9; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#002a54;"><i class="ms-Icon ' + iconClass + '" style="font-size:18px;"></i></div>';
+                                  }
+                                  return d;
+                               }
+                             }] }
   };
 
   /* Etiquetas cortas para el encabezado de la columna 'Nombre' en la tabla */
@@ -101,7 +110,7 @@ var MantenedoresApp = (function ($) {
     unidad:          ['area_hospitalaria'],
     recinto:         ['piso', 'sector', 'unidad'],
     pma:             ['recinto'],
-    grupo_resolutor: ['miembros'],
+    grupo_resolutor: ['miembros', 'descripcion', 'icono'],
     funcionario:     ['rut', 'nombres', 'apellidos', 'correo', 'cargo', 'unidad']
   };
 
@@ -114,7 +123,7 @@ var MantenedoresApp = (function ($) {
                     'institucion', 'edificio', 'marca', 'piso', 'sector',
                     'area_hospitalaria', 'unidad', 'recinto',
                     'contacto', 'telefono', 'email', 'direccion', 'rut', 'miembros',
-                    'nombres', 'apellidos', 'correo', 'cargo'];
+                    'nombres', 'apellidos', 'correo', 'cargo', 'descripcion', 'icono'];
 
   /* Textos de ayuda y contexto para la interfaz */
   var DESCRIPTIONS = {

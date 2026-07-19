@@ -163,6 +163,14 @@ class Rol(models.Model):
         verbose_name="DescripciÃ³n"
 
     )
+    
+    icono = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        default="ms-Icon--Contact",
+        verbose_name="Icono Fluent UI"
+    )
 
     permisos = models.JSONField(
 

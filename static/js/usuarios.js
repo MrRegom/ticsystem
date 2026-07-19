@@ -73,18 +73,18 @@ function renderList(users) {
     const roleText = u.rol || 'Sin Perfil';
     
     // Asignar colores corporativos según el rol usando puntos de color sutiles en lugar de píldoras gigantes
-    let roleDotStyle = 'background-color: #605e5c;'; // Gris por defecto
+    let roleDotStyle = '#605e5c'; // Gris por defecto
     if (roleText.includes('Administrador')) {
-      roleDotStyle = 'background-color: #5c2d91;'; // Morado
+      roleDotStyle = '#5c2d91'; // Morado
     } else if (roleText.includes('Mesa de Ayuda') || roleText.includes('Operador')) {
-      roleDotStyle = 'background-color: #0078d4;'; // Azul
+      roleDotStyle = '#0078d4'; // Azul
     } else if (roleText.includes('Técnico') || roleText.includes('Terreno')) {
-      roleDotStyle = 'background-color: #107c10;'; // Verde
+      roleDotStyle = '#107c10'; // Verde
     } else if (roleText !== 'Sin Perfil') {
-      roleDotStyle = 'background-color: #a4262c;'; // Rojo oscuro para otros
+      roleDotStyle = '#a4262c'; // Rojo oscuro para otros
     }
-
-    const roleBadge = `<div class="ms-role-text"><span class="ms-status-dot" style="${roleDotStyle}"></span>${roleText}</div>`;
+    const roleIcon = u.rol_icono || (roleText === 'Sin Perfil' ? 'ms-Icon--Contact' : 'ms-Icon--Permissions');
+    const roleBadge = `<div class="ms-role-text" title="${roleText}" style="cursor: help;"><i class="ms-Icon ${roleIcon}" style="font-size: 20px; color: ${roleDotStyle}"></i></div>`;
     
     const unidad = u.unidad || 'Sin Asignar';
     
@@ -319,7 +319,10 @@ function openViewModal(userJsonStr) {
   
   const divGrupos = document.getElementById('view-grupos');
   if (u.grupos && u.grupos.length > 0) {
-    divGrupos.innerHTML = u.grupos.map(g => `<span style="background: #edebe9; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 4px; display: inline-block; margin-bottom: 4px;">${g.nombre}</span>`).join('');
+    divGrupos.innerHTML = u.grupos.map(g => {
+      const icon = g.icono || 'ms-Icon--Group';
+      return `<span style="background: #edebe9; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 4px; display: inline-block; margin-bottom: 4px;"><i class="ms-Icon ${icon}" style="margin-right: 4px; color: #002a54;"></i>${g.nombre}</span>`;
+    }).join('');
   } else {
     divGrupos.innerText = 'No asignado';
   }

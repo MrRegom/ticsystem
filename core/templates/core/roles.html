@@ -37,8 +37,13 @@
           <tbody>
             {% for rol in roles %}
             <tr>
-              <td><span class="font-weight-bold text-dark">{{ rol.nombre }}</span></td>
-              <td class="text-muted text-sm">{{ rol.descripcion|default:"-" }}</td>
+              <td class="font-weight-bold align-middle">
+                {% if rol.icono %}
+                  <i class="ms-Icon {{ rol.icono }}" style="margin-right: 8px; font-size: 16px; vertical-align: middle;"></i>
+                {% endif %}
+                {{ rol.nombre }}
+              </td>
+              <td class="text-muted align-middle" style="max-width: 300px;">{{ rol.descripcion|default:"-" }}</td>
               <td class="text-center">
                 <span class="badge badge-info badge-pill px-2 py-1" style="font-size: 0.7rem;">{{ rol.permisos.keys|length }} permisos</span>
               </td>
@@ -92,9 +97,18 @@
               </select>
             </div>
           </div>
-          <div class="form-group mb-4">
-            <label class="font-weight-bold text-dark text-sm">Descripción</label>
-            <textarea class="form-control form-control-solid rounded" id="descripcion" name="descripcion" rows="2"></textarea>
+          <div class="row">
+            <div class="col-md-12 form-group mb-4">
+              <label class="font-weight-bold text-dark text-sm">Descripción</label>
+              <textarea class="form-control form-control-solid rounded" id="descripcion" name="descripcion" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 form-group mb-4">
+              <label class="font-weight-bold text-dark text-sm">Icono (Fluent UI)</label>
+              <input type="text" class="form-control form-control-solid rounded" id="icono" name="icono" placeholder="Ej: ms-Icon--Contact">
+              <small class="form-text text-muted">Ingresa la clase del ícono, ej: <code>ms-Icon--Contact</code>, <code>ms-Icon--Settings</code>, <code>ms-Icon--Shield</code>.</small>
+            </div>
           </div>
 
           <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-3 mt-4"><i class="fas fa-key text-warning mr-2"></i> Permisos de Acceso</h6>
@@ -119,5 +133,5 @@
 <script>
   const PERMISOS_DISPONIBLES = {{ permisos_json|safe }};
 </script>
-<script src="{% static 'js/roles.js' %}"></script>
+<script src="{% static 'js/roles.js' %}?v=2"></script>
 {% endblock %}

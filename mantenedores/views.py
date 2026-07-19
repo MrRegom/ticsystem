@@ -241,4 +241,6 @@ class MantenedorDetailView(LoginRequiredMixin, View):
             data['recinto'] = item.recinto_id
         elif modelo == 'grupo_resolutor':
             data['miembros'] = list(item.miembros.values_list('id', flat=True))
+            data['descripcion'] = item.descripcion
+            data['icono'] = item.icono
         return JsonResponse({'success': True, 'data': data})

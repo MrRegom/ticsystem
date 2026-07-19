@@ -142,6 +142,7 @@ class MantenedorService:
             'unidad':            ['area_hospitalaria'],
             'recinto':           ['piso', 'sector', 'unidad'],
             'pma':               ['recinto'],
+            'grupo_resolutor':   ['descripcion', 'icono'],
         }
         # FKs de las nuevas entidades
         FK_FIELDS = {'edificio', 'marca', 'institucion', 'piso', 'sector', 'unidad', 'area_hospitalaria', 'recinto'}
@@ -242,6 +243,7 @@ class MantenedorService:
             'unidad':            ['area_hospitalaria'],
             'recinto':           ['piso', 'sector', 'unidad'],
             'pma':               ['recinto'],
+            'grupo_resolutor':   ['descripcion', 'icono'],
         }
         FK_FIELDS = {'edificio', 'marca', 'institucion', 'piso', 'sector', 'unidad', 'area_hospitalaria', 'recinto'}
 
