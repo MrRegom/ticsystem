@@ -25,14 +25,14 @@
           <i class="fas fa-history"></i> Historial
         </button>
       </div>
-      <select id="kanban-filtro-fecha" class="ms-input" style="width: auto; padding: 6px 12px; border: 1px solid #cbd5e1; font-weight: 600; color: #475569; border-radius: 0; outline: none; font-family: 'Segoe UI', system-ui, sans-serif;" onchange="window.location.href='?rango=' + this.value;">
+      <select id="kanban-filtro-fecha" class="ms-input" style="width: auto; height: 36px; padding: 6px 12px; border: 1px solid #cbd5e1; font-weight: 600; color: #475569; border-radius: 0; outline: none; font-family: 'Segoe UI', system-ui, sans-serif; box-sizing: border-box; display: inline-flex; align-items: center; margin: 0;" onchange="window.location.href='?rango=' + this.value;">
         <option value="hoy" {% if rango_filtro == 'hoy' %}selected{% endif %}>Hoy</option>
         <option value="semana" {% if rango_filtro == 'semana' %}selected{% endif %}>Últimos 7 Días</option>
         <option value="mes" {% if rango_filtro == 'mes' %}selected{% endif %}>Últimos 30 Días</option>
         <option value="todos" {% if rango_filtro == 'todos' %}selected{% endif %}>Todos (Histórico)</option>
       </select>
-      <button class="ms-btn-primary" data-toggle="modal" data-target="#modalNuevoTicket" style="border-radius: 0;">
-        <i class="fas fa-plus"></i> Nuevo Ticket
+      <button class="ms-btn-primary" data-toggle="modal" data-target="#modalNuevoTicket" style="border-radius: 0; height: 36px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; padding: 0 16px; margin: 0;">
+        <i class="fas fa-plus" style="margin-right: 6px;"></i> Nuevo Ticket
       </button>
     </div>
   </div>
