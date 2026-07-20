@@ -205,22 +205,23 @@
   {% endif %}
 
   <!-- Contenido Principal -->
-  <main class="with-fixed-navbar">
+  <main class="with-fixed-navbar" style="padding-bottom: 60px;">
     <div class="container-fluid p-0">
       {% block content %}{% endblock %}
     </div>
   </main>
 
-  <!-- Footer Delgado minimalista -->
-  <footer class="py-2 mt-auto" id="footer-main" style="{% if user.is_authenticated %}margin-left: 200px;{% endif %}">
-    <div class="container-fluid px-md-4 text-left">
-      <span class="text-muted" style="font-size: 0.75rem; font-weight: 500;">
+  <!-- Footer Fijo Enterprise Glassmorphism -->
+  <footer class="py-2" id="footer-main" style="position: fixed; bottom: 0; right: 0; z-index: 1030; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(0,0,0,0.08); box-shadow: 0 -4px 15px rgba(0,0,0,0.03); width: 100%; transition: width 0.3s ease; {% if user.is_authenticated %}width: calc(100% - 200px);{% endif %}">
+    <div class="container-fluid px-md-4 text-left d-flex align-items-center">
+      <span class="text-muted" style="font-size: 0.75rem; font-weight: 500; display: flex; align-items: center;">
         <strong>
-        <i class="far fa-hospital mr-1" style="color: #006FB3;"></i> &copy; 2026 Hospital Provincial Marga Marga &mdash; 
+        <i class="far fa-hospital mr-1" style="color: #006FB3; font-size: 0.9rem;"></i> &copy; 2026 Hospital Provincial Marga Marga &mdash; 
         <span style="color: #6c757d;">Copyright &copy; SERVIREC</span>
-      </strong> | Plataforma Tecnológica Hospitalaria</span>
-        <span class="badge badge-warning ml-3" style="background-color: #ffc107; color: #212529; font-size: 0.6rem; vertical-align: text-top; letter-spacing: 0.5px; opacity: 0.9;">VERSIÓN DEMO</span>
+      </strong> 
+      <span class="ml-1 d-none d-sm-inline">| Plataforma Tecnológica Hospitalaria</span>
       </span>
+      <span class="badge badge-warning ml-3" style="background-color: #ffb900; color: #000; font-size: 0.65rem; border: 1px solid #eab308; padding: 4px 8px; font-weight: 700; letter-spacing: 0.5px; border-radius: 4px; box-shadow: 0 2px 4px rgba(255,185,0,0.2);">VERSIÓN DEMO</span>
     </div>
   </footer>
 
