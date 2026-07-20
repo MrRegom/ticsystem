@@ -62,6 +62,9 @@ MIDDLEWARE = [
     
     # Middleware para protección de fuerza bruta (OWASP)
     'axes.middleware.AxesMiddleware',
+
+    # Custom Middleware para no cachear páginas autenticadas
+    'core.middlewares.NoCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
