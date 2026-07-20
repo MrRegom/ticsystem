@@ -51,20 +51,20 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
         if self.request.user.is_superuser:
             is_dispatcher = True
 
-        # Para el JSONField, en la mayoría de DBs se puede buscar una clave.
-        # En Django 3.1+ se puede hacer perfil__rol__permisos__RECIBIR_TICKETS=True
-        if is_dispatcher:
-            tecnicos_qs = User.objects.filter(is_active=True, perfil__rol__permisos__RECIBIR_TICKETS=True).distinct()
-        else:
-            if hasattr(self.request.user, 'grupos_resolutores'):
-                user_grupos = self.request.user.grupos_resolutores.all()
-                if user_grupos.exists():
-                    tecnicos_qs = User.objects.filter(grupos_resolutores__in=user_grupos, is_active=True, perfil__rol__permisos__RECIBIR_TICKETS=True).distinct()
-                else:
-                    tecnicos_qs = User.objects.none()
+        # Todos ven únicamente a los técnicos de sus propios grupos, incluso si son despachadores.
+        # Esto fuerza a que los tickets entre áreas se envíen a la cola del Grupo Resolutor y no "a dedo".
+        if hasattr(self.request.user, 'grupos_resolutores'):
+            user_grupos = self.request.user.grupos_resolutores.all()
+            if user_grupos.exists():
+                tecnicos_qs = User.objects.filter(grupos_resolutores__in=user_grupos, is_active=True, perfil__rol__permisos__RECIBIR_TICKETS=True).distinct()
             else:
-
                 tecnicos_qs = User.objects.none()
+        else:
+            tecnicos_qs = User.objects.none()
+        
+        # Si es superusuario y no tiene grupos, le mostramos todos por si necesita administrar
+        if self.request.user.is_superuser and not tecnicos_qs.exists():
+             tecnicos_qs = User.objects.filter(is_active=True, perfil__rol__permisos__RECIBIR_TICKETS=True).distinct()
             
         # Agrupar técnicos por Grupo Resolutor para el frontend
         grupos_activos = GrupoResolutor.objects.filter(activo=True).prefetch_related('miembros')
