@@ -9,6 +9,55 @@ document.addEventListener('DOMContentLoaded', () => {
       loadIdentities(e.target.value);
     }, 400);
   });
+
+  // Auto-search Funcionario when typing RUT
+  let rutTimeout;
+  document.getElementById('form-rut').addEventListener('input', (e) => {
+    if (currentAction !== 'crear') return; // Only auto-fill on create
+    const rut = e.target.value.trim();
+    const feedback = document.getElementById('rut-feedback');
+    if (rut.length < 8) {
+        feedback.innerText = '';
+        return;
+    }
+    
+    clearTimeout(rutTimeout);
+    rutTimeout = setTimeout(() => {
+      feedback.style.color = '#605e5c';
+      feedback.innerText = 'Buscando en tabla de Funcionarios...';
+      
+      fetch(`/api/funcionarios/buscar/?q=${encodeURIComponent(rut)}`)
+        .then(res => res.json())
+        .then(data => {
+          const results = data.results || [];
+          // Buscar coincidencia exacta por RUT
+          const func = results.find(f => f.id.replace(/[^0-9Kk]/g, '').toUpperCase() === rut.replace(/[^0-9Kk]/g, '').toUpperCase());
+          
+          if (func) {
+            document.getElementById('form-nombres').value = func.nombres || '';
+            document.getElementById('form-apellidos').value = func.apellidos || '';
+            if (func.correo) document.getElementById('form-email').value = func.correo;
+            if (func.unidad) {
+               const unidadSelect = document.getElementById('form-unidad');
+               for(let i=0; i<unidadSelect.options.length; i++) {
+                 if(unidadSelect.options[i].text.toUpperCase() === func.unidad.toUpperCase()) {
+                   unidadSelect.selectedIndex = i;
+                   break;
+                 }
+               }
+            }
+            feedback.style.color = '#107c10'; // Green
+            feedback.innerHTML = '<i class="fas fa-check-circle"></i> Funcionario encontrado. Datos cargados.';
+          } else {
+            feedback.style.color = '#0078d4'; // Blue
+            feedback.innerHTML = '<i class="fas fa-info-circle"></i> Funcionario nuevo. Se agregará automáticamente al guardar.';
+          }
+        })
+        .catch(() => {
+            feedback.innerText = '';
+        });
+    }, 600);
+  });
 });
 
 // ==========================================
@@ -135,6 +184,8 @@ function openDrawer(action, userJsonStr = null) {
     document.getElementById('form-id').value = '';
     document.getElementById('lbl-password').innerText = 'Contraseña *';
     document.getElementById('form-password').required = true;
+    const feedback = document.getElementById('rut-feedback');
+    if (feedback) feedback.innerText = '';
   } else {
     title.innerText = 'Modificar Identidad';
     document.getElementById('lbl-password').innerText = 'Nueva Contraseña (Opcional)';
