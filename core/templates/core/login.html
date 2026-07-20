@@ -206,12 +206,9 @@
     
     .left-footer {
       position: absolute;
-      bottom: 40px;
-      left: 60px;
+      bottom: 60px;
+      left: 80px; /* Alineado perfectamente con el padding de 80px de split-left */
       z-index: 2;
-      display: flex;
-      align-items: center;
-      gap: 15px;
     }
 
     .left-footer span {
@@ -222,8 +219,8 @@
     }
 
     .servirec-logo-large {
-      max-height: 45px;
-      opacity: 0.8;
+      max-height: 38px;
+      opacity: 0.9;
       filter: brightness(0) invert(1); /* Hace el logo blanco para que contraste con el fondo azul oscuro */
       transition: all 0.3s ease;
     }
@@ -271,8 +268,13 @@
         <p>El portal unificado para la administración tecnológica, tickets de soporte y recursos del Hospital Provincial Marga Marga. Tecnología de vanguardia al servicio de la salud pública.</p>
       </div>
       <div class="left-footer">
-        <span>Desarrollado por</span>
-        <img src="{% static 'img/servirecLogo.png' %}" alt="Servirec" class="servirec-logo-large">
+        <div style="display: flex; align-items: center; gap: 18px;">
+           <img src="{% static 'img/servirecLogo.png' %}" alt="Servirec" class="servirec-logo-large">
+           <div style="display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 18px;">
+             <span style="font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.95); letter-spacing: 1px; text-transform: uppercase;">Desarrollado por Servirec</span>
+             <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 2px;">© 2026 Todos los derechos reservados. Confidencial.</span>
+           </div>
+        </div>
       </div>
     </div>
 
