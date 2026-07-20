@@ -93,6 +93,25 @@ class UsuarioService:
             perfil.rol_id = rol_id
 
         user = UsuarioRepository.save(user, perfil)
+        
+        # Sincronizar automáticamente con la tabla Funcionario
+        from core.models import Funcionario
+        from mantenedores.models import Unidad
+        
+        unidad_obj = None
+        if unidad and unidad.strip():
+            unidad_obj = Unidad.objects.filter(nombre__iexact=unidad.strip()).first()
+            
+        Funcionario.objects.update_or_create(
+            rut=rut_clean,
+            defaults={
+                'nombres': nombres.strip(),
+                'apellidos': apellidos.strip(),
+                'correo': correo.strip(),
+                'unidad': unidad_obj
+            }
+        )
+
         if grupos is not None:
             from tickets.models import GrupoResolutor
             # grupos es un array de IDs, actualizamos las relaciones del usuario
@@ -168,6 +187,25 @@ class UsuarioService:
             perfil.foto = foto
 
         user = UsuarioRepository.save(user, perfil)
+        
+        # Sincronizar automáticamente con la tabla Funcionario
+        from core.models import Funcionario
+        from mantenedores.models import Unidad
+        
+        unidad_obj = None
+        if unidad and unidad.strip():
+            unidad_obj = Unidad.objects.filter(nombre__iexact=unidad.strip()).first()
+            
+        sync_rut = rut_clean if rut_clean else user.username
+        Funcionario.objects.update_or_create(
+            rut=sync_rut,
+            defaults={
+                'nombres': normalizar_nombre(nombres).strip(),
+                'apellidos': normalizar_nombre(apellidos).strip(),
+                'correo': correo.strip(),
+                'unidad': unidad_obj
+            }
+        )
         if grupos is not None:
             from tickets.models import GrupoResolutor
             # grupos es un array de IDs, actualizamos las relaciones del usuario
