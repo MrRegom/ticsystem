@@ -13,6 +13,7 @@ import json
 from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http import JsonResponse
@@ -27,7 +28,8 @@ from core.models import LogAuditoria
 from core.utils import get_client_ip, parse_datatables_params, extract_validation_error
 
 
-class EquiposDashboardView(LoginRequiredMixin, TemplateView):
+class EquiposDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_EQUIPOS'
     """Vista del módulo de Equipos (inventario TIC)."""
     template_name = 'equipos/equipos.html'
 
@@ -95,7 +97,8 @@ class EquiposDashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class EquipoListView(LoginRequiredMixin, View):
+class EquipoListView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_EQUIPOS'
     """API Server-Side para DataTables de Equipos."""
 
     def post(self, request, *args, **kwargs):
@@ -127,7 +130,8 @@ class EquipoListView(LoginRequiredMixin, View):
         })
 
 
-class EquipoActionView(LoginRequiredMixin, View):
+class EquipoActionView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_EQUIPOS'
     """API JSON para acciones CRUD de equipos."""
 
     def post(self, request, *args, **kwargs):
@@ -229,7 +233,8 @@ class EquipoActionView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 
-class EquipoDetailView(LoginRequiredMixin, View):
+class EquipoDetailView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_EQUIPOS'
     """API JSON para obtener detalle de un equipo (para modal de edición)."""
 
     def get(self, request, equipo_id, *args, **kwargs):
@@ -282,7 +287,8 @@ class EquipoDetailView(LoginRequiredMixin, View):
         })
 
 
-class EquipoDetailReadView(LoginRequiredMixin, View):
+class EquipoDetailReadView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_EQUIPOS'
     """API JSON con detalle completo read-only de un equipo."""
 
     def get(self, request, equipo_id, *args, **kwargs):
@@ -320,7 +326,8 @@ class EquipoDetailReadView(LoginRequiredMixin, View):
         }})
 
 
-class EquipoHistorialView(LoginRequiredMixin, View):
+class EquipoHistorialView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_EQUIPOS'
     """API JSON: historial de auditoría de un equipo."""
 
     def get(self, request, equipo_id, *args, **kwargs):
@@ -340,7 +347,8 @@ class EquipoHistorialView(LoginRequiredMixin, View):
         return JsonResponse({'success': True, 'data': data})
 
 
-class EquipoBitacoraView(LoginRequiredMixin, View):
+class EquipoBitacoraView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_EQUIPOS'
     """API JSON: bitácora de mantención de un equipo."""
 
     def get(self, request, equipo_id, *args, **kwargs):
@@ -457,7 +465,8 @@ class EquipoBitacoraView(LoginRequiredMixin, View):
         }
 
 
-class BitacoraRegistroView(LoginRequiredMixin, View):
+class BitacoraRegistroView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_EQUIPOS'
     """API JSON: actualizar/eliminar un registro individual de bitácora."""
 
     def put(self, request, bitacora_id, *args, **kwargs):
@@ -652,7 +661,8 @@ class ImportarMargaMargaView(LoginRequiredMixin, View):
         return redirect('equipos:importar_marga_marga')
 
 
-class EquiposPanelControlView(LoginRequiredMixin, TemplateView):
+class EquiposPanelControlView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'GESTIONAR_EQUIPOS'
     template_name = 'equipos/dashboard.html'
 
     def get_context_data(self, **kwargs):

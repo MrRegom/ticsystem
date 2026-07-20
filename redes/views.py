@@ -1,6 +1,7 @@
 """Vistas del módulo Redes / IPAM."""
 import json
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http import JsonResponse
@@ -12,7 +13,8 @@ from core.models import LogAuditoria
 from core.utils import get_client_ip, parse_datatables_params, normalizar_nombre, extract_validation_error
 
 
-class RedesDashboardView(LoginRequiredMixin, TemplateView):
+class RedesDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_MANTENEDORES'
     template_name = 'redes/redes.html'
 
     def get_context_data(self, **kwargs):
@@ -32,7 +34,8 @@ class RedesDashboardView(LoginRequiredMixin, TemplateView):
         return ctx
 
 
-class IpListView(LoginRequiredMixin, View):
+class IpListView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_MANTENEDORES'
     """API DataTables server-side para IPs de red (IPAM)."""
     def post(self, request, *args, **kwargs):
         dt = parse_datatables_params(request)
@@ -78,7 +81,8 @@ class IpListView(LoginRequiredMixin, View):
         return JsonResponse({'draw': dt['draw'], 'recordsTotal': total, 'recordsFiltered': filtered, 'data': data})
 
 
-class IpActionView(LoginRequiredMixin, View):
+class IpActionView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_MANTENEDORES'
     """CRUD JSON para IPs de red."""
     def post(self, request, *args, **kwargs):
         try:
@@ -185,7 +189,8 @@ class IpActionView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 
-class IpDetailView(LoginRequiredMixin, View):
+class IpDetailView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_MANTENEDORES'
     def get(self, request, ip_id, *args, **kwargs):
         from redes.models import InfraestructuraRed
         try:

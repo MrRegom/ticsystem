@@ -4,14 +4,17 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.core.mail import get_connection, EmailMessage
 from .models import ConfiguracionSMTP
 
-class ConfiguracionSMTPDashboardView(LoginRequiredMixin, TemplateView):
+class ConfiguracionSMTPDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """Renderiza la pantalla frontend para configurar el SMTP."""
     template_name = 'correos/configuracion.html'
 
-class ConfiguracionSMTPAPIView(LoginRequiredMixin, View):
+class ConfiguracionSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """API para obtener y guardar la configuración SMTP."""
     def get(self, request, *args, **kwargs):
         if not request.user.is_superuser:
@@ -50,7 +53,8 @@ class ConfiguracionSMTPAPIView(LoginRequiredMixin, View):
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
-class TestSMTPAPIView(LoginRequiredMixin, View):
+class TestSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """API para probar la conexión SMTP con las credenciales enviadas desde el UI."""
     def post(self, request, *args, **kwargs):
         if not request.user.is_superuser:

@@ -4,6 +4,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
@@ -177,7 +178,8 @@ class DashboardGeneralView(LoginRequiredMixin, TemplateView):
         context['kpis'] = obtener_kpis_generales()
         return context
 
-class UsuariosDashboardView(LoginRequiredMixin, TemplateView):
+class UsuariosDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_USUARIOS'
     """
     Vista para el módulo de Gestión de Usuarios.
     """
@@ -192,7 +194,8 @@ class UsuariosDashboardView(LoginRequiredMixin, TemplateView):
         context['grupos_disponibles'] = GrupoResolutor.objects.filter(activo=True).order_by('nombre')
         context['unidades'] = Unidad.objects.all().order_by('nombre')
         return context
-class UsuarioListView(LoginRequiredMixin, View):
+class UsuarioListView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_USUARIOS'
     """
     API Server-Side para DataTables de Usuarios.
     """
@@ -217,7 +220,8 @@ class UsuarioListView(LoginRequiredMixin, View):
 
 
 
-class RolesDashboardView(LoginRequiredMixin, TemplateView):
+class RolesDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """
     Vista principal para gestión de Roles y Perfiles.
     """
@@ -246,7 +250,8 @@ class RolesDashboardView(LoginRequiredMixin, TemplateView):
         context['permisos_json'] = json.dumps(RolService.obtener_permisos_disponibles())
         return context
 
-class RolesDetailAPIView(LoginRequiredMixin, View):
+class RolesDetailAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ROLES'
     def get(self, request, rol_id, *args, **kwargs):
         if not request.user.is_superuser and not (hasattr(request.user, 'perfil') and request.user.perfil.rol and request.user.perfil.rol.tiene_permiso('GESTIONAR_ROLES')):
             return JsonResponse({'success': False, 'message': 'No autorizado'}, status=403)
@@ -267,7 +272,8 @@ class RolesDetailAPIView(LoginRequiredMixin, View):
         except Rol.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Rol no encontrado'}, status=404)
 
-class RolesAPIView(LoginRequiredMixin, View):
+class RolesAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """
     API JSON para crear o editar roles y sus permisos.
     """
@@ -367,7 +373,8 @@ class RolesAPIView(LoginRequiredMixin, View):
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
-class UsuarioActionView(LoginRequiredMixin, View):
+class UsuarioActionView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_USUARIOS'
     """
     API JSON/multipart para acciones CRUD de operadores/usuarios.
     Soporta tanto JSON como FormData (para upload de foto).
@@ -653,7 +660,8 @@ class FuncionarioCreateAPIView(LoginRequiredMixin, View):
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
-class UsuarioCrearAPIView(LoginRequiredMixin, View):
+class UsuarioCrearAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_USUARIOS'
     def post(self, request, *args, **kwargs):
         from core.services.usuario_service import UsuarioService
         import json
@@ -669,7 +677,8 @@ class UsuarioCrearAPIView(LoginRequiredMixin, View):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
-class UsuarioEditarAPIView(LoginRequiredMixin, View):
+class UsuarioEditarAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_USUARIOS'
     def post(self, request, *args, **kwargs):
         from core.services.usuario_service import UsuarioService
         import json

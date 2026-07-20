@@ -1,6 +1,7 @@
 import json
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
@@ -11,7 +12,8 @@ from equipos.models import Equipo
 from mantenedores.models import Unidad, Cargo
 from django.contrib.auth.models import User
 
-class TicketsDashboardView(LoginRequiredMixin, TemplateView):
+class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_TICKETS'
     template_name = 'tickets/tickets.html'
 
     ESTADOS_ACTIVOS = [
@@ -225,7 +227,8 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
 
         return context
 
-class TicketActionView(LoginRequiredMixin, View):
+class TicketActionView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_TICKETS'
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
@@ -275,7 +278,8 @@ class TicketActionView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 
-class TicketDetailApiView(LoginRequiredMixin, View):
+class TicketDetailApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_TICKETS'
     def get(self, request, ticket_id, *args, **kwargs):
         try:
             ticket = Ticket.objects.select_related(
@@ -330,7 +334,8 @@ class TicketDetailApiView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 
-class TicketAssignApiView(LoginRequiredMixin, View):
+class TicketAssignApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_TICKETS'
     def post(self, request, ticket_id, *args, **kwargs):
         try:
             data = json.loads(request.body)
@@ -389,7 +394,8 @@ class TicketResolveApiView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 
-class TicketTakeApiView(LoginRequiredMixin, View):
+class TicketTakeApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_TICKETS'
     def post(self, request, ticket_id, *args, **kwargs):
         try:
             ticket = TicketService.tomar_ticket(ticket_id, request.user)
@@ -495,7 +501,8 @@ class UserCreateApiView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 
-class TicketTakeApiView(LoginRequiredMixin, View):
+class TicketTakeApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_TICKETS'
     def post(self, request, ticket_id, *args, **kwargs):
         try:
             TicketService.tomar_ticket(ticket_id, request.user)
@@ -503,7 +510,8 @@ class TicketTakeApiView(LoginRequiredMixin, View):
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
-class TicketSyncApiView(LoginRequiredMixin, View):
+class TicketSyncApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_TICKETS'
     def get(self, request, *args, **kwargs):
         """
         Devuelve el conteo de tickets y datos ligeros para el Kanban auto-refresh.

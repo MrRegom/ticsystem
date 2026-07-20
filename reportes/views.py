@@ -1,9 +1,11 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from .services import GraficosService
 import json
 
-class DashboardReportesView(LoginRequiredMixin, TemplateView):
+class DashboardReportesView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_REPORTES'
     template_name = 'reportes/dashboard.html'
     
     def get_context_data(self, **kwargs):
@@ -19,12 +21,14 @@ class DashboardReportesView(LoginRequiredMixin, TemplateView):
         
         return context
 
-class ExportarTicketsView(LoginRequiredMixin, TemplateView):
+class ExportarTicketsView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_REPORTES'
     def get(self, request, *args, **kwargs):
         from .services import ExportadorCSVService
         return ExportadorCSVService.exportar_tickets()
 
-class ExportarActivosView(LoginRequiredMixin, TemplateView):
+class ExportarActivosView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_REPORTES'
     def get(self, request, *args, **kwargs):
         from .services import ExportadorCSVService
         return ExportadorCSVService.exportar_activos()

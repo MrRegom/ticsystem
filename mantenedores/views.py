@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http import JsonResponse
@@ -45,7 +46,8 @@ MODELOS_INFO = [
 ]
 
 
-class MantenedoresDashboardView(LoginRequiredMixin, TemplateView):
+class MantenedoresDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_MANTENEDORES'
     template_name = 'mantenedores/mantenedores.html'
 
     def get_context_data(self, **kwargs):
@@ -85,7 +87,8 @@ class MantenedoresDashboardView(LoginRequiredMixin, TemplateView):
         return ctx
 
 
-class MantenedorListView(LoginRequiredMixin, View):
+class MantenedorListView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_MANTENEDORES'
     def post(self, request, *args, **kwargs):
         dt = parse_datatables_params(request)
         modelo = request.POST.get('modelo', '')
@@ -97,7 +100,8 @@ class MantenedorListView(LoginRequiredMixin, View):
         return JsonResponse({'draw': dt['draw'], **r})
 
 
-class MantenedorActionView(LoginRequiredMixin, View):
+class MantenedorActionView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_MANTENEDORES'
     def _get_modelo(self, data):
         return (data.get('modelo') or '').strip().lower()
 
@@ -192,7 +196,8 @@ class MantenedorActionView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 
-class MantenedorDetailView(LoginRequiredMixin, View):
+class MantenedorDetailView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_MANTENEDORES'
     def get(self, request, item_id, *args, **kwargs):
         modelo = request.GET.get('modelo', '')
         from mantenedores.services.mantenedor_service import MantenedorService

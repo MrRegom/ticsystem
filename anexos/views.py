@@ -2,6 +2,7 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.http import JsonResponse
@@ -13,7 +14,8 @@ from core.models import LogAuditoria
 from core.utils import get_client_ip, parse_datatables_params, extract_validation_error
 
 
-class AnexosDashboardView(LoginRequiredMixin, TemplateView):
+class AnexosDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_ANEXOS'
     template_name = 'anexos/anexos.html'
 
     def get_context_data(self, **kwargs):
@@ -33,7 +35,8 @@ class AnexosDashboardView(LoginRequiredMixin, TemplateView):
         return ctx
 
 
-class AnexoListView(LoginRequiredMixin, View):
+class AnexoListView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_ANEXOS'
     def post(self, request, *args, **kwargs):
         dt = parse_datatables_params(request)
         from anexos.services.anexo_service import AnexoService
@@ -44,7 +47,8 @@ class AnexoListView(LoginRequiredMixin, View):
         return JsonResponse({'draw': dt['draw'], **r})
 
 
-class AnexoActionView(LoginRequiredMixin, View):
+class AnexoActionView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ANEXOS'
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)

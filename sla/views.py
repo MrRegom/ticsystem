@@ -10,6 +10,7 @@ Arquitectura:
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.utils import IntegrityError
@@ -21,7 +22,8 @@ from tickets.models import Prioridad, Ticket
 from sla.models import SLAMatrix
 
 
-class SlaConfigView(LoginRequiredMixin, TemplateView):
+class SlaConfigView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """Vista principal del módulo de Configuración."""
     template_name = 'sla/configuracion.html'
 
@@ -71,7 +73,8 @@ class SlaConfigView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class SlaMatrixApiView(LoginRequiredMixin, View):
+class SlaMatrixApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """API JSON para editar celdas de la Matriz SLA."""
 
     def put(self, request, *args, **kwargs):
@@ -98,7 +101,8 @@ class SlaMatrixApiView(LoginRequiredMixin, View):
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 
-class PrioridadListApiView(LoginRequiredMixin, View):
+class PrioridadListApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """API JSON para listar Prioridades."""
 
     def get(self, request, *args, **kwargs):
@@ -106,7 +110,8 @@ class PrioridadListApiView(LoginRequiredMixin, View):
         return JsonResponse({'success': True, 'data': prioridades})
 
 
-class PrioridadApiView(LoginRequiredMixin, View):
+class PrioridadApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ROLES'
     """API JSON CRUD para Prioridades."""
 
     def post(self, request, *args, **kwargs):

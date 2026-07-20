@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.mixins import PermisoRequeridoMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
@@ -17,7 +18,8 @@ from core.utils import get_client_ip, parse_datatables_params, extract_validatio
 from actas.utils.pdf_generator import generar_pdf_acta
 
 
-class ActasDashboardView(LoginRequiredMixin, TemplateView):
+class ActasDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    permiso_requerido = 'VER_ACTAS'
     """Vista del módulo de Actas de Entrega."""
     template_name = 'actas/actas.html'
 
@@ -31,7 +33,8 @@ class ActasDashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ActaListView(LoginRequiredMixin, View):
+class ActaListView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'VER_ACTAS'
     """API Server-Side para DataTables de Actas."""
 
     def post(self, request, *args, **kwargs):
@@ -49,7 +52,8 @@ class ActaListView(LoginRequiredMixin, View):
         })
 
 
-class ActaActionView(LoginRequiredMixin, View):
+class ActaActionView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_ACTAS'
     """API JSON para acciones CRUD de actas."""
 
     def post(self, request, *args, **kwargs):
