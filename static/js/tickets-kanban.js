@@ -372,11 +372,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 var btnResolver = document.getElementById('btn-resolver-tk');
                 var btnTomar = document.getElementById('btn-tomar-tk');
                 var btnPausar = document.getElementById('btn-pausar-tk');
+                var asignacionSection = document.getElementById('oc-section-asignacion');
+                var formComentario = document.getElementById('form-comentario');
+                
+                var isClosed = (t.estado_id === 'RESUELTO' || t.estado_id === 'CERRADO');
 
                 // Lógica de visibilidad
-                btnResolver.style.display = (t.estado_id !== 'RESUELTO' && t.estado_id !== 'CERRADO') ? 'inline-block' : 'none';
+                if (asignacionSection) asignacionSection.style.display = isClosed ? 'none' : 'block';
+                if (formComentario) formComentario.style.display = isClosed ? 'none' : 'block';
+                
+                btnResolver.style.display = (!isClosed) ? 'inline-block' : 'none';
                 if (btnPausar) {
-                    btnPausar.style.display = (t.estado_id !== 'RESUELTO' && t.estado_id !== 'CERRADO' && t.estado_id !== 'PENDIENTE_PROVEEDOR') ? 'inline-block' : 'none';
+                    btnPausar.style.display = (!isClosed && t.estado_id !== 'PENDIENTE_PROVEEDOR') ? 'inline-block' : 'none';
                 }
                 if (btnTomar) {
                     if (t.estado_id === 'NUEVO' || t.estado_id === 'ESCALADO') {
