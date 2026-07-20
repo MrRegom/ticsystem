@@ -199,9 +199,32 @@
       right: 60px;
       color: #94a3b8;
       font-size: 0.8rem;
-      text-align: left;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+    
+    .servirec-logo {
+      max-height: 22px;
+      opacity: 0.7;
+      filter: grayscale(100%);
+      transition: all 0.3s ease;
+    }
+    
+    .servirec-logo:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
+
+    .demo-badge {
+      background: #f1f5f9;
+      color: #64748b;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border: 1px solid #e2e8f0;
     }
 
     @media (max-width: 991px) {
@@ -264,8 +287,14 @@
       </form>
       
       <div class="footer-text">
-        <span>© 2026 TICsystem</span>
-        <span>Uso exclusivo HPMM</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>Desarrollado por</span>
+          <img src="{% static 'img/servirecLogo.png' %}" alt="Servirec" class="servirec-logo">
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span>Uso exclusivo HPMM</span>
+          <span class="demo-badge">VERSIÓN DEMO</span>
+        </div>
       </div>
     </div>
   </div>
