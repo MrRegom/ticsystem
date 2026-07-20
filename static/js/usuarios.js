@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       feedback.style.color = '#605e5c';
       feedback.innerText = 'Buscando en tabla de Funcionarios...';
       
-      fetch(`/api/funcionarios/buscar/?q=${encodeURIComponent(rut)}`)
+      fetch(`/api/funcionarios/search/?q=${encodeURIComponent(rut)}`)
         .then(res => res.json())
         .then(data => {
           const results = data.results || [];
