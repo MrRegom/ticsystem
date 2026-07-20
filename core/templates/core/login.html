@@ -204,16 +204,33 @@
       align-items: center;
     }
     
-    .servirec-logo {
-      max-height: 22px;
-      opacity: 0.7;
-      filter: grayscale(100%);
+    .left-footer {
+      position: absolute;
+      bottom: 40px;
+      left: 60px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .left-footer span {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .servirec-logo-large {
+      max-height: 45px;
+      opacity: 0.8;
+      filter: brightness(0) invert(1); /* Hace el logo blanco para que contraste con el fondo azul oscuro */
       transition: all 0.3s ease;
     }
     
-    .servirec-logo:hover {
+    .servirec-logo-large:hover {
       opacity: 1;
-      filter: grayscale(0%);
+      transform: scale(1.05);
     }
 
     .demo-badge {
@@ -253,6 +270,10 @@
         <h1>TICsystem</h1>
         <p>El portal unificado para la administración tecnológica, tickets de soporte y recursos del Hospital Provincial Marga Marga. Tecnología de vanguardia al servicio de la salud pública.</p>
       </div>
+      <div class="left-footer">
+        <span>Desarrollado por</span>
+        <img src="{% static 'img/servirecLogo.png' %}" alt="Servirec" class="servirec-logo-large">
+      </div>
     </div>
 
     <!-- Panel Derecho: Login Microsoft Fluent Design -->
@@ -287,10 +308,7 @@
       </form>
       
       <div class="footer-text">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span>Desarrollado por</span>
-          <img src="{% static 'img/servirecLogo.png' %}" alt="Servirec" class="servirec-logo">
-        </div>
+        <span>© 2026 TICsystem</span>
         <div style="display: flex; align-items: center; gap: 12px;">
           <span>Uso exclusivo HPMM</span>
           <span class="demo-badge">VERSIÓN DEMO</span>
