@@ -182,7 +182,8 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
                     'correlativo': t.correlativo,
                     'descripcion': t.descripcion,
                     'solicitante': t.solicitante.nombre_completo if t.solicitante else 'Desconocido',
-                    'tecnico': t.responsable.get_full_name() or t.responsable.username if t.responsable else (f"Grupo: {t.grupo_resolutor.nombre}" if t.grupo_resolutor else 'Sin asignar'),
+                    'tecnico': t.responsable.get_full_name() or t.responsable.username if t.responsable else 'Sin asignar',
+                    'grupo': t.grupo_resolutor.nombre if t.grupo_resolutor else 'Mesa de Ayuda',
                     'prioridad': t.prioridad.nombre if t.prioridad else 'Normal',
                     'prioridad_color': t.prioridad.color_hex if t.prioridad else '#64748b',
                     'pma': t.activo.pmalugar if t.activo else None,
@@ -198,9 +199,15 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
         context['kanban_data'] = json.dumps(kanban)
 
         # Tickets terminales para la vista Historial (DataTables)
-        tickets_historial = Ticket.objects.filter(
-            estado__in=self.ESTADOS_TERMINALES
-        ).select_related('solicitante', 'responsable', 'activo', 'prioridad').order_by('-fecha_creacion')
+        historial_query = Ticket.objects.filter(estado__in=self.ESTADOS_TERMINALES)
+        if not is_dispatcher:
+            # Filtrar historial a los grupos del usuario actual si no es despachador
+            user_groups = self.request.user.grupos_resolutores.filter(activo=True)
+            historial_query = historial_query.filter(grupo_resolutor__in=user_groups)
+            
+        tickets_historial = historial_query.select_related(
+            'solicitante', 'responsable', 'activo', 'prioridad', 'grupo_resolutor'
+        ).order_by('-fecha_creacion')
 
         context['historial'] = [{
             'id': t.id,
@@ -239,6 +246,7 @@ class TicketActionView(LoginRequiredMixin, View):
                 'descripcion': ticket.descripcion,
                 'solicitante': ticket.solicitante.nombre_completo,
                 'tecnico': 'Sin asignar',
+                'grupo': ticket.grupo_resolutor.nombre if ticket.grupo_resolutor else 'Mesa de Ayuda',
                 'prioridad': prio.nombre if prio else 'Normal',
                 'prioridad_color': prio.color_hex if prio else '#64748b',
                 'pma': equipo.pmalugar if equipo else None,

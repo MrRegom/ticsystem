@@ -302,6 +302,9 @@ class MantenedorService:
         if modelo_nombre == 'modelo' and instance.nombre.upper() in ('GENÉRICO', 'GENERICO'):
             raise ValidationError("No se puede eliminar el modelo Genérico porque actúa como valor por defecto del sistema.")
             
+        if getattr(instance, 'is_system', False):
+            raise ValidationError(f"No se puede eliminar <strong style='color:#dc3545'>{instance.nombre}</strong> porque es un registro protegido del sistema.")
+            
         try:
             MantenedorRepository.delete(instance)
         except ProtectedError:

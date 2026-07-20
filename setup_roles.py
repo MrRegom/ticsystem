@@ -75,6 +75,23 @@ rol_equip.permisos = equipamiento_permisos
 rol_equip.descripcion = 'Técnicos con acceso al inventario de Equipos TIC'
 rol_equip.save()
 print(f"Rol '{rol_equip.nombre}' configurado.")
-
-
 print("Roles configurados exitosamente en la base de datos.")
+
+# ---------------------------------------------
+# Grupos del Sistema (SPOC)
+# ---------------------------------------------
+from tickets.models import GrupoResolutor
+
+grupo_mesa, created = GrupoResolutor.objects.get_or_create(
+    nombre="Mesa de Ayuda",
+    defaults={
+        'descripcion': "Grupo principal (SPOC) para recepción y derivación de incidentes",
+        'icono': 'ms-Icon--Headset',
+        'is_system': True
+    }
+)
+if not created and not grupo_mesa.is_system:
+    grupo_mesa.is_system = True
+    grupo_mesa.save()
+
+print(f"Grupo de Sistema '{grupo_mesa.nombre}' configurado exitosamente.")

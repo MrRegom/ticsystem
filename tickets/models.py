@@ -31,6 +31,7 @@ class GrupoResolutor(models.Model):
     # Los usuarios que pertenecen a este grupo
     miembros = models.ManyToManyField(User, related_name='grupos_resolutores', blank=True, verbose_name="Técnicos Miembros")
     activo = models.BooleanField(default=True, verbose_name="Activo")
+    is_system = models.BooleanField(default=False, verbose_name="Grupo de Sistema (No borrable)")
 
     class Meta:
         verbose_name = "Grupo Resolutor"

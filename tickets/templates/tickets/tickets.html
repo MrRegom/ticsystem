@@ -116,7 +116,7 @@
             </thead>
             <tbody>
               {% for t in historial %}
-              <tr>
+              <tr onclick="openOffcanvas({{ t.id }})" style="cursor: pointer;" class="historial-row">
                 <td><strong>{{ t.correlativo }}</strong></td>
                 <td>{{ t.descripcion }}</td>
                 <td><span class="badge-estado badge-{{ t.estado_id }}">{{ t.estado }}</span></td>

@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
             '<div class="sla-timer-display" style="font-size:0.7rem; font-weight:600; margin-bottom:6px;"></div>' +
             (t.pma ? '<div class="card-pma" style="font-size:0.7rem; color:#64748b; margin-bottom:6px;"><i class="fas fa-map-marker-alt"></i> ' + t.pma + '</div>' : '') +
             '<div class="card-meta" style="font-size: 0.7rem; color: #64748b; display: flex; justify-content: space-between; align-items: center;">' +
-                '<span><i class="fas fa-user"></i> ' + t.solicitante + '</span>' +
-                '<span><i class="fas fa-users"></i> ' + (t.tecnico === 'Sin asignar' ? 'Sin asignar' : t.tecnico) + '</span>' +
+                '<span style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: 600;"><i class="fas fa-layer-group"></i> ' + (t.grupo || 'Mesa de Ayuda') + '</span>' +
+                '<span style="' + (t.tecnico === 'Sin asignar' ? 'color: #94a3b8;' : 'color: #3b82f6; font-weight: 600;') + '"><i class="fas ' + (t.tecnico === 'Sin asignar' ? 'fa-user-times' : 'fa-user-check') + '"></i> ' + t.tecnico + '</span>' +
             '</div>';
         return card;
     }
