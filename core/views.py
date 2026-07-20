@@ -189,10 +189,11 @@ class UsuariosDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateV
         context = super().get_context_data(**kwargs)
         from core.models import Rol
         from tickets.models import GrupoResolutor
-        from mantenedores.models import Unidad
+        from mantenedores.models import Unidad, Cargo
         context['roles_disponibles'] = Rol.objects.filter(activo=True).order_by('nombre')
         context['grupos_disponibles'] = GrupoResolutor.objects.filter(activo=True).order_by('nombre')
         context['unidades'] = Unidad.objects.all().order_by('nombre')
+        context['cargos'] = Cargo.objects.all().order_by('nombre')
         return context
 class UsuarioListView(PermisoRequeridoMixin, LoginRequiredMixin, View):
     permiso_requerido = 'VER_USUARIOS'
