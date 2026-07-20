@@ -908,10 +908,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Si cambiaron, podemos recargar los datos
                 if (changed) {
-                    // Para no molestar si alguien está moviendo una tarjeta, recargamos la pagina
-                    // En una futura versión se puede actualizar el DOM directamente
-                    console.log("Cambios detectados, recargando kanban...");
-                    window.location.reload();
+                    // Verificamos si hay algún modal abierto (modal-open class en body)
+                    if (document.body.classList.contains('modal-open')) {
+                        console.log("Cambios detectados pero hay un modal abierto. Posponiendo recarga para no interrumpir al usuario...");
+                    } else {
+                        console.log("Cambios detectados, recargando kanban...");
+                        window.location.reload();
+                    }
                 }
             }
         });
