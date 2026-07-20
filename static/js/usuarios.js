@@ -15,7 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('form-rut').addEventListener('input', (e) => {
     if (currentAction !== 'crear') return; // Only auto-fill on create
     const rut = e.target.value.trim();
-    const feedback = document.getElementById('rut-feedback');
+    let feedback = document.getElementById('rut-feedback');
+    if (!feedback) {
+        // Create it dynamically if HTML is cached
+        feedback = document.createElement('small');
+        feedback.id = 'rut-feedback';
+        feedback.style = 'display:block; margin-bottom: 12px; color:#0078d4; font-size: 12px; min-height:16px;';
+        e.target.parentNode.insertBefore(feedback, e.target.nextSibling);
+    }
+    
     if (rut.length < 8) {
         feedback.innerText = '';
         return;
