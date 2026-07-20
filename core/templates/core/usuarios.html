@@ -119,22 +119,23 @@
 <!-- Modal de Visualización (Solo Lectura) -->
 <div class="ms-modal-overlay" id="view-modal-overlay" onclick="closeViewModal()">
   <div class="ms-modal" onclick="event.stopPropagation()">
-    <div class="ms-modal-header" style="border-bottom: none; padding-bottom: 0;">
-      <div style="flex-grow: 1;"></div>
+    <div class="ms-modal-header">
+      <h3 class="ms-modal-title">Detalle de Identidad</h3>
       <button class="ms-modal-close" onclick="closeViewModal()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="ms-modal-body" style="padding-top: 0;">
-      <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 32px; padding: 0 12px;">
-        <div class="ms-avatar" id="view-avatar" style="width: 72px; height: 72px; font-size: 24px; flex-shrink: 0;"></div>
-        <div style="display: flex; flex-direction: column;">
-          <h2 style="margin: 0 0 4px 0; font-size: 22px; font-weight: 600; color: #201f1e; line-height: 1.2;" id="view-nombre"></h2>
-          <span style="font-size: 14px; color: #605e5c;" id="view-rol-header"></span>
-        </div>
-      </div>
-      <div class="ms-detail-list" style="padding: 0 12px;">
+    <div class="ms-modal-body">
+      <div class="ms-detail-grid">
         <div class="ms-detail-item">
           <span class="ms-detail-label">RUT</span>
           <span class="ms-detail-value" id="view-rut"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Nombres</span>
+          <span class="ms-detail-value" id="view-nombres"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Apellidos</span>
+          <span class="ms-detail-value" id="view-apellidos"></span>
         </div>
         <div class="ms-detail-item">
           <span class="ms-detail-label">Correo Electrónico</span>
@@ -143,6 +144,10 @@
         <div class="ms-detail-item">
           <span class="ms-detail-label">Unidad / Servicio</span>
           <span class="ms-detail-value" id="view-unidad"></span>
+        </div>
+        <div class="ms-detail-item">
+          <span class="ms-detail-label">Perfil de Sistema (Rol)</span>
+          <span class="ms-detail-value" id="view-rol"></span>
         </div>
         <div class="ms-detail-item">
           <span class="ms-detail-label">Grupos Resolutores</span>
@@ -157,8 +162,66 @@
   </div>
 </div>
 
+<!-- Modal Añadir Funcionario Rápido -->
+<div class="modal fade modal-right" id="modalCrearUsuario" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:2000;">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="font-family: 'Segoe UI', system-ui, sans-serif;">
+      <form id="form-crear-usuario" method="POST" onsubmit="return false;">
+        <div class="modal-header" style="background:#f1f5f9; border-bottom:1px solid #e2e8f0;">
+          <h5 class="modal-title" style="font-size:1.1rem; color:#0f172a; font-weight:600;"><i class="fas fa-user-plus text-primary mr-2"></i> Añadir Funcionario Rápido</h5>
+          <button type="button" class="close" onclick="$('#modalCrearUsuario').modal('hide')">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+          <div class="form-group">
+            <label style="font-weight:600; font-size:0.85rem; color:#334155;">RUT <span class="text-danger">*</span></label>
+            <input type="text" id="rut_nuevo" name="rut_nuevo" class="form-control" required placeholder="Ej: 12345678-9">
+            <small id="rut_feedback" class="form-text text-muted">Ingresa el RUT con guion y dígito verificador.</small>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Nombres <span class="text-danger">*</span></label>
+              <input type="text" id="nombres_nuevo" name="nombres_nuevo" class="form-control" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Apellidos <span class="text-danger">*</span></label>
+              <input type="text" id="apellidos_nuevo" name="apellidos_nuevo" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Correo Electrónico <span style="color:#94a3b8;font-weight:400;">(opcional)</span></label>
+              <input type="email" id="correo_nuevo" name="correo_nuevo" class="form-control" placeholder="usuario@correo.cl">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Cargo / Rol</label>
+              <select id="cargo_nuevo" name="cargo_nuevo" class="form-control">
+                <option value="">-- Seleccionar Cargo --</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label style="font-weight:600; font-size:0.85rem; color:#334155;">Unidad / Servicio</label>
+              <select id="unidad_nuevo" name="unidad_nuevo" class="form-control">
+                <option value="">-- Seleccionar Unidad --</option>
+                {% for u in unidades %}
+                  <option value="{{ u.nombre }}">{{ u.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid #e2e8f0;">
+          <button type="button" class="ms-btn-secondary" onclick="$('#modalCrearUsuario').modal('hide')" style="border-radius: 0; padding:6px 14px; height: 32px; border: 1px solid #8a8886;">Cancelar</button>
+          <button type="submit" class="ms-btn-primary" id="btn-submit-usuario-rapido" style="border-radius: 0; padding:6px 14px; height: 32px; background:#0078d4; color:#fff; border:none;"><i class="fas fa-save"></i> Guardar Funcionario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/usuarios.js' %}?v=2"></script>
+<script src="{% static 'js/usuarios.js' %}?v=3"></script>
 {% endblock %}

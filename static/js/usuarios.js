@@ -49,8 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
             feedback.style.color = '#107c10'; // Green
             feedback.innerHTML = '<i class="fas fa-check-circle"></i> Funcionario encontrado. Datos cargados.';
           } else {
-            feedback.style.color = '#0078d4'; // Blue
-            feedback.innerHTML = '<i class="fas fa-info-circle"></i> Funcionario nuevo. Se agregará automáticamente al guardar.';
+            feedback.innerHTML = `
+              <div style="color: #a4262c; margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> Funcionario no encontrado.</div>
+              <button type="button" class="ms-btn-primary" onclick="abrirModalFuncionario('${rut}')" style="font-size: 11px; padding: 2px 8px; height: 24px;"><i class="fas fa-plus"></i> Añadir Funcionario</button>
+            `;
           }
         })
         .catch(() => {
@@ -58,7 +60,76 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, 600);
   });
+  
+  // Submit new funcionario
+  const formFunc = document.getElementById('form-crear-usuario');
+  if (formFunc) {
+      formFunc.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const btn = document.getElementById('btn-submit-usuario-rapido');
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+          
+          const formData = new FormData(this);
+          const payload = {
+              rut: formData.get('rut_nuevo'),
+              nombres: formData.get('nombres_nuevo'),
+              apellidos: formData.get('apellidos_nuevo'),
+              correo: formData.get('correo_nuevo'),
+              cargo: formData.get('cargo_nuevo'),
+              unidad: formData.get('unidad_nuevo')
+          };
+          
+          fetch('/api/funcionarios/crear/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': getCookie('csrftoken')
+              },
+              body: JSON.stringify(payload)
+          })
+          .then(res => res.json())
+          .then(data => {
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fas fa-save"></i> Guardar Funcionario';
+              if(data.success) {
+                  $('#modalCrearUsuario').modal('hide');
+                  // Auto-fill form with new data
+                  document.getElementById('form-rut').value = payload.rut;
+                  document.getElementById('form-nombres').value = payload.nombres;
+                  document.getElementById('form-apellidos').value = payload.apellidos;
+                  document.getElementById('form-email').value = payload.correo;
+                  const unidadSelect = document.getElementById('form-unidad');
+                  if (payload.unidad) {
+                      for(let i=0; i<unidadSelect.options.length; i++) {
+                         if(unidadSelect.options[i].text === payload.unidad) {
+                             unidadSelect.selectedIndex = i;
+                             break;
+                         }
+                      }
+                  }
+                  const fb = document.getElementById('rut-feedback');
+                  fb.style.color = '#107c10';
+                  fb.innerHTML = '<i class="fas fa-check-circle"></i> Funcionario creado. Datos cargados.';
+                  showToast('Funcionario creado exitosamente.');
+              } else {
+                  alert(data.error || 'Error al crear funcionario');
+              }
+          })
+          .catch(err => {
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fas fa-save"></i> Guardar Funcionario';
+              alert('Error de conexión');
+          });
+      });
+  }
 });
+
+function abrirModalFuncionario(rut) {
+    document.getElementById('form-crear-usuario').reset();
+    document.getElementById('rut_nuevo').value = rut;
+    $('#modalCrearUsuario').modal('show');
+}
 
 // ==========================================
 // 1. Fetch & Render Identities
