@@ -4,178 +4,245 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Acceso - Hospital Provincial Marga Marga</title>
+  <title>Iniciar sesión - TicSystem HPMM</title>
   
   <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
   
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
     body, html {
       height: 100%;
       margin: 0;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f1f5f9; /* Fondo claro */
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
       overflow: hidden;
+      background: #fff;
     }
     
-    /* Background animado sutil */
-    .bg-animation {
-      position: absolute;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: radial-gradient(circle at 15% 50%, rgba(2, 132, 199, 0.05), transparent 25%),
-                  radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.03), transparent 25%);
-      z-index: 0;
-    }
-
-    .glass-container {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
+    /* Split Layout Container */
+    .split-container {
       display: flex;
-      align-items: center;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Left Side: Premium Image Background */
+    .split-left {
+      flex: 1;
+      position: relative;
+      /* Imagen premium de un hospital moderno */
+      background: url('https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?q=80&w=2000&auto=format&fit=crop') no-repeat center center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
+      align-items: flex-start;
+      padding: 80px;
+      color: white;
     }
 
-    /* Tarjeta Blanca Limpia */
-    .glass-card {
+    /* Overlay oscuro/azulado estilo corporativo */
+    .split-left::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.85) 0%, rgba(15, 23, 42, 0.92) 100%);
+      z-index: 1;
+    }
+
+    .left-content {
+      position: relative;
+      z-index: 2;
+      max-width: 650px;
+    }
+
+    .left-content h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+      line-height: 1.05;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      color: #ffffff;
+    }
+
+    .left-content p {
+      font-size: 1.25rem;
+      font-weight: 300;
+      opacity: 0.9;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+    
+    .left-content .accent-bar {
+      width: 80px;
+      height: 4px;
+      background: #38bdf8;
+      margin-bottom: 30px;
+      border-radius: 2px;
+    }
+
+    /* Right Side: Microsoft Fluent Style Login Panel */
+    .split-right {
+      width: 480px;
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 40px;
-      width: 100%;
-      max-width: 440px;
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
-      animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    @keyframes floatIn {
-      to { opacity: 1; transform: translateY(0); }
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px;
+      position: relative;
+      z-index: 2;
+      box-shadow: -20px 0 40px rgba(0,0,0,0.15);
     }
 
     .logo-container {
-      text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 45px;
     }
     
     .logo-img {
-      max-width: 180px;
-      margin-bottom: 16px;
+      max-height: 55px;
+      margin-bottom: 25px;
     }
 
     .login-title {
       color: #0f172a;
-      font-weight: 800;
-      font-size: 1.5rem;
-      margin-bottom: 4px;
+      font-weight: 700;
+      font-size: 1.75rem;
+      margin-bottom: 8px;
       letter-spacing: -0.5px;
     }
     
     .login-subtitle {
       color: #64748b;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      margin-bottom: 35px;
+    }
+
+    /* Microsoft Fluent Inputs */
+    .form-group {
+      position: relative;
+      margin-bottom: 28px;
     }
 
     .custom-input {
-      background: #f8fafc !important;
-      border: 1px solid #e2e8f0 !important;
+      background: #ffffff !important;
+      border: none !important;
+      border-bottom: 1px solid #94a3b8 !important;
       color: #1e293b !important;
-      border-radius: 12px !important;
-      padding: 12px 16px 12px 42px !important;
-      height: 48px;
-      font-size: 0.95rem;
+      border-radius: 0 !important;
+      padding: 10px 0 !important;
+      height: 45px;
+      font-size: 1.05rem;
+      font-weight: 400;
       transition: all 0.3s ease;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+      box-shadow: none !important;
     }
     
     .custom-input:focus {
-      background: #ffffff !important;
-      border-color: #38bdf8 !important;
-      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15) !important;
+      border-bottom: 2px solid #0078d4 !important;
+      padding-bottom: 9px !important; /* Compensate for thicker border */
     }
 
     .custom-input::placeholder {
-      color: #94a3b8 !important;
+      color: #64748b !important;
+      font-weight: 400;
     }
 
-    .input-icon {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #94a3b8;
-      z-index: 10;
-      transition: color 0.3s ease;
-    }
-    
-    .form-group:focus-within .input-icon {
-      color: #0284c7;
-    }
-
-    .form-group {
-      position: relative;
-      margin-bottom: 20px;
-    }
-
+    /* Premium Button - Microsoft Blue */
     .login-btn {
-      background: linear-gradient(135deg, #0284c7, #0369a1);
+      background: #0078d4;
       border: none;
       color: white;
-      border-radius: 12px;
+      border-radius: 2px;
       height: 48px;
       font-weight: 600;
       font-size: 1rem;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       position: relative;
-      overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+      width: 100%;
+      margin-top: 15px;
     }
 
     .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.3);
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      background: #006cbe;
       color: white;
+      box-shadow: 0 4px 12px rgba(0, 120, 212, 0.25);
     }
 
     .login-btn:active {
-      transform: translateY(0);
+      transform: scale(0.99);
+      background: #005a9e;
     }
 
     #login-error-alert {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      color: #b91c1c;
-      border-radius: 12px;
+      background: #fdf2f2;
+      border-left: 4px solid #d13438;
+      color: #d13438;
       padding: 12px 16px;
-      font-size: 0.85rem;
-      margin-bottom: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
+      border-radius: 2px;
     }
     
     #login-error-alert i {
-      margin-right: 10px;
-      font-size: 1.1rem;
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    .footer-text {
+      position: absolute;
+      bottom: 30px;
+      left: 60px;
+      right: 60px;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 991px) {
+      .split-left {
+        display: none; /* Hide image on mobile */
+      }
+      .split-right {
+        width: 100vw;
+        padding: 40px 30px;
+        box-shadow: none;
+      }
+      .footer-text {
+        left: 30px;
+        right: 30px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="bg-animation"></div>
+  <div class="split-container">
+    <!-- Panel Izquierdo: Imagen Premium con Overlay -->
+    <div class="split-left">
+      <div class="left-content">
+        <div class="accent-bar"></div>
+        <h1>Gestión Integral Hospitalaria</h1>
+        <p>El portal unificado para la administración tecnológica, tickets de soporte y recursos del Hospital Provincial Marga Marga. Tecnología de vanguardia al servicio de la salud pública.</p>
+      </div>
+    </div>
 
-  <div class="glass-container">
-    <div class="glass-card">
+    <!-- Panel Derecho: Login Microsoft Fluent Design -->
+    <div class="split-right">
       <div class="logo-container">
         <!-- Logo oficial del hospital -->
         <img src="{% static 'img/logoHospital.jpeg' %}" alt="Logo Hospital Provincial Marga Marga" class="logo-img">
-        <h1 class="login-title">TicSystem</h1>
-        <p class="login-subtitle">Hospital Provincial Marga Marga</p>
+        <h2 class="login-title">Iniciar sesión</h2>
+        <p class="login-subtitle">Acceso al ecosistema TicSystem</p>
       </div>
 
       <div id="login-error-alert" class="d-none">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-circle"></i>
         <span id="login-error-message">Credenciales incorrectas.</span>
       </div>
 
@@ -183,23 +250,22 @@
         {% csrf_token %}
         
         <div class="form-group">
-          <i class="fas fa-user input-icon"></i>
-          <input type="text" id="username" class="form-control custom-input" placeholder="RUT o Usuario (Ej: admin)" required autofocus>
+          <input type="text" id="username" class="form-control custom-input" placeholder="RUT o Nombre de usuario" required autofocus autocomplete="username">
         </div>
 
         <div class="form-group">
-          <i class="fas fa-lock input-icon"></i>
-          <input type="password" id="password" class="form-control custom-input" placeholder="Contraseña" required>
+          <input type="password" id="password" class="form-control custom-input" placeholder="Contraseña" required autocomplete="current-password">
         </div>
 
-        <button type="submit" id="btn-login-submit" class="btn btn-block login-btn mt-4">
-          <span id="btn-text">Ingresar al Portal</span>
+        <button type="submit" id="btn-login-submit" class="btn btn-block login-btn">
+          <span id="btn-text">Ingresar</span>
           <span id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
         </button>
       </form>
       
-      <div class="text-center mt-4">
-        <p style="color: #64748b; font-size: 0.75rem; margin:0;">Uso exclusivo para funcionarios autorizados.</p>
+      <div class="footer-text">
+        <span>© 2026 TicSystem</span>
+        <span>Uso exclusivo HPMM</span>
       </div>
     </div>
   </div>
