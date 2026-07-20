@@ -148,6 +148,29 @@ class DashboardGeneralView(LoginRequiredMixin, TemplateView):
     """
     template_name = 'core/inicio.html'
 
+    def get(self, request, *args, **kwargs):
+        """
+        Enrutamiento dinámico (Role-Based Dashboard)
+        En aplicaciones Enterprise, la pantalla de inicio depende de los permisos.
+        """
+        if hasattr(request, 'user') and request.user.is_authenticated:
+            if hasattr(request.user, 'perfil') and request.user.perfil.rol:
+                rol = request.user.perfil.rol
+                
+                # 1. Nivel Gerencial / Administrador: Ven el Dashboard Corporativo TIC
+                if rol.tiene_permiso('VER_EQUIPOS') or rol.tiene_permiso('VER_REPORTES') or rol.tiene_permiso('GESTIONAR_ROLES'):
+                    return super().get(request, *args, **kwargs)
+                
+                # 2. Nivel Operativo / Técnico: Aterrizan directo en el Kanban
+                if rol.tiene_permiso('VER_TICKETS'):
+                    return redirect('tickets:dashboard')
+                    
+                # 3. Otros módulos si solo tienen acceso parcial a datos
+                if rol.tiene_permiso('VER_MANTENEDORES'):
+                    return redirect('mantenedores:dashboard')
+                    
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         from core.services.dashboard_service import obtener_kpis_generales
