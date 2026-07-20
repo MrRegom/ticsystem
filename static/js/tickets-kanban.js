@@ -379,7 +379,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     btnPausar.style.display = (t.estado_id !== 'RESUELTO' && t.estado_id !== 'CERRADO' && t.estado_id !== 'PENDIENTE_PROVEEDOR') ? 'inline-block' : 'none';
                 }
                 if (btnTomar) {
-                    btnTomar.style.display = (t.estado_id === 'NUEVO' || t.estado_id === 'ESCALADO') ? 'inline-block' : 'none';
+                    if (t.estado_id === 'NUEVO' || t.estado_id === 'ESCALADO') {
+                        btnTomar.style.display = 'inline-block';
+                        btnTomar.innerHTML = '<i class="fas fa-hand-paper"></i> Tomar Ticket';
+                    } else if ((t.estado_id === 'ASIGNADO' || t.estado_id === 'EN_PROCESO') && t.responsable_id != CURRENT_USER_ID) {
+                        btnTomar.style.display = 'inline-block';
+                        btnTomar.innerHTML = '<i class="fas fa-user-plus"></i> Reasignarme Ticket';
+                    } else {
+                        btnTomar.style.display = 'none';
+                    }
                 }
                 
                 var sel = document.getElementById('oc-select-tecnico');

@@ -486,6 +486,7 @@
 {% block extra_js %}
 <script src="{% static 'vendor/sortablejs/Sortable.min.js' %}"></script>
 <script>
+    const CURRENT_USER_ID = {{ request.user.id|default:"null" }};
     window.TICKET_CONFIG = {
         csrfToken: '{{ csrf_token }}',
         kanbanData: {{ kanban_data|safe }},
