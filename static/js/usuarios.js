@@ -10,6 +10,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 400);
   });
 
+  // Alert on readonly field click
+  const handleReadonlyClick = (e) => {
+      if (e.target.readOnly && currentAction === 'crear') {
+          if (typeof Swal !== 'undefined') {
+              Swal.fire({
+                  icon: 'info',
+                  title: 'Acción Requerida',
+                  text: 'Por favor, haga clic en el botón azul "+ Añadir Funcionario" para rellenar estos datos.',
+                  confirmButtonColor: '#0078d4'
+              });
+          } else {
+              alert('Por favor, haga clic en el botón azul "+ Añadir Funcionario" para rellenar estos datos.');
+          }
+      }
+  };
+  document.getElementById('form-nombres').addEventListener('click', handleReadonlyClick);
+  document.getElementById('form-apellidos').addEventListener('click', handleReadonlyClick);
+  document.getElementById('form-email').addEventListener('click', handleReadonlyClick);
+
   // Auto-search Funcionario when typing RUT
   let rutTimeout;
   document.getElementById('form-rut').addEventListener('input', (e) => {
