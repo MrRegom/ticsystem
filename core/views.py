@@ -609,7 +609,12 @@ class FuncionarioSearchAPIView(LoginRequiredMixin, View):
         for f in qs:
             results.append({
                 'id': f.id,
-                'text': f"{f.nombres} {f.apellidos} ({f.rut})"
+                'text': f"{f.nombres} {f.apellidos} ({f.rut})",
+                'rut': f.rut,
+                'nombres': f.nombres,
+                'apellidos': f.apellidos,
+                'correo': f.correo,
+                'unidad': f.unidad.nombre if getattr(f, 'unidad', None) else ''
             })
             
         return JsonResponse({'results': results})

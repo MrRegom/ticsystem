@@ -14,7 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let rutTimeout;
   document.getElementById('form-rut').addEventListener('input', (e) => {
     if (currentAction !== 'crear') return; // Only auto-fill on create
-    const rut = e.target.value.trim();
+    let rut = e.target.value.replace(/[^0-9Kk]/g, '');
+    if (rut.length > 1) {
+        rut = rut.slice(0, -1) + '-' + rut.slice(-1);
+    }
+    e.target.value = rut.toUpperCase();
+    
     let feedback = document.getElementById('rut-feedback');
     if (!feedback) {
         // Create it dynamically if HTML is cached
@@ -39,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
           const results = data.results || [];
           // Buscar coincidencia exacta por RUT
-          const func = results.find(f => f.id.replace(/[^0-9Kk]/g, '').toUpperCase() === rut.replace(/[^0-9Kk]/g, '').toUpperCase());
+          const func = results.find(f => f.rut && f.rut.replace(/[^0-9Kk]/g, '').toUpperCase() === rut.replace(/[^0-9Kk]/g, '').toUpperCase());
           
           if (func) {
             document.getElementById('form-nombres').value = func.nombres || '';
