@@ -243,6 +243,7 @@ class RolesDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView
                 'descripcion': r.descripcion,
                 'icono': r.icono,
                 'activo': r.activo,
+                'is_system': getattr(r, 'is_system', False),
                 'permisos_count': len(r.permisos.keys()) if r.permisos else 0,
                 'usuarios_count': r.usuarios.count()
             })
@@ -355,6 +356,13 @@ class RolesAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                 return JsonResponse({'success': False, 'message': 'ID de rol requerido'}, status=400)
 
             rol = Rol.objects.get(id=rol_id)
+
+            # Verificar si es un rol de sistema
+            if getattr(rol, 'is_system', False):
+                return JsonResponse({
+                    'success': False,
+                    'message': f'No se puede eliminar el rol "{rol.nombre}" porque es un rol protegido del sistema.'
+                }, status=400)
 
             # 3FN: Verificar integridad referencial antes de eliminar
             usuarios_con_rol = rol.usuarios.count()

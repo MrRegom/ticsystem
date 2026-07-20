@@ -121,9 +121,13 @@ function renderList(roles) {
                     <button class="ms-icon-btn" onclick="event.stopPropagation(); openDrawer('editar', ${rol.id})" title="Editar Rol" style="color:#0078d4;">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="ms-icon-btn" onclick="event.stopPropagation(); eliminarRol(${rol.id}, '${rol.nombre.replace(/'/g, "\\'")}'  , ${rol.usuarios_count})" title="Eliminar Rol" style="color:#a4262c;">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
+                    ${rol.is_system ? 
+                        `<span style="color:#a4262c; margin-left: 8px;" title="Rol Protegido del Sistema"><i class="fas fa-shield-alt"></i></span>` 
+                        : 
+                        `<button class="ms-icon-btn" onclick="event.stopPropagation(); eliminarRol(${rol.id}, '${rol.nombre.replace(/'/g, "\\'")}', ${rol.usuarios_count})" title="Eliminar Rol" style="color:#a4262c;">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>`
+                    }
                 </div>
             </div>
         `;

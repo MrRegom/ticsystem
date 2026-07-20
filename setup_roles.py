@@ -33,6 +33,7 @@ admin_permisos = {
 rol_admin, created = Rol.objects.get_or_create(nombre='Super Administrador')
 rol_admin.permisos = admin_permisos
 rol_admin.descripcion = 'Acceso total a todos los módulos y configuración'
+rol_admin.is_system = True
 rol_admin.save()
 print(f"Rol '{rol_admin.nombre}' configurado.")
 
@@ -45,6 +46,7 @@ mesa_ayuda_permisos = {
 rol_mesa, created = Rol.objects.get_or_create(nombre='Mesa de Ayuda')
 rol_mesa.permisos = mesa_ayuda_permisos
 rol_mesa.descripcion = 'Atención de Nivel 1, creación y derivación de tickets'
+rol_mesa.is_system = True
 rol_mesa.save()
 print(f"Rol '{rol_mesa.nombre}' configurado.")
 

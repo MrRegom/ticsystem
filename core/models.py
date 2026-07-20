@@ -201,6 +201,11 @@ class Rol(models.Model):
         verbose_name="Orden"
 
     )
+    
+    is_system = models.BooleanField(
+        default=False,
+        verbose_name="Rol de Sistema (No borrable)"
+    )
 
     creado_por = models.CharField(
 
