@@ -7,66 +7,85 @@
 {% block extra_css %}
 <!-- Fluent Design / PowerBI Aesthetic -->
 <style>
-  /* 💎 Microsoft Fluent Design Strict */
-  body { background-color: #faf9f8; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
-  .dash-wrap { padding: 24px 32px 60px 32px; }
+  /* 💎 Azure Premium Styles (Alto Impacto) */
+  body { background-color: #f0f2f5; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
+  .dash-wrap { padding: 0 0 60px 0; }
   
-  .ms-header {
-    display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;
-    border-bottom: 1px solid #edebe9; padding-bottom: 16px;
+  .hero-banner {
+    background: linear-gradient(135deg, #001529 0%, #003e6e 50%, #005A9E 100%);
+    color: white;
+    padding: 35px 40px 90px 40px; /* Mucho padding abajo para el efecto overlap */
+    position: relative;
+    box-shadow: inset 0 -10px 20px -10px rgba(0,0,0,0.2);
   }
-  .ms-title {
-    font-family: 'Segoe UI', system-ui, sans-serif; font-size: 28px; font-weight: 600; color: #201f1e; margin: 0; line-height: 1; letter-spacing: -0.5px;
+  .hero-title {
+    font-family: 'Segoe UI', system-ui, sans-serif; font-size: 32px; font-weight: 700; margin: 0; letter-spacing: -0.5px;
   }
-  .ms-subtitle { color: #605e5c; font-size: 13px; margin: 8px 0 0 0; }
+  .hero-subtitle { color: #8cb6d4; font-size: 15px; margin: 6px 0 0 0; font-weight: 400; }
   
   .ms-btn-sync {
-    background: #ffffff; border: 1px solid #8a8886; color: #323130; padding: 6px 16px; font-size: 13px; font-weight: 600;
-    border-radius: 4px; transition: all 0.2s; outline: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff; 
+    padding: 8px 20px; font-size: 13px; font-weight: 600; backdrop-filter: blur(5px);
+    border-radius: 6px; transition: all 0.2s; outline: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
-  .ms-btn-sync:hover { background: #f3f2f1; cursor: pointer; }
+  .ms-btn-sync:hover { background: rgba(255,255,255,0.2); cursor: pointer; transform: translateY(-1px); }
+
+  .content-overlay {
+    padding: 0 40px;
+    position: relative;
+    top: -55px; /* Overlap effect */
+    z-index: 2;
+  }
 
   /* 💎 Cards */
   .ms-card {
-    background: #ffffff; border-radius: 4px; border: 1px solid #edebe9;
-    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
-    padding: 20px; margin-bottom: 24px; height: 100%; transition: box-shadow 0.2s ease;
+    background: #ffffff; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+    padding: 24px; margin-bottom: 24px; height: 100%; transition: box-shadow 0.3s ease;
   }
   .ms-card:hover {
-    box-shadow: 0 3.2px 7.2px 0 rgba(0,0,0,0.132), 0 0.6px 1.8px 0 rgba(0,0,0,0.108);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
   }
   .ms-card-header {
-    font-size: 14px; font-weight: 600; color: #323130; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
+    font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;
   }
   
-  /* 💎 Scorecard KPI (PowerBI Style) */
-  .ms-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+  /* 💎 Premium KPIs */
+  .ms-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px; }
   .ms-kpi {
-    background: #ffffff; border-radius: 4px; padding: 20px 24px;
-    border: 1px solid #edebe9; border-left: 4px solid #0078d4;
-    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
-    display: flex; flex-direction: column; justify-content: center; transition: box-shadow 0.2s ease;
+    background: #ffffff; border-radius: 8px; padding: 24px; position: relative; overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.04); border-bottom: 4px solid #0078d4;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Sombra intensa para que flote sobre el fondo azul */
+    display: flex; flex-direction: column; justify-content: center; transition: all 0.3s ease;
   }
-  .ms-kpi:hover { box-shadow: 0 3.2px 7.2px 0 rgba(0,0,0,0.132), 0 0.6px 1.8px 0 rgba(0,0,0,0.108); }
+  .ms-kpi:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.12); }
   
-  .ms-kpi.teal { border-left-color: #008272; }
-  .ms-kpi.orange { border-left-color: #d83b01; }
-  .ms-kpi.purple { border-left-color: #5c2d91; }
+  .ms-kpi.teal { border-bottom-color: #008272; }
+  .ms-kpi.orange { border-bottom-color: #d83b01; }
+  .ms-kpi.purple { border-bottom-color: #5c2d91; }
 
-  .ms-kpi-label { font-size: 12px; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 8px; }
-  .ms-kpi-val { font-size: 34px; font-weight: 300; color: #201f1e; line-height: 1; font-family: 'Segoe UI Light', 'Segoe UI', sans-serif;}
+  .kpi-icon { position: absolute; right: 20px; bottom: 0px; font-size: 60px; opacity: 0.1; transition: all 0.4s ease; }
+  .ms-kpi:hover .kpi-icon { transform: scale(1.15) rotate(-5deg); opacity: 0.2; }
+  .ms-kpi.blue .kpi-icon { color: #0078d4; }
+  .ms-kpi.teal .kpi-icon { color: #008272; }
+  .ms-kpi.orange .kpi-icon { color: #d83b01; }
+  .ms-kpi.purple .kpi-icon { color: #5c2d91; }
+
+  .ms-kpi-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 4px; z-index: 1; }
+  .ms-kpi-val { font-size: 36px; font-weight: 800; color: #0f172a; line-height: 1; z-index: 1; }
 
   /* 💎 Tables */
   .ms-table { width: 100%; border-collapse: collapse; }
-  .ms-table th { font-size: 12px; font-weight: 600; color: #605e5c; padding: 8px 12px; border-bottom: 2px solid #edebe9; text-align: left; }
-  .ms-table td { font-size: 13px; color: #323130; padding: 10px 12px; border-bottom: 1px solid #edebe9; }
-  .ms-table tbody tr:hover { background-color: #f3f2f1; }
+  .ms-table th { font-size: 11px; font-weight: 700; color: #64748b; padding: 12px; border-bottom: 2px solid #f1f5f9; text-align: left; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ms-table td { font-size: 13px; color: #334155; padding: 12px; border-bottom: 1px solid #f8fafc; font-weight: 500; }
+  .ms-table tbody tr:hover { background-color: #f1f5f9; cursor: pointer; }
   
   /* 💎 Badges */
-  .ms-badge { padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 600; }
-  .ms-badge-blue { background: #e1dfdd; color: #323130; }
-  .ms-badge-red { background: #fde7e9; color: #a4262c; }
-  .ms-badge-green { background: #dff6dd; color: #107c10; }
+  .ms-badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+  .ms-badge-blue { background: #e0f2fe; color: #0369a1; }
+  .ms-badge-red { background: #fee2e2; color: #b91c1c; }
+  .ms-badge-green { background: #dcfce7; color: #15803d; }
 
   .chart-container { min-height: 250px; position: relative; }
 </style>
@@ -75,36 +94,41 @@
 {% block content %}
 <div class="dash-wrap">
   
-  <!-- Encabezado Estricto Microsoft -->
-  <div class="ms-header">
+  <!-- Hero Banner Azure Premium -->
+  <div class="hero-banner d-flex justify-content-between align-items-center">
     <div>
-      <h2 class="ms-title">Resumen Corporativo TIC</h2>
-      <p class="ms-subtitle">Análisis operativo consolidado del Hospital Provincial Marga Marga</p>
+      <h2 class="hero-title">Resumen Corporativo TIC</h2>
+      <p class="hero-subtitle">Centro de Comando Operativo &mdash; Hospital Provincial Marga Marga</p>
     </div>
     <button class="ms-btn-sync" onclick="location.reload();">
-      <i class="fas fa-sync-alt mr-2" style="color: #0078d4;"></i> Actualizar datos
+      <i class="fas fa-sync-alt mr-2" style="color: #60a5fa;"></i> Actualizar Tablero
     </button>
   </div>
 
-  <!-- KPIs Top -->
-  <div class="ms-kpi-grid">
-    <div class="ms-kpi">
-      <div class="ms-kpi-label">Total Activos TIC</div>
-      <div class="ms-kpi-val">{{ kpis.equipos_total|default:"0" }}</div>
+  <div class="content-overlay">
+    <!-- KPIs Top -->
+    <div class="ms-kpi-grid">
+      <div class="ms-kpi blue">
+        <i class="fas fa-server kpi-icon"></i>
+        <div class="ms-kpi-label">Total Activos TIC</div>
+        <div class="ms-kpi-val">{{ kpis.equipos_total|default:"0" }}</div>
+      </div>
+      <div class="ms-kpi teal">
+        <i class="fas fa-project-diagram kpi-icon"></i>
+        <div class="ms-kpi-label">Anexos Operativos</div>
+        <div class="ms-kpi-val">{{ kpis.anexos_activos|default:"0" }}</div>
+      </div>
+      <div class="ms-kpi orange">
+        <i class="fas fa-clipboard-check kpi-icon"></i>
+        <div class="ms-kpi-label">Actas de Entrega</div>
+        <div class="ms-kpi-val">{{ kpis.actas_total|default:"0" }}</div>
+      </div>
+      <div class="ms-kpi purple">
+        <i class="fas fa-shield-alt kpi-icon"></i>
+        <div class="ms-kpi-label">Salud del Inventario</div>
+        <div class="ms-kpi-val">{{ kpis.indice_salud|default:"0" }}%</div>
+      </div>
     </div>
-    <div class="ms-kpi teal">
-      <div class="ms-kpi-label">Anexos Operativos</div>
-      <div class="ms-kpi-val">{{ kpis.anexos_activos|default:"0" }}</div>
-    </div>
-    <div class="ms-kpi orange">
-      <div class="ms-kpi-label">Actas de Entrega</div>
-      <div class="ms-kpi-val">{{ kpis.actas_total|default:"0" }}</div>
-    </div>
-    <div class="ms-kpi purple">
-      <div class="ms-kpi-label">Salud del Inventario</div>
-      <div class="ms-kpi-val">{{ kpis.indice_salud|default:"0" }}%</div>
-    </div>
-  </div>
 
   <!-- Middle Row: Charts -->
   <div class="row" style="margin-bottom: 20px;">
