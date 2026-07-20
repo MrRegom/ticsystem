@@ -130,18 +130,47 @@ class TicketsDashboardView(LoginRequiredMixin, TemplateView):
             base_query = base_query.filter(fecha_creacion__gte=hoy - timedelta(days=30))
         # Si es 'todos', no filtramos por fecha
         
-        # Filtro de Permisos (RBAC)
+        # Filtros de Permisos y Grupos para el Kanban
+        grupo_filtro = self.request.GET.get('grupo', 'mis_grupos')
+        context['grupo_filtro'] = grupo_filtro
+        
+        is_dispatcher = False
         if hasattr(self.request.user, 'perfil') and self.request.user.perfil.rol:
-            rol_nombre = self.request.user.perfil.rol.nombre
-            if rol_nombre == 'Técnico Terreno':
-                # Solo ver los asignados a él, o a los grupos resolutores donde es miembro
+            if self.request.user.perfil.rol.tiene_permiso('DESPACHAR_TICKETS'):
+                is_dispatcher = True
+        if self.request.user.is_superuser:
+            is_dispatcher = True
+            
+        if not is_dispatcher and grupo_filtro == 'todos':
+            grupo_filtro = 'mis_grupos'
+            context['grupo_filtro'] = 'mis_grupos'
+            
+        if grupo_filtro == 'mis_grupos':
+            base_query = base_query.filter(
+                Q(responsable=self.request.user) |
+                Q(grupo_resolutor__miembros=self.request.user) |
+                Q(creador=self.request.user)
+            ).distinct()
+        elif grupo_filtro.isdigit():
+            if not is_dispatcher and not self.request.user.grupos_resolutores.filter(id=int(grupo_filtro)).exists():
+                grupo_filtro = 'mis_grupos'
+                context['grupo_filtro'] = 'mis_grupos'
                 base_query = base_query.filter(
                     Q(responsable=self.request.user) |
-                    Q(grupo_resolutor__miembros=self.request.user)
+                    Q(grupo_resolutor__miembros=self.request.user) |
+                    Q(creador=self.request.user)
                 ).distinct()
-            elif rol_nombre in ['Super Administrador', 'Operador de Mesa de Ayuda']:
-                # Ver todos los tickets (no filter applied)
-                pass
+            else:
+                base_query = base_query.filter(grupo_resolutor_id=int(grupo_filtro))
+        elif grupo_filtro == 'todos':
+            pass
+            
+        # Pasar los grupos disponibles al frontend
+        if is_dispatcher:
+            context['grupos_filtro_opciones'] = GrupoResolutor.objects.filter(activo=True)
+        else:
+            context['grupos_filtro_opciones'] = self.request.user.grupos_resolutores.filter(activo=True)
+        context['is_dispatcher'] = is_dispatcher
                 
         tickets_db = base_query.select_related('solicitante', 'responsable', 'activo', 'prioridad')
 

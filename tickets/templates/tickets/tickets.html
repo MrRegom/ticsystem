@@ -25,7 +25,17 @@
           <i class="fas fa-history"></i> Historial
         </button>
       </div>
-      <select id="kanban-filtro-fecha" class="ms-input" style="width: auto; height: 36px; padding: 6px 12px; border: 1px solid #cbd5e1; font-weight: 600; color: #475569; border-radius: 0; outline: none; font-family: 'Segoe UI', system-ui, sans-serif; box-sizing: border-box; display: inline-flex; align-items: center; margin: 0;" onchange="window.location.href='?rango=' + this.value;">
+      <select id="kanban-filtro-grupo" class="ms-input" style="width: auto; height: 36px; padding: 6px 12px; border: 1px solid #cbd5e1; font-weight: 600; color: #475569; border-radius: 0; outline: none; font-family: 'Segoe UI', system-ui, sans-serif; box-sizing: border-box; display: inline-flex; align-items: center; margin: 0;" onchange="window.location.href='?rango={{ rango_filtro }}&grupo=' + this.value;">
+        <option value="mis_grupos" {% if grupo_filtro == 'mis_grupos' %}selected{% endif %}>Mis Grupos</option>
+        {% if is_dispatcher %}
+        <option value="todos" {% if grupo_filtro == 'todos' %}selected{% endif %}>Todos los Grupos</option>
+        {% endif %}
+        {% for grupo in grupos_filtro_opciones %}
+        <option value="{{ grupo.id }}" {% if grupo_filtro == grupo.id|stringformat:"s" %}selected{% endif %}>{{ grupo.nombre }}</option>
+        {% endfor %}
+      </select>
+      
+      <select id="kanban-filtro-fecha" class="ms-input" style="width: auto; height: 36px; padding: 6px 12px; border: 1px solid #cbd5e1; font-weight: 600; color: #475569; border-radius: 0; outline: none; font-family: 'Segoe UI', system-ui, sans-serif; box-sizing: border-box; display: inline-flex; align-items: center; margin: 0;" onchange="var g = document.getElementById('kanban-filtro-grupo'); window.location.href='?grupo=' + (g ? g.value : 'mis_grupos') + '&rango=' + this.value;">
         <option value="hoy" {% if rango_filtro == 'hoy' %}selected{% endif %}>Hoy</option>
         <option value="semana" {% if rango_filtro == 'semana' %}selected{% endif %}>Últimos 7 Días</option>
         <option value="mes" {% if rango_filtro == 'mes' %}selected{% endif %}>Últimos 30 Días</option>
