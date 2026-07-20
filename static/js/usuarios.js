@@ -59,9 +59,26 @@ document.addEventListener('DOMContentLoaded', () => {
                  }
                }
             }
+            document.getElementById('form-nombres').readOnly = false;
+            document.getElementById('form-apellidos').readOnly = false;
+            document.getElementById('form-email').readOnly = false;
+            document.getElementById('form-unidad').style.pointerEvents = 'auto';
+            document.getElementById('form-unidad').style.opacity = '1';
+            
             feedback.style.color = '#107c10'; // Green
             feedback.innerHTML = '<i class="fas fa-check-circle"></i> Funcionario encontrado. Datos cargados.';
           } else {
+            // Lock fields
+            document.getElementById('form-nombres').readOnly = true;
+            document.getElementById('form-apellidos').readOnly = true;
+            document.getElementById('form-email').readOnly = true;
+            document.getElementById('form-unidad').style.pointerEvents = 'none';
+            document.getElementById('form-unidad').style.opacity = '0.6';
+            document.getElementById('form-nombres').value = '';
+            document.getElementById('form-apellidos').value = '';
+            document.getElementById('form-email').value = '';
+            document.getElementById('form-unidad').selectedIndex = 0;
+            
             feedback.innerHTML = `
               <div style="color: #a4262c; margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> Funcionario no encontrado.</div>
               <button type="button" class="ms-btn-primary" onclick="abrirModalFuncionario('${rut}')" style="font-size: 11px; padding: 2px 8px; height: 24px;"><i class="fas fa-plus"></i> Añadir Funcionario</button>
@@ -121,6 +138,14 @@ document.addEventListener('DOMContentLoaded', () => {
                          }
                       }
                   }
+                  
+                  // Unlock fields
+                  document.getElementById('form-nombres').readOnly = false;
+                  document.getElementById('form-apellidos').readOnly = false;
+                  document.getElementById('form-email').readOnly = false;
+                  document.getElementById('form-unidad').style.pointerEvents = 'auto';
+                  document.getElementById('form-unidad').style.opacity = '1';
+                  
                   const fb = document.getElementById('rut-feedback');
                   fb.style.color = '#107c10';
                   fb.innerHTML = '<i class="fas fa-check-circle"></i> Funcionario creado. Datos cargados.';
@@ -270,10 +295,26 @@ function openDrawer(action, userJsonStr = null) {
     document.getElementById('form-password').required = true;
     const feedback = document.getElementById('rut-feedback');
     if (feedback) feedback.innerText = '';
+    
+    // Lock fields by default on create
+    document.getElementById('form-nombres').readOnly = true;
+    document.getElementById('form-apellidos').readOnly = true;
+    document.getElementById('form-email').readOnly = true;
+    document.getElementById('form-unidad').style.pointerEvents = 'none';
+    document.getElementById('form-unidad').style.opacity = '0.6';
   } else {
     title.innerText = 'Modificar Identidad';
     document.getElementById('lbl-password').innerText = 'Nueva Contraseña (Opcional)';
     document.getElementById('form-password').required = false;
+    const feedback = document.getElementById('rut-feedback');
+    if (feedback) feedback.innerText = '';
+    
+    // Unlock fields on edit
+    document.getElementById('form-nombres').readOnly = false;
+    document.getElementById('form-apellidos').readOnly = false;
+    document.getElementById('form-email').readOnly = false;
+    document.getElementById('form-unidad').style.pointerEvents = 'auto';
+    document.getElementById('form-unidad').style.opacity = '1';
     
     if (userJsonStr) {
       const u = JSON.parse(decodeURIComponent(userJsonStr));
