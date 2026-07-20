@@ -64,7 +64,26 @@
           </h3>
           <div style="display: flex; align-items: center; gap: 12px;">
             <span class="kanban-col-count" id="count-{{ estado.id }}">0</span>
-            <i class="fas fa-ellipsis-h" style="color: #64748b; cursor: pointer;"></i>
+            <div class="dropdown" style="display: inline-block;">
+              <i class="fas fa-ellipsis-h" style="color: #64748b; cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+              <div class="dropdown-menu dropdown-menu-right" style="border-radius: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px;">
+                <h6 class="dropdown-header" style="text-transform: uppercase; font-size: 11px; font-weight: 600; color: #64748b;">Filtros de Tablero</h6>
+                <a class="dropdown-item" href="#" onclick="document.getElementById('kanban-filtro-grupo').focus(); return false;">
+                  <i class="fas fa-filter" style="width: 16px; text-align: center; margin-right: 6px; color: #3b82f6;"></i> Filtrar por Grupo
+                </a>
+                <a class="dropdown-item" href="#" onclick="document.getElementById('kanban-filtro-fecha').focus(); return false;">
+                  <i class="fas fa-calendar-alt" style="width: 16px; text-align: center; margin-right: 6px; color: #10b981;"></i> Filtrar por Fecha
+                </a>
+                <div class="dropdown-divider"></div>
+                <h6 class="dropdown-header" style="text-transform: uppercase; font-size: 11px; font-weight: 600; color: #64748b;">Acciones Rápidas</h6>
+                <a class="dropdown-item" href="#" onclick="window.location.reload(); return false;">
+                  <i class="fas fa-sync" style="width: 16px; text-align: center; margin-right: 6px; color: #64748b;"></i> Actualizar Vista
+                </a>
+                <a class="dropdown-item" href="#" onclick="$('#modalNuevoTicket').modal('show'); return false;">
+                  <i class="fas fa-plus" style="width: 16px; text-align: center; margin-right: 6px; color: #64748b;"></i> Crear Ticket
+                </a>
+              </div>
+            </div>
           </div>
         </div>
         <div class="kanban-items" id="column-{{ estado.id }}"></div>
