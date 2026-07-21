@@ -272,6 +272,7 @@ class ActaDeleteView(PermisoRequeridoMixin, LoginRequiredMixin, View):
     permiso_requerido = 'ELIMINAR_ACTAS'
     
     def post(self, request, acta_id):
+        from actas.models import ActaEntrega
         try:
             acta = ActaEntrega.objects.get(id=acta_id)
             
