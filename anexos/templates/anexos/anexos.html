@@ -9,8 +9,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="ms-wrap">
-  <!-- Encabezado de Página -->
+<div class="container-fluid pb-4 animate__animated animate__fadeIn ms-wrap" style="padding: 0 10px;">
+  
+  <!-- Header -->
   <div class="ms-header">
     <div class="ms-header-title">
       <h1 class="ms-title">Gestión de Anexos Telefónicos</h1>
@@ -26,37 +27,7 @@
     </div>
   </div>
 
-  <!-- Barra de Herramientas Superior -->
-  <div class="toolbar-container border-top" style="background: white; padding: 12px 16px; border: 1px solid #e2e8f0; border-bottom: none; display: flex; justify-content: space-between; align-items: center;">
-    <div class="search-wrapper" style="position: relative; width: 300px;">
-      <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-      <input type="text" id="custom-search-input" class="ms-input" placeholder="Buscar anexo, serie, modelo, IP..." style="width: 100%; padding-left: 36px;">
-    </div>
-  </div>
-
-  <!-- DataGrid -->
-  <div class="fluent-card border-top-0 rounded-0 rounded-bottom">
-    <div class="table-responsive">
-      <table id="tabla-anexos" class="fluent-table" style="width:100%;">
-        <thead>
-          <tr>
-            <th data-col="id" style="width:30px; text-align:center;">#</th>
-            <th data-col="numero_anexo">ANEXO</th>
-            <th data-col="modelo">MODELO</th>
-            <th data-col="serial_number">SERIAL</th>
-            <th data-col="ubicacion">UBICACIÓN</th>
-            <th data-col="ip">IP ADDRESS</th>
-            <th data-col="estado">ESTADO</th>
-            <th data-col="acciones" style="width:120px; text-align:right;">ACCIONES</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Ajax Data -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div><!-- Modal Detalle del Anexo (Vista Split, igual al de Equipos) -->
+<!-- Modal Detalle del Anexo (Vista Split, igual al de Equipos) -->
 <div class="modal fade" id="modalVerAnexo" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 860px;">
     <div class="modal-content rounded-0 border-0">
