@@ -117,12 +117,12 @@ function renderList(roles) {
                 <div>
                     ${estadoHtml}
                 </div>
-                <div style="text-align:right; display:flex; justify-content:flex-end; gap:8px; align-items:center;">
+                <div style="display:flex; justify-content:center; gap:8px; align-items:center;">
                     <button class="ms-icon-btn" onclick="event.stopPropagation(); openDrawer('editar', ${rol.id})" title="Editar Rol" style="color:#0078d4;">
                         <i class="fas fa-edit"></i>
                     </button>
                     ${rol.is_system ? 
-                        `<span style="color:#a4262c; margin-left: 8px;" title="Rol Protegido del Sistema"><i class="fas fa-shield-alt"></i></span>` 
+                        `<span style="color:#a4262c; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;" title="Rol Protegido del Sistema"><i class="fas fa-shield-alt"></i></span>` 
                         : 
                         `<button class="ms-icon-btn" onclick="event.stopPropagation(); eliminarRol(${rol.id}, '${rol.nombre.replace(/'/g, "\\'")}', ${rol.usuarios_count})" title="Eliminar Rol" style="color:#a4262c;">
                             <i class="fas fa-trash-alt"></i>

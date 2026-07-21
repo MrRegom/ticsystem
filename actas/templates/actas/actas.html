@@ -1,18 +1,20 @@
 {% extends "core/base.html" %}
+{% load static %}
 {% block title %}Actas Digitales{% endblock %}
 {% block module_title %}Módulo de Actas Digitales{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-3">
-        <div class="col-12">
-            <h1 class="h4 mb-0 text-gray-800" style="font-weight: 700;">Módulo de Actas Digitales</h1>
-            <p class="text-muted mb-0" style="font-size: 0.9rem;">Generación, firma y seguimiento de activos institucionales.</p>
-        </div>
+<div class="ms-wrap">
+  <!-- Encabezado de Página -->
+  <div class="ms-header">
+    <div class="ms-header-title">
+      <h1 class="ms-title">Gestión de Actas Digitales</h1>
+      <p class="ms-subtitle">Generación, firma y seguimiento de activos institucionales</p>
     </div>
+  </div>
 
     <!-- Pestañas -->
-    <ul class="nav nav-tabs border-bottom" id="actasTab" role="tablist" style="border-color: #e2e8f0;">
+    <ul class="nav nav-tabs border-bottom ms-fluent-tabs" id="actasTab" role="tablist" style="border-color: #e2e8f0;">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="nuevo-tab" data-toggle="tab" href="#nuevo" role="tab" style="font-weight: 600; color: #002a54;">
                 <i class="far fa-file-alt mr-2"></i>Nueva Acta
@@ -25,7 +27,7 @@
         </li>
     </ul>
 
-    <div class="tab-content bg-white p-4 border border-top-0 shadow-sm rounded-bottom" id="actasTabContent">
+    <div class="tab-content fluent-card p-4 border-top-0" id="actasTabContent">
         
         <!-- PESTAÑA: NUEVA ACTA -->
         <div class="tab-pane fade show active" id="nuevo" role="tabpanel">
@@ -36,8 +38,8 @@
                     
                     <!-- Datos del Receptor -->
                     <h6 style="color: #002a54; font-weight: 700; margin-bottom: 16px;"><i class="far fa-id-card mr-2"></i> Datos del Receptor</h6>
-                    <div class="card mb-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: none;">
-                        <div class="card-body">
+                    <div class="fluent-card mb-4">
+                        <div class="fluent-card-header">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label" style="font-size: 0.8rem; font-weight: 600;">Nombre Completo *</label>
@@ -77,14 +79,14 @@
                     <!-- Equipos / Insumos -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 style="color: #002a54; font-weight: 700; margin: 0;"><i class="fas fa-desktop mr-2"></i> Equipos / Insumos</h6>
-                        <button type="button" class="btn btn-primary btn-sm rounded-pill px-3" id="btn-buscar-equipos" style="background: #006FB3; border: none;">
+                        <button type="button" class="btn fluent-btn-primary btn-sm rounded-pill px-3" id="btn-buscar-equipos" style="background: #006FB3; border: none;">
                             <i class="fas fa-search mr-1"></i> Buscar Equipos
                         </button>
                     </div>
-                    <div class="card mb-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: none;">
+                    <div class="fluent-card mb-4">
                         <div class="card-body p-0">
-                            <table class="table table-hover mb-0" id="tabla-items-seleccionados" style="font-size: 0.85rem;">
-                                <thead style="background: #002a54; color: white;">
+                            <table class="fluent-table" id="tabla-items-seleccionados" style="font-size: 0.85rem;">
+                                <thead style="background: #0f172a; color: white;">
                                     <tr>
                                         <th class="border-0">#</th>
                                         <th class="border-0">Nombre del Bien</th>
@@ -104,7 +106,7 @@
 
                     <!-- Observaciones -->
                     <h6 style="color: #002a54; font-weight: 700; margin-bottom: 16px;"><i class="far fa-comment-alt mr-2"></i> Observaciones</h6>
-                    <div class="card mb-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: none;">
+                    <div class="fluent-card mb-4">
                         <div class="card-body p-0">
                             <textarea class="form-control border-0" id="acta-observaciones" rows="3" placeholder="Indique aquí observaciones adicionales sobre el estado de entrega o condiciones especiales..." style="resize: none; padding: 16px; border-radius: 8px;"></textarea>
                         </div>
@@ -112,8 +114,8 @@
 
                     <!-- Texto Principal -->
                     <h6 style="color: #002a54; font-weight: 700; margin-bottom: 16px;"><i class="far fa-file-word mr-2"></i> Texto Principal del Acta</h6>
-                    <div class="card mb-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: none; background: #f8fafc;">
-                        <div class="card-body" style="font-size: 0.85rem; color: #334155; line-height: 1.6;">
+                    <div class="fluent-card mb-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: none; background: #f8fafc;">
+                        <div class="fluent-card-header" style="font-size: 0.85rem; color: #334155; line-height: 1.6;">
                             <p>Mediante la presente, se hace entrega a la Unidad/Servicio <strong id="txt-unidad">[UNIDAD]</strong>, cuyo receptor es <strong id="txt-receptor">[RECEPTOR]</strong>, del equipamiento detallado en este documento, para su uso en funciones institucionales.</p>
                             <p>El receptor <strong id="txt-receptor2">[RECEPTOR]</strong> declara recibir conforme el o los equipos y asume responsabilidad por su cuidado, mantención y uso adecuado.</p>
                             <p class="mb-0">Ante cualquier anomalía, pérdida, robo o extravío, se deberá informar oportunamente a la Unidad TIC para gestionar las acciones correspondientes.</p>
@@ -125,7 +127,7 @@
                 <div class="col-lg-4">
                     
                     <!-- Firma Receptor -->
-                    <div class="card mb-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div class="fluent-card mb-4" class="fluent-card">
                         <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
                             <h6 style="font-weight: 700; color: #002a54; margin: 0;"><i class="fas fa-signature mr-2"></i> Firma Receptor</h6>
                             <button class="btn btn-outline-secondary btn-sm" id="clear-signature-receptor" style="font-size: 0.7rem;">Limpiar</button>
@@ -141,7 +143,7 @@
                     </div>
 
                     <!-- Firma Encargado TIC -->
-                    <div class="card mb-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div class="fluent-card mb-4" class="fluent-card">
                         <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
                             <h6 style="font-weight: 700; color: #002a54; margin: 0;"><i class="fas fa-user-shield mr-2"></i> Firma TIC</h6>
                             <select class="form-control form-control-sm w-50" id="encargado-tic">
@@ -164,7 +166,7 @@
                     <!-- Botones de Acción -->
                     <div class="card mt-4" style="border: none; background: #f8fafc; border-radius: 8px;">
                         <div class="card-body text-center">
-                            <button type="button" class="btn btn-primary btn-block py-3 mb-2" id="btn-generar-acta" style="background: #006FB3; border: none; font-weight: 700; font-size: 1.1rem; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,111,179,0.3);">
+                            <button type="button" class="btn fluent-btn-primary btn-block py-3 mb-2" id="btn-generar-acta" style="background: #006FB3; border: none; font-weight: 700; font-size: 1.1rem; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,111,179,0.3);">
                                 <i class="fas fa-file-pdf mr-2"></i> GENERAR Y GUARDAR ACTA
                             </button>
                             <small class="text-muted">Al generar, el documento PDF se creará oficialmente.</small>
@@ -178,8 +180,8 @@
         <!-- PESTAÑA: HISTORIAL -->
         <div class="tab-pane fade" id="historial" role="tabpanel">
             <div class="table-responsive">
-                <table class="table table-hover w-100" id="tabla-historial-actas">
-                    <thead style="background: #002a54; color: white;">
+                <table class="fluent-table" id="tabla-historial-actas">
+                    <thead style="background: #0f172a; color: white;">
                         <tr>
                             <th>Nº Acta</th>
                             <th>Fecha</th>
@@ -200,9 +202,9 @@
 <!-- Modal Buscar Equipamiento -->
 <div class="modal fade" id="modalInventario" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content" style="border-radius: 0; border: none;">
-            <div class="modal-header" style="background: #006FB3; color: white;">
-                <h5 class="modal-title"><i class="fas fa-search mr-2"></i> Inventario de Equipamiento</h5>
+        <div class="modal-content rounded-0 border-0">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title text-uppercase"><i class="fas fa-search mr-2"></i> Inventario de Equipamiento</h5>
                 <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body p-0">
@@ -216,8 +218,8 @@
                 </ul>
                 <div class="tab-content p-4">
                     <div class="tab-pane fade show active" id="tab-equipos" role="tabpanel">
-                        <table class="table table-sm table-hover w-100" id="dt-buscar-equipos">
-                            <thead style="background: #002a54; color: white;">
+                        <table class="fluent-table" id="dt-buscar-equipos">
+                            <thead style="background: #0f172a; color: white;">
                                 <tr>
                                     <th>Añadir</th>
                                     <th>Artículo</th>
@@ -231,8 +233,8 @@
                         </table>
                     </div>
                     <div class="tab-pane fade" id="tab-anexos" role="tabpanel">
-                        <table class="table table-sm table-hover w-100" id="dt-buscar-anexos">
-                            <thead style="background: #002a54; color: white;">
+                        <table class="fluent-table" id="dt-buscar-anexos">
+                            <thead style="background: #0f172a; color: white;">
                                 <tr>
                                     <th>Añadir</th>
                                     <th>Nº Anexo</th>
