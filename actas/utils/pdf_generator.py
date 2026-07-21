@@ -58,11 +58,12 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
     
     header_data = [
         [
-            Image(logo_hmm_path, width=70, height=70) if os.path.exists(logo_hmm_path) else Paragraph("<font color='#94a3b8'>[Logo HMM]</font>", styles['Center']),
-            Paragraph(title_html, styles['Center'])
+            Image(logo_hmm_path, width=120, height=50, kind='proportional') if os.path.exists(logo_hmm_path) else Paragraph("<font color='#94a3b8'>[Logo HMM]</font>", styles['Center']),
+            Paragraph(title_html, styles['Center']),
+            ""
         ]
     ]
-    t_header = Table(header_data, colWidths=[100, 420])
+    t_header = Table(header_data, colWidths=[130, 260, 130])
     t_header.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -71,12 +72,17 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
     
     # Línea separadora moderna
     elements.append(Spacer(1, 10))
-    elements.append(HRFlowable(width="100%", thickness=1, color=COLOR_SECONDARY, spaceBefore=0, spaceAfter=15))
+    elements.append(HRFlowable(width="100%", thickness=1, color=COLOR_SECONDARY, spaceBefore=0, spaceAfter=10))
     
     # Fecha
-    fecha_str = acta.fecha.strftime("%d de %B de %Y - %H:%M") if acta.fecha else ""
+    if acta.fecha:
+        meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+        mes = meses[acta.fecha.month - 1]
+        fecha_str = acta.fecha.strftime(f"%d de {mes} de %Y - %H:%M")
+    else:
+        fecha_str = ""
     elements.append(Paragraph(f"Emitido en Viña del Mar, {fecha_str}", styles['Right']))
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 10))
     
     # 2. IDENTIFICACIÓN DEL RECEPTOR
     elements.append(Paragraph("I. IDENTIFICACIÓN DEL RECEPTOR", styles['ModernH1']))
@@ -100,7 +106,7 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
         ('BOX', (0,0), (-1,-1), 0.5, COLOR_BORDER),
     ]))
     elements.append(t_receptor)
-    elements.append(Spacer(1, 25))
+    elements.append(Spacer(1, 15))
     
     # 3. DETALLE DEL EQUIPAMIENTO
     elements.append(Paragraph("II. DETALLE DEL EQUIPAMIENTO ENTREGADO", styles['ModernH1']))
@@ -134,13 +140,13 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
         ('BACKGROUND', (0,0), (-1,0), COLOR_SECONDARY),
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('TOPPADDING', (0,0), (-1,-1), 10),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+        ('TOPPADDING', (0,0), (-1,-1), 8),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_LIGHT_BG]),
         ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
     ]))
     elements.append(t_equip)
-    elements.append(Spacer(1, 25))
+    elements.append(Spacer(1, 15))
     
     # 4. TEXTO LEGAL
     elements.append(Paragraph("III. TÉRMINOS DE ENTREGA", styles['ModernH1']))
@@ -173,9 +179,9 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
             ('PADDING', (0,0), (-1,-1), 12),
         ]))
         elements.append(t_obs)
-        elements.append(Spacer(1, 30))
+        elements.append(Spacer(1, 15))
     else:
-        elements.append(Spacer(1, 40))
+        elements.append(Spacer(1, 20))
         
     # 6. FIRMAS
     firma_rec_path = firmas_paths.get('receptor') if firmas_paths else (acta.firma_receptor.path if acta.firma_receptor else None)
