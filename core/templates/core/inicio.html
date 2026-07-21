@@ -1,509 +1,398 @@
 {% extends "core/base.html" %}
 
 {% block extra_css %}
-<!-- Advanced Role-Based Dashboard Styles -->
 <style>
-  body { background-color: #f4f7f6; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
-  .dash-wrap { padding: 30px 40px 60px 40px; }
+  /* Dense PowerBI Style Dashboard */
+  body { background-color: #f0f2f5; font-family: 'Segoe UI', -apple-system, sans-serif; }
+  .dash-wrap { padding: 20px; }
   
-  /* Cabecera Limpia */
-  .dash-header {
-    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;
+  /* Top KPIs (5 columns) */
+  .dense-kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+  .dense-kpi-card {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: center;
   }
-  .dash-title {
-    font-size: 28px; font-weight: 700; color: #1e293b; margin: 0; letter-spacing: -0.5px;
-  }
-  .dash-subtitle { color: #64748b; font-size: 14px; margin: 6px 0 0 0; font-weight: 500; }
-  
-  .header-actions { display: flex; align-items: center; gap: 16px; }
-  .last-sync { font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 6px; }
-  
-  .btn-sync {
-    background: #0062ff; color: #ffffff; padding: 10px 20px; font-size: 14px; font-weight: 600;
-    border-radius: 8px; border: none; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0, 98, 255, 0.2);
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .btn-sync:hover { background: #0050d4; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0, 98, 255, 0.3); color: #fff;}
+  .dk-title { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .dk-val { font-size: 26px; font-weight: 700; color: #0f172a; line-height: 1.1; margin-bottom: 4px; }
+  .dk-sub { font-size: 11px; color: #64748b; }
 
-  /* Tarjetas (Cards) Blancas Puras */
-  .adv-card {
-    background: #ffffff; border-radius: 12px; border: 1px solid rgba(0,0,0,0.03);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03); padding: 24px; margin-bottom: 24px;
-    height: 100%; position: relative;
-  }
-  .adv-card-header {
-    font-size: 13px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-  }
+  /* Main Layout (60/40) */
+  .dense-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
   
-  /* KPIs Principales */
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px; }
-  .kpi-card {
-    background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid rgba(0,0,0,0.03);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03); display: flex; align-items: flex-start; gap: 16px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  .panel {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); margin-bottom: 20px;
   }
-  .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
-  
-  .kpi-icon-circle {
-    width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+  .panel-header {
+    padding: 12px 16px; border-bottom: 1px solid #f1f5f9;
   }
-  .bg-blue-soft { background: #eff6ff; color: #3b82f6; }
-  .bg-green-soft { background: #f0fdf4; color: #22c55e; }
-  .bg-orange-soft { background: #fff7ed; color: #f97316; }
-  .bg-purple-soft { background: #faf5ff; color: #a855f7; }
-  .bg-red-soft { background: #fef2f2; color: #ef4444; }
+  .panel-title { font-size: 14px; font-weight: 600; color: #1e293b; margin: 0; }
+  .panel-subtitle { font-size: 11px; color: #64748b; margin-top: 2px; }
+  .panel-body { padding: 16px; }
 
-  .kpi-content { flex-grow: 1; }
-  .kpi-label { font-size: 13px; color: #64748b; font-weight: 600; margin-bottom: 4px; }
-  .kpi-val { font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 8px; }
-  
-  .kpi-trend { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
-  .trend-up { color: #22c55e; }
-  .trend-down { color: #ef4444; }
-  .trend-neutral { color: #94a3b8; }
-  
-  .sparkline { height: 30px; width: 60px; position: absolute; right: 20px; bottom: 20px; }
+  /* Grid 2x2 for issues */
+  .issue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .issue-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fafc; border-radius: 4px; border: 1px solid #f1f5f9; }
+  .issue-label { font-size: 12px; font-weight: 600; color: #334155; }
+  .issue-desc { font-size: 11px; color: #64748b; }
+  .issue-val { font-size: 16px; font-weight: 700; color: #2563eb; }
 
-  /* Tablas Avanzadas */
-  .adv-table { width: 100%; border-collapse: collapse; }
-  .adv-table th { 
-    font-size: 11px; font-weight: 700; color: #94a3b8; padding: 12px; 
-    border-bottom: 1px solid #f1f5f9; text-align: left; text-transform: uppercase; letter-spacing: 0.5px; 
-  }
-  .adv-table td { font-size: 13px; color: #334155; padding: 14px 12px; border-bottom: 1px solid #f8fafc; font-weight: 500; }
-  .adv-table tbody tr:hover { background-color: #f8fafc; }
+  /* Progress Bars */
+  .pg-group { margin-bottom: 16px; }
+  .pg-group:last-child { margin-bottom: 0; }
+  .pg-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px; }
+  .pg-label { font-size: 12px; color: #334155; font-weight: 500; }
+  .pg-val { font-size: 12px; font-weight: 700; color: #0f172a; }
+  .pg-track { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .pg-fill { height: 100%; background: #2563eb; border-radius: 4px; }
   
-  .status-pill {
-    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block;
-  }
-  .pill-green { background: #dcfce7; color: #15803d; }
-  .pill-yellow { background: #fef9c3; color: #a16207; }
-  .pill-red { background: #fee2e2; color: #b91c1c; }
-  .pill-blue { background: #dbeafe; color: #1d4ed8; }
+  .pg-fill.cyan { background: #06b6d4; }
+  .pg-fill.green { background: #10b981; }
+  .pg-fill.orange { background: #f59e0b; }
+  .pg-fill.red { background: #ef4444; }
 
-  .link-primary { color: #3b82f6; font-size: 13px; font-weight: 600; text-decoration: none; margin-top: 16px; display: inline-block;}
-  .link-primary:hover { text-decoration: underline; }
+  /* Health Bar */
+  .health-bar-track { height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden; margin: 16px 0 8px 0; }
+  .health-bar-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); }
 
-  /* Grid Inferior (3 columnas) */
-  .bottom-grid { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 24px; }
+  /* Dense Table */
+  .dense-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .dense-table thead { background: #0f4a8a; color: #fff; }
+  .dense-table th { padding: 8px 12px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;}
+  .dense-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+  .dense-table tbody tr:hover { background: #f8fafc; }
   
-  /* Chart container */
-  .chart-container { min-height: 250px; position: relative; }
-
-  /* Mini Alertas Widget */
-  .alert-widget {
-    background: #f8fafc; border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
-  }
-  .alert-widget:last-child { margin-bottom: 0; }
-  .alert-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-  .alert-title { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
-  .alert-desc { font-size: 12px; color: #64748b; }
+  .btn-sm-primary { background: #0f4a8a; color: #fff; border: none; padding: 4px 12px; font-size: 11px; border-radius: 4px; cursor: pointer; text-decoration: none;}
+  .btn-sm-primary:hover { background: #0c3e75; color: #fff; text-decoration: none;}
+  
+  .panel-header-action { display: flex; justify-content: space-between; align-items: center; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="dash-wrap">
-  
-  <div class="dash-header">
-    <div>
-      {% if tipo_dashboard == 'corporativo' %}
-      <h2 class="dash-title">Resumen Corporativo TIC</h2>
-      <p class="dash-subtitle">Centro de Comando Operativo &mdash; Hospital Provincial Marga Marga</p>
-      {% else %}
-      <h2 class="dash-title">Tablero Operativo de Soporte</h2>
-      <p class="dash-subtitle">Métricas de Grupo Resolutor &mdash; Tickets y SLAs asignados</p>
-      {% endif %}
-    </div>
-    <div class="header-actions">
-      <div class="last-sync">
-        <i class="far fa-clock"></i> Última actualización: Hoy, {% now "H:i" %}
-      </div>
-      <button class="btn-sync" onclick="location.reload();">
-        <i class="fas fa-sync-alt"></i> Actualizar tablero
-      </button>
-    </div>
-  </div>
 
   {% if tipo_dashboard == 'corporativo' %}
-  <!-- ==================== DASHBOARD CORPORATIVO ==================== -->
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-icon-circle bg-blue-soft"><i class="fas fa-server"></i></div>
-      <div class="kpi-content">
-        <div class="kpi-label">Total Activos TIC</div>
-        <div class="kpi-val">{{ kpis.equipos_total|default:"0" }}</div>
-        <div class="kpi-trend {% if kpis.trend_equipos.dir == 'up' %}trend-up{% else %}trend-down{% endif %}">
-          <i class="fas fa-arrow-{% if kpis.trend_equipos.dir == 'up' %}up{% else %}down{% endif %}"></i> {{ kpis.trend_equipos.val }}% vs mes anterior
-        </div>
-      </div>
-      <!-- Simulación de sparkline (SVG estático de tendencia) -->
-      <svg class="sparkline" viewBox="0 0 60 30" preserveAspectRatio="none">
-        <path d="M0,25 Q10,20 15,22 T30,15 T45,10 T60,5" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+  <!-- ==================== DASHBOARD CORPORATIVO DENSO ==================== -->
+  
+  <!-- 1. Fila de KPIs (5 Columnas) -->
+  <div class="dense-kpi-grid">
+    <div class="dense-kpi-card">
+      <div class="dk-title">Inventario Total</div>
+      <div class="dk-val">{{ kpis.equipos_total|default:"0" }}</div>
+      <div class="dk-sub">Equipos bajo control</div>
     </div>
-
-    <div class="kpi-card">
-      <div class="kpi-icon-circle bg-green-soft"><i class="fas fa-project-diagram"></i></div>
-      <div class="kpi-content">
-        <div class="kpi-label">Anexos Operativos</div>
-        <div class="kpi-val">{{ kpis.anexos_activos|default:"0" }}</div>
-        <div class="kpi-trend trend-neutral">
-          <i class="fas fa-minus"></i> Sin cambios significativos
-        </div>
-      </div>
-      <svg class="sparkline" viewBox="0 0 60 30" preserveAspectRatio="none">
-        <path d="M0,15 L10,15 L20,13 L30,15 L40,16 L50,15 L60,14" fill="none" stroke="#22c55e" stroke-width="2"/>
-      </svg>
+    <div class="dense-kpi-card">
+      <div class="dk-title">Anexos Activos</div>
+      <div class="dk-val">{{ kpis.anexos_activos|default:"0" }}</div>
+      <div class="dk-sub">Telefonía Institucional</div>
     </div>
-
-    <div class="kpi-card">
-      <div class="kpi-icon-circle bg-orange-soft"><i class="fas fa-clipboard-check"></i></div>
-      <div class="kpi-content">
-        <div class="kpi-label">Actas de Entrega</div>
-        <div class="kpi-val">{{ kpis.actas_total|default:"0" }}</div>
-        <div class="kpi-trend trend-up">
-          <i class="fas fa-arrow-up"></i> {{ kpis.trend_actas.val }}% vs mes anterior
-        </div>
-      </div>
-      <svg class="sparkline" viewBox="0 0 60 30" preserveAspectRatio="none">
-        <path d="M0,28 L15,20 L30,22 L45,10 L60,12" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+    <div class="dense-kpi-card">
+      <div class="dk-title">Actas Emitidas</div>
+      <div class="dk-val">{{ kpis.actas_emitidas|default:"0" }}</div>
+      <div class="dk-sub">Entregas oficiales</div>
     </div>
-
-    <div class="kpi-card">
-      <div class="kpi-icon-circle bg-purple-soft"><i class="fas fa-shield-alt"></i></div>
-      <div class="kpi-content">
-        <div class="kpi-label">Salud del Inventario</div>
-        <div class="kpi-val">{{ kpis.indice_salud|default:"0" }}%</div>
-        <div class="kpi-trend trend-down">
-          <i class="fas fa-arrow-down"></i> {{ kpis.trend_salud.val }}% vs mes anterior
-        </div>
-      </div>
-      <svg class="sparkline" viewBox="0 0 60 30" preserveAspectRatio="none">
-        <path d="M0,10 L15,15 L30,12 L45,20 L60,25" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+    <div class="dense-kpi-card">
+      <div class="dk-title">Meta Operativa</div>
+      <div class="dk-val">{{ kpis.cumplimiento_pct|default:"0" }}%</div>
+      <div class="dk-sub">{{ kpis.mant_cerradas|default:"0" }} mantenciones cerradas</div>
+    </div>
+    <div class="dense-kpi-card" style="border-left: 3px solid #ef4444;">
+      <div class="dk-title">Mantenciones Vencidas</div>
+      <div class="dk-val text-danger">{{ kpis.mant_abiertas_vencidas|default:"0" }}</div>
+      <div class="dk-sub">Abiertas sobre SLA (72h)</div>
     </div>
   </div>
 
-  <div class="row" style="margin-bottom: 24px;">
-    <div class="col-md-4">
-      <div class="adv-card">
-        <div class="adv-card-header">SLA Mantenimiento (72 Hrs) <i class="fas fa-ellipsis-h" style="cursor:pointer;"></i></div>
-        <div class="chart-container">
-          <canvas id="slaChart"></canvas>
+  <!-- 2. Layout Principal -->
+  <div class="dense-layout">
+    
+    <!-- Columna Izquierda (Ancha) -->
+    <div>
+      
+      <!-- Vigilancia -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Vigilancia de calidad de inventario</h3>
+          <p class="panel-subtitle">Riesgos que impactan auditoría, red y trazabilidad.</p>
         </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="adv-card">
-        <div class="adv-card-header">Top 5 Unidades (Eventos 90 Días) <i class="fas fa-ellipsis-h" style="cursor:pointer;"></i></div>
-        <div class="chart-container">
-          <canvas id="barChart"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="adv-card">
-        <div class="adv-card-header">Distribución Operativa del Parque <i class="fas fa-ellipsis-h" style="cursor:pointer;"></i></div>
-        <div class="chart-container">
-          <canvas id="pieChart"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
+        <div class="panel-body">
+          <div class="issue-grid">
+            <div class="issue-item">
+              <div>
+                <div class="issue-label">Sin usuario responsable</div>
+                <div class="issue-desc">Asignación incompleta</div>
+              </div>
+              <div class="issue-val">{{ kpis.equipos_sin_usuario|default:"0" }}</div>
+            </div>
+            <div class="issue-item">
+              <div>
+                <div class="issue-label">IPs en Falla / Duplicadas</div>
+                <div class="issue-desc">Colisión o alerta de red</div>
+              </div>
+              <div class="issue-val">{{ kpis.ips_falla|default:"0" }}</div>
+            </div>
+            <div class="issue-item">
+              <div>
+                <div class="issue-label">Sin PMA / Ubicación</div>
+                <div class="issue-desc">Activo sin localización</div>
+              </div>
+              <div class="issue-val">{{ kpis.equipos_sin_pma|default:"0" }}</div>
+            </div>
+            <div class="issue-item">
+              <div>
+                <div class="issue-label">Equipos sin IP</div>
+                <div class="issue-desc">Falta registro de red</div>
+              </div>
+              <div class="issue-val">{{ kpis.equipos_sin_ip|default:"0" }}</div>
+            </div>
+          </div>
 
-  <!-- Bottom Grid (3 Columnas) -->
-  <div class="bottom-grid">
-    <!-- Auditoría de Calidad -->
-    <div class="adv-card">
-      <div class="adv-card-header">Auditoría de Calidad de Datos</div>
-      <table class="adv-table">
-        <thead>
-          <tr>
-            <th>Métrica de Riesgo</th>
-            <th>Impacto</th>
-            <th>Casos</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Equipos sin usuario asignado</td>
-            <td><span class="status-pill pill-red">Alto Riesgo</span></td>
-            <td>{{ kpis.equipos_sin_usuario|default:"0" }}</td>
-          </tr>
-          <tr>
-            <td>Equipos sin ubicación (PMA)</td>
-            <td><span class="status-pill pill-yellow">Medio</span></td>
-            <td>{{ kpis.equipos_sin_pma|default:"0" }}</td>
-          </tr>
-          <tr>
-            <td>IPs en Falla</td>
-            <td><span class="status-pill pill-red">Alto Riesgo</span></td>
-            <td>{{ kpis.ips_falla|default:"0" }}</td>
-          </tr>
-          <tr>
-            <td>Mantenciones vencidas</td>
-            <td><span class="status-pill pill-red">Alto Riesgo</span></td>
-            <td>{{ kpis.mant_abiertas_vencidas|default:"0" }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <a href="#" class="link-primary">Ver detalle completo <i class="fas fa-chevron-right ml-1" style="font-size:10px;"></i></a>
-    </div>
-
-    <!-- Trazabilidad Reciente -->
-    <div class="adv-card">
-      <div class="adv-card-header">Registro de Trazabilidad Reciente</div>
-      <table class="adv-table">
-        <thead>
-          <tr>
-            <th>Equipo / Serie</th>
-            <th>Operador</th>
-            <th>Ubicación</th>
-            <th>Fecha Registro</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for r in kpis.actividad_reciente %}
-          <tr>
-            <td>
-              <div style="font-weight: 700; color: #0f172a;">{{ r.articulo__nombre }}</div>
-              <div style="font-size: 11px; color: #64748b; font-family: monospace;">{{ r.serial_number|default:"Sin Serie" }}</div>
-            </td>
-            <td>{{ r.modificado_por__first_name|default:"-" }} {{ r.modificado_por__last_name|default:"" }}</td>
-            <td>{{ r.pma__nombre|default:"Sin asignar" }}</td>
-            <td>{{ r.fecha_modificacion|date:"d/m/Y H:i" }}</td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="4" class="text-center text-muted">Sin actividad reciente</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <a href="#" class="link-primary">Ver todos los registros <i class="fas fa-chevron-right ml-1" style="font-size:10px;"></i></a>
-    </div>
-
-    <!-- Actividad del Sistema -->
-    <div class="adv-card">
-      <div class="adv-card-header">Actividad del Sistema (Alertas)</div>
-      <div class="alert-widget">
-        <div class="alert-icon bg-blue-soft"><i class="fas fa-ticket-alt"></i></div>
-        <div>
-          <div class="alert-title">Soporte Activo</div>
-          <div class="alert-desc">{{ kpis.mant_abiertas|default:"0" }} Mantenciones en curso.</div>
+          <div style="margin-top: 20px;">
+            <div class="pg-label">Índice de salud operativa</div>
+            <div class="health-bar-track">
+              <div class="health-bar-fill" style="width: {{ kpis.indice_salud|default:'0' }}%;"></div>
+            </div>
+            <div class="dk-sub">{{ kpis.indice_salud|default:"0" }}/100</div>
+          </div>
         </div>
       </div>
-      <div class="alert-widget">
-        <div class="alert-icon bg-green-soft"><i class="fas fa-check-circle"></i></div>
-        <div>
-          <div class="alert-title">SLA Cumplimiento</div>
-          <div class="alert-desc">{{ kpis.cumplimiento_pct|default:"0" }}% resuelto a tiempo (72hrs).</div>
-        </div>
-      </div>
-      <div class="alert-widget" style="border: 1px solid #fca5a5;">
-        <div class="alert-icon bg-red-soft"><i class="fas fa-exclamation-triangle"></i></div>
-        <div>
-          <div class="alert-title">Alertas Críticas</div>
-          <div class="alert-desc text-danger font-weight-bold">{{ kpis.mant_abiertas_vencidas|default:"0" }} Mantenciones Vencidas.</div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  {% else %}
-  <!-- ==================== DASHBOARD RESOLUTOR ==================== -->
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-icon-circle bg-blue-soft"><i class="fas fa-ticket-alt"></i></div>
-      <div class="kpi-content">
-        <div class="kpi-label">Mis Tickets Asignados</div>
-        <div class="kpi-val">{{ kpis.mis_tickets|default:"0" }}</div>
-        <div class="kpi-trend trend-{% if kpis.trend_mis_tickets.dir == 'up' %}up{% else %}down{% endif %}">
-          <i class="fas fa-arrow-{% if kpis.trend_mis_tickets.dir == 'up' %}up{% else %}down{% endif %}"></i> {{ kpis.trend_mis_tickets.val }} nuevos hoy
+      <!-- Tabla Actividad Reciente -->
+      <div class="panel">
+        <div class="panel-header panel-header-action">
+          <div>
+            <h3 class="panel-title">Actividad reciente del inventario</h3>
+            <p class="panel-subtitle">Últimos equipos ingresados o tocados por la mesa TIC.</p>
+          </div>
+          <a href="#" class="btn-sm-primary">Ver inventario</a>
         </div>
-      </div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="kpi-icon-circle bg-orange-soft"><i class="fas fa-users"></i></div>
-      <div class="kpi-content">
-        <div class="kpi-label">Tickets Grupo Sin Asignar</div>
-        <div class="kpi-val">{{ kpis.tickets_grupo_sin_asignar|default:"0" }}</div>
-        <div class="kpi-trend trend-neutral">
-          <i class="fas fa-clock"></i> Pendientes de toma
-        </div>
-      </div>
-    </div>
-
-    <div class="kpi-card" style="{% if kpis.tickets_vencidos > 0 %}border: 1px solid #fca5a5;{% endif %}">
-      <div class="kpi-icon-circle bg-red-soft"><i class="fas fa-exclamation-circle"></i></div>
-      <div class="kpi-content">
-        <div class="kpi-label">Tickets Vencidos (SLA)</div>
-        <div class="kpi-val text-danger">{{ kpis.tickets_vencidos|default:"0" }}</div>
-        <div class="kpi-trend {% if kpis.tickets_vencidos == 0 %}trend-up{% else %}trend-down{% endif %}">
-          {% if kpis.tickets_vencidos == 0 %}
-          <i class="fas fa-check"></i> Todo al día
-          {% else %}
-          <i class="fas fa-exclamation-triangle"></i> Atención Inmediata
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="kpi-icon-circle bg-green-soft"><i class="fas fa-chart-line"></i></div>
-      <div class="kpi-content">
-        <div class="kpi-label">SLA Cumplimiento Grupo</div>
-        <div class="kpi-val">{{ kpis.sla_cumplimiento|default:"0" }}%</div>
-        <div class="kpi-trend trend-up">
-          <i class="fas fa-calendar"></i> Últimos 30 días
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-8">
-      <div class="adv-card">
-        <div class="adv-card-header">Actividad Reciente del Grupo <i class="fas fa-ellipsis-h" style="cursor:pointer;"></i></div>
-        <table class="adv-table">
+        <table class="dense-table">
           <thead>
             <tr>
-              <th>Correlativo</th>
+              <th>Equipo / Serial</th>
+              <th>Ubicación</th>
+              <th>Operador</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in kpis.actividad_reciente|slice:":6" %}
+            <tr>
+              <td>
+                <div style="font-weight: 600; color:#0f172a;">{{ r.articulo__nombre }}</div>
+                <div style="font-size: 10px; color:#64748b; font-family: monospace;">{{ r.serial_number|default:"Sin Serie" }}</div>
+              </td>
+              <td>
+                <div style="font-weight: 500;">{{ r.pma__recinto__unidad__nombre|default:"Sin Unidad" }}</div>
+                <div style="font-size: 10px; color:#64748b;">{{ r.pma__nombre|default:"-" }}</div>
+              </td>
+              <td>{{ r.modificado_por__first_name|default:"-" }} {{ r.modificado_por__last_name|default:"" }}</td>
+              <td>{{ r.fecha_modificacion|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center text-muted" style="padding: 20px;">Sin actividad reciente</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Columna Derecha (Estrecha) -->
+    <div>
+      
+      <!-- Meta Operativa -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Meta operativa de mantención</h3>
+          <p class="panel-subtitle">Referencia de 72 horas, no contractual.</p>
+        </div>
+        <div class="panel-body">
+          <div class="pg-group">
+            <div class="pg-header">
+              <span class="pg-label">Cumplimiento</span>
+              <span class="pg-val">{{ kpis.cumplimiento_pct|default:"0" }}%</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill cyan" style="width: {{ kpis.cumplimiento_pct|default:'0' }}%;"></div></div>
+          </div>
+          
+          <div class="pg-group">
+            <div class="pg-header">
+              <span class="pg-label">Tickets Abiertos</span>
+              <span class="pg-val">{{ kpis.mant_abiertas|default:"0" }}</span>
+            </div>
+            <div class="pg-track">
+              <!-- Visual trick: relative fill based on total tickets roughly -->
+              <div class="pg-fill cyan" style="width: 40%;"></div>
+            </div>
+          </div>
+
+          <div class="pg-group">
+            <div class="pg-header">
+              <span class="pg-label" style="color: #ef4444;">Abiertos Vencidos</span>
+              <span class="pg-val text-danger">{{ kpis.mant_abiertas_vencidas|default:"0" }}</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill red" style="width: 20%;"></div></div>
+          </div>
+          
+          <div class="dk-sub" style="margin-top: 16px;">Total mantenciones: {{ kpis.mant_total|default:"0" }} | Cerradas: {{ kpis.mant_cerradas|default:"0" }}</div>
+        </div>
+      </div>
+
+      <!-- Distribucion Estado -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Distribución por estado</h3>
+          <p class="panel-subtitle">Cómo está el parque tecnológico hoy.</p>
+        </div>
+        <div class="panel-body">
+          <div class="pg-group">
+            <div class="pg-header">
+              <span class="pg-label">Funcional</span>
+              <span class="pg-val">{{ kpis.equipos_funcional|default:"0" }}</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill cyan" style="width: 80%;"></div></div>
+          </div>
+          <div class="pg-group">
+            <div class="pg-header">
+              <span class="pg-label">Desuso / Bodega</span>
+              <span class="pg-val">{{ kpis.equipos_desuso|default:"0" }}</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill" style="width: 15%; background: #cbd5e1;"></div></div>
+          </div>
+          <div class="pg-group">
+            <div class="pg-header">
+              <span class="pg-label">En Mantenimiento</span>
+              <span class="pg-val">{{ kpis.equipos_mantenimiento|default:"0" }}</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill orange" style="width: 5%;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mapa de Calor -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Mapa de calor por unidades</h3>
+          <p class="panel-subtitle">Equipos registrados en inventario por servicio.</p>
+        </div>
+        <div class="panel-body">
+          {% for m in kpis.mapa_calor|slice:":5" %}
+          <div class="pg-group">
+            <div class="pg-header">
+              <span class="pg-label text-truncate" style="max-width: 200px;">{{ m.equipo__pma__recinto__unidad__nombre|default:"Desconocido" }}</span>
+              <span class="pg-val">{{ m.total }}</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill cyan" style="width: {{ m.total|add:20 }}%;"></div></div>
+          </div>
+          {% empty %}
+          <div class="text-muted text-center" style="font-size: 12px;">Sin datos suficientes</div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  {% else %}
+  <!-- ==================== DASHBOARD RESOLUTOR DENSO ==================== -->
+  
+  <!-- 1. Fila de KPIs Resolutor (4 Columnas) -->
+  <div class="dense-kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="dense-kpi-card" style="border-left: 3px solid #3b82f6;">
+      <div class="dk-title">Mis Tickets Asignados</div>
+      <div class="dk-val">{{ kpis.mis_tickets|default:"0" }}</div>
+      <div class="dk-sub">En cola de trabajo personal</div>
+    </div>
+    <div class="dense-kpi-card" style="border-left: 3px solid #f59e0b;">
+      <div class="dk-title">Tickets Grupo (Sin Asignar)</div>
+      <div class="dk-val">{{ kpis.tickets_grupo_sin_asignar|default:"0" }}</div>
+      <div class="dk-sub">Pendientes de toma en la bandeja</div>
+    </div>
+    <div class="dense-kpi-card" style="border-left: 3px solid #ef4444;">
+      <div class="dk-title">Tickets Vencidos (SLA)</div>
+      <div class="dk-val text-danger">{{ kpis.tickets_vencidos|default:"0" }}</div>
+      <div class="dk-sub">Prioridad alta o urgente</div>
+    </div>
+    <div class="dense-kpi-card" style="border-left: 3px solid #10b981;">
+      <div class="dk-title">SLA Cumplimiento Grupo</div>
+      <div class="dk-val">{{ kpis.sla_cumplimiento|default:"0" }}%</div>
+      <div class="dk-sub">Métrica últimos 30 días</div>
+    </div>
+  </div>
+
+  <div class="dense-layout">
+    
+    <!-- Columna Izquierda Resolutor -->
+    <div>
+      <div class="panel">
+        <div class="panel-header panel-header-action">
+          <div>
+            <h3 class="panel-title">Actividad Reciente del Grupo</h3>
+            <p class="panel-subtitle">Últimos tickets creados o modificados en tus grupos.</p>
+          </div>
+          <a href="{% url 'tickets:dashboard' %}" class="btn-sm-primary">Ver Kanban</a>
+        </div>
+        <table class="dense-table">
+          <thead>
+            <tr>
+              <th>Ticket</th>
               <th>Descripción</th>
               <th>Estado</th>
-              <th>Ubicación</th>
+              <th>Prioridad</th>
               <th>Fecha</th>
             </tr>
           </thead>
           <tbody>
             {% for r in kpis.actividad_reciente %}
             <tr>
-              <td><span style="font-weight:700; color:#0f172a;">{{ r.correlativo }}</span></td>
-              <td>{{ r.descripcion|truncatechars:40 }}</td>
               <td>
-                <span class="status-pill" style="background: {{ r.prioridad__color_hex }}20; color: {{ r.prioridad__color_hex }};">
-                  {{ r.estado }}
-                </span>
+                <div style="font-weight: 700; color: #0f172a;">{{ r.correlativo }}</div>
+                <div style="font-size: 10px; color: #64748b;">{{ r.activo__pmalugar|default:"-" }}</div>
               </td>
-              <td>{{ r.activo__pmalugar|default:"-" }}</td>
-              <td>{{ r.fecha_creacion|date:"d/m/Y H:i" }}</td>
+              <td>{{ r.descripcion|truncatechars:45 }}</td>
+              <td><span style="font-size: 10px; font-weight: 700; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">{{ r.estado }}</span></td>
+              <td><span style="color: {{ r.prioridad__color_hex }}; font-weight: 600; font-size: 11px;">{{ r.prioridad__nombre }}</span></td>
+              <td>{{ r.fecha_creacion|date:"d/m H:i" }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="5" class="text-center text-muted">Sin actividad reciente de tickets.</td></tr>
+            <tr><td colspan="5" class="text-center" style="padding:20px;">No hay actividad de tickets recientes.</td></tr>
             {% endfor %}
           </tbody>
         </table>
-        <a href="{% url 'tickets:dashboard' %}" class="link-primary">Ir a Mesa de Ayuda (Kanban) <i class="fas fa-chevron-right ml-1" style="font-size:10px;"></i></a>
       </div>
     </div>
-    
-    <div class="col-md-4">
-      <div class="adv-card">
-        <div class="adv-card-header">Accesos Rápidos <i class="fas fa-ellipsis-h" style="cursor:pointer;"></i></div>
-        <div class="alert-widget" onclick="window.location.href='{% url 'tickets:dashboard' %}'" style="cursor:pointer;">
-          <div class="alert-icon bg-blue-soft"><i class="fas fa-columns"></i></div>
-          <div>
-            <div class="alert-title">Ver Tablero Kanban</div>
-            <div class="alert-desc">Gestión visual de incidentes</div>
-          </div>
+
+    <!-- Columna Derecha Resolutor -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Métricas de Soporte</h3>
+          <p class="panel-subtitle">Desempeño general de tu mesa de ayuda.</p>
         </div>
-        <div class="alert-widget" onclick="window.location.href='{% url 'tickets:dashboard' %}'" style="cursor:pointer;">
-          <div class="alert-icon bg-orange-soft"><i class="fas fa-history"></i></div>
-          <div>
-            <div class="alert-title">Historial de Resolución</div>
-            <div class="alert-desc">Tickets cerrados y resueltos</div>
+        <div class="panel-body">
+          <div class="pg-group">
+            <div class="pg-header">
+              <span class="pg-label">SLA Global del Equipo</span>
+              <span class="pg-val">{{ kpis.sla_cumplimiento|default:"0" }}%</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill green" style="width: {{ kpis.sla_cumplimiento|default:'0' }}%;"></div></div>
+          </div>
+          
+          <div class="pg-group" style="margin-top: 20px;">
+            <div class="pg-header">
+              <span class="pg-label">Tickets Vencidos vs Totales</span>
+              <span class="pg-val text-danger">{{ kpis.tickets_vencidos|default:"0" }}</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill red" style="width: 15%;"></div></div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
   {% endif %}
 
 </div>
-{% endblock %}
-
-{% block extra_js %}
-{% if tipo_dashboard == 'corporativo' %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Chart 1: SLA Cumplimiento (Doughnut)
-    var ctxSla = document.getElementById('slaChart').getContext('2d');
-    var cumplimiento = {{ kpis.cumplimiento_pct|default:"100" }};
-    new Chart(ctxSla, {
-        type: 'doughnut',
-        data: {
-            labels: ['Cumplimiento', 'Fuera de SLA'],
-            datasets: [{
-                data: [cumplimiento, 100 - cumplimiento],
-                backgroundColor: ['#22c55e', '#f1f5f9'],
-                borderWidth: 0,
-                cutout: '75%'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } }
-        }
-    });
-
-    // Chart 2: Top Unidades (Bar)
-    var ctxBar = document.getElementById('barChart').getContext('2d');
-    var rawUnidades = {{ kpis.mapa_calor|safe|default:"[]" }};
-    var lblUnidades = rawUnidades.map(u => u.equipo__pma__recinto__unidad__nombre || 'Desconocido');
-    var dataUnidades = rawUnidades.map(u => u.total);
-    
-    new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-            labels: lblUnidades,
-            datasets: [{
-                label: 'Eventos',
-                data: dataUnidades,
-                backgroundColor: '#3b82f6',
-                borderRadius: 4
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { display: false } },
-                y: { grid: { display: false } }
-            }
-        }
-    });
-
-    // Chart 3: Distribución (Pie)
-    var ctxPie = document.getElementById('pieChart').getContext('2d');
-    new Chart(ctxPie, {
-        type: 'pie',
-        data: {
-            labels: ['Funcional', 'Mantenimiento', 'Desuso'],
-            datasets: [{
-                data: [
-                    {{ kpis.equipos_funcional|default:"0" }}, 
-                    {{ kpis.equipos_mantenimiento|default:"0" }}, 
-                    {{ kpis.equipos_desuso|default:"0" }}
-                ],
-                backgroundColor: ['#3b82f6', '#f59e0b', '#ef4444'],
-                borderWidth: 2,
-                borderColor: '#ffffff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'right', labels: { boxWidth: 12, font: {size: 11} } }
-            }
-        }
-    });
-});
-</script>
-{% endif %}
 {% endblock %}
