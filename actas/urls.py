@@ -5,6 +5,7 @@ from actas.views import (
     ActaActionView,
     ActaDetailView,
     ActaGenerateView,
+    ActaDeleteView,
 )
 
 app_name = 'actas'
@@ -15,4 +16,5 @@ urlpatterns = [
     path('api/action/', ActaActionView.as_view(), name='action_api'),
     path('api/generate/', ActaGenerateView.as_view(), name='generate_api'),
     path('api/<int:acta_id>/', ActaDetailView.as_view(), name='detail_api'),
+    path('api/<int:acta_id>/delete/', ActaDeleteView.as_view(), name='delete_api'),
 ]
