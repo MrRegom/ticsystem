@@ -93,7 +93,7 @@ $(document).ready(function() {
         },
         columns: [
             { data: null, orderable: false, render: function(data, type, row) {
-                return `<button type="button" class="btn btn-sm btn-primary btn-add-item" data-tipo="EQUIPO" data-id="${row.id}" data-articulo="${row.articulo}" data-marcamodelo="${row.marca} ${row.modelo}" data-serie="${row.serial_number}"><i class="fas fa-plus"></i> Agregar</button>`;
+                return `<button type="button" class="btn btn-sm btn-primary btn-add-item" data-tipo="EQUIPO" data-id="${row.id}" data-articulo="${row.articulo}" data-marcamodelo="${row.marca} ${row.modelo}" data-serie="${row.serial_number}">Agregar</button>`;
             }},
             { data: 'articulo' },
             { data: 'marca' },
@@ -114,7 +114,7 @@ $(document).ready(function() {
         },
         columns: [
             { data: null, orderable: false, render: function(data, type, row) {
-                return `<button type="button" class="btn btn-sm btn-primary btn-add-item" data-tipo="ANEXO" data-id="${row.id}" data-articulo="Anexo IP ${row.numero_anexo}" data-marcamodelo="${row.marca} ${row.modelo}" data-serie="${row.serial_number}"><i class="fas fa-plus"></i> Agregar</button>`;
+                return `<button type="button" class="btn btn-sm btn-primary btn-add-item" data-tipo="ANEXO" data-id="${row.id}" data-articulo="Anexo IP ${row.numero_anexo}" data-marcamodelo="${row.marca} ${row.modelo}" data-serie="${row.serial_number}">Agregar</button>`;
             }},
             { data: 'numero_anexo' },
             { data: 'modelo' },
@@ -151,8 +151,8 @@ $(document).ready(function() {
         itemsSeleccionados.push(item);
         actualizarTablaSeleccionados();
         
-        btn.removeClass('btn-primary').addClass('btn-success').html('<i class="fas fa-check"></i> Agregado');
-        setTimeout(() => btn.removeClass('btn-success').addClass('btn-primary').html('<i class="fas fa-plus"></i> Agregar'), 1500);
+        btn.removeClass('btn-primary').addClass('btn-success').html('Agregado');
+        setTimeout(() => btn.removeClass('btn-success').addClass('btn-primary').html('Agregar'), 1500);
     });
 
     function actualizarTablaSeleccionados() {
@@ -205,6 +205,8 @@ $(document).ready(function() {
                             $('#rec-nombres').val(user.nombres || '');
                             $('#rec-apellidos').val(user.apellidos || '');
                             $('#rec-correo').val(user.correo || '');
+                            $('#rec-cargo').val(user.cargo || '').trigger('change');
+                            $('#rec-unidad').val(user.unidad || '').trigger('change');
                             // Habilitar campos si hay usuario
                             $('#rec-unidad, #rec-cargo').prop('disabled', false);
                             $('#rec-nombres, #rec-apellidos').trigger('input');

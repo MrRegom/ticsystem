@@ -448,7 +448,9 @@ class UserSearchApiView(LoginRequiredMixin, View):
                 'rut': u.rut,
                 'nombres': u.nombres,
                 'apellidos': u.apellidos,
-                'correo': u.correo or ''
+                'correo': u.correo or '',
+                'cargo': cargo if u.cargo else '',
+                'unidad': unidad if u.unidad else ''
             })
             
         return JsonResponse({'results': results})
