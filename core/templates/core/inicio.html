@@ -110,12 +110,12 @@
 {% block content %}
 <div class="dash-wrap">
 
-  <div class="fluent-header" style="margin-bottom: 20px;">
+  <div class="fluent-header" style="margin-bottom: 12px; margin-top: -10px;">
     <div>
-      <h1 class="fluent-title" style="text-transform: uppercase;">
+      <h1 class="fluent-title" style="text-transform: uppercase; margin-bottom: 0;">
         {% if tipo_dashboard == 'corporativo' %}Resumen Corporativo TIC{% else %}Tablero Operativo de Soporte{% endif %}
       </h1>
-      <div class="fluent-subtitle" style="margin-top: 2px;">Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</div>
+      <div class="fluent-subtitle" style="margin-top: -2px;">Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</div>
     </div>
     <div>
       <button class="fluent-btn-primary" onclick="location.reload();">
@@ -388,48 +388,39 @@
     </div>
 
     <div>
-      <div class="fluent-card" style="margin-bottom: 24px;">
-        <div class="fluent-card-header">Métricas de Soporte</div>
-        
-        <div class="ms-progress-group">
-          <div class="ms-progress-header">
-            <span class="ms-progress-label">SLA Global del Equipo</span>
-            <span class="ms-progress-val">{{ kpis.sla_cumplimiento|default:"0" }}%</span>
-          </div>
-          <div class="ms-progress-track"><div class="ms-progress-fill green" style="width: {{ kpis.sla_cumplimiento|default:'0' }}%;"></div></div>
-        </div>
-        
-        <div class="ms-progress-group" style="margin-top: 24px;">
-          <div class="ms-progress-header">
-            <span class="ms-progress-label" style="color:#a4262c;">Tickets Vencidos vs Totales</span>
-            <span class="ms-progress-val" style="color:#a4262c;">{{ kpis.tickets_vencidos|default:"0" }}</span>
-          </div>
-          <div class="ms-progress-track"><div class="ms-progress-fill red" style="width: 15%;"></div></div>
-        </div>
-      </div>
-      
+      <!-- Distribucion por estado exclusiva para Resolutor -->
       <div class="fluent-card">
-        <div class="fluent-card-header">Distribución de Equipamiento</div>
+        <div class="fluent-card-header" style="margin-bottom: 2px; font-size: 16px;">Distribucion por estado</div>
+        <div style="font-size: 11px; color: #605e5c; margin-bottom: 16px;">Como esta el parque tecnologico hoy.</div>
+        
         <div class="ms-progress-group">
           <div class="ms-progress-header">
             <span class="ms-progress-label">Funcional</span>
             <span class="ms-progress-val">{{ kpis.equipos_funcional|default:"0" }}</span>
           </div>
-          <div class="ms-progress-track"><div class="ms-progress-fill" style="width: 80%;"></div></div>
+          <div class="ms-progress-track" style="height: 8px; border-radius: 4px; background-color: #f3f2f1;">
+            <div class="ms-progress-fill" style="width: 80%; border-radius: 4px; background: linear-gradient(90deg, #1890ff, #00e5ff);"></div>
+          </div>
         </div>
-        <div class="ms-progress-group">
+        
+        <div class="ms-progress-group" style="margin-top: 16px;">
           <div class="ms-progress-header">
             <span class="ms-progress-label">Desuso / Bodega</span>
             <span class="ms-progress-val">{{ kpis.equipos_desuso|default:"0" }}</span>
           </div>
-          <div class="ms-progress-track"><div class="ms-progress-fill" style="width: 15%; background-color:#a19f9d;"></div></div>
+          <div class="ms-progress-track" style="height: 8px; border-radius: 4px; background-color: #f3f2f1;">
+            <div class="ms-progress-fill" style="width: 15%; border-radius: 4px; background: linear-gradient(90deg, #1890ff, #00e5ff);"></div>
+          </div>
         </div>
-        <div class="ms-progress-group">
+        
+        <div class="ms-progress-group" style="margin-top: 16px;">
           <div class="ms-progress-header">
             <span class="ms-progress-label">En Mantenimiento</span>
             <span class="ms-progress-val">{{ kpis.equipos_mantenimiento|default:"0" }}</span>
           </div>
-          <div class="ms-progress-track"><div class="ms-progress-fill orange" style="width: 5%;"></div></div>
+          <div class="ms-progress-track" style="height: 8px; border-radius: 4px; background-color: #f3f2f1;">
+            <div class="ms-progress-fill" style="width: 5%; border-radius: 4px; background: linear-gradient(90deg, #1890ff, #00e5ff);"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -437,10 +428,10 @@
 
   <div style="margin-top: 24px;">
     <h3 class="fluent-title" style="font-size: 16px; margin-bottom: 16px;">Vigilancia de Infraestructura (Actividad Global)</h3>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; align-items: start;">
       
       <!-- Equipos -->
-      <div class="fluent-card">
+      <div class="fluent-card" style="overflow-x: auto;">
         <div class="fluent-card-header">Últimos Equipos Registrados</div>
         <div class="fluent-table-wrapper" style="margin: 0 -20px;">
           <table class="fluent-table">
@@ -459,7 +450,7 @@
                   {% if e.imagen %}
                   <img src="/media/{{ e.imagen }}" class="dash-thumb" onclick="openImageModal(this.src)" title="Ver imagen">
                   {% else %}
-                  <div class="dash-thumb-placeholder"><i class="ms-Icon ms-Icon--PC1"></i></div>
+                  <div class="dash-thumb-placeholder" style="color: #605e5c;"><i class="ms-Icon ms-Icon--Server"></i></div>
                   {% endif %}
                 </td>
                 <td>
@@ -478,7 +469,7 @@
       </div>
 
       <!-- Anexos -->
-      <div class="fluent-card">
+      <div class="fluent-card" style="overflow-x: auto;">
         <div class="fluent-card-header">Últimos Anexos IP Configurados</div>
         <div class="fluent-table-wrapper" style="margin: 0 -20px;">
           <table class="fluent-table">
@@ -497,7 +488,7 @@
                   {% if a.foto %}
                   <img src="/media/{{ a.foto }}" class="dash-thumb" onclick="openImageModal(this.src)" title="Ver imagen">
                   {% else %}
-                  <div class="dash-thumb-placeholder"><i class="ms-Icon ms-Icon--Phone"></i></div>
+                  <div class="dash-thumb-placeholder" style="color: #605e5c;"><i class="ms-Icon ms-Icon--Phone"></i></div>
                   {% endif %}
                 </td>
                 <td style="font-weight: 600;">{{ a.numero_anexo }}</td>
@@ -516,7 +507,7 @@
       </div>
 
       <!-- Actas -->
-      <div class="fluent-card">
+      <div class="fluent-card" style="overflow-x: auto;">
         <div class="fluent-card-header">Últimas Actas Emitidas</div>
         <div class="fluent-table-wrapper" style="margin: 0 -20px;">
           <table class="fluent-table">
