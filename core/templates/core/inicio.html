@@ -404,6 +404,100 @@
       </div>
     </div>
   </div>
+
+  <div style="margin-top: 24px;">
+    <h3 class="fluent-title" style="font-size: 16px; margin-bottom: 16px;">Vigilancia de Infraestructura (Actividad Global)</h3>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+      
+      <!-- Equipos -->
+      <div class="fluent-card">
+        <div class="fluent-card-header">Últimos Equipos Registrados</div>
+        <div class="fluent-table-wrapper" style="margin: 0 -20px;">
+          <table class="fluent-table">
+            <thead>
+              <tr>
+                <th>Equipo / Marca</th>
+                <th>Serial</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in kpis.ultimos_equipos %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600;">{{ e.articulo__nombre }}</div>
+                  <div style="font-size: 11px; color: #605e5c;">{{ e.marca__nombre }}</div>
+                </td>
+                <td style="font-family: monospace; font-size: 11px;">{{ e.serial_number|default:"-" }}</td>
+                <td><span class="status-badge badge-neutral">{{ e.estado__nombre|default:"-" }}</span></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center text-muted">Sin datos.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Anexos -->
+      <div class="fluent-card">
+        <div class="fluent-card-header">Últimos Anexos IP Configurados</div>
+        <div class="fluent-table-wrapper" style="margin: 0 -20px;">
+          <table class="fluent-table">
+            <thead>
+              <tr>
+                <th>Anexo</th>
+                <th>Unidad</th>
+                <th>IP</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in kpis.ultimos_anexos %}
+              <tr>
+                <td style="font-weight: 600;">{{ a.numero_anexo }}</td>
+                <td>
+                  <div>{{ a.unidad__nombre|default:"Sin Unidad" }}</div>
+                  <div style="font-size: 11px; color: #605e5c;">{{ a.pma__nombre|default:"-" }}</div>
+                </td>
+                <td style="font-family: monospace; font-size: 11px;">{{ a.ip|default:"DHCP" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center text-muted">Sin datos.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Actas -->
+      <div class="fluent-card">
+        <div class="fluent-card-header">Últimas Actas Emitidas</div>
+        <div class="fluent-table-wrapper" style="margin: 0 -20px;">
+          <table class="fluent-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Receptor</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in kpis.ultimas_actas %}
+              <tr>
+                <td style="font-weight: 600; color: #0078d4;">{{ a.codigo }}</td>
+                <td>{{ a.receptor_nombre|truncatechars:20 }}</td>
+                <td>{{ a.fecha|date:"d/m/Y" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center text-muted">Sin datos.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
   {% endif %}
 
 </div>

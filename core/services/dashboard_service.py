@@ -251,6 +251,9 @@ def obtener_kpis_generales():
 
 def obtener_kpis_resolutor(user):
     from tickets.models import Ticket
+    from equipos.models import Equipo
+    from mantenedores.models import Anexo
+    from actas.models import Acta
     from django.db.models import Q
     from django.utils import timezone
     
@@ -301,6 +304,22 @@ def obtener_kpis_resolutor(user):
     ).select_related('prioridad', 'activo').order_by('-fecha_creacion')[:8].values(
         'correlativo', 'descripcion', 'estado', 'prioridad__nombre', 'prioridad__color_hex', 'fecha_creacion', 'activo__pmalugar'
     )
+    
+    # Listas adicionales para dar densidad visual al tablero de Resolutor (Vistas Globales)
+    ultimos_equipos = list(Equipo.objects.order_by('-fecha_creacion')[:5].values(
+        'serial_number', 'articulo__nombre', 'marca__nombre', 'estado__nombre'
+    ))
+    
+    ultimos_anexos = list(Anexo.objects.select_related(
+        'unidad', 'edificio', 'piso'
+    ).order_by('-creado_en')[:5].values(
+        'numero_anexo', 'unidad__nombre', 'ip', 'edificio__nombre', 'piso__nombre',
+        'pma__nombre', 'estado'
+    ))
+
+    ultimas_actas = list(Acta.objects.order_by('-fecha')[:5].values(
+        'codigo', 'receptor_nombre', 'estado', 'fecha'
+    ))
 
     return {
         'mis_tickets': mis_tickets_count,
@@ -308,6 +327,11 @@ def obtener_kpis_resolutor(user):
         'tickets_vencidos': tickets_vencidos,
         'sla_cumplimiento': sla_cumplimiento,
         'actividad_reciente': list(actividad_reciente),
+        
+        # Nuevas listas
+        'ultimos_equipos': ultimos_equipos,
+        'ultimos_anexos': ultimos_anexos,
+        'ultimas_actas': ultimas_actas,
         
         # Trends
         'trend_mis_tickets': {'val': 5, 'dir': 'up', 'color': 'text-success'},
