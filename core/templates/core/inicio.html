@@ -244,7 +244,7 @@
                 <td>
                   <div style="display: flex; gap: 12px; align-items: center;">
                     {% if r.imagen %}
-                    <img src="/media/{{ r.imagen }}" class="dash-thumb" onclick="abrirModalImagen(this.src)" alt="{{ r.articulo__nombre }}">
+                    <img src="{% if 'media/' in r.imagen %}/{{ r.imagen }}{% else %}/media/{{ r.imagen }}{% endif %}" class="dash-thumb" onclick="abrirModalImagen(this.src)" alt="{{ r.articulo__nombre }}">
                     {% else %}
                     <div class="dash-thumb-placeholder"><i class="fas fa-desktop"></i></div>
                     {% endif %}
@@ -273,7 +273,7 @@
       <div class="fluent-card" style="margin-top: 24px;">
         <div class="fluent-card-header">
           <span>Últimos Anexos Registrados</span>
-          <a href="{% url 'anexos_list' %}" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver todos</a>
+          <a href="/anexos/" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver todos</a>
         </div>
         <div class="fluent-table-wrapper">
           <table class="fluent-table">
@@ -315,7 +315,7 @@
       <div class="fluent-card" style="margin-top: 24px;">
         <div class="fluent-card-header">
           <span>Últimos Tickets Pendientes</span>
-          <a href="{% url 'tickets_list' %}" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver tickets</a>
+          <a href="/tickets/" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver tickets</a>
         </div>
         <div class="fluent-table-wrapper">
           <table class="fluent-table">
