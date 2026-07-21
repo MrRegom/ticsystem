@@ -9,15 +9,17 @@
 {% endblock %}
 
 {% block content %}
-<div class="dash-card">
+<div class="ms-wrap">
   <!-- Encabezado Microsoft Fluent -->
-  <div class="ms-page-header px-3 pt-3">
+  <div class="ms-page-header">
     <div>
       <h1 class="ms-page-title">Catálogos de Sistema</h1>
       <p class="ms-page-subtitle">Administración centralizada de diccionarios y parámetros.</p>
     </div>
   </div>
-  <div class="dash-card-body" style="padding-top: 15px;" id="accordionCategorias">
+
+  <div class="dash-card">
+    <div class="dash-card-body" style="padding-top: 15px;" id="accordionCategorias">
     <!-- Cards grid divididas por sección (Acordeón) -->
     <div class="section-label mb-3" style="font-family: 'Segoe UI', system-ui, sans-serif;"><i class="fas fa-th mr-2"></i> Seleccione una Categoría Principal</div>
 
@@ -482,6 +484,10 @@
     </div>
   </div>
 </div>
+
+  </div> <!-- End dash-card-body -->
+</div> <!-- End dash-card -->
+</div> <!-- End ms-wrap -->
 
 {% endblock %}
 
