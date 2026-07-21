@@ -137,10 +137,10 @@
             <!-- Botones como Pestañas -->
             <ul class="nav nav-pills m-0" id="actasTab" role="tablist" style="gap: 8px;">
                 <li class="nav-item" role="presentation">
-                    <a class="btn ms-btn-primary active" id="nuevo-tab" data-toggle="tab" href="#nuevo" role="tab" style="padding: 6px 16px; border-radius: 4px; font-size: 0.85rem; text-decoration: none !important;">Nueva Acta</a>
+                    <button class="btn ms-btn-primary active" id="nuevo-tab" data-toggle="tab" data-target="#nuevo" type="button" role="tab" style="padding: 6px 16px; border-radius: 4px; font-size: 0.85rem; border: none;">Nueva Acta</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="btn ms-btn-secondary" id="historial-tab" data-toggle="tab" href="#historial" role="tab" style="padding: 6px 16px; border-radius: 4px; font-size: 0.85rem; background: #fff; border: 1px solid #cbd5e1; color: #334155; text-decoration: none !important;">Historial</a>
+                    <button class="btn ms-btn-secondary" id="historial-tab" data-toggle="tab" data-target="#historial" type="button" role="tab" style="padding: 6px 16px; border-radius: 4px; font-size: 0.85rem; background: #fff; border: 1px solid #cbd5e1; color: #334155;">Historial</button>
                 </li>
             </ul>
         </div>
@@ -212,9 +212,7 @@
                     <div class="fluent-card mb-4 mt-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); background-color: #ffffff;">
                         <div class="card-header bg-white border-0 px-4 py-3 d-flex justify-content-between align-items-center">
                             <h6 style="font-weight: 700; color: #002a54; margin: 0;"><i class="fas fa-desktop mr-2"></i> Equipos / Insumos</h6>
-                            <button type="button" class="btn ms-btn-primary btn-sm" id="btn-buscar-equipos" style="font-size: 0.75rem;">
-                                <i class="fas fa-search mr-1"></i> Buscar Equipos
-                            </button>
+                            <button type="button" class="btn ms-btn-primary btn-sm" id="btn-buscar-equipos" style="font-size: 0.75rem;">Buscar Equipos</button>
                         </div>
                         <div class="card-body p-0">
                             <table class="table table-hover mb-0" id="tabla-items-seleccionados" style="font-size: 0.85rem;">
