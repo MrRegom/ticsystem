@@ -211,10 +211,25 @@
 
 /* 💎 Header & Command Bar */
 .ms-header {
-  display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
 }
-.ms-title-area h2 { font-weight: 600; color: #201f1e; font-size: 24px; margin: 0 0 4px 0; letter-spacing: -0.02em; }
-.ms-title-area p { color: #605e5c; font-size: 14px; margin: 0; }
+.ms-title-area h2 { 
+  font-family: 'Segoe UI', system-ui, sans-serif; 
+  font-size: 24px; 
+  font-weight: 600; 
+  color: #323130; 
+  margin: 0; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+  line-height: 1; 
+}
+.ms-title-area p { 
+  font-family: 'Segoe UI', system-ui, sans-serif; 
+  font-size: 14px; 
+  color: #605e5c; 
+  margin: 4px 0 0 0; 
+  line-height: 1; 
+}
 
 .ms-command-bar {
   display: flex; gap: 12px; align-items: center; justify-content: flex-end;

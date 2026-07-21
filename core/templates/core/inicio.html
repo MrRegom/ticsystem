@@ -111,12 +111,12 @@
 {% block content %}
 <div class="dash-wrap ms-wrap">
 
-  <div class="ms-page-header">
-    <div>
-      <h1 class="ms-page-title">
+  <div class="ms-header">
+    <div class="ms-title-area">
+      <h2>
         {% if tipo_dashboard == 'corporativo' %}Resumen Corporativo TIC{% else %}Tablero Operativo de Soporte{% endif %}
-      </h1>
-      <p class="ms-page-subtitle">Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</p>
+      </h2>
+      <p>Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</p>
     </div>
   </div>
 
