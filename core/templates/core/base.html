@@ -114,40 +114,13 @@
 
   <!-- Sidebar Lateral Izquierda -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-heading">Módulos</div>
+    
+    <div class="sidebar-heading">DASHBOARD</div>
     <ul class="sidebar-menu">
       {% if user|has_permiso:'VER_INICIO' %}
       <li class="sidebar-item">
         <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
           <i class="fas fa-chart-line"></i> Inicio
-        </a>
-      </li>
-      {% endif %}
-      {% if user|has_permiso:'VER_USUARIOS' %}
-      <li class="sidebar-item">
-        <a href="{% url 'usuarios_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'usuarios_dashboard' %}active{% endif %}">
-          <i class="fas fa-users"></i> Usuarios
-        </a>
-      </li>
-      {% endif %}
-      {% if user|has_permiso:'VER_EQUIPOS' %}
-      <li class="sidebar-item">
-        <a href="{% url 'equipos:dashboard' %}" class="sidebar-link {% if '/equipos/' in request.path %}active{% endif %}">
-          <i class="fas fa-laptop-medical"></i> Equipamiento
-        </a>
-      </li>
-      {% endif %}
-      {% if user|has_permiso:'VER_MANTENEDORES' %}
-      <li class="sidebar-item">
-        <a href="/mantenedores/" class="sidebar-link">
-          <i class="fas fa-cogs"></i> Mantenedores
-        </a>
-      </li>
-      {% endif %}
-      {% if user|has_permiso:'VER_TICKETS' %}
-      <li class="sidebar-item">
-        <a href="/tickets/" class="sidebar-link {% if '/tickets/' in request.path %}active{% endif %}">
-          <i class="fas fa-ticket-alt"></i> Tickets
         </a>
       </li>
       {% endif %}
@@ -158,10 +131,21 @@
         </a>
       </li>
       {% endif %}
-      {% if user|has_permiso:'VER_ACTAS' %}
+    </ul>
+
+    <div class="sidebar-heading mt-4">MÓDULOS</div>
+    <ul class="sidebar-menu">
+      {% if user|has_permiso:'VER_TICKETS' %}
       <li class="sidebar-item">
-        <a href="/actas/" class="sidebar-link">
-          <i class="fas fa-file-signature"></i> Actas
+        <a href="/tickets/" class="sidebar-link {% if '/tickets/' in request.path %}active{% endif %}">
+          <i class="fas fa-ticket-alt"></i> Tickets
+        </a>
+      </li>
+      {% endif %}
+      {% if user|has_permiso:'VER_EQUIPOS' %}
+      <li class="sidebar-item">
+        <a href="{% url 'equipos:dashboard' %}" class="sidebar-link {% if '/equipos/' in request.path %}active{% endif %}">
+          <i class="fas fa-laptop-medical"></i> Equipamiento
         </a>
       </li>
       {% endif %}
@@ -172,14 +156,35 @@
         </a>
       </li>
       {% endif %}
+      {% if user|has_permiso:'VER_ACTAS' %}
+      <li class="sidebar-item">
+        <a href="/actas/" class="sidebar-link">
+          <i class="fas fa-file-signature"></i> Actas
+        </a>
+      </li>
+      {% endif %}
     </ul>
-    
-    <div class="sidebar-heading mt-4">Sistema</div>
+
+    <div class="sidebar-heading mt-4">CONFIGURACIÓN</div>
     <ul class="sidebar-menu">
+      {% if user|has_permiso:'VER_USUARIOS' %}
+      <li class="sidebar-item">
+        <a href="{% url 'usuarios_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'usuarios_dashboard' %}active{% endif %}">
+          <i class="fas fa-users"></i> Usuarios
+        </a>
+      </li>
+      {% endif %}
       {% if user|has_permiso:'GESTIONAR_ROLES' %}
       <li class="sidebar-item">
         <a href="{% url 'roles_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'roles_dashboard' %}active{% endif %}">
           <i class="fas fa-user-shield"></i> Roles y Perfiles
+        </a>
+      </li>
+      {% endif %}
+      {% if user|has_permiso:'VER_MANTENEDORES' %}
+      <li class="sidebar-item">
+        <a href="/mantenedores/" class="sidebar-link">
+          <i class="fas fa-cogs"></i> Mantenedores
         </a>
       </li>
       {% endif %}
@@ -195,6 +200,10 @@
           </a>
         </li>
         {% endif %}
+    </ul>
+    
+    <div class="sidebar-heading mt-4">SISTEMA</div>
+    <ul class="sidebar-menu">
       <li class="sidebar-item">
         <a href="#" class="sidebar-link text-danger" id="logout-sidebar-link">
           <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
