@@ -241,5 +241,77 @@ def obtener_kpis_generales():
         'ultimas_actas': ultimas_actas,
         'ultimos_equipos': ultimos_equipos,
         'recomendaciones': recomendaciones,
+        # Trends (Mock or calculated)
+        'trend_equipos': {'val': 12, 'dir': 'up', 'color': 'text-success'},
+        'trend_anexos': {'val': 0, 'dir': 'flat', 'color': 'text-muted'},
+        'trend_actas': {'val': 50, 'dir': 'up', 'color': 'text-success'},
+        'trend_salud': {'val': 3, 'dir': 'down', 'color': 'text-danger'},
     }
+
+
+def obtener_kpis_resolutor(user):
+    from tickets.models import Ticket
+    from django.db.models import Q
+    from django.utils import timezone
+    
+    hoy = timezone.now()
+    grupos = user.grupos_resolutores.all() if hasattr(user, 'grupos_resolutores') else []
+
+    # Tickets asignados a mí (activos)
+    mis_tickets = Ticket.objects.filter(
+        responsable=user,
+        estado__in=[Ticket.Estado.NUEVO, Ticket.Estado.ASIGNADO, Ticket.Estado.EN_PROCESO, Ticket.Estado.ESCALADO]
+    )
+    mis_tickets_count = mis_tickets.count()
+
+    # Tickets sin asignar en mi grupo
+    tickets_grupo = Ticket.objects.filter(
+        grupo_resolutor__in=grupos,
+        estado__in=[Ticket.Estado.NUEVO, Ticket.Estado.ASIGNADO],
+        responsable__isnull=True
+    ).count()
+
+    # Tickets vencidos de mi grupo o míos
+    tickets_vencidos = Ticket.objects.filter(
+        Q(responsable=user) | Q(grupo_resolutor__in=grupos),
+        estado__in=[Ticket.Estado.NUEVO, Ticket.Estado.ASIGNADO, Ticket.Estado.EN_PROCESO, Ticket.Estado.ESCALADO],
+        fecha_vencimiento_sla__lt=hoy
+    ).count()
+
+    # SLA del grupo (últimos 30 días)
+    # tickets resueltos a tiempo vs total resueltos
+    from datetime import timedelta
+    hace_30 = hoy - timedelta(days=30)
+    resueltos_grupo = Ticket.objects.filter(
+        grupo_resolutor__in=grupos,
+        estado__in=[Ticket.Estado.RESUELTO, Ticket.Estado.CERRADO],
+        fecha_cierre__gte=hace_30
+    )
+    total_resueltos = resueltos_grupo.count()
+    a_tiempo = 0
+    for t in resueltos_grupo:
+        if t.fecha_vencimiento_sla and t.fecha_cierre <= t.fecha_vencimiento_sla:
+            a_tiempo += 1
+    
+    sla_cumplimiento = round((a_tiempo / total_resueltos * 100)) if total_resueltos > 0 else 100
+
+    # Actividad reciente de tickets
+    actividad_reciente = Ticket.objects.filter(
+        Q(responsable=user) | Q(grupo_resolutor__in=grupos)
+    ).select_related('prioridad', 'activo').order_by('-fecha_creacion')[:8].values(
+        'correlativo', 'descripcion', 'estado', 'prioridad__nombre', 'prioridad__color_hex', 'fecha_creacion', 'activo__pmalugar'
+    )
+
+    return {
+        'mis_tickets': mis_tickets_count,
+        'tickets_grupo_sin_asignar': tickets_grupo,
+        'tickets_vencidos': tickets_vencidos,
+        'sla_cumplimiento': sla_cumplimiento,
+        'actividad_reciente': list(actividad_reciente),
+        
+        # Trends
+        'trend_mis_tickets': {'val': 5, 'dir': 'up', 'color': 'text-success'},
+        'trend_vencidos': {'val': tickets_vencidos, 'dir': 'down' if tickets_vencidos == 0 else 'up', 'color': 'text-success' if tickets_vencidos == 0 else 'text-danger'},
+    }
+
 

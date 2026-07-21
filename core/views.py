@@ -156,26 +156,29 @@ class DashboardGeneralView(LoginRequiredMixin, TemplateView):
         """
         if hasattr(request, 'user') and request.user.is_authenticated:
             if hasattr(request.user, 'perfil') and request.user.perfil.rol:
-                rol = request.user.perfil.rol
-                
-                # 1. Nivel Gerencial / Administrador: Ven el Dashboard Corporativo TIC
-                if rol.tiene_permiso('VER_EQUIPOS') or rol.tiene_permiso('VER_REPORTES') or rol.tiene_permiso('GESTIONAR_ROLES'):
-                    return super().get(request, *args, **kwargs)
-                
-                # 2. Nivel Operativo / Técnico: Aterrizan directo en el Kanban
-                if rol.tiene_permiso('VER_TICKETS'):
-                    return redirect('tickets:dashboard')
-                    
-                # 3. Otros módulos si solo tienen acceso parcial a datos
-                if rol.tiene_permiso('VER_MANTENEDORES'):
-                    return redirect('mantenedores:dashboard')
+                pass
                     
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        from core.services.dashboard_service import obtener_kpis_generales
-        context['kpis'] = obtener_kpis_generales()
+        from core.services.dashboard_service import obtener_kpis_generales, obtener_kpis_resolutor
+        
+        # Determinar el tipo de dashboard según permisos
+        tipo_dashboard = 'resolutor' # Default fallback
+        if hasattr(self.request, 'user') and self.request.user.is_authenticated:
+            if hasattr(self.request.user, 'perfil') and self.request.user.perfil.rol:
+                rol = self.request.user.perfil.rol
+                if rol.tiene_permiso('VER_EQUIPOS') or rol.tiene_permiso('VER_REPORTES') or self.request.user.is_superuser:
+                    tipo_dashboard = 'corporativo'
+                    
+        context['tipo_dashboard'] = tipo_dashboard
+        
+        if tipo_dashboard == 'corporativo':
+            context['kpis'] = obtener_kpis_generales()
+        else:
+            context['kpis'] = obtener_kpis_resolutor(self.request.user)
+            
         return context
 
 class UsuariosDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
