@@ -497,7 +497,16 @@ class UserCreateApiView(LoginRequiredMixin, View):
                 
             unidad_str = func.unidad.nombre if func.unidad else 'Sin Unidad'
             label = f"{func.nombre_completo} ({rut}) - Funcionario / {unidad_str}"
-            return JsonResponse({'success': True, 'user': {'id': func.id, 'text': label}})
+            return JsonResponse({'success': True, 'user': {
+                    'id': func.id, 
+                    'text': label,
+                    'rut': func.rut,
+                    'nombres': func.nombres,
+                    'apellidos': func.apellidos,
+                    'correo': func.correo,
+                    'unidad': func.unidad.nombre if func.unidad else '',
+                    'cargo': func.cargo.nombre if func.cargo else ''
+                }})
             
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)

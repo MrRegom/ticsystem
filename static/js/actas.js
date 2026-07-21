@@ -289,7 +289,9 @@ $(document).ready(function() {
                     $('#rec-nombres').val(res.user.nombres);
                     $('#rec-apellidos').val(res.user.apellidos);
                     $('#rec-correo').val(res.user.correo || '');
-                    $('#rec-unidad, #rec-cargo').prop('disabled', false);
+                      $('#rec-unidad').val(res.user.unidad || '').trigger('change');
+                      $('#rec-cargo').val(res.user.cargo || '').trigger('change');
+                      $('#rec-unidad, #rec-cargo').prop('disabled', false);
                     $('#btn-add-user').addClass('d-none');
                     $('#rec-nombres, #rec-apellidos').trigger('input');
                     Swal.fire('Éxito', 'Funcionario registrado correctamente', 'success');
