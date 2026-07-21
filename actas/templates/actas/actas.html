@@ -127,30 +127,28 @@
 
 {% block content %}
 <div class="container-fluid py-4">
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="ms-header">
-                <div class="ms-header-title">
-                    <h1 class="ms-title">Gestión de Actas Digitales</h1>
-                    <p class="ms-subtitle">Generación, firma y seguimiento de activos institucionales</p>
-                </div>
-            </div>
+    <!-- ENCABEZADO MICROSOFT FLUENT -->
+    <div class="ms-header d-flex justify-content-between align-items-center mb-4 pb-3" style="border-bottom: 1px solid #e2e8f0;">
+        <div class="ms-title-area">
+            <h2 style="text-transform: uppercase; font-weight: 700; color: #002a54; margin: 0; font-size: 1.5rem; letter-spacing: -0.5px;">Gestión de Actas Digitales</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 4px; margin-bottom: 0;">Generación, firma y seguimiento de activos institucionales</p>
+        </div>
+        <div class="ms-command-bar">
+            <!-- Botones como Pestañas -->
+            <ul class="nav nav-pills m-0" id="actasTab" role="tablist" style="gap: 8px;">
+                <li class="nav-item" role="presentation">
+                    <a class="btn ms-btn-primary active" id="nuevo-tab" data-toggle="tab" href="#nuevo" role="tab" style="padding: 6px 16px; border-radius: 4px; font-size: 0.85rem;">
+                        <i class="far fa-file-alt mr-2"></i> Nueva Acta
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="btn ms-btn-secondary" id="historial-tab" data-toggle="tab" href="#historial" role="tab" style="padding: 6px 16px; border-radius: 4px; font-size: 0.85rem; background: #fff; border: 1px solid #cbd5e1; color: #334155;">
+                        <i class="fas fa-history mr-2"></i> Historial
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
-
-    <!-- Pestañas -->
-    <ul class="nav nav-tabs border-bottom ms-fluent-tabs" id="actasTab" role="tablist" style="border-color: #e2e8f0;">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="nuevo-tab" data-toggle="tab" href="#nuevo" role="tab" style="font-weight: 600; color: #002a54;">
-                <i class="far fa-file-alt mr-2"></i>Nueva Acta
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="historial-tab" data-toggle="tab" href="#historial" role="tab" style="color: #64748b;">
-                <i class="fas fa-history mr-2"></i>Historial
-            </a>
-        </li>
-    </ul>
 
     <div class="tab-content fluent-card p-4 border-top-0" id="actasTabContent">
         
@@ -251,8 +249,10 @@
                     </div>
 
                     <!-- Texto Principal -->
-                    <h6 style="color: #002a54; font-weight: 700; margin-bottom: 16px;"><i class="far fa-file-word mr-2"></i> Texto Principal del Acta</h6>
-                    <div class="fluent-card mb-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: none; background: #f8fafc;">
+                    <div class="fluent-card mb-4 mt-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); background-color: #ffffff;">
+                        <div class="card-header bg-white border-0 pt-4 pb-0">
+                            <h6 style="font-weight: 700; color: #002a54; margin: 0;"><i class="far fa-file-word mr-2"></i> Texto Principal del Acta</h6>
+                        </div>
                         <div class="card-body" style="font-size: 0.85rem; color: #334155; line-height: 1.6;">
                             <p>Mediante la presente, se hace entrega a la Unidad/Servicio <strong id="txt-unidad">[UNIDAD]</strong>, cuyo receptor es <strong id="txt-receptor">[RECEPTOR]</strong>, del equipamiento detallado en este documento, para su uso en funciones institucionales.</p>
                             <p>El receptor <strong id="txt-receptor2">[RECEPTOR]</strong> declara recibir conforme el o los equipos y asume responsabilidad por su cuidado, mantención y uso adecuado.</p>
