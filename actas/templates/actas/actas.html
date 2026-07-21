@@ -213,13 +213,13 @@
                     </div>
 
                     <!-- Equipos / Insumos -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 style="color: #002a54; font-weight: 700; margin: 0;"><i class="fas fa-desktop mr-2"></i> Equipos / Insumos</h6>
-                        <button type="button" class="fluent-btn-primary" id="btn-buscar-equipos" style="background: #006FB3; border: none;">
-                            <i class="fas fa-search mr-1"></i> Buscar Equipos
-                        </button>
-                    </div>
-                    <div class="fluent-card mb-4">
+                    <div class="fluent-card mb-4 mt-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); background-color: #ffffff;">
+                        <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                            <h6 style="font-weight: 700; color: #002a54; margin: 0;"><i class="fas fa-desktop mr-2"></i> Equipos / Insumos</h6>
+                            <button type="button" class="btn ms-btn-primary btn-sm" id="btn-buscar-equipos" style="font-size: 0.75rem;">
+                                <i class="fas fa-search mr-1"></i> Buscar Equipos
+                            </button>
+                        </div>
                         <div class="card-body p-0">
                             <table class="table table-hover mb-0" id="tabla-items-seleccionados" style="font-size: 0.85rem;">
                                 <thead style="background: #0f172a; color: white;">
@@ -241,8 +241,10 @@
                     </div>
 
                     <!-- Observaciones -->
-                    <h6 style="color: #002a54; font-weight: 700; margin-bottom: 16px;"><i class="far fa-comment-alt mr-2"></i> Observaciones</h6>
-                    <div class="fluent-card mb-4">
+                    <div class="fluent-card mb-4 mt-4" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); background-color: #ffffff;">
+                        <div class="card-header bg-white border-0 pt-4 pb-0">
+                            <h6 style="font-weight: 700; color: #002a54; margin: 0;"><i class="far fa-comment-alt mr-2"></i> Observaciones</h6>
+                        </div>
                         <div class="card-body p-0">
                             <textarea class="form-control border-0" id="acta-observaciones" rows="3" placeholder="Indique aquí observaciones adicionales sobre el estado de entrega o condiciones especiales..." style="resize: none; padding: 16px; border-radius: 8px;"></textarea>
                         </div>
