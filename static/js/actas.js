@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
-    // --- RUT FORMATTER ---
+    
+    // --- RUT FORMATTER & VALIDATOR ---
     function formatRut(rut) {
         let value = rut.replace(/[^0-9kK]/g, '').toUpperCase();
         if (value.length > 1) {
@@ -9,9 +10,33 @@ $(document).ready(function() {
         return value;
     }
     
+    function isValidRut(rut) {
+        if (!/^[0-9]+-[0-9kK]{1}$/.test(rut)) return false;
+        let t = parseInt(rut.split('-')[0], 10);
+        let m = 0, s = 1;
+        while (t > 0) {
+            s = (s + t % 10 * (9 - m++ % 6)) % 11;
+            t = Math.floor(t / 10);
+        }
+        let v = (s > 0) ? (s - 1) + '' : 'K';
+        return (v === rut.split('-')[1].toUpperCase());
+    }
+    
     $('#rec-rut, #rut_nuevo').on('input', function() {
-        $(this).val(formatRut($(this).val()));
+        let formatted = formatRut($(this).val());
+        $(this).val(formatted);
+        
+        if (formatted.length > 7) {
+            if (isValidRut(formatted)) {
+                $(this).removeClass('is-invalid').addClass('is-valid');
+            } else {
+                $(this).removeClass('is-valid').addClass('is-invalid');
+            }
+        } else {
+            $(this).removeClass('is-valid is-invalid');
+        }
     });
+
     
     // --- SIGNATURE PADS ---
     const canvasRec = document.getElementById('canvas-receptor');
