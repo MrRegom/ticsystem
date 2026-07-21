@@ -171,8 +171,42 @@ $(document).ready(function() {
         actualizarTablaSeleccionados();
     });
 
+    
+    // --- AUTORRELLENO POR RUT ---
+    let typingTimer;
+    $('#rec-rut').on('keyup', function() {
+        clearTimeout(typingTimer);
+        const rut = $(this).val().trim();
+        if (rut.length > 7) {
+            typingTimer = setTimeout(function() {
+                $('#rut-spinner').removeClass('d-none');
+                $.ajax({
+                    url: '/tickets/api/search/users/?q=' + rut,
+                    type: 'GET',
+                    success: function(resp) {
+                        $('#rut-spinner').addClass('d-none');
+                        if (resp.results && resp.results.length > 0) {
+                            const user = resp.results[0];
+                            const parts = user.text.split(' - ')[0].split(' ');
+                            if (parts.length > 1) {
+                                $('#rec-nombres').val(parts[0]);
+                                $('#rec-apellidos').val(parts.slice(1).join(' '));
+                            } else {
+                                $('#rec-nombres').val(parts[0]);
+                            }
+                            $('#rec-nombres, #rec-apellidos').trigger('input');
+                        }
+                    },
+                    error: function() {
+                        $('#rut-spinner').addClass('d-none');
+                    }
+                });
+            }, 800);
+        }
+    });
+    
     // --- TEXTO DINÁMICO ---
-    $('#rec-nombre').on('input', function() { $('#txt-receptor, #txt-receptor2').text($(this).val() || '[RECEPTOR]'); });
+    $('#rec-nombres, #rec-apellidos').on('input', function() { const n = $('#rec-nombres').val() || ''; const a = $('#rec-apellidos').val() || ''; const full = (n + ' ' + a).trim(); $('#txt-receptor, #txt-receptor2').text(full || '[RECEPTOR]'); });
     $('#rec-unidad').on('change', function() { $('#txt-unidad').text($(this).val() || '[UNIDAD]'); });
 
     // --- GENERAR ACTA ---
@@ -180,7 +214,9 @@ $(document).ready(function() {
         const btn = $(this);
         const originalText = btn.html();
 
-        const nombre = $('#rec-nombre').val().trim();
+        const nombres = $('#rec-nombres').val().trim();
+        const apellidos = $('#rec-apellidos').val().trim();
+        const nombre = (nombres + ' ' + apellidos).trim();
         const rut = $('#rec-rut').val().trim();
         const unidad = $('#rec-unidad').val();
         
@@ -221,7 +257,7 @@ $(document).ready(function() {
             success: function(res) {
                 if (res.success) {
                     // Resetear form
-                    $('#rec-nombre, #rec-rut, #rec-cargo, #rec-correo, #acta-observaciones').val('');
+                    $('#rec-nombres, #rec-apellidos, #rec-rut, #rec-cargo, #rec-correo, #acta-observaciones').val('');
                     $('#rec-unidad').val('').trigger('change');
                     itemsSeleccionados = [];
                     actualizarTablaSeleccionados();

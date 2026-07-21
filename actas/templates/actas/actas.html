@@ -44,17 +44,22 @@
                     <div class="fluent-card mb-4">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label" style="font-size: 0.8rem; font-weight: 600;">Nombre Completo *</label>
-                                    <input type="text" class="form-control" id="rec-nombre" placeholder="Nombre completo del receptor">
-                                </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label class="form-label" style="font-size: 0.8rem; font-weight: 600;">RUT *</label>
-                                    <input type="text" class="form-control" id="rec-rut" placeholder="12.345.678-K">
+                                    <input type="text" class="ms-input form-control" id="rec-rut" placeholder="12.345.678-K">
+                                    <small id="rut-spinner" class="text-primary d-none"><i class="fas fa-spinner fa-spin"></i> Buscando...</small>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label" style="font-size: 0.8rem; font-weight: 600;">Nombres *</label>
+                                    <input type="text" class="ms-input form-control" id="rec-nombres" placeholder="Nombres">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label" style="font-size: 0.8rem; font-weight: 600;">Apellidos *</label>
+                                    <input type="text" class="ms-input form-control" id="rec-apellidos" placeholder="Apellidos">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label" style="font-size: 0.8rem; font-weight: 600;">Unidad / Servicio *</label>
-                                    <select class="form-control select2" id="rec-unidad" style="width: 100%;">
+                                    <select class="ms-input form-control select2" id="rec-unidad" style="width: 100%;">
                                         <option value="">Seleccionar Unidad...</option>
                                         {% for u in unidades %}
                                         <option value="{{ u.nombre }}">{{ u.nombre }}</option>
@@ -63,7 +68,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label" style="font-size: 0.8rem; font-weight: 600;">Cargo / Función</label>
-                                    <input type="text" class="form-control" id="rec-cargo" placeholder="Ej: Enfermera Supervisora">
+                                    <input type="text" class="ms-input form-control" id="rec-cargo" placeholder="Ej: Enfermera Supervisora">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label" style="font-size: 0.8rem; font-weight: 600; color: #3b82f6;"><i class="fas fa-paper-plane mr-1"></i> Correo Electrónico de Notificación</label>
@@ -71,7 +76,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-white"><i class="far fa-envelope text-muted"></i></span>
                                         </div>
-                                        <input type="email" class="form-control" id="rec-correo" placeholder="usuario@hospital.cl">
+                                        <input type="email" class="ms-input form-control" id="rec-correo" placeholder="usuario@hospital.cl">
                                     </div>
                                     <small class="text-muted mt-1 d-block">Se enviará una copia del acta automáticamente a esta dirección una vez generada.</small>
                                 </div>
