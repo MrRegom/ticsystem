@@ -110,14 +110,14 @@
 {% block content %}
 <div class="dash-wrap">
 
-  <div class="fluent-header" style="margin-bottom: 12px; margin-top: -10px;">
+  <div class="ms-page-header">
     <div>
-      <h1 class="fluent-title" style="text-transform: uppercase; margin-bottom: 2px; line-height: 1;">
+      <h1 class="ms-page-title">
         {% if tipo_dashboard == 'corporativo' %}Resumen Corporativo TIC{% else %}Tablero Operativo de Soporte{% endif %}
       </h1>
-      <div class="fluent-subtitle" style="margin-top: 0; line-height: 1;">Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</div>
+      <p class="ms-page-subtitle">Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</p>
     </div>
-    <div>
+    <div class="ms-page-actions">
       <button class="fluent-btn-primary" onclick="location.reload();">
         <i class="ms-Icon ms-Icon--Refresh"></i> Actualizar
       </button>
