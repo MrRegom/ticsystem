@@ -154,7 +154,51 @@
   <div class="dashboard-grid">
     <!-- LEFT COLUMN -->
     <div>
-      <div class="fluent-card" style="margin-bottom: 24px;">
+      
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+          <div class="fluent-card" style="height: 100%;">
+        <div class="fluent-card-header">
+          <span>Últimos Anexos Registrados</span>
+          <a href="/anexos/" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver todos</a>
+        </div>
+        <div class="fluent-table-wrapper">
+          <table class="fluent-table">
+            <thead>
+              <tr>
+                <th>Anexo</th>
+                <th>Ubicación</th>
+                <th>IP</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in kpis.ultimos_anexos %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600; color: #0078d4;"><i class="fas fa-phone-alt" style="margin-right: 6px;"></i> {{ a.numero_anexo }}</div>
+                </td>
+                <td>
+                  <div>{{ a.unidad__nombre|default:"Sin Unidad" }}</div>
+                  <div style="font-size: 11px; color: #605e5c;">{{ a.pma__nombre|default:"-" }}</div>
+                </td>
+                <td style="font-family: monospace;">{{ a.ip|default:"Sin IP" }}</td>
+                <td>
+                  {% if a.estado == 'ACTIVO' %}
+                  <span class="ms-badge-green">Activo</span>
+                  {% else %}
+                  <span class="ms-badge-red">Inactivo</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center" style="padding:24px; color:#605e5c;">No hay anexos registrados.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+          <div class="fluent-card" style="height: 100%;">
         <div class="fluent-card-header">
           <span>Últimos Tickets Pendientes</span>
           <a href="/tickets/" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver tickets</a>
@@ -193,7 +237,8 @@
           </table>
         </div>
     </div>
-        <div class="fluent-card" style="margin-bottom: 24px;">
+        </div>
+    <div class="fluent-card" style="margin-bottom: 24px;">
         <div class="fluent-card-header">Vigilancia de Calidad de Inventario</div>
         <div class="fluent-issue-grid">
           
@@ -263,8 +308,7 @@
       </div>
 
       
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-          <div class="fluent-card" style="height: 100%;">
+        <div class="fluent-card" style="margin-top: 24px;">
         <div class="fluent-card-header">
           <span>Actividad Reciente del Inventario</span>
           <a href="#" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver todo</a>
@@ -309,48 +353,6 @@
           </table>
         </div>
       </div>
-          <div class="fluent-card" style="height: 100%;">
-        <div class="fluent-card-header">
-          <span>Últimos Anexos Registrados</span>
-          <a href="/anexos/" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver todos</a>
-        </div>
-        <div class="fluent-table-wrapper">
-          <table class="fluent-table">
-            <thead>
-              <tr>
-                <th>Anexo</th>
-                <th>Ubicación</th>
-                <th>IP</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for a in kpis.ultimos_anexos %}
-              <tr>
-                <td>
-                  <div style="font-weight: 600; color: #0078d4;"><i class="fas fa-phone-alt" style="margin-right: 6px;"></i> {{ a.numero_anexo }}</div>
-                </td>
-                <td>
-                  <div>{{ a.unidad__nombre|default:"Sin Unidad" }}</div>
-                  <div style="font-size: 11px; color: #605e5c;">{{ a.pma__nombre|default:"-" }}</div>
-                </td>
-                <td style="font-family: monospace;">{{ a.ip|default:"Sin IP" }}</td>
-                <td>
-                  {% if a.estado == 'ACTIVO' %}
-                  <span class="ms-badge-green">Activo</span>
-                  {% else %}
-                  <span class="ms-badge-red">Inactivo</span>
-                  {% endif %}
-                </td>
-              </tr>
-              {% empty %}
-              <tr><td colspan="4" class="text-center" style="padding:24px; color:#605e5c;">No hay anexos registrados.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-        </div>
         
     </div> <!-- END LEFT COLUMN -->
 
