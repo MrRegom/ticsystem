@@ -1,4 +1,18 @@
 $(document).ready(function() {
+
+    // --- RUT FORMATTER ---
+    function formatRut(rut) {
+        let value = rut.replace(/[^0-9kK]/g, '').toUpperCase();
+        if (value.length > 1) {
+            value = value.slice(0, -1) + '-' + value.slice(-1);
+        }
+        return value;
+    }
+    
+    $('#rec-rut, #rut_nuevo').on('input', function() {
+        $(this).val(formatRut($(this).val()));
+    });
+    
     // --- SIGNATURE PADS ---
     const canvasRec = document.getElementById('canvas-receptor');
     const canvasTic = document.getElementById('canvas-tic');
@@ -180,6 +194,7 @@ $(document).ready(function() {
         if (rut.length > 7) {
             typingTimer = setTimeout(function() {
                 $('#rut-spinner').removeClass('d-none');
+                $('#btn-add-user').addClass('d-none');
                 $.ajax({
                     url: '/tickets/api/search/users/?q=' + rut,
                     type: 'GET',
@@ -187,14 +202,17 @@ $(document).ready(function() {
                         $('#rut-spinner').addClass('d-none');
                         if (resp.results && resp.results.length > 0) {
                             const user = resp.results[0];
-                            const parts = user.text.split(' - ')[0].split(' ');
-                            if (parts.length > 1) {
-                                $('#rec-nombres').val(parts[0]);
-                                $('#rec-apellidos').val(parts.slice(1).join(' '));
-                            } else {
-                                $('#rec-nombres').val(parts[0]);
-                            }
+                            $('#rec-nombres').val(user.nombres || '');
+                            $('#rec-apellidos').val(user.apellidos || '');
+                            // Habilitar campos si hay usuario
+                            $('#rec-unidad, #rec-cargo').prop('disabled', false);
                             $('#rec-nombres, #rec-apellidos').trigger('input');
+                        } else {
+                            // No encontrado -> obligar a agregar
+                            $('#rec-nombres, #rec-apellidos').val('');
+                            $('#rec-unidad, #rec-cargo').prop('disabled', true);
+                            $('#rec-nombres, #rec-apellidos').trigger('input');
+                            $('#btn-add-user').removeClass('d-none');
                         }
                     },
                     error: function() {
@@ -202,9 +220,59 @@ $(document).ready(function() {
                     }
                 });
             }, 800);
+        } else {
+            $('#rec-nombres, #rec-apellidos').val('');
+            $('#btn-add-user').addClass('d-none');
+            $('#rec-unidad, #rec-cargo').prop('disabled', true);
         }
     });
     
+    $('#btn-add-user').click(function() {
+        $('#rut_nuevo').val($('#rec-rut').val());
+        $('#nombres_nuevo, #apellidos_nuevo, #correo_nuevo').val('');
+        $('#modalCrearUsuario').modal('show');
+    });
+    
+    $('#form-crear-usuario').submit(function(e) {
+        e.preventDefault();
+        const btn = $('#btn-submit-usuario');
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+        
+        const data = {
+            rut: $('#rut_nuevo').val(),
+            first_name: $('#nombres_nuevo').val(),
+            last_name: $('#apellidos_nuevo').val(),
+            email: $('#correo_nuevo').val()
+        };
+        
+        $.ajax({
+            url: '/tickets/api/search/users/create/',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val() || window.TICKET_CONFIG?.csrfToken || '' },
+            data: JSON.stringify(data),
+            success: function(res) {
+                btn.prop('disabled', false).html('<i class="fas fa-save"></i> Guardar Funcionario');
+                if (res.success) {
+                    $('#modalCrearUsuario').modal('hide');
+                    $('#rec-rut').val(res.user.rut);
+                    $('#rec-nombres').val(res.user.nombres);
+                    $('#rec-apellidos').val(res.user.apellidos);
+                    $('#rec-unidad, #rec-cargo').prop('disabled', false);
+                    $('#btn-add-user').addClass('d-none');
+                    $('#rec-nombres, #rec-apellidos').trigger('input');
+                    Swal.fire('Éxito', 'Funcionario registrado correctamente', 'success');
+                } else {
+                    Swal.fire('Error', res.message || 'Error al guardar', 'error');
+                }
+            },
+            error: function(err) {
+                btn.prop('disabled', false).html('<i class="fas fa-save"></i> Guardar Funcionario');
+                Swal.fire('Error', 'Error de conexión', 'error');
+            }
+        });
+    });
+
     // --- TEXTO DINÁMICO ---
     $('#rec-nombres, #rec-apellidos').on('input', function() { const n = $('#rec-nombres').val() || ''; const a = $('#rec-apellidos').val() || ''; const full = (n + ' ' + a).trim(); $('#txt-receptor, #txt-receptor2').text(full || '[RECEPTOR]'); });
     $('#rec-unidad').on('change', function() { $('#txt-unidad').text($(this).val() || '[UNIDAD]'); });

@@ -25,10 +25,11 @@ class ActasDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        from mantenedores.models import Edificio, Piso, Unidad
+        from mantenedores.models import Edificio, Piso, Unidad, Cargo
         context['edificios'] = list(Edificio.objects.filter(activo=True).values('id', 'nombre'))
         context['pisos'] = list(Piso.objects.filter(activo=True).select_related('edificio').values('id', 'nombre', 'edificio__id', 'edificio__nombre'))
         context['unidades'] = list(Unidad.objects.filter(activo=True).values('id', 'nombre'))
+        context['cargos'] = list(Cargo.objects.filter(activo=True).values('id', 'nombre'))
         context['encargados'] = list(User.objects.filter(is_active=True).values('id', 'username', 'first_name', 'last_name'))
         return context
 
