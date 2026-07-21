@@ -2,395 +2,407 @@
 
 {% block extra_css %}
 <style>
-  /* Dense PowerBI Style Dashboard */
-  body { background-color: #f0f2f5; font-family: 'Segoe UI', -apple-system, sans-serif; }
-  .dash-wrap { padding: 20px; }
-  
-  /* Top KPIs (5 columns) */
-  .dense-kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
-  .dense-kpi-card {
-    background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: center;
+  /* Microsoft Fluent Design System - Strict Enterprise Styling */
+  body { 
+    background-color: #faf9f8; /* Fluent Neutral Lighter */
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; 
+    color: #323130; /* Fluent Neutral Primary */
   }
-  .dk-title { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .dk-val { font-size: 26px; font-weight: 700; color: #0f172a; line-height: 1.1; margin-bottom: 4px; }
-  .dk-sub { font-size: 11px; color: #64748b; }
-
-  /* Main Layout (60/40) */
-  .dense-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
+  .dash-wrap { padding: 32px 40px; }
   
-  .panel {
-    background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); margin-bottom: 20px;
+  /* Header */
+  .fluent-header { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .fluent-title { font-size: 24px; font-weight: 600; color: #201f1e; margin: 0; letter-spacing: -0.02em; }
+  .fluent-subtitle { font-size: 14px; color: #605e5c; margin-top: 4px; }
+  
+  .fluent-btn-primary {
+    background-color: #0078d4; color: #ffffff; border: none; border-radius: 4px;
+    padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: background-color 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
   }
-  .panel-header {
-    padding: 12px 16px; border-bottom: 1px solid #f1f5f9;
+  .fluent-btn-primary:hover { background-color: #005a9e; color: #ffffff; text-decoration: none;}
+
+  /* Cards - Fluent Depth 8 */
+  .fluent-card {
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+    padding: 20px;
+    height: 100%;
+    border: 1px solid transparent;
   }
-  .panel-title { font-size: 14px; font-weight: 600; color: #1e293b; margin: 0; }
-  .panel-subtitle { font-size: 11px; color: #64748b; margin-top: 2px; }
-  .panel-body { padding: 16px; }
+  .fluent-card-header {
+    font-size: 14px; font-weight: 600; color: #323130; margin-bottom: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
 
-  /* Grid 2x2 for issues */
-  .issue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .issue-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fafc; border-radius: 4px; border: 1px solid #f1f5f9; }
-  .issue-label { font-size: 12px; font-weight: 600; color: #334155; }
-  .issue-desc { font-size: 11px; color: #64748b; }
-  .issue-val { font-size: 16px; font-weight: 700; color: #2563eb; }
-
-  /* Progress Bars */
-  .pg-group { margin-bottom: 16px; }
-  .pg-group:last-child { margin-bottom: 0; }
-  .pg-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px; }
-  .pg-label { font-size: 12px; color: #334155; font-weight: 500; }
-  .pg-val { font-size: 12px; font-weight: 700; color: #0f172a; }
-  .pg-track { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-  .pg-fill { height: 100%; background: #2563eb; border-radius: 4px; }
+  /* Top KPIs Grid */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .kpi-item {
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+    padding: 16px 20px;
+    position: relative;
+    border-top: 4px solid #0078d4; /* Accent bar */
+  }
+  .kpi-item.accent-orange { border-top-color: #d83b01; }
+  .kpi-item.accent-red { border-top-color: #a4262c; }
+  .kpi-item.accent-green { border-top-color: #107c10; }
+  .kpi-item.accent-purple { border-top-color: #5c2d91; }
   
-  .pg-fill.cyan { background: #06b6d4; }
-  .pg-fill.green { background: #10b981; }
-  .pg-fill.orange { background: #f59e0b; }
-  .pg-fill.red { background: #ef4444; }
+  .kpi-label { font-size: 12px; font-weight: 600; color: #605e5c; text-transform: uppercase; margin-bottom: 8px; }
+  .kpi-value { font-size: 32px; font-weight: 400; color: #201f1e; line-height: 1; margin-bottom: 4px; }
+  .kpi-desc { font-size: 12px; color: #a19f9d; }
 
-  /* Health Bar */
-  .health-bar-track { height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden; margin: 16px 0 8px 0; }
-  .health-bar-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); }
+  /* Dense Layout Grid */
+  .dashboard-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; }
 
-  /* Dense Table */
-  .dense-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .dense-table thead { background: #0f4a8a; color: #fff; }
-  .dense-table th { padding: 8px 12px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;}
-  .dense-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
-  .dense-table tbody tr:hover { background: #f8fafc; }
+  /* Fluent Tables */
+  .fluent-table-wrapper { margin: 0 -20px; }
+  .fluent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .fluent-table th {
+    padding: 12px 20px; text-align: left; font-weight: 600; color: #605e5c;
+    border-bottom: 2px solid #edebe9; font-size: 12px;
+  }
+  .fluent-table td {
+    padding: 12px 20px; border-bottom: 1px solid #edebe9; color: #323130; vertical-align: middle;
+  }
+  .fluent-table tbody tr:hover { background-color: #f3f2f1; }
   
-  .btn-sm-primary { background: #0f4a8a; color: #fff; border: none; padding: 4px 12px; font-size: 11px; border-radius: 4px; cursor: pointer; text-decoration: none;}
-  .btn-sm-primary:hover { background: #0c3e75; color: #fff; text-decoration: none;}
+  .status-badge {
+    padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;
+  }
+  .badge-neutral { background: #f3f2f1; color: #323130; }
+  .badge-success { background: #dff6dd; color: #107c10; }
+  .badge-danger { background: #fde7e9; color: #a4262c; }
+
+  /* Fluent Progress Bars */
+  .ms-progress-group { margin-bottom: 16px; }
+  .ms-progress-group:last-child { margin-bottom: 0; }
+  .ms-progress-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px; }
+  .ms-progress-label { font-size: 13px; font-weight: 600; color: #323130; }
+  .ms-progress-val { font-size: 13px; font-weight: 600; color: #605e5c; }
+  .ms-progress-track { height: 6px; background-color: #edebe9; border-radius: 3px; overflow: hidden; }
+  .ms-progress-fill { height: 100%; background-color: #0078d4; border-radius: 3px; }
   
-  .panel-header-action { display: flex; justify-content: space-between; align-items: center; }
+  .ms-progress-fill.red { background-color: #a4262c; }
+  .ms-progress-fill.green { background-color: #107c10; }
+  .ms-progress-fill.orange { background-color: #d83b01; }
+
+  /* Issue Grid */
+  .fluent-issue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fluent-issue-item {
+    padding: 12px; background-color: #faf9f8; border: 1px solid #edebe9; border-radius: 2px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .issue-text .title { font-size: 13px; font-weight: 600; color: #323130; }
+  .issue-text .desc { font-size: 11px; color: #605e5c; }
+  .issue-number { font-size: 18px; font-weight: 600; color: #0078d4; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="dash-wrap">
 
-  {% if tipo_dashboard == 'corporativo' %}
-  <!-- ==================== DASHBOARD CORPORATIVO DENSO ==================== -->
-  
-  <!-- 1. Fila de KPIs (5 Columnas) -->
-  <div class="dense-kpi-grid">
-    <div class="dense-kpi-card">
-      <div class="dk-title">Inventario Total</div>
-      <div class="dk-val">{{ kpis.equipos_total|default:"0" }}</div>
-      <div class="dk-sub">Equipos bajo control</div>
+  <div class="fluent-header">
+    <div>
+      <h1 class="fluent-title">
+        {% if tipo_dashboard == 'corporativo' %}Resumen Corporativo TIC{% else %}Tablero Operativo de Soporte{% endif %}
+      </h1>
+      <div class="fluent-subtitle">Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</div>
     </div>
-    <div class="dense-kpi-card">
-      <div class="dk-title">Anexos Activos</div>
-      <div class="dk-val">{{ kpis.anexos_activos|default:"0" }}</div>
-      <div class="dk-sub">Telefonía Institucional</div>
-    </div>
-    <div class="dense-kpi-card">
-      <div class="dk-title">Actas Emitidas</div>
-      <div class="dk-val">{{ kpis.actas_emitidas|default:"0" }}</div>
-      <div class="dk-sub">Entregas oficiales</div>
-    </div>
-    <div class="dense-kpi-card">
-      <div class="dk-title">Meta Operativa</div>
-      <div class="dk-val">{{ kpis.cumplimiento_pct|default:"0" }}%</div>
-      <div class="dk-sub">{{ kpis.mant_cerradas|default:"0" }} mantenciones cerradas</div>
-    </div>
-    <div class="dense-kpi-card" style="border-left: 3px solid #ef4444;">
-      <div class="dk-title">Mantenciones Vencidas</div>
-      <div class="dk-val text-danger">{{ kpis.mant_abiertas_vencidas|default:"0" }}</div>
-      <div class="dk-sub">Abiertas sobre SLA (72h)</div>
+    <div>
+      <button class="fluent-btn-primary" onclick="location.reload();">
+        <i class="ms-Icon ms-Icon--Refresh"></i> Actualizar
+      </button>
     </div>
   </div>
 
-  <!-- 2. Layout Principal -->
-  <div class="dense-layout">
-    
-    <!-- Columna Izquierda (Ancha) -->
+  {% if tipo_dashboard == 'corporativo' %}
+  <!-- ==================== DASHBOARD CORPORATIVO FLUENT ==================== -->
+  
+  <div class="kpi-grid">
+    <div class="kpi-item">
+      <div class="kpi-label">Inventario Total</div>
+      <div class="kpi-value">{{ kpis.equipos_total|default:"0" }}</div>
+      <div class="kpi-desc">Equipos registrados</div>
+    </div>
+    <div class="kpi-item accent-purple">
+      <div class="kpi-label">Anexos Activos</div>
+      <div class="kpi-value">{{ kpis.anexos_activos|default:"0" }}</div>
+      <div class="kpi-desc">Telefonía IP</div>
+    </div>
+    <div class="kpi-item accent-green">
+      <div class="kpi-label">Actas Emitidas</div>
+      <div class="kpi-value">{{ kpis.actas_emitidas|default:"0" }}</div>
+      <div class="kpi-desc">Entregas oficiales</div>
+    </div>
+    <div class="kpi-item accent-orange">
+      <div class="kpi-label">Cumplimiento SLA</div>
+      <div class="kpi-value">{{ kpis.cumplimiento_pct|default:"0" }}%</div>
+      <div class="kpi-desc">{{ kpis.mant_cerradas|default:"0" }} mantenciones</div>
+    </div>
+    <div class="kpi-item accent-red">
+      <div class="kpi-label">Mantenciones Vencidas</div>
+      <div class="kpi-value" style="color:#a4262c;">{{ kpis.mant_abiertas_vencidas|default:"0" }}</div>
+      <div class="kpi-desc">Fuera de 72 horas</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- LEFT COLUMN -->
     <div>
-      
-      <!-- Vigilancia -->
-      <div class="panel">
-        <div class="panel-header">
-          <h3 class="panel-title">Vigilancia de calidad de inventario</h3>
-          <p class="panel-subtitle">Riesgos que impactan auditoría, red y trazabilidad.</p>
-        </div>
-        <div class="panel-body">
-          <div class="issue-grid">
-            <div class="issue-item">
-              <div>
-                <div class="issue-label">Sin usuario responsable</div>
-                <div class="issue-desc">Asignación incompleta</div>
-              </div>
-              <div class="issue-val">{{ kpis.equipos_sin_usuario|default:"0" }}</div>
+      <div class="fluent-card" style="margin-bottom: 24px;">
+        <div class="fluent-card-header">Vigilancia de Calidad de Inventario</div>
+        <div class="fluent-issue-grid">
+          <div class="fluent-issue-item">
+            <div class="issue-text">
+              <div class="title">Sin usuario responsable</div>
+              <div class="desc">Asignación incompleta</div>
             </div>
-            <div class="issue-item">
-              <div>
-                <div class="issue-label">IPs en Falla / Duplicadas</div>
-                <div class="issue-desc">Colisión o alerta de red</div>
-              </div>
-              <div class="issue-val">{{ kpis.ips_falla|default:"0" }}</div>
-            </div>
-            <div class="issue-item">
-              <div>
-                <div class="issue-label">Sin PMA / Ubicación</div>
-                <div class="issue-desc">Activo sin localización</div>
-              </div>
-              <div class="issue-val">{{ kpis.equipos_sin_pma|default:"0" }}</div>
-            </div>
-            <div class="issue-item">
-              <div>
-                <div class="issue-label">Equipos sin IP</div>
-                <div class="issue-desc">Falta registro de red</div>
-              </div>
-              <div class="issue-val">{{ kpis.equipos_sin_ip|default:"0" }}</div>
-            </div>
+            <div class="issue-number" style="color:#a4262c;">{{ kpis.equipos_sin_usuario|default:"0" }}</div>
           </div>
-
-          <div style="margin-top: 20px;">
-            <div class="pg-label">Índice de salud operativa</div>
-            <div class="health-bar-track">
-              <div class="health-bar-fill" style="width: {{ kpis.indice_salud|default:'0' }}%;"></div>
+          <div class="fluent-issue-item">
+            <div class="issue-text">
+              <div class="title">IPs en Falla</div>
+              <div class="desc">Colisión de red</div>
             </div>
-            <div class="dk-sub">{{ kpis.indice_salud|default:"0" }}/100</div>
+            <div class="issue-number" style="color:#a4262c;">{{ kpis.ips_falla|default:"0" }}</div>
+          </div>
+          <div class="fluent-issue-item">
+            <div class="issue-text">
+              <div class="title">Sin PMA / Ubicación</div>
+              <div class="desc">Activo sin localizar</div>
+            </div>
+            <div class="issue-number" style="color:#d83b01;">{{ kpis.equipos_sin_pma|default:"0" }}</div>
+          </div>
+          <div class="fluent-issue-item">
+            <div class="issue-text">
+              <div class="title">Equipos sin IP</div>
+              <div class="desc">Red no configurada</div>
+            </div>
+            <div class="issue-number">{{ kpis.equipos_sin_ip|default:"0" }}</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label">Índice de Salud Operativa</span>
+            <span class="ms-progress-val">{{ kpis.indice_salud|default:"0" }}/100</span>
+          </div>
+          <div class="ms-progress-track" style="height: 8px;">
+            <div class="ms-progress-fill" style="width: {{ kpis.indice_salud|default:'0' }}%; background-color: #107c10;"></div>
           </div>
         </div>
       </div>
 
-      <!-- Tabla Actividad Reciente -->
-      <div class="panel">
-        <div class="panel-header panel-header-action">
-          <div>
-            <h3 class="panel-title">Actividad reciente del inventario</h3>
-            <p class="panel-subtitle">Últimos equipos ingresados o tocados por la mesa TIC.</p>
-          </div>
-          <a href="#" class="btn-sm-primary">Ver inventario</a>
+      <div class="fluent-card">
+        <div class="fluent-card-header">
+          <span>Actividad Reciente del Inventario</span>
+          <a href="#" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver todo</a>
         </div>
-        <table class="dense-table">
-          <thead>
-            <tr>
-              <th>Equipo / Serial</th>
-              <th>Ubicación</th>
-              <th>Operador</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for r in kpis.actividad_reciente|slice:":6" %}
-            <tr>
-              <td>
-                <div style="font-weight: 600; color:#0f172a;">{{ r.articulo__nombre }}</div>
-                <div style="font-size: 10px; color:#64748b; font-family: monospace;">{{ r.serial_number|default:"Sin Serie" }}</div>
-              </td>
-              <td>
-                <div style="font-weight: 500;">{{ r.pma__recinto__unidad__nombre|default:"Sin Unidad" }}</div>
-                <div style="font-size: 10px; color:#64748b;">{{ r.pma__nombre|default:"-" }}</div>
-              </td>
-              <td>{{ r.modificado_por__first_name|default:"-" }} {{ r.modificado_por__last_name|default:"" }}</td>
-              <td>{{ r.fecha_modificacion|date:"d/m/Y H:i" }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4" class="text-center text-muted" style="padding: 20px;">Sin actividad reciente</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        <div class="fluent-table-wrapper">
+          <table class="fluent-table">
+            <thead>
+              <tr>
+                <th>Equipo</th>
+                <th>Ubicación</th>
+                <th>Operador</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in kpis.actividad_reciente|slice:":6" %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600;">{{ r.articulo__nombre }}</div>
+                  <div style="font-size: 11px; color: #605e5c;">{{ r.serial_number|default:"Sin Serie" }}</div>
+                </td>
+                <td>
+                  <div>{{ r.pma__recinto__unidad__nombre|default:"Sin Unidad" }}</div>
+                  <div style="font-size: 11px; color: #605e5c;">{{ r.pma__nombre|default:"-" }}</div>
+                </td>
+                <td>{{ r.modificado_por__first_name|default:"-" }} {{ r.modificado_por__last_name|default:"" }}</td>
+                <td>{{ r.fecha_modificacion|date:"d/m/Y H:i" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center" style="padding:24px; color:#605e5c;">Sin actividad reciente.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
-
     </div>
 
-    <!-- Columna Derecha (Estrecha) -->
+    <!-- RIGHT COLUMN -->
     <div>
-      
-      <!-- Meta Operativa -->
-      <div class="panel">
-        <div class="panel-header">
-          <h3 class="panel-title">Meta operativa de mantención</h3>
-          <p class="panel-subtitle">Referencia de 72 horas, no contractual.</p>
+      <div class="fluent-card" style="margin-bottom: 24px;">
+        <div class="fluent-card-header">Meta Operativa de Mantención</div>
+        
+        <div class="ms-progress-group">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label">Cumplimiento global</span>
+            <span class="ms-progress-val">{{ kpis.cumplimiento_pct|default:"0" }}%</span>
+          </div>
+          <div class="ms-progress-track">
+            <div class="ms-progress-fill" style="width: {{ kpis.cumplimiento_pct|default:'0' }}%;"></div>
+          </div>
         </div>
-        <div class="panel-body">
-          <div class="pg-group">
-            <div class="pg-header">
-              <span class="pg-label">Cumplimiento</span>
-              <span class="pg-val">{{ kpis.cumplimiento_pct|default:"0" }}%</span>
-            </div>
-            <div class="pg-track"><div class="pg-fill cyan" style="width: {{ kpis.cumplimiento_pct|default:'0' }}%;"></div></div>
+        
+        <div class="ms-progress-group">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label">Mantenciones Abiertas</span>
+            <span class="ms-progress-val">{{ kpis.mant_abiertas|default:"0" }}</span>
           </div>
-          
-          <div class="pg-group">
-            <div class="pg-header">
-              <span class="pg-label">Tickets Abiertos</span>
-              <span class="pg-val">{{ kpis.mant_abiertas|default:"0" }}</span>
-            </div>
-            <div class="pg-track">
-              <!-- Visual trick: relative fill based on total tickets roughly -->
-              <div class="pg-fill cyan" style="width: 40%;"></div>
-            </div>
+          <div class="ms-progress-track">
+            <div class="ms-progress-fill" style="width: 40%;"></div>
           </div>
+        </div>
 
-          <div class="pg-group">
-            <div class="pg-header">
-              <span class="pg-label" style="color: #ef4444;">Abiertos Vencidos</span>
-              <span class="pg-val text-danger">{{ kpis.mant_abiertas_vencidas|default:"0" }}</span>
-            </div>
-            <div class="pg-track"><div class="pg-fill red" style="width: 20%;"></div></div>
+        <div class="ms-progress-group">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label" style="color:#a4262c;">Abiertas Vencidas</span>
+            <span class="ms-progress-val" style="color:#a4262c;">{{ kpis.mant_abiertas_vencidas|default:"0" }}</span>
           </div>
-          
-          <div class="dk-sub" style="margin-top: 16px;">Total mantenciones: {{ kpis.mant_total|default:"0" }} | Cerradas: {{ kpis.mant_cerradas|default:"0" }}</div>
+          <div class="ms-progress-track">
+            <div class="ms-progress-fill red" style="width: 20%;"></div>
+          </div>
+        </div>
+        <div style="font-size: 11px; color: #605e5c; margin-top: 12px;">Total mantenciones: {{ kpis.mant_total|default:"0" }}</div>
+      </div>
+
+      <div class="fluent-card" style="margin-bottom: 24px;">
+        <div class="fluent-card-header">Distribución por Estado</div>
+        <div class="ms-progress-group">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label">Funcional</span>
+            <span class="ms-progress-val">{{ kpis.equipos_funcional|default:"0" }}</span>
+          </div>
+          <div class="ms-progress-track"><div class="ms-progress-fill" style="width: 80%;"></div></div>
+        </div>
+        <div class="ms-progress-group">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label">Desuso / Bodega</span>
+            <span class="ms-progress-val">{{ kpis.equipos_desuso|default:"0" }}</span>
+          </div>
+          <div class="ms-progress-track"><div class="ms-progress-fill" style="width: 15%; background-color:#a19f9d;"></div></div>
+        </div>
+        <div class="ms-progress-group">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label">En Mantenimiento</span>
+            <span class="ms-progress-val">{{ kpis.equipos_mantenimiento|default:"0" }}</span>
+          </div>
+          <div class="ms-progress-track"><div class="ms-progress-fill orange" style="width: 5%;"></div></div>
         </div>
       </div>
 
-      <!-- Distribucion Estado -->
-      <div class="panel">
-        <div class="panel-header">
-          <h3 class="panel-title">Distribución por estado</h3>
-          <p class="panel-subtitle">Cómo está el parque tecnológico hoy.</p>
+      <div class="fluent-card">
+        <div class="fluent-card-header">Mapa de Calor por Unidades</div>
+        {% for m in kpis.mapa_calor|slice:":5" %}
+        <div class="ms-progress-group">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label" style="font-weight: 400; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 200px;">
+              {{ m.equipo__pma__recinto__unidad__nombre|default:"Desconocido" }}
+            </span>
+            <span class="ms-progress-val">{{ m.total }}</span>
+          </div>
+          <div class="ms-progress-track"><div class="ms-progress-fill" style="width: {{ m.total|add:10 }}%;"></div></div>
         </div>
-        <div class="panel-body">
-          <div class="pg-group">
-            <div class="pg-header">
-              <span class="pg-label">Funcional</span>
-              <span class="pg-val">{{ kpis.equipos_funcional|default:"0" }}</span>
-            </div>
-            <div class="pg-track"><div class="pg-fill cyan" style="width: 80%;"></div></div>
-          </div>
-          <div class="pg-group">
-            <div class="pg-header">
-              <span class="pg-label">Desuso / Bodega</span>
-              <span class="pg-val">{{ kpis.equipos_desuso|default:"0" }}</span>
-            </div>
-            <div class="pg-track"><div class="pg-fill" style="width: 15%; background: #cbd5e1;"></div></div>
-          </div>
-          <div class="pg-group">
-            <div class="pg-header">
-              <span class="pg-label">En Mantenimiento</span>
-              <span class="pg-val">{{ kpis.equipos_mantenimiento|default:"0" }}</span>
-            </div>
-            <div class="pg-track"><div class="pg-fill orange" style="width: 5%;"></div></div>
-          </div>
-        </div>
+        {% empty %}
+        <div class="text-center" style="font-size: 12px; color: #605e5c;">Sin datos.</div>
+        {% endfor %}
       </div>
-
-      <!-- Mapa de Calor -->
-      <div class="panel">
-        <div class="panel-header">
-          <h3 class="panel-title">Mapa de calor por unidades</h3>
-          <p class="panel-subtitle">Equipos registrados en inventario por servicio.</p>
-        </div>
-        <div class="panel-body">
-          {% for m in kpis.mapa_calor|slice:":5" %}
-          <div class="pg-group">
-            <div class="pg-header">
-              <span class="pg-label text-truncate" style="max-width: 200px;">{{ m.equipo__pma__recinto__unidad__nombre|default:"Desconocido" }}</span>
-              <span class="pg-val">{{ m.total }}</span>
-            </div>
-            <div class="pg-track"><div class="pg-fill cyan" style="width: {{ m.total|add:20 }}%;"></div></div>
-          </div>
-          {% empty %}
-          <div class="text-muted text-center" style="font-size: 12px;">Sin datos suficientes</div>
-          {% endfor %}
-        </div>
-      </div>
-
     </div>
   </div>
 
 
   {% else %}
-  <!-- ==================== DASHBOARD RESOLUTOR DENSO ==================== -->
+  <!-- ==================== DASHBOARD RESOLUTOR FLUENT ==================== -->
   
-  <!-- 1. Fila de KPIs Resolutor (4 Columnas) -->
-  <div class="dense-kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
-    <div class="dense-kpi-card" style="border-left: 3px solid #3b82f6;">
-      <div class="dk-title">Mis Tickets Asignados</div>
-      <div class="dk-val">{{ kpis.mis_tickets|default:"0" }}</div>
-      <div class="dk-sub">En cola de trabajo personal</div>
+  <div class="kpi-grid">
+    <div class="kpi-item">
+      <div class="kpi-label">Mis Tickets Asignados</div>
+      <div class="kpi-value">{{ kpis.mis_tickets|default:"0" }}</div>
+      <div class="kpi-desc">En cola de trabajo personal</div>
     </div>
-    <div class="dense-kpi-card" style="border-left: 3px solid #f59e0b;">
-      <div class="dk-title">Tickets Grupo (Sin Asignar)</div>
-      <div class="dk-val">{{ kpis.tickets_grupo_sin_asignar|default:"0" }}</div>
-      <div class="dk-sub">Pendientes de toma en la bandeja</div>
+    <div class="kpi-item accent-orange">
+      <div class="kpi-label">Tickets Grupo (Sin Asignar)</div>
+      <div class="kpi-value">{{ kpis.tickets_grupo_sin_asignar|default:"0" }}</div>
+      <div class="kpi-desc">Bandeja de grupo</div>
     </div>
-    <div class="dense-kpi-card" style="border-left: 3px solid #ef4444;">
-      <div class="dk-title">Tickets Vencidos (SLA)</div>
-      <div class="dk-val text-danger">{{ kpis.tickets_vencidos|default:"0" }}</div>
-      <div class="dk-sub">Prioridad alta o urgente</div>
+    <div class="kpi-item accent-red">
+      <div class="kpi-label">Tickets Vencidos (SLA)</div>
+      <div class="kpi-value" style="color:#a4262c;">{{ kpis.tickets_vencidos|default:"0" }}</div>
+      <div class="kpi-desc">Atención requerida</div>
     </div>
-    <div class="dense-kpi-card" style="border-left: 3px solid #10b981;">
-      <div class="dk-title">SLA Cumplimiento Grupo</div>
-      <div class="dk-val">{{ kpis.sla_cumplimiento|default:"0" }}%</div>
-      <div class="dk-sub">Métrica últimos 30 días</div>
+    <div class="kpi-item accent-green">
+      <div class="kpi-label">SLA Cumplimiento Grupo</div>
+      <div class="kpi-value">{{ kpis.sla_cumplimiento|default:"0" }}%</div>
+      <div class="kpi-desc">Últimos 30 días</div>
     </div>
   </div>
 
-  <div class="dense-layout">
-    
-    <!-- Columna Izquierda Resolutor -->
+  <div class="dashboard-grid">
     <div>
-      <div class="panel">
-        <div class="panel-header panel-header-action">
-          <div>
-            <h3 class="panel-title">Actividad Reciente del Grupo</h3>
-            <p class="panel-subtitle">Últimos tickets creados o modificados en tus grupos.</p>
-          </div>
-          <a href="{% url 'tickets:dashboard' %}" class="btn-sm-primary">Ver Kanban</a>
+      <div class="fluent-card">
+        <div class="fluent-card-header">
+          <span>Actividad Reciente del Grupo</span>
+          <a href="{% url 'tickets:dashboard' %}" class="fluent-btn-primary" style="padding: 4px 12px; font-size: 12px;">Ver Kanban</a>
         </div>
-        <table class="dense-table">
-          <thead>
-            <tr>
-              <th>Ticket</th>
-              <th>Descripción</th>
-              <th>Estado</th>
-              <th>Prioridad</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for r in kpis.actividad_reciente %}
-            <tr>
-              <td>
-                <div style="font-weight: 700; color: #0f172a;">{{ r.correlativo }}</div>
-                <div style="font-size: 10px; color: #64748b;">{{ r.activo__pmalugar|default:"-" }}</div>
-              </td>
-              <td>{{ r.descripcion|truncatechars:45 }}</td>
-              <td><span style="font-size: 10px; font-weight: 700; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">{{ r.estado }}</span></td>
-              <td><span style="color: {{ r.prioridad__color_hex }}; font-weight: 600; font-size: 11px;">{{ r.prioridad__nombre }}</span></td>
-              <td>{{ r.fecha_creacion|date:"d/m H:i" }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="5" class="text-center" style="padding:20px;">No hay actividad de tickets recientes.</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Columna Derecha Resolutor -->
-    <div>
-      <div class="panel">
-        <div class="panel-header">
-          <h3 class="panel-title">Métricas de Soporte</h3>
-          <p class="panel-subtitle">Desempeño general de tu mesa de ayuda.</p>
-        </div>
-        <div class="panel-body">
-          <div class="pg-group">
-            <div class="pg-header">
-              <span class="pg-label">SLA Global del Equipo</span>
-              <span class="pg-val">{{ kpis.sla_cumplimiento|default:"0" }}%</span>
-            </div>
-            <div class="pg-track"><div class="pg-fill green" style="width: {{ kpis.sla_cumplimiento|default:'0' }}%;"></div></div>
-          </div>
-          
-          <div class="pg-group" style="margin-top: 20px;">
-            <div class="pg-header">
-              <span class="pg-label">Tickets Vencidos vs Totales</span>
-              <span class="pg-val text-danger">{{ kpis.tickets_vencidos|default:"0" }}</span>
-            </div>
-            <div class="pg-track"><div class="pg-fill red" style="width: 15%;"></div></div>
-          </div>
+        <div class="fluent-table-wrapper">
+          <table class="fluent-table">
+            <thead>
+              <tr>
+                <th>Correlativo</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in kpis.actividad_reciente %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600;">{{ r.correlativo }}</div>
+                  <div style="font-size: 11px; color: #605e5c;">{{ r.activo__pmalugar|default:"-" }}</div>
+                </td>
+                <td>{{ r.descripcion|truncatechars:45 }}</td>
+                <td><span class="status-badge badge-neutral">{{ r.estado }}</span></td>
+                <td><span style="color: {{ r.prioridad__color_hex }}; font-weight: 600; font-size: 11px;">{{ r.prioridad__nombre }}</span></td>
+                <td>{{ r.fecha_creacion|date:"d/m H:i" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="5" class="text-center" style="padding:24px; color:#605e5c;">No hay actividad de tickets recientes.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
+    <div>
+      <div class="fluent-card">
+        <div class="fluent-card-header">Métricas de Soporte</div>
+        
+        <div class="ms-progress-group">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label">SLA Global del Equipo</span>
+            <span class="ms-progress-val">{{ kpis.sla_cumplimiento|default:"0" }}%</span>
+          </div>
+          <div class="ms-progress-track"><div class="ms-progress-fill green" style="width: {{ kpis.sla_cumplimiento|default:'0' }}%;"></div></div>
+        </div>
+        
+        <div class="ms-progress-group" style="margin-top: 24px;">
+          <div class="ms-progress-header">
+            <span class="ms-progress-label" style="color:#a4262c;">Tickets Vencidos vs Totales</span>
+            <span class="ms-progress-val" style="color:#a4262c;">{{ kpis.tickets_vencidos|default:"0" }}</span>
+          </div>
+          <div class="ms-progress-track"><div class="ms-progress-fill red" style="width: 15%;"></div></div>
+        </div>
+      </div>
+    </div>
   </div>
   {% endif %}
 
