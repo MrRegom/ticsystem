@@ -31,6 +31,26 @@
                 <input type="email" id="correo_nuevo" name="correo_nuevo" class="ms-input form-control" placeholder="usuario@correo.cl">
               </div>
             </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Cargo / Rol</label>
+                <select id="cargo_nuevo" name="cargo_nuevo" class="ms-input form-control">
+                  <option value="">-- Seleccionar Cargo --</option>
+                  {% for c in cargos %}
+                    <option value="{{ c.nombre }}">{{ c.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Unidad / Servicio</label>
+                <select id="unidad_nueva" name="unidad_nueva" class="ms-input form-control">
+                  <option value="">-- Seleccionar Unidad --</option>
+                  {% for u in unidades %}
+                    <option value="{{ u.nombre }}">{{ u.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer" style="border-top:1px solid #e2e8f0;">
             <button type="button" class="fluent-btn-secondary" onclick="$('#modalCrearUsuario').modal('hide')">Cancelar</button>
@@ -71,6 +91,26 @@
               <div class="form-group col-md-12">
                 <label style="font-weight:600; font-size:0.85rem; color:#334155;">Correo Electrónico <span style="color:#94a3b8;font-weight:400;">(opcional)</span></label>
                 <input type="email" id="correo_nuevo" name="correo_nuevo" class="ms-input form-control" placeholder="usuario@correo.cl">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Cargo / Rol</label>
+                <select id="cargo_nuevo" name="cargo_nuevo" class="ms-input form-control">
+                  <option value="">-- Seleccionar Cargo --</option>
+                  {% for c in cargos %}
+                    <option value="{{ c.nombre }}">{{ c.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Unidad / Servicio</label>
+                <select id="unidad_nueva" name="unidad_nueva" class="ms-input form-control">
+                  <option value="">-- Seleccionar Unidad --</option>
+                  {% for u in unidades %}
+                    <option value="{{ u.nombre }}">{{ u.nombre }}</option>
+                  {% endfor %}
+                </select>
               </div>
             </div>
           </div>
@@ -383,6 +423,26 @@
                 <input type="email" id="correo_nuevo" name="correo_nuevo" class="ms-input form-control" placeholder="usuario@correo.cl">
               </div>
             </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Cargo / Rol</label>
+                <select id="cargo_nuevo" name="cargo_nuevo" class="ms-input form-control">
+                  <option value="">-- Seleccionar Cargo --</option>
+                  {% for c in cargos %}
+                    <option value="{{ c.nombre }}">{{ c.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Unidad / Servicio</label>
+                <select id="unidad_nueva" name="unidad_nueva" class="ms-input form-control">
+                  <option value="">-- Seleccionar Unidad --</option>
+                  {% for u in unidades %}
+                    <option value="{{ u.nombre }}">{{ u.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer" style="border-top:1px solid #e2e8f0;">
             <button type="button" class="fluent-btn-secondary" onclick="$('#modalCrearUsuario').modal('hide')">Cancelar</button>
@@ -428,6 +488,26 @@
               <div class="form-group col-md-12">
                 <label style="font-weight:600; font-size:0.85rem; color:#334155;">Correo Electrónico <span style="color:#94a3b8;font-weight:400;">(opcional)</span></label>
                 <input type="email" id="correo_nuevo" name="correo_nuevo" class="ms-input form-control" placeholder="usuario@correo.cl">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Cargo / Rol</label>
+                <select id="cargo_nuevo" name="cargo_nuevo" class="ms-input form-control">
+                  <option value="">-- Seleccionar Cargo --</option>
+                  {% for c in cargos %}
+                    <option value="{{ c.nombre }}">{{ c.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label style="font-weight:600; font-size:0.85rem; color:#334155;">Unidad / Servicio</label>
+                <select id="unidad_nueva" name="unidad_nueva" class="ms-input form-control">
+                  <option value="">-- Seleccionar Unidad --</option>
+                  {% for u in unidades %}
+                    <option value="{{ u.nombre }}">{{ u.nombre }}</option>
+                  {% endfor %}
+                </select>
               </div>
             </div>
           </div>

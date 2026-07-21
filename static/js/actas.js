@@ -204,6 +204,7 @@ $(document).ready(function() {
                             const user = resp.results[0];
                             $('#rec-nombres').val(user.nombres || '');
                             $('#rec-apellidos').val(user.apellidos || '');
+                            $('#rec-correo').val(user.correo || '');
                             // Habilitar campos si hay usuario
                             $('#rec-unidad, #rec-cargo').prop('disabled', false);
                             $('#rec-nombres, #rec-apellidos').trigger('input');
@@ -240,9 +241,11 @@ $(document).ready(function() {
         
         const data = {
             rut: $('#rut_nuevo').val(),
-            first_name: $('#nombres_nuevo').val(),
-            last_name: $('#apellidos_nuevo').val(),
-            email: $('#correo_nuevo').val()
+            nombres: $('#nombres_nuevo').val(),
+            apellidos: $('#apellidos_nuevo').val(),
+            correo: $('#correo_nuevo').val(),
+            cargo: $('#cargo_nuevo').val(),
+            unidad: $('#unidad_nueva').val()
         };
         
         $.ajax({
@@ -258,6 +261,7 @@ $(document).ready(function() {
                     $('#rec-rut').val(res.user.rut);
                     $('#rec-nombres').val(res.user.nombres);
                     $('#rec-apellidos').val(res.user.apellidos);
+                    $('#rec-correo').val(res.user.correo || '');
                     $('#rec-unidad, #rec-cargo').prop('disabled', false);
                     $('#btn-add-user').addClass('d-none');
                     $('#rec-nombres, #rec-apellidos').trigger('input');
