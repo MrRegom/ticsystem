@@ -48,7 +48,7 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
     
     # 1. HEADER (Logos y Título)
     logo_minsal_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo_minsal.png')
-    logo_hmm_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo_hospital.png') # Placeholder
+    logo_hmm_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logoHospital.jpeg')
     
     title_html = (
         f"<font color='{COLOR_PRIMARY}' size=14><b>ACTA DE ENTREGA DE EQUIPAMIENTO</b></font><br/>"
