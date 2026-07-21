@@ -252,7 +252,7 @@ def obtener_kpis_generales():
 def obtener_kpis_resolutor(user):
     from tickets.models import Ticket
     from equipos.models import Equipo
-    from mantenedores.models import Anexo
+    from anexos.models import Anexo
     from actas.models import Acta
     from django.db.models import Q
     from django.utils import timezone
