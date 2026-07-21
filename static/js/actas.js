@@ -118,7 +118,7 @@ $(document).ready(function() {
         },
         columns: [
             { data: null, orderable: false, render: function(data, type, row) {
-                return `<button type="button" class="btn btn-sm btn-primary btn-add-item" data-tipo="EQUIPO" data-id="${row.id}" data-articulo="${row.articulo}" data-marcamodelo="${row.marca} ${row.modelo}" data-serie="${row.serial_number}">Agregar</button>`;
+                return `<button type="button" class="btn ms-btn-primary btn-sm btn-add-item" style="text-decoration: none !important;" data-tipo="EQUIPO" data-id="${row.id}" data-articulo="${row.articulo}" data-marcamodelo="${row.marca} ${row.modelo}" data-serie="${row.serial_number}">Agregar</button>`;
             }},
             { data: 'articulo' },
             { data: 'marca' },
@@ -139,7 +139,7 @@ $(document).ready(function() {
         },
         columns: [
             { data: null, orderable: false, render: function(data, type, row) {
-                return `<button type="button" class="btn btn-sm btn-primary btn-add-item" data-tipo="ANEXO" data-id="${row.id}" data-articulo="Anexo IP ${row.numero_anexo}" data-marcamodelo="${row.marca} ${row.modelo}" data-serie="${row.serial_number}">Agregar</button>`;
+                return `<button type="button" class="btn ms-btn-primary btn-sm btn-add-item" style="text-decoration: none !important;" data-tipo="ANEXO" data-id="${row.id}" data-articulo="Anexo IP ${row.numero_anexo}" data-marcamodelo="${row.marca} ${row.modelo}" data-serie="${row.serial_number}">Agregar</button>`;
             }},
             { data: 'numero_anexo' },
             { data: 'modelo' },
@@ -176,8 +176,8 @@ $(document).ready(function() {
         itemsSeleccionados.push(item);
         actualizarTablaSeleccionados();
         
-        btn.removeClass('btn-primary').addClass('btn-success').html('Agregado');
-        setTimeout(() => btn.removeClass('btn-success').addClass('btn-primary').html('Agregar'), 1500);
+        btn.removeClass('ms-btn-primary').addClass('btn-success').html('Agregado');
+        setTimeout(() => btn.removeClass('btn-success').addClass('ms-btn-primary').html('Agregar'), 1500);
     });
 
     function actualizarTablaSeleccionados() {
