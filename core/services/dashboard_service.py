@@ -306,20 +306,36 @@ def obtener_kpis_resolutor(user):
     )
     
     # Listas adicionales para dar densidad visual al tablero de Resolutor (Vistas Globales)
-    ultimos_equipos = list(Equipo.objects.order_by('-fecha_creacion')[:5].values(
-        'serial_number', 'articulo__nombre', 'marca__nombre', 'estado__nombre'
-    ))
+    from equipos.services.equipo_service import _resolver_imagen_equipo
+    ultimos_equipos_qs = Equipo.objects.select_related('articulo', 'marca', 'estado', 'modelo').order_by('-fecha_creacion')[:5]
+    ultimos_equipos = []
+    for e in ultimos_equipos_qs:
+        ultimos_equipos.append({
+            'id': e.id,
+            'serial_number': e.serial_number,
+            'articulo__nombre': e.articulo.nombre if e.articulo else '',
+            'marca__nombre': e.marca.nombre if e.marca else '',
+            'estado__nombre': e.estado.nombre if e.estado else '',
+            'imagen': _resolver_imagen_equipo(e)
+        })
     
     ultimos_anexos = list(Anexo.objects.select_related(
         'unidad', 'edificio', 'piso'
     ).order_by('-creado_en')[:5].values(
-        'numero_anexo', 'unidad__nombre', 'ip', 'edificio__nombre', 'piso__nombre',
-        'pma__nombre', 'estado'
+        'id', 'numero_anexo', 'unidad__nombre', 'ip', 'edificio__nombre', 'piso__nombre',
+        'pma__nombre', 'estado', 'foto'
     ))
 
     ultimas_actas = list(Acta.objects.order_by('-fecha')[:5].values(
-        'codigo', 'receptor_nombre', 'estado', 'fecha'
+        'id', 'codigo', 'receptor_nombre', 'estado', 'fecha'
     ))
+    
+    # KPIs de Equipamiento para Resolutor
+    estados_qs = Equipo.objects.values('estado__nombre').annotate(n=Count('id'))
+    estados_nombres = {e['estado__nombre']: e['n'] for e in estados_qs}
+    equipos_funcional = estados_nombres.get('Funcional', 0)
+    equipos_desuso = estados_nombres.get('Desuso', 0)
+    equipos_mantenimiento = estados_nombres.get('Mantenimiento', 0)
 
     return {
         'mis_tickets': mis_tickets_count,
@@ -332,6 +348,11 @@ def obtener_kpis_resolutor(user):
         'ultimos_equipos': ultimos_equipos,
         'ultimos_anexos': ultimos_anexos,
         'ultimas_actas': ultimas_actas,
+        
+        # Estados de Equipamiento
+        'equipos_funcional': equipos_funcional,
+        'equipos_desuso': equipos_desuso,
+        'equipos_mantenimiento': equipos_mantenimiento,
         
         # Trends
         'trend_mis_tickets': {'val': 5, 'dir': 'up', 'color': 'text-success'},
