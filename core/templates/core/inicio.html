@@ -242,8 +242,17 @@
               {% for r in kpis.actividad_reciente|slice:":6" %}
               <tr>
                 <td>
-                  <div style="font-weight: 600;">{{ r.articulo__nombre }}</div>
-                  <div style="font-size: 11px; color: #605e5c;">{{ r.serial_number|default:"Sin Serie" }}</div>
+                  <div style="display: flex; gap: 12px; align-items: center;">
+                    {% if r.imagen %}
+                    <img src="/media/{{ r.imagen }}" class="dash-thumb" onclick="abrirModalImagen(this.src)" alt="{{ r.articulo__nombre }}">
+                    {% else %}
+                    <div class="dash-thumb-placeholder"><i class="fas fa-desktop"></i></div>
+                    {% endif %}
+                    <div>
+                      <div style="font-weight: 600;">{{ r.articulo__nombre }}</div>
+                      <div style="font-size: 11px; color: #605e5c;">{{ r.serial_number|default:"Sin Serie" }}</div>
+                    </div>
+                  </div>
                 </td>
                 <td>
                   <div>{{ r.pma__recinto__unidad__nombre|default:"Sin Unidad" }}</div>
@@ -254,6 +263,89 @@
               </tr>
               {% empty %}
               <tr><td colspan="4" class="text-center" style="padding:24px; color:#605e5c;">Sin actividad reciente.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+      <div class="fluent-card" style="margin-top: 24px;">
+        <div class="fluent-card-header">
+          <span>Últimos Anexos Registrados</span>
+          <a href="{% url 'anexos_list' %}" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver todos</a>
+        </div>
+        <div class="fluent-table-wrapper">
+          <table class="fluent-table">
+            <thead>
+              <tr>
+                <th>Anexo</th>
+                <th>Ubicación</th>
+                <th>IP</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in kpis.ultimos_anexos %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600; color: #0078d4;"><i class="fas fa-phone-alt" style="margin-right: 6px;"></i> {{ a.numero_anexo }}</div>
+                </td>
+                <td>
+                  <div>{{ a.unidad__nombre|default:"Sin Unidad" }}</div>
+                  <div style="font-size: 11px; color: #605e5c;">{{ a.pma__nombre|default:"-" }}</div>
+                </td>
+                <td style="font-family: monospace;">{{ a.ip|default:"Sin IP" }}</td>
+                <td>
+                  {% if a.estado == 'ACTIVO' %}
+                  <span class="ms-badge-green">Activo</span>
+                  {% else %}
+                  <span class="ms-badge-red">Inactivo</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center" style="padding:24px; color:#605e5c;">No hay anexos registrados.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="fluent-card" style="margin-top: 24px;">
+        <div class="fluent-card-header">
+          <span>Últimos Tickets Pendientes</span>
+          <a href="{% url 'tickets_list' %}" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver tickets</a>
+        </div>
+        <div class="fluent-table-wrapper">
+          <table class="fluent-table">
+            <thead>
+              <tr>
+                <th>Ticket</th>
+                <th>Asunto</th>
+                <th>Ubicación</th>
+                <th>Prioridad</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in kpis.ultimos_tickets_pendientes %}
+              <tr>
+                <td style="font-weight: 600; color: #0078d4;">#{{ t.correlativo }}</td>
+                <td>
+                  <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">{{ t.descripcion }}</div>
+                  <div style="font-size: 11px; color: #605e5c;">{{ t.fecha_creacion|date:"d/m/Y H:i" }}</div>
+                </td>
+                <td style="font-size: 12px; color: #605e5c;">
+                  {{ t.activo__pma__nombre|default:"-" }}
+                </td>
+                <td>
+                  <span style="display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; background-color: {{ t.prioridad__color_hex }}20; color: {{ t.prioridad__color_hex }};">
+                    {{ t.prioridad__nombre|default:"Baja" }}
+                  </span>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center" style="padding:24px; color:#605e5c;">No hay tickets pendientes. ¡Buen trabajo!</td></tr>
               {% endfor %}
             </tbody>
           </table>

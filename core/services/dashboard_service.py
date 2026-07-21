@@ -136,8 +136,9 @@ def obtener_kpis_generales():
     actividad_reciente = list(Equipo.objects.select_related(
         'articulo', 'pma', 'modificado_por'
     ).order_by('-fecha_modificacion')[:8].values(
-        'serial_number', 'articulo__nombre', 'pma__nombre',
-        'modificado_por__first_name', 'modificado_por__last_name', 'fecha_modificacion'
+        'id', 'imagen', 'serial_number', 'articulo__nombre', 'pma__nombre',
+        'modificado_por__first_name', 'modificado_por__last_name', 'fecha_modificacion',
+        'pma__recinto__unidad__nombre'
     ))
 
     # ============================================================
@@ -173,11 +174,18 @@ def obtener_kpis_generales():
 
     mapa_calor = list(bitacoras_90d)
 
-    # ============================================================
-    # 13. Últimas actas (5) + receptor_nombre
-    # ============================================================
     ultimas_actas = list(Acta.objects.order_by('-fecha')[:5].values(
         'codigo', 'receptor_nombre', 'estado', 'fecha'
+    ))
+
+    # ============================================================
+    # 13b. Últimos tickets pendientes (Globales)
+    # ============================================================
+    from tickets.models import Ticket
+    ultimos_tickets_pendientes = list(Ticket.objects.filter(
+        estado__in=[Ticket.Estado.NUEVO, Ticket.Estado.ASIGNADO, Ticket.Estado.EN_PROCESO, Ticket.Estado.ESCALADO]
+    ).select_related('prioridad', 'activo').order_by('-fecha_creacion')[:6].values(
+        'correlativo', 'descripcion', 'estado', 'prioridad__nombre', 'prioridad__color_hex', 'fecha_creacion', 'activo__pma__nombre'
     ))
 
     # ============================================================
@@ -239,6 +247,7 @@ def obtener_kpis_generales():
         'ultimos_anexos': ultimos_anexos,
         'mapa_calor': mapa_calor,
         'ultimas_actas': ultimas_actas,
+        'ultimos_tickets_pendientes': ultimos_tickets_pendientes,
         'ultimos_equipos': ultimos_equipos,
         'recomendaciones': recomendaciones,
         # Trends (Mock or calculated)
