@@ -112,10 +112,10 @@
 
   <div class="fluent-header" style="margin-bottom: 12px; margin-top: -10px;">
     <div>
-      <h1 class="fluent-title" style="text-transform: uppercase; margin-bottom: 0;">
+      <h1 class="fluent-title" style="text-transform: uppercase; margin-bottom: 0; line-height: 1;">
         {% if tipo_dashboard == 'corporativo' %}Resumen Corporativo TIC{% else %}Tablero Operativo de Soporte{% endif %}
       </h1>
-      <div class="fluent-subtitle" style="margin-top: -2px;">Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</div>
+      <div class="fluent-subtitle" style="margin-top: 4px; line-height: 1;">Hospital Provincial Marga Marga &mdash; Última actualización: {% now "H:i" %}</div>
     </div>
     <div>
       <button class="fluent-btn-primary" onclick="location.reload();">
@@ -450,7 +450,7 @@
                   {% if e.imagen %}
                   <img src="/media/{{ e.imagen }}" class="dash-thumb" onclick="openImageModal(this.src)" title="Ver imagen">
                   {% else %}
-                  <div class="dash-thumb-placeholder" style="color: #605e5c;"><i class="ms-Icon ms-Icon--Server"></i></div>
+                  <div class="dash-thumb-placeholder" style="color: #8a8886; font-size: 14px;"><i class="fas fa-desktop"></i></div>
                   {% endif %}
                 </td>
                 <td>
@@ -488,7 +488,7 @@
                   {% if a.foto %}
                   <img src="/media/{{ a.foto }}" class="dash-thumb" onclick="openImageModal(this.src)" title="Ver imagen">
                   {% else %}
-                  <div class="dash-thumb-placeholder" style="color: #605e5c;"><i class="ms-Icon ms-Icon--Phone"></i></div>
+                  <div class="dash-thumb-placeholder" style="color: #8a8886; font-size: 14px;"><i class="fas fa-phone"></i></div>
                   {% endif %}
                 </td>
                 <td style="font-weight: 600;">{{ a.numero_anexo }}</td>
