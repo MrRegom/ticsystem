@@ -58,12 +58,11 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
     
     header_data = [
         [
-            Image(logo_minsal_path, width=90, height=45) if os.path.exists(logo_minsal_path) else Paragraph("<font color='#94a3b8'>[Logo Minsal]</font>", styles['Center']),
-            Paragraph(title_html, styles['Center']),
-            Image(logo_hmm_path, width=70, height=70) if os.path.exists(logo_hmm_path) else Paragraph("<font color='#94a3b8'>[Logo HMM]</font>", styles['Center'])
+            Image(logo_hmm_path, width=70, height=70) if os.path.exists(logo_hmm_path) else Paragraph("<font color='#94a3b8'>[Logo HMM]</font>", styles['Center']),
+            Paragraph(title_html, styles['Center'])
         ]
     ]
-    t_header = Table(header_data, colWidths=[100, 320, 100])
+    t_header = Table(header_data, colWidths=[100, 420])
     t_header.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
