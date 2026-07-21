@@ -13,7 +13,8 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
     Combina el diseño elegante con un espaciado optimizado para usar una sola hoja.
     """
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=45, leftMargin=45, topMargin=25, bottomMargin=25)
+    doc_title = f"Acta de Entrega {acta.codigo} - TIC System"
+    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=45, leftMargin=45, topMargin=25, bottomMargin=25, title=doc_title)
     
     styles = getSampleStyleSheet()
     
@@ -55,7 +56,7 @@ def generar_pdf_acta(acta, firmas_paths=None, datos_ui_detalles=None):
         return Table([[Paragraph(f"<b>{title}</b>", styles['SectionTitle'])]], 
                      colWidths=[520], 
                      style=TableStyle([
-                         ('BACKGROUND', (0,0), (-1,-1), COLOR_PRIMARY), 
+                         ('BACKGROUND', (0,0), (-1,-1), COLOR_SECONDARY), 
                          ('TOPPADDING', (0,0), (-1,-1), 4), 
                          ('BOTTOMPADDING', (0,0), (-1,-1), 4),
                          ('ALIGN', (0,0), (-1,-1), 'LEFT')
