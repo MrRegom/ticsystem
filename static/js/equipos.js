@@ -82,7 +82,7 @@ function eqRenderRows() {
         var inv = eq.num_inventario || '-';
         var serial = eq.serial_number || 'N/A';
         var ip = eq.ip || 'N/A';
-        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 200px 1fr 120px 70px 120px 120px 110px 110px 70px; font-size: 11px;">';
+        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="grid-template-columns: 200px 1fr 120px 70px 120px 120px 110px 110px 100px; font-size: 11px;">';
         
         // Col 1: Artículo / Modelo
         html += '<div class="ms-identity">';
@@ -115,7 +115,7 @@ function eqRenderRows() {
         html += '<div><span class="ms-status"><span class="ms-status-dot" style="background:' + color + ';"></span><span style="font-size:11px;">' + estado + '</span></span></div>';
         
         // Col 9: Acciones
-        html += '<div class="ms-row-actions" onclick="event.stopPropagation();" style="position:static; opacity:1; background:transparent; padding:0;">';
+        html += '<div class="ms-row-actions" onclick="event.stopPropagation();" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:6px; justify-content:center; align-items:center; width:100%; height:100%;">';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Ver Detalle" onclick="eqOpenView(' + eq.id + ')"><i class="fas fa-eye"></i></button>';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')" ><i class="fas fa-history"></i></button>';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Editar" onclick="eqEdit(' + eq.id + ')" ><i class="fas fa-edit"></i></button>';
