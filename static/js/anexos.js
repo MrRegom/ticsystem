@@ -124,9 +124,21 @@ $(document).ready(function() {
             }
         },
         language: {
-            url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
             search: "_INPUT_",
-            searchPlaceholder: "Buscar..."
+            searchPlaceholder: "Buscar...",
+            lengthMenu: "Mostrar _MENU_ registros",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "Mostrando 0 registros",
+            infoFiltered: "(filtrado de _MAX_ registros totales)",
+            zeroRecords: "No se encontraron registros",
+            loadingRecords: "Cargando...",
+            processing: "Procesando...",
+            paginate: {
+                first: "Primero",
+                last: "Último",
+                next: "Siguiente",
+                previous: "Anterior"
+            }
         },
         columns: [
             { data: 'id', orderable: false, className: 'text-center' },
