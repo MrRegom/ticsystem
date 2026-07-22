@@ -47,9 +47,9 @@ $(document).ready(function() {
             const impVal = imp.val;
             const impLabel = imp.label;
 
-            let row = `<tr>
-                <td class="font-weight-bold text-left align-middle" style="background:#f8fafc; color:#002a54; padding:14px 16px; min-width:220px; border:1px solid #e2e8f0;">
-                    <i class="fas fa-circle mr-2" style="font-size:0.6rem; opacity:0.5;"></i>${impLabel}
+            let row = `<tr class="ms-list-row">
+                <td class="font-weight-bold text-left align-middle" style="background:#faf9f8; color:#323130; padding:14px 16px; min-width:220px; border-bottom:1px solid #edebe9;">
+                    <i class="fas fa-circle ms-mr-2" style="font-size:0.6rem; color:#8a8886;"></i>${impLabel}
                 </td>`;
 
             urgencias.forEach(function(urg) {
@@ -66,8 +66,8 @@ $(document).ready(function() {
                         data-urgencia="${urgVal}"
                         data-imp-label="${impLabel}"
                         data-urg-label="${urg.label}"
-                        style="cursor:pointer; padding:0; border:1px solid #e2e8f0; transition: transform 0.15s, box-shadow 0.15s; position:relative;"
-                        onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.1)';this.style.zIndex='10';"
+                        style="cursor:pointer; padding:0; border:1px solid #edebe9; transition: transform 0.15s, box-shadow 0.15s; position:relative;"
+                        onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';this.style.zIndex='10';"
                         onmouseout="this.style.transform='';this.style.boxShadow='';this.style.zIndex='';">
                         
                         <div style="padding: 14px; background: white; border-top: 4px solid ${color}; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;">
@@ -183,28 +183,31 @@ $(document).ready(function() {
                 }
                 res.data.forEach(function(p, i) {
                     $tbody.append(`
-                        <tr>
+                        <tr class="ms-list-row">
                             <td>${i + 1}</td>
                             <td>
-                                <span class="badge px-3 py-2 mr-2" style="background:${p.color_hex}; color:white; font-size:0.85rem;">${p.nombre}</span>
+                                <span style="background:${p.color_hex}; color:white; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:600;">${p.nombre}</span>
                             </td>
                             <td>
-                                <div style="display:inline-block; width:24px; height:24px; background:${p.color_hex}; border-radius:50%; border:2px solid #e2e8f0; vertical-align:middle;"></div>
-                                <code class="ml-2 text-muted">${p.color_hex}</code>
+                                <div style="display:inline-block; width:16px; height:16px; background:${p.color_hex}; border-radius:50%; border:1px solid #edebe9; vertical-align:middle;"></div>
+                                <code class="ms-ml-2" style="color:#605e5c;">${p.color_hex}</code>
                             </td>
                             <td>
-                                <span class="badge badge-light border" style="font-size:0.85rem;">
-                                    <i class="fas fa-clock mr-1 text-primary"></i>${p.sla_horas} horas
+                                <span style="font-size:0.85rem; color:#323130;">
+                                    <i class="far fa-clock ms-mr-2" style="color:#0078d4;"></i>${p.sla_horas} horas
                                 </span>
                             </td>
-                            <td>
-                                <button class="btn btn-link text-primary p-0 mr-3 btn-edit-prio" 
-                                    data-id="${p.id}" data-nombre="${p.nombre}" data-sla="${p.sla_horas}" data-color="${p.color_hex}" title="Editar">
-                                    <i class="fas fa-pencil-alt" style="font-size: 0.9rem;"></i>
-                                </button>
-                                <button class="btn btn-link text-danger p-0 btn-del-prio" data-id="${p.id}" data-nombre="${p.nombre}" title="Eliminar">
-                                    <i class="fas fa-trash-alt" style="font-size: 0.9rem;"></i>
-                                </button>
+                            <td class="text-center">
+                                <div class="ms-table-actions">
+                                    <button class="ms-icon-btn ms-icon-btn-edit btn-edit-prio" 
+                                        data-id="${p.id}" data-nombre="${p.nombre}" data-sla="${p.sla_horas}" data-color="${p.color_hex}" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="ms-icon-btn ms-icon-btn-delete btn-del-prio" 
+                                        data-id="${p.id}" data-nombre="${p.nombre}" title="Eliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     `);
