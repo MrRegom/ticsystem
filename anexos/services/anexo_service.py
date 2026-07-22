@@ -36,6 +36,7 @@ class AnexoService:
             estado=datos.get('estado') or Anexo.Estado.ACTIVO,
             serial_number=serial,
             ip=datos.get('ip') or None,
+            numero_inventario=(datos.get('numero_inventario') or '').strip() or None,
             comentario=(datos.get('comentario') or '').strip() or None,
             grupo=(datos.get('grupo') or '').strip() or None,
             establecimiento_id=datos.get('establecimiento') or None,
@@ -69,6 +70,7 @@ class AnexoService:
         anexo.estado = datos.get('estado') or Anexo.Estado.ACTIVO
         anexo.serial_number = serial
         anexo.ip = datos.get('ip') or None
+        anexo.numero_inventario = (datos.get('numero_inventario') or '').strip() or None
         anexo.comentario = (datos.get('comentario') or '').strip() or None
         anexo.grupo = (datos.get('grupo') or '').strip() or None
         anexo.establecimiento_id = datos.get('establecimiento') or None
@@ -119,6 +121,7 @@ class AnexoService:
                 'ip': str(a.ip) if a.ip else '',
                 'pma_id': a.pma.id if a.pma else '',
                 'pma_nombre': a.pma.nombre if a.pma else '',
+                'numero_inventario': a.numero_inventario or '',
                 'grupo': a.grupo or '',
                 'observacion': a.observacion if hasattr(a, 'observacion') else getattr(a, 'comentario', ''),
             })

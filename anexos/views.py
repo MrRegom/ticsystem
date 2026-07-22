@@ -129,7 +129,7 @@ class AnexoDetailView(LoginRequiredMixin, View):
             'id': a.id, 'numero_anexo': a.numero_anexo, 'marca': a.marca, 'modelo': a.modelo,
             'modelo_anexo': a.modelo_anexo_id, 'edificio': a.edificio_id, 'piso': a.piso_id,
             'unidad': a.unidad_id, 'pma': a.pma_id, 'proveedor': a.proveedor_id,
-            'estado': a.estado, 'serial_number': a.serial_number,
+            'estado': a.estado, 'serial_number': a.serial_number, 'numero_inventario': a.numero_inventario or '',
             'ip': str(a.ip) if a.ip else '', 'comentario': a.comentario or '',
             'grupo': a.grupo or '', 'establecimiento': a.establecimiento_id,
         }})

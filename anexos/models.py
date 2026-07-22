@@ -111,6 +111,12 @@ class Anexo(models.Model):
         db_index=True,
         verbose_name="Número de Serie"
     )
+    numero_inventario = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="N° Inventario"
+    )
     ip = models.GenericIPAddressField(
         null=True,
         blank=True,
