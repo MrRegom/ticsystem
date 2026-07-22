@@ -685,3 +685,24 @@ body, .modal, .modal-content, .ms-drawer, .ms-drawer-content, .modal-title, .ms-
 .ms-pivot-link:hover { color: #323130 !important; border-bottom-color: transparent !important; }
 .ms-pivot-link.active { color: #0078d4 !important; border-bottom: 3px solid #0078d4 !important; background: transparent !important; }
 
+
+/* Tab Buttons */
+.ms-tab-buttons { display: flex; gap: 8px; margin-bottom: 0; padding-bottom: 0; }
+.ms-tab-buttons .nav-link { 
+    background-color: #0078d4; 
+    color: #ffffff !important; 
+    border: none; 
+    border-radius: 4px; 
+    padding: 6px 16px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: background-color 0.2s, opacity 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+.ms-tab-buttons .nav-link:not(.active) { opacity: 0.6; }
+.ms-tab-buttons .nav-link:hover:not(.active) { opacity: 0.8; }
+.ms-tab-buttons .nav-link.active { opacity: 1; background-color: #005a9e; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
