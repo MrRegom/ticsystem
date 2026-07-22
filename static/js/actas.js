@@ -95,13 +95,13 @@ $(document).ready(function() {
             }},
             { data: 'encargado' },
             { data: null, orderable: false, render: function(data, type, row) {
-                let html = '<div style="display:flex; gap:15px; justify-content:center; align-items:center;">';
+                let html = '<div class="ms-row-actions" onclick="event.stopPropagation();" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:5px; justify-content:center;">';
                 if (row.pdf_url) {
-                    html += `<a href="${row.pdf_url}" target="_blank" title="Ver PDF" style="color:#0078d4; font-size:1.1rem; text-decoration:none; transition:0.2s;" onmouseover="this.style.color='#106ebe'" onmouseout="this.style.color='#0078d4'"><i class="fas fa-file-pdf"></i></a>`;
+                    html += `<a href="${row.pdf_url}" target="_blank" class="ms-icon-btn" style="width:26px; height:26px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; text-decoration:none;" title="Ver PDF"><i class="fas fa-file-pdf"></i></a>`;
                 } else {
                     html += `<span class="badge badge-secondary">Sin PDF</span>`;
                 }
-                html += `<button type="button" class="btn-delete-acta" data-id="${row.id}" title="Eliminar Acta" style="background:none; border:none; color:#dc3545; font-size:1.1rem; cursor:pointer; padding:0; transition:0.2s;" onmouseover="this.style.color='#bd2130'" onmouseout="this.style.color='#dc3545'"><i class="fas fa-trash-alt"></i></button>`;
+                html += `<button type="button" class="ms-icon-btn btn-delete-acta" data-id="${row.id}" style="width:26px; height:26px; font-size:12px;" title="Eliminar Acta"><i class="fas fa-trash"></i></button>`;
                 html += '</div>';
                 return html;
             }}

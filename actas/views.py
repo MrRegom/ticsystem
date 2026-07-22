@@ -272,9 +272,9 @@ class ActaDeleteView(PermisoRequeridoMixin, LoginRequiredMixin, View):
     permiso_requerido = 'ELIMINAR_ACTAS'
     
     def post(self, request, acta_id):
-        from actas.models import ActaEntrega
+        from actas.models import Acta
         try:
-            acta = ActaEntrega.objects.get(id=acta_id)
+            acta = Acta.objects.get(id=acta_id)
             
             # Liberar equipos
             for detalle in acta.detalles.all():
@@ -300,7 +300,7 @@ class ActaDeleteView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                 usuario=request.user,
                 accion='ELIMINAR',
                 modulo='ACTAS',
-                entidad='ActaEntrega',
+                entidad='Acta',
                 entidad_id=acta.id,
                 ip_address=get_client_ip(request),
                 detalles={'codigo_acta': acta.codigo}
@@ -309,7 +309,7 @@ class ActaDeleteView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             acta.delete()
             return JsonResponse({'status': 'success'})
             
-        except ActaEntrega.DoesNotExist:
+        except Acta.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Acta no encontrada.'})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
