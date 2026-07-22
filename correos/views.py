@@ -89,28 +89,26 @@ class TestSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             <html>
             <body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f1f5f9; color: #1e293b; margin: 0; padding: 30px 10px;">
                 <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <div style="background-color: #0f172a; color: #10b981; padding: 24px; text-align: center; border-bottom: 4px solid #10b981;">
-                        <h2 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 0.5px;">⚡ TicSystem SMTP Gateway</h2>
+                    <div style="background-color: #002855; color: #ffffff; padding: 24px; text-align: center; border-bottom: 4px solid #3b82f6;">
+                        <h2 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 0.5px;">TicSystem Mesa de Ayuda</h2>
                     </div>
                     <div style="padding: 32px;">
-                        <h3 style="color: #0f172a; margin-top: 0; font-size: 20px;">Conexión Exitosa</h3>
+                        <h3 style="color: #0f172a; margin-top: 0; font-size: 20px;">Prueba de Conexión Exitosa</h3>
                         <p style="font-size: 16px; line-height: 1.6;">Estimado Administrador,</p>
-                        <p style="font-size: 16px; line-height: 1.6;">El módulo de correos (SMTP) de <strong>TicSystem</strong> ha establecido comunicación con el servidor de forma exitosa. Su sistema está listo para despachar notificaciones institucionales.</p>
+                        <p style="font-size: 16px; line-height: 1.6;">La configuración del servidor de correos se ha validado correctamente. El sistema está listo para enviar notificaciones automáticas.</p>
                         
-                        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #10b981; border-radius: 4px; padding: 20px; margin: 24px 0;">
+                        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6; border-radius: 4px; padding: 20px; margin: 24px 0;">
                             <ul style="list-style: none; padding: 0; margin: 0; font-size: 15px; line-height: 1.6;">
-                                <li style='margin-bottom: 8px;'><strong style='color:#0f172a;'>Servidor SMTP:</strong> <span style='color:#334155;'>{host}:{puerto}</span></li>
-                                <li style='margin-bottom: 8px;'><strong style='color:#0f172a;'>Autenticación:</strong> <span style='color:#334155;'>{usuario}</span></li>
-                                <li style='margin-bottom: 8px;'><strong style='color:#0f172a;'>Seguridad TLS:</strong> <span style='color:#334155;'>{'Activada' if use_tls else 'Desactivada'}</span></li>
-                                <li style='margin-bottom: 8px;'><strong style='color:#0f172a;'>Estado:</strong> <span style='color:#10b981; font-weight: 600;'>En Línea y Operativo</span></li>
+                                <li style='margin-bottom: 8px;'><strong style='color:#002855;'>Servidor SMTP:</strong> <span style='color:#334155;'>{host}:{puerto}</span></li>
+                                <li style='margin-bottom: 8px;'><strong style='color:#002855;'>Autenticación:</strong> <span style='color:#334155;'>{usuario}</span></li>
+                                <li style='margin-bottom: 8px;'><strong style='color:#002855;'>Seguridad TLS:</strong> <span style='color:#334155;'>{'Activada' if use_tls else 'Desactivada'}</span></li>
+                                <li style='margin-bottom: 8px;'><strong style='color:#002855;'>Estado:</strong> <span style='color:#10b981; font-weight: 600;'>Conectado</span></li>
                             </ul>
                         </div>
-                        
-                        <p style="font-size: 15px; line-height: 1.6; color: #475569;">Ya puede cerrar esta ventana y continuar utilizando el sistema.</p>
                     </div>
                     <div style="background-color: #f8fafc; color: #64748b; text-align: center; padding: 20px; font-size: 13px; border-top: 1px solid #e2e8f0;">
-                        Este es un correo de diagnóstico del sistema.<br>
-                        <strong style="color: #0f172a; display: inline-block; margin-top: 8px;">Centro de Control TicSystem</strong>
+                        Este es un correo generado automáticamente. Por favor no responda a este mensaje.<br>
+                        <strong style="color: #002855; display: inline-block; margin-top: 8px;">Unidad de Tecnologías de la Información</strong>
                     </div>
                 </div>
             </body>
@@ -118,7 +116,7 @@ class TestSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             """
             
             email = EmailMultiAlternatives(
-                subject='⚡ TicSystem: Prueba de Conexión SMTP Exitosa',
+                subject='[Mesa de Ayuda] Prueba de Conexión SMTP Exitosa',
                 body=strip_tags(html_content),
                 from_email=remitente,
                 to=[destinatario],
