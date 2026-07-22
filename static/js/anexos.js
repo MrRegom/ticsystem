@@ -152,14 +152,12 @@ $(document).ready(function() {
             { 
                 data: null,
                 render: function(data, type, row) {
-                    var ubi = row.unidad_nombre || 'Sin Unidad';
-                    var edif = [];
-                    if (row.edificio_nombre) edif.push(row.edificio_nombre);
-                    var edif_str = edif.length > 0 ? edif.join(' - ') : '';
+                    var edif = row.edificio_nombre || 'Sin Edificio';
+                    var ubi = row.unidad_nombre || '';
                     return `
                     <div>
-                        <div class="cell-primary">${ubi}</div>
-                        ${edif_str ? `<div class="cell-secondary"><i class="fas fa-hospital mr-1"></i>${edif_str}</div>` : ''}
+                        <div class="cell-primary">${edif}</div>
+                        ${ubi ? `<div class="cell-secondary">${ubi}</div>` : ''}
                     </div>`;
                 }
             },
