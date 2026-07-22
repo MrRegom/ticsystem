@@ -212,7 +212,7 @@ class MantenedorDetailView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                 'correo': item.correo, 'cargo': item.cargo_id, 'unidad': item.unidad_id
             }
         else:
-            data = {'id': item.id, 'nombre': item.nombre, 'activo': item.activo}
+            data = {'id': item.id, 'nombre': item.nombre, 'activo': getattr(item, 'activo', getattr(item, 'activa', True))}
             
         # Campos adicionales por tipo de entidad
         if modelo == 'edificio':

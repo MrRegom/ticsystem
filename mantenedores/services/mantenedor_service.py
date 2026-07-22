@@ -263,7 +263,10 @@ class MantenedorService:
 
         activo = datos.get('activo')
         if activo is not None:
-            instance.activo = bool(activo)
+            if hasattr(instance, 'activo'):
+                instance.activo = bool(activo)
+            elif hasattr(instance, 'activa'):
+                instance.activa = bool(activo)
 
         extra = {}
         if modelo_nombre == 'edificio':
@@ -357,7 +360,7 @@ class MantenedorService:
                 'id': item.id,
                 'row_num': start + idx + 1,
                 'nombre': item.nombre,
-                'activo': item.activo,
+                'activo': getattr(item, 'activo', getattr(item, 'activa', True)),
             }
             # --- Entidades de infraestructura clásicas ---
             if modelo_nombre == 'edificio':
