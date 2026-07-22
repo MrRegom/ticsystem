@@ -151,3 +151,4 @@ AXES_COOLOFF_TIME = 0.5                     # Tiempo de desbloqueo: 0.5 horas (3
 AXES_RESET_ON_SUCCESS = True                # Resetear contador al ingresar con éxito
 AXES_LOCKOUT_TEMPLATE = 'core/lockout.html'  # Template personalizado de bloqueo
 AXES_IP_LOOKUP_HEADER = 'HTTP_X_FORWARDED_FOR'  # Cabecera para IP real detrás de Nginx
+EMAIL_BACKEND = 'correos.backends.DynamicSMTPEmailBackend'
