@@ -6,26 +6,7 @@
 
 {% block extra_css %}
 <!-- El sistema de diseño usa global-theme.css (Microsoft Fluent) -->
-<style>
-/* Bordes dinámicos para campos requeridos */
-.ms-input:required {
-    border-left: 3px solid #a4262c !important;
-}
-.ms-input:required:valid {
-    border-left: 3px solid #107c10 !important;
-}
-/* Clases JS para Select2 y otros contenedores personalizados */
-.ms-required-invalid .select2-selection, 
-.ms-required-invalid.select2-selection {
-    border-left: 3px solid #a4262c !important;
-    border-radius: 4px !important;
-}
-.ms-required-valid .select2-selection,
-.ms-required-valid.select2-selection {
-    border-left: 3px solid #107c10 !important;
-    border-radius: 4px !important;
-}
-</style>
+
 {% endblock %}
 
 {% block content %}

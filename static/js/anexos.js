@@ -205,7 +205,6 @@ $(document).ready(function() {
             },
             { 
                 data: 'estado',
-                render: function(data, type, row) {
                 render: function(data) {
                     var bg = data === 'Activo' ? '#dff6dd' : '#fde7e9';
                     var color = data === 'Activo' ? '#107c10' : '#a4262c';
