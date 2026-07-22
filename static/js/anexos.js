@@ -116,6 +116,7 @@ $(document).ready(function() {
         serverSide: true,
         processing: true,
         responsive: true,
+        pagingType: "full_numbers",
         ajax: {
             url: '/anexos/api/',
             type: 'POST',
@@ -134,10 +135,10 @@ $(document).ready(function() {
             loadingRecords: "Cargando...",
             processing: "Procesando...",
             paginate: {
-                first: "Primero",
-                last: "Último",
-                next: "Siguiente",
-                previous: "Anterior"
+                first: "&laquo;",
+                last: "&raquo;",
+                next: "&rsaquo;",
+                previous: "&lsaquo;"
             }
         },
         columns: [
@@ -217,7 +218,7 @@ $(document).ready(function() {
                 className: 'text-center',
                 render: function(data, type, row) {
                     return `
-                    <div class="ms-row-actions">
+                    <div class="ms-table-actions">
                         <button class="ms-icon-btn ms-icon-btn-view btn-ver-anexo" data-id="${row.id}" title="Ver Anexo">
                             <i class="fas fa-eye"></i>
                         </button>

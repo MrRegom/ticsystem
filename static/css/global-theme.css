@@ -94,7 +94,7 @@
         border: 1px solid #edebe9;
         border-radius: 0;
     }
-    .ms-row-actions {
+    .ms-table-actions {
         display: flex; gap: 8px; justify-content: center; align-items: center; width: 100%;
     }
     .ms-icon-btn {
@@ -292,10 +292,11 @@
 .ms-btn-primary:hover { background: #106ebe; }
 
 .ms-btn-secondary {
-  background: #ffffff; color: #323130; border: 1px solid #8a8886; border-radius: 2px;
-  padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;
-}
-.ms-btn-secondary:hover { background: #f3f2f1; }
+    background: #ffffff; color: #323130; border: 1px solid #8a8886; border-radius: 2px;
+    padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ms-btn-secondary:hover { background: #f3f2f1; }
 
 /* 💎 Data Lists (Grillas de datos) */
 .ms-list-container {
@@ -316,10 +317,10 @@
 .ms-list-row:hover { background-color: #f3f2f1; }
 
 .ms-row-actions {
-  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
-  display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s;
-  background: #f3f2f1; padding: 4px; border-radius: 4px;
-}
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s;
+    background: #f3f2f1; padding: 4px; border-radius: 4px;
+  }
 .ms-list-row:hover .ms-row-actions { opacity: 1; }
 .ms-icon-btn {
   background: transparent; border: none; color: #323130; width: 32px; height: 32px;
