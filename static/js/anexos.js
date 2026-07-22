@@ -379,10 +379,10 @@ $(document).ready(function() {
 // DRAWERS
 // ==========================================
 window.openAnexoDrawer = function() {
-    $('#anexo-drawer').addClass('open');
+    document.getElementById('anexo-drawer').style.right = '0';
     $('#anexo-drawer-overlay').addClass('active');
 };
 window.closeAnexoDrawer = function() {
-    $('#anexo-drawer').removeClass('open');
+    document.getElementById('anexo-drawer').style.right = '-520px';
     $('#anexo-drawer-overlay').removeClass('active');
 };
