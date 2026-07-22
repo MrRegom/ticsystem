@@ -18,8 +18,8 @@ $(document).ready(function() {
     $.ajaxSetup({ beforeSend: function(xhr, settings) { xhr.setRequestHeader("X-CSRFToken", csrftoken); }});
 
     // Inicializar Select2
-    $('.select2-modal').select2({
-        dropdownParent: $('#modalAnexo'),
+    $('.select2-drawer').select2({
+        dropdownParent: $('#anexo-drawer'),
         width: '100%',
         theme: 'bootstrap4'
     });
@@ -133,10 +133,10 @@ $(document).ready(function() {
             { 
                 data: 'numero_anexo',
                 render: function(data, type, row) {
-                    var img = row.modelo_img ? `<img src="${row.modelo_img}" style="width:100%; object-fit:contain;">` : `<i class="fas fa-phone-alt fa-lg"></i>`;
+                    var img = row.modelo_img ? `<img src="${row.modelo_img}" style="width:32px; height:32px; padding:2px; background:#f3f2f1; border-radius:4px; object-fit:contain; flex-shrink:0;">` : `<div style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; background:#f3f2f1; border-radius:4px;"><i class="fas fa-phone-alt" style="color:#605e5c;"></i></div>`;
                     return `
                     <div class="d-flex align-items-center">
-                        <div class="icon-square">${img}</div>
+                        <div style="margin-right: 12px;">${img}</div>
                         <div>
                             <div class="cell-primary">${data || 'S/N'}</div>
                             <div class="cell-secondary">ID: ${row.id}</div>
@@ -193,13 +193,13 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     return `
                     <div class="ms-row-actions" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:8px; justify-content:center; align-items:center; width:100%; transform:none !important; margin-top:0;">
-                        <button class="ms-icon-btn btn-ver-anexo" data-id="${row.id}" title="Ver Anexo" style="width:26px; height:26px; font-size:12px; color:#0078d4;">
+                        <button class="ms-icon-btn btn-ver-anexo" data-id="${row.id}" title="Ver Anexo" style="width:26px; height:26px; font-size:12px; color:#8a8886; transition:0.2s;" onmouseover="this.style.color='#0078d4'; this.style.background='#f3f2f1';" onmouseout="this.style.color='#8a8886'; this.style.background='transparent';">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="ms-icon-btn btn-editar-anexo" data-id="${row.id}" title="Editar Anexo" style="width:26px; height:26px; font-size:12px; color:#0078d4;">
+                        <button class="ms-icon-btn btn-editar-anexo" data-id="${row.id}" title="Editar Anexo" style="width:26px; height:26px; font-size:12px; color:#8a8886; transition:0.2s;" onmouseover="this.style.color='#ffb900'; this.style.background='#f3f2f1';" onmouseout="this.style.color='#8a8886'; this.style.background='transparent';">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="ms-icon-btn btn-eliminar-anexo" data-id="${row.id}" title="Eliminar Anexo" style="width:26px; height:26px; font-size:12px; color:#d13438;">
+                        <button class="ms-icon-btn btn-eliminar-anexo" data-id="${row.id}" title="Eliminar Anexo" style="width:26px; height:26px; font-size:12px; color:#8a8886; transition:0.2s;" onmouseover="this.style.color='#dc3545'; this.style.background='#f3f2f1';" onmouseout="this.style.color='#8a8886'; this.style.background='transparent';">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </div>`;
@@ -213,8 +213,8 @@ $(document).ready(function() {
         $('#form-anexo')[0].reset();
         $('#form-anexo').removeClass('was-validated');
         $('#anexo-id').val('');
-        $('.select2-modal').val('').trigger('change.select2');
-        $('#modalAnexoLabel').text('Información Técnica del Equipo');
+        $('.select2-drawer').val('').trigger('change.select2');
+        $('#anexo-drawer-title').html('<i class="fas fa-phone-alt" style="color:#0078d4; margin-right:8px;"></i> Información Técnica del Equipo');
         $('#a-imagen-preview').attr('src', '/static/img/placeholder_equipo.png');
         
         var ciscoOption = $('#a-marca option').filter(function() { return $(this).text().toUpperCase().includes('CISCO'); }).first();
@@ -222,7 +222,7 @@ $(document).ready(function() {
             $('#a-marca').val(ciscoOption.val()).trigger('change.select2');
         }
         
-        $('#modalAnexo').modal('show');
+        openAnexoDrawer();
     });
 
     // Guardar Anexo
@@ -258,7 +258,7 @@ $(document).ready(function() {
             contentType: 'application/json'
         }).done(function(r) {
             if (r.success) {
-                $('#modalAnexo').modal('hide');
+                closeAnexoDrawer();
                 Swal.fire({ icon: 'success', title: 'Éxito', text: r.message, confirmButtonColor: '#002a54' });
                 tablaAnexos.ajax.reload(null, false);
             } else {
@@ -307,8 +307,8 @@ $(document).ready(function() {
         $('#a-estado').val(data.estado);
         $('#a-comentario').val(data.observacion || data.comentario);
 
-        $('#modalAnexoLabel').text('Editar Anexo');
-        $('#modalAnexo').modal('show');
+        $('#anexo-drawer-title').html('<i class="fas fa-phone-alt" style="color:#0078d4; margin-right:8px;"></i> Editar Anexo');
+        openAnexoDrawer();
     });
 
     // Ver Anexo - Abre el modal de detalle (split layout, igual al de Equipos)
@@ -374,3 +374,15 @@ $(document).ready(function() {
         });
     });
 });
+
+// ==========================================
+// DRAWERS
+// ==========================================
+window.openAnexoDrawer = function() {
+    $('#anexo-drawer').addClass('open');
+    $('#anexo-drawer-overlay').addClass('active');
+};
+window.closeAnexoDrawer = function() {
+    $('#anexo-drawer').removeClass('open');
+    $('#anexo-drawer-overlay').removeClass('active');
+};
