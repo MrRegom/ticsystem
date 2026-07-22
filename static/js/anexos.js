@@ -139,7 +139,6 @@ $(document).ready(function() {
                         <div style="margin-right: 12px;">${img}</div>
                         <div>
                             <div class="cell-primary">${data || 'S/N'}</div>
-                            <div class="cell-secondary">ID: ${row.id}</div>
                         </div>
                     </div>`;
                 }
@@ -151,24 +150,41 @@ $(document).ready(function() {
                 }
             },
             { 
-                data: 'serial_number',
-                render: function(data, type, row) {
-                    return `<div class="cell-secondary"><i class="fas fa-barcode mr-1"></i>${row.serial_number || 'S/N'}</div>`;
-                }
-            },
-            { 
                 data: null,
                 render: function(data, type, row) {
-                    var ubi = row.unidad_nombre || row.pma_nombre || 'Sin Unidad';
+                    var ubi = row.unidad_nombre || 'Sin Unidad';
                     var edif = [];
                     if (row.edificio_nombre) edif.push(row.edificio_nombre);
-                    if (row.piso_nombre) edif.push(row.piso_nombre);
                     var edif_str = edif.length > 0 ? edif.join(' - ') : '';
                     return `
                     <div>
                         <div class="cell-primary">${ubi}</div>
                         ${edif_str ? `<div class="cell-secondary"><i class="fas fa-hospital mr-1"></i>${edif_str}</div>` : ''}
                     </div>`;
+                }
+            },
+            {
+                data: 'pma_nombre',
+                render: function(data, type, row) {
+                    return `<div class="cell-secondary">${data || '-'}</div>`;
+                }
+            },
+            {
+                data: 'piso_nombre',
+                render: function(data, type, row) {
+                    return `<div class="cell-secondary">${data || '-'}</div>`;
+                }
+            },
+            {
+                data: 'numero_inventario',
+                render: function(data, type, row) {
+                    return `<div class="cell-secondary">${row.numero_inventario || '-'}</div>`;
+                }
+            },
+            { 
+                data: 'serial_number',
+                render: function(data, type, row) {
+                    return `<div class="cell-secondary"><i class="fas fa-barcode mr-1"></i>${row.serial_number || 'S/N'}</div>`;
                 }
             },
             { 
@@ -243,6 +259,7 @@ $(document).ready(function() {
             unidad: $('#a-unidad').val(),
             ip: $('#a-ip').val(),
             serial_number: $('#a-serial').val(),
+            numero_inventario: $('#a-inventario').val(),
             pma: $('#a-pma').val(),
             estado: $('#a-estado').val(),
             comentario: $('#a-comentario').val()
@@ -304,6 +321,7 @@ $(document).ready(function() {
         $('#a-pma').val(data.pma_id).trigger('change.select2');
         $('#a-ip').val(data.ip);
         $('#a-serial').val(data.serial_number);
+        $('#a-inventario').val(data.numero_inventario);
         $('#a-estado').val(data.estado);
         $('#a-comentario').val(data.observacion || data.comentario);
 
