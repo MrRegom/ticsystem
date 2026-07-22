@@ -287,10 +287,10 @@ class ActaDeleteView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                     except:
                         pass
                 elif detalle.tipo_item == 'ANEXO':
-                    from anexos.models import AnexoIP
+                    from anexos.models import Anexo
                     try:
-                        anexo = AnexoIP.objects.get(id=detalle.id_item)
-                        anexo.estado = 'DISPONIBLE'
+                        anexo = Anexo.objects.get(id=detalle.id_item)
+                        anexo.estado = 'Activo'
                         anexo.save()
                     except:
                         pass
