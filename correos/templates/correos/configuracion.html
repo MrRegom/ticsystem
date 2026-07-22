@@ -52,13 +52,19 @@
       </div>
     </div>
 
-    <div class="ms-command-bar">
-      <button class="ms-btn-secondary" id="btn-test" onclick="testConnection()">
-        <i class="fas fa-paper-plane"></i> Enviar Correo de Prueba
-      </button>
-      <button class="ms-btn-primary" id="btn-save" onclick="saveConfig()">
-        <i class="fas fa-save"></i> Guardar Configuración
-      </button>
+    <div class="ms-command-bar" style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <label class="ms-form-label" style="margin:0; min-width: max-content;">Enviar prueba a:</label>
+        <input type="email" class="ms-input" id="test-email-to" placeholder="tu.correo@gmail.com" style="width: 250px; margin: 0;">
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="ms-btn-secondary" id="btn-test" onclick="testConnection()">
+          <i class="fas fa-paper-plane"></i> Enviar Correo de Prueba
+        </button>
+        <button class="ms-btn-primary" id="btn-save" onclick="saveConfig()">
+          <i class="fas fa-save"></i> Guardar Configuración
+        </button>
+      </div>
     </div>
   </div>
 

@@ -13,7 +13,8 @@ function getPayload() {
     usuario: document.getElementById('smtp-user').value.trim(),
     password: document.getElementById('smtp-pass').value.trim(),
     remitente_por_defecto: document.getElementById('smtp-sender').value.trim(),
-    use_tls: document.getElementById('smtp-tls').checked
+    use_tls: document.getElementById('smtp-tls').checked,
+    test_email_to: document.getElementById('test-email-to') ? document.getElementById('test-email-to').value.trim() : ''
   };
 }
 

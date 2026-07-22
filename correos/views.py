@@ -68,6 +68,9 @@ class TestSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             password = data.get('password', '')
             use_tls = bool(data.get('use_tls', True))
             remitente = data.get('remitente_por_defecto', usuario)
+            destinatario = data.get('test_email_to')
+            if not destinatario:
+                destinatario = request.user.email
             
             # Intentar conexión
             connection = get_connection(
@@ -83,7 +86,7 @@ class TestSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                 subject='TicSystem: Prueba de Conexión Exitosa',
                 body='Si estás leyendo esto, la configuración SMTP es correcta.',
                 from_email=remitente,
-                to=[request.user.email],
+                to=[destinatario],
                 connection=connection
             )
             email.send()
