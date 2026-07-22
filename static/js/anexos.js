@@ -145,10 +145,10 @@ $(document).ready(function() {
             { 
                 data: 'numero_anexo',
                 render: function(data, type, row) {
-                    var img = row.modelo_img ? `<img src="${row.modelo_img}" style="width:32px; height:32px; padding:2px; background:#f3f2f1; border-radius:4px; object-fit:contain; flex-shrink:0;">` : `<div style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; background:#f3f2f1; border-radius:4px;"><i class="fas fa-phone-alt" style="color:#605e5c;"></i></div>`;
+                    var img = row.modelo_img ? `<div class="ms-table-img-wrapper"><img src="${row.modelo_img}"></div>` : `<div class="ms-table-img-wrapper"><i class="fas fa-phone-alt"></i></div>`;
                     return `
                     <div class="d-flex align-items-center">
-                        <div style="margin-right: 12px;">${img}</div>
+                        <div class="ms-mr-2">${img}</div>
                         <div>
                             <div class="cell-primary">${data || 'S/N'}</div>
                         </div>
@@ -206,26 +206,26 @@ $(document).ready(function() {
             { 
                 data: 'estado',
                 render: function(data, type, row) {
-                    return row.estado === 'Activo' 
-                        ? `<span class="status-badge status-activo"><i class="fas fa-check-circle mr-1"></i>Activo</span>`
-                        : `<span class="status-badge status-inactivo"><i class="fas fa-times-circle mr-1"></i>Inactivo</span>`;
+                render: function(data) {
+                    var bg = data === 'Activo' ? '#dff6dd' : '#fde7e9';
+                    var color = data === 'Activo' ? '#107c10' : '#a4262c';
+                    return `<span style="background:${bg}; color:${color}; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:600;">${data}</span>`;
                 }
             },
             {
                 data: null,
                 orderable: false,
-                searchable: false,
-                className: 'text-right',
+                className: 'text-center',
                 render: function(data, type, row) {
                     return `
-                    <div class="ms-row-actions" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:8px; justify-content:center; align-items:center; width:100%; transform:none !important; margin-top:0;">
-                        <button class="ms-icon-btn btn-ver-anexo" data-id="${row.id}" title="Ver Anexo" style="width:26px; height:26px; font-size:12px; color:#8a8886; transition:0.2s;" onmouseover="this.style.color='#0078d4'; this.style.background='#f3f2f1';" onmouseout="this.style.color='#8a8886'; this.style.background='transparent';">
+                    <div class="ms-row-actions">
+                        <button class="ms-icon-btn ms-icon-btn-view btn-ver-anexo" data-id="${row.id}" title="Ver Anexo">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="ms-icon-btn btn-editar-anexo" data-id="${row.id}" title="Editar Anexo" style="width:26px; height:26px; font-size:12px; color:#8a8886; transition:0.2s;" onmouseover="this.style.color='#ffb900'; this.style.background='#f3f2f1';" onmouseout="this.style.color='#8a8886'; this.style.background='transparent';">
+                        <button class="ms-icon-btn ms-icon-btn-edit btn-editar-anexo" data-id="${row.id}" title="Editar Anexo">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="ms-icon-btn btn-eliminar-anexo" data-id="${row.id}" title="Eliminar Anexo" style="width:26px; height:26px; font-size:12px; color:#8a8886; transition:0.2s;" onmouseover="this.style.color='#dc3545'; this.style.background='#f3f2f1';" onmouseout="this.style.color='#8a8886'; this.style.background='transparent';">
+                        <button class="ms-icon-btn ms-icon-btn-delete btn-eliminar-anexo" data-id="${row.id}" title="Eliminar Anexo">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </div>`;
@@ -240,7 +240,7 @@ $(document).ready(function() {
         $('#form-anexo').removeClass('was-validated');
         $('#anexo-id').val('');
         $('.select2-drawer').val('').trigger('change.select2');
-        $('#anexo-drawer-title').html('<i class="fas fa-phone-alt" style="color:#0078d4; margin-right:8px;"></i> Información Técnica del Equipo');
+        $('#anexo-drawer-title').html('<i class="fas fa-phone-alt" ></i> Información Técnica del Equipo');
         $('#a-imagen-preview').attr('src', '/static/img/placeholder_equipo.png');
         
         var ciscoOption = $('#a-marca option').filter(function() { return $(this).text().toUpperCase().includes('CISCO'); }).first();
@@ -335,7 +335,7 @@ $(document).ready(function() {
         $('#a-estado').val(data.estado);
         $('#a-comentario').val(data.observacion || data.comentario);
 
-        $('#anexo-drawer-title').html('<i class="fas fa-phone-alt" style="color:#0078d4; margin-right:8px;"></i> Editar Anexo');
+        $('#anexo-drawer-title').html('<i class="fas fa-phone-alt" ></i> Editar Anexo');
         openAnexoDrawer();
     });
 

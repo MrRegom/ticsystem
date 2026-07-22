@@ -89,13 +89,27 @@
   }
 
   /* Table Customization (Pro Style) */
-  .dataTables_wrapper {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
-      overflow: hidden;
-  }
+    .dataTables_wrapper {
+        background: #ffffff;
+        border: 1px solid #edebe9;
+        border-radius: 0;
+    }
+    .ms-row-actions {
+        display: flex; gap: 8px; justify-content: center; align-items: center; width: 100%;
+    }
+    .ms-icon-btn {
+        width: 26px; height: 26px; font-size: 12px; color: #8a8886; transition: 0.2s;
+        background: transparent; border: none; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    }
+    .ms-icon-btn-view:hover { color: #0078d4; background: #f3f2f1; }
+    .ms-icon-btn-edit:hover { color: #ffb900; background: #f3f2f1; }
+    .ms-icon-btn-delete:hover { color: #dc3545; background: #f3f2f1; }
+    
+    .ms-table-img-wrapper {
+        width: 32px; height: 32px; padding: 2px; background: #f3f2f1; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .ms-table-img-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .ms-table-img-wrapper i { color: #605e5c; }
   table.dataTable { border-collapse: collapse !important; margin-top: 0 !important; width: 100% !important; }
   
   /* Header Oscuro */
@@ -166,7 +180,22 @@
   
   /* Ocultar elementos por defecto de DataTables para usar los custom */
   .dataTables_info { margin: 15px 16px; font-size: 0.8rem; color: #64748b; }
-  .dataTables_paginate { margin: 15px 16px; }
+    .dataTables_paginate { margin: 15px 16px; font-size: 0.8rem; }
+    .dataTables_paginate .page-item .page-link {
+        border-radius: 0 !important;
+        color: #323130;
+        border: 1px solid #edebe9;
+        margin: 0 2px;
+        padding: 4px 10px;
+    }
+    .dataTables_paginate .page-item.active .page-link {
+        background-color: #0078d4 !important;
+        border-color: #0078d4 !important;
+        color: #ffffff !important;
+    }
+    .dataTables_paginate .page-item:not(.active) .page-link:hover {
+        background-color: #f3f2f1 !important;
+    }
   
   /* Fix Length Menu saltos de linea */
   .dataTables_length label {
@@ -413,6 +442,97 @@ h4, .h4 { font-size: 0.95rem !important; }
 h5, .h5 { font-size: 0.85rem !important; }
 
 .table { font-size: 0.875rem; }
+
+/* Utilities for Layout and Forms */
+.ms-section-header {
+  font-size: 11px; 
+  font-weight: 600; 
+  color: #605e5c; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+  margin-bottom: 12px; 
+  padding-bottom: 8px; 
+  border-bottom: 1px solid #edebe9; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px;
+}
+.ms-section-header i {
+  color: #0078d4;
+}
+
+.ms-drawer-preview {
+  background: white; 
+  border: 1px dashed #e2e8f0; 
+  padding: 10px; 
+  width: 100px; 
+  height: 100px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  margin-bottom: 5px;
+}
+
+/* View Modal Standard Layout */
+.ms-view-modal {
+  display: flex; 
+  background: #ffffff; 
+  min-height: 360px;
+}
+.ms-view-modal-left {
+  width: 260px; 
+  background: #f8fafc; 
+  border-right: 1px solid #e2e8f0; 
+  padding: 32px 20px; 
+  text-align: center; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+}
+.ms-view-modal-right {
+  flex: 1; 
+  padding: 28px 36px;
+}
+.ms-view-modal-footer {
+  background: #f8fafc; 
+  border-top: 1px solid #e2e8f0; 
+  padding: 12px 24px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+}
+.ms-view-item-label {
+  font-size: 0.72rem; 
+  color: #94a3b8; 
+  display: block;
+}
+.ms-view-item-value {
+  font-weight: 700; 
+  color: #0f172a; 
+  display: block; 
+  font-size: 0.88rem;
+}
+.ms-view-title {
+  color: #2563eb; 
+  font-weight: 700; 
+  font-size: 0.78rem; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+  margin-bottom: 12px; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px;
+}
+
+.ms-drawer-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ms-drawer-title i { color: #0078d4; }
+.ms-text-danger { color: #a4262c !important; }
+.ms-mb-0 { margin-bottom: 0 !important; }
+.ms-mr-2 { margin-right: 8px !important; }
 
 /* Force square corners globally as requested by user */
 .form-control, 

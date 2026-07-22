@@ -66,10 +66,10 @@
       </div>
 
       <!-- Cuerpo Split -->
-      <div style="display: flex; background: #ffffff; min-height: 360px;">
+      <div class="ms-view-modal">
 
         <!-- Panel Izquierdo -->
-        <div style="width: 260px; background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 32px 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+        <div class="ms-view-modal-left">
           <div style="background: white; border: 1px solid #e2e8f0; border-radius: 0; padding: 10px; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
             <img id="av-imagen" src="/static/img/placeholder_equipo.png" style="max-width: 100%; max-height: 100%; object-fit: contain;">
           </div>
@@ -83,58 +83,58 @@
         </div>
 
         <!-- Panel Derecho -->
-        <div style="flex: 1; padding: 28px 36px;">
+        <div class="ms-view-modal-right">
 
           <!-- Ubicación -->
-          <h6 style="color: #2563eb; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <h6 class="ms-view-title">
             <i class="fas fa-map-marker-alt"></i> Ubicación Topológica
           </h6>
           <div style="border-top: 1px solid #e2e8f0; margin-bottom: 14px;"></div>
 
           <div class="row mb-3">
             <div class="col-4">
-              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="far fa-building mr-1"></i> Edificio</span>
-              <span id="av-edificio" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+              <span class="ms-view-item-label"><i class="far fa-building mr-1"></i> Edificio</span>
+              <span id="av-edificio" class="ms-view-item-value">-</span>
             </div>
             <div class="col-4">
-              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-layer-group mr-1"></i> Piso</span>
-              <span id="av-piso" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+              <span class="ms-view-item-label"><i class="fas fa-layer-group mr-1"></i> Piso</span>
+              <span id="av-piso" class="ms-view-item-value">-</span>
             </div>
             <div class="col-4">
-              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="far fa-hospital mr-1"></i> Unidad / Servicio</span>
-              <span id="av-unidad" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+              <span class="ms-view-item-label"><i class="far fa-hospital mr-1"></i> Unidad / Servicio</span>
+              <span id="av-unidad" class="ms-view-item-value">-</span>
             </div>
           </div>
           <div class="row mb-4">
             <div class="col-6">
-              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-door-open mr-1"></i> Recinto</span>
-              <span id="av-recinto" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+              <span class="ms-view-item-label"><i class="fas fa-door-open mr-1"></i> Recinto</span>
+              <span id="av-recinto" class="ms-view-item-value">-</span>
             </div>
             <div class="col-6">
-              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-plug mr-1"></i> PMA</span>
-              <span id="av-pma" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+              <span class="ms-view-item-label"><i class="fas fa-plug mr-1"></i> PMA</span>
+              <span id="av-pma" class="ms-view-item-value">-</span>
             </div>
           </div>
 
           <!-- Especificaciones -->
-          <h6 style="color: #2563eb; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <h6 class="ms-view-title">
             <i class="fas fa-microchip"></i> Especificaciones Técnicas
           </h6>
           <div style="border-top: 1px solid #e2e8f0; margin-bottom: 14px;"></div>
 
           <div class="row mb-3">
             <div class="col-6">
-              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-tag mr-1"></i> Marca</span>
-              <span id="av-marca" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem;">-</span>
+              <span class="ms-view-item-label"><i class="fas fa-tag mr-1"></i> Marca</span>
+              <span id="av-marca" class="ms-view-item-value">-</span>
             </div>
             <div class="col-6">
-              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-network-wired mr-1"></i> Dirección IP</span>
-              <span id="av-ip" style="font-weight: 700; color: #0f172a; display: block; font-size: 0.88rem; font-family: monospace;">-</span>
+              <span class="ms-view-item-label"><i class="fas fa-network-wired mr-1"></i> Dirección IP</span>
+              <span id="av-ip" class="ms-view-item-value" style="font-family: monospace;">-</span>
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-12">
-              <span style="font-size: 0.72rem; color: #94a3b8; display: block;"><i class="fas fa-comment-alt mr-1"></i> Comentario / Obs. Técnica</span>
+              <span class="ms-view-item-label"><i class="fas fa-comment-alt mr-1"></i> Comentario / Obs. Técnica</span>
               <span id="av-comentario" style="font-weight: 500; color: #334155; display: block; font-size: 0.85rem; font-style: italic;">-</span>
             </div>
           </div>
@@ -143,11 +143,11 @@
       </div>
 
       <!-- Footer -->
-      <div style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;">
+      <div class="ms-view-modal-footer">
         <div style="font-size: 0.75rem; color: #64748b;">
           ID Sistema: <strong id="av-sysid">#</strong>
         </div>
-        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" style="font-weight: 600; background: #64748b; border: none; border-radius: 0;">Cerrar</button>
+        <button type="button" class="ms-btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
 
     </div>
@@ -160,7 +160,7 @@
 <div class="ms-drawer-overlay" id="anexo-drawer-overlay" onclick="closeAnexoDrawer()"></div>
 <div class="ms-drawer" id="anexo-drawer" style="width: 520px; right: -520px;">
   <div class="ms-drawer-header">
-    <h3 class="ms-drawer-title" id="anexo-drawer-title"><i class="fas fa-phone-alt" style="color:#0078d4; margin-right:8px;"></i> Información Técnica del Equipo</h3>
+    <h3 class="ms-drawer-title" id="anexo-drawer-title"><i class="fas fa-phone-alt" ></i> Información Técnica del Equipo</h3>
     <button class="ms-drawer-close" onclick="closeAnexoDrawer()"><i class="fas fa-times"></i></button>
   </div>
   <div class="ms-drawer-body" style="padding: 20px;">
@@ -168,23 +168,23 @@
       <input type="hidden" id="anexo-id">
       
       <!-- IDENTIDAD -->
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
-        <i class="fas fa-barcode" style="color: #0078d4;"></i> Identidad del Anexo
+      <div class="ms-section-header">
+        <i class="fas fa-barcode" ></i> Identidad del Anexo
       </div>
 
       <div class="ms-form-grid" style="margin-bottom: 16px;">
         <div class="ms-form-group">
-          <label class="ms-label">NÚMERO ANEXO <span style="color:#a4262c;">*</span></label>
+          <label class="ms-label">NÚMERO ANEXO <span class="ms-text-danger">*</span></label>
           <div class="input-group input-group-sm">
             <div class="input-group-prepend">
               <span class="input-group-text bg-light"><i class="fas fa-hashtag"></i></span>
             </div>
-            <input type="text" class="form-control" id="a-numero" placeholder="Ej: 320645" required style="border-radius:0;">
+            <input type="text" class="form-control" id="a-numero" placeholder="Ej: 320645" required >
           </div>
         </div>
         <div class="ms-form-group">
-          <label class="ms-label">MARCA <span style="color:#a4262c;">*</span></label>
-          <select class="ms-input select2-drawer" id="a-marca" required style="margin-bottom:0;">
+          <label class="ms-label">MARCA <span class="ms-text-danger">*</span></label>
+          <select class="ms-input select2-drawer ms-mb-0" id="a-marca" required >
             <option value="">Seleccionar Marca</option>
             {% for m in marcas %}
             <option value="{{ m.nombre }}" data-id="{{ m.id }}">{{ m.nombre }}</option>
@@ -192,8 +192,8 @@
           </select>
         </div>
         <div class="ms-form-group">
-          <label class="ms-label">MODELO <span style="color:#a4262c;">*</span></label>
-          <select class="ms-input select2-drawer" id="a-modelo-anexo" required style="margin-bottom:0;">
+          <label class="ms-label">MODELO <span class="ms-text-danger">*</span></label>
+          <select class="ms-input select2-drawer ms-mb-0" id="a-modelo-anexo" required >
             <option value="">Seleccionar Modelo</option>
             {% for ma in modelos_anexos %}
             <option value="{{ ma.id }}" data-marca="{{ ma.marca__id|default:'' }}" data-imagen="{% if ma.imagen %}/media/{{ ma.imagen }}{% endif %}">{{ ma.nombre }}</option>
@@ -209,14 +209,14 @@
       </div>
 
       <!-- UBICACIÓN -->
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
-        <i class="fas fa-map-marker-alt" style="color: #0078d4;"></i> Ubicación Topológica
+      <div class="ms-section-header">
+        <i class="fas fa-map-marker-alt" ></i> Ubicación Topológica
       </div>
 
       <div class="ms-form-grid" style="margin-bottom: 16px;">
         <div class="ms-form-group">
           <label class="ms-label">EDIFICIO</label>
-          <select class="ms-input select2-drawer" id="a-edificio" style="margin-bottom:0;">
+          <select class="ms-input select2-drawer ms-mb-0" id="a-edificio" >
             <option value="">Todos</option>
             {% for e in edificios %}
             <option value="{{ e.id }}">{{ e.nombre }}</option>
@@ -225,7 +225,7 @@
         </div>
         <div class="ms-form-group">
           <label class="ms-label">PISO</label>
-          <select class="ms-input select2-drawer" id="a-piso" style="margin-bottom:0;">
+          <select class="ms-input select2-drawer ms-mb-0" id="a-piso" >
             <option value="">Todos</option>
             {% for p in pisos %}
             <option value="{{ p.id }}" data-edificio="{{ p.edificio__id }}">{{ p.nombre }}</option>
@@ -234,7 +234,7 @@
         </div>
         <div class="ms-form-group">
           <label class="ms-label">UNIDAD / SERVICIO</label>
-          <select class="ms-input select2-drawer" id="a-unidad" style="margin-bottom:0;">
+          <select class="ms-input select2-drawer ms-mb-0" id="a-unidad" >
             <option value="">Todas</option>
             {% for u in unidades %}
             <option value="{{ u.id }}">{{ u.nombre }}</option>
@@ -243,7 +243,7 @@
         </div>
         <div class="ms-form-group">
           <label class="ms-label">RECINTO</label>
-          <select class="ms-input select2-drawer" id="a-recinto" style="margin-bottom:0;">
+          <select class="ms-input select2-drawer ms-mb-0" id="a-recinto" >
             <option value="">Todos</option>
             {% for r in recintos %}
             <option value="{{ r.id }}" data-piso="{{ r.piso_id }}" data-unidad="{{ r.unidad_id }}">{{ r.nombre }}</option>
@@ -251,8 +251,8 @@
           </select>
         </div>
         <div class="ms-form-group" style="grid-column: span 2;">
-          <label class="ms-label">PMA <span style="color:#a4262c;">*</span></label>
-          <select class="ms-input select2-drawer" id="a-pma" required style="margin-bottom:0;">
+          <label class="ms-label">PMA <span class="ms-text-danger">*</span></label>
+          <select class="ms-input select2-drawer ms-mb-0" id="a-pma" required >
             <option value="">Seleccionar PMA</option>
             {% for pma in pmas %}
             <option value="{{ pma.id }}" data-recinto="{{ pma.recinto_id }}">{{ pma.nombre }}</option>
@@ -262,39 +262,39 @@
       </div>
 
       <!-- RED Y ESTADO -->
-      <div style="font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #edebe9; display: flex; align-items: center; gap: 8px;">
-        <i class="fas fa-network-wired" style="color: #0078d4;"></i> Red y Estado
+      <div class="ms-section-header">
+        <i class="fas fa-network-wired" ></i> Red y Estado
       </div>
 
       <div class="ms-form-grid" style="margin-bottom: 16px;">
         <div class="ms-form-group">
           <label class="ms-label">IP ADDRESS</label>
-          <input type="text" class="ms-input" id="a-ip" placeholder="10.x.x.x" style="margin-bottom:0;">
+          <input type="text" class="ms-input ms-mb-0" id="a-ip" placeholder="10.x.x.x">
         </div>
         <div class="ms-form-group">
           <label class="ms-label">SERIAL NUMBER</label>
-          <input type="text" class="ms-input" id="a-serial" placeholder="Serial..." style="margin-bottom:0;">
+          <input type="text" class="ms-input ms-mb-0" id="a-serial" placeholder="Serial...">
         </div>
           <div class="ms-form-group" style="grid-column: span 2;">
             <label class="ms-label">N&deg; INVENTARIO</label>
-            <input type="text" class="ms-input" id="a-inventario" placeholder="Ej: AF-000345" style="margin-bottom:0;">
+            <input type="text" class="ms-input ms-mb-0" id="a-inventario" placeholder="Ej: AF-000345">
           </div>
         <div class="ms-form-group" style="grid-column: span 2;">
           <label class="ms-label">ESTADO</label>
-          <select class="ms-input" id="a-estado" style="margin-bottom:0;">
+          <select class="ms-input ms-mb-0" id="a-estado">
             <option value="Activo">Activo</option>
             <option value="Inactivo">Inactivo</option>
           </select>
         </div>
         <div class="ms-form-group" style="grid-column: span 2;">
           <label class="ms-label">COMENTARIO / OBS. TÉCNICA</label>
-          <textarea class="ms-input" id="a-comentario" rows="3" placeholder="Información técnica adicional..." style="margin-bottom:0;"></textarea>
+          <textarea class="ms-input ms-mb-0" id="a-comentario" rows="3" placeholder="Información técnica adicional..."></textarea>
         </div>
       </div>
     </form>
   </div>
   <div class="ms-drawer-footer">
-    <button class="ms-btn-secondary" onclick="closeAnexoDrawer()" style="background: white; color: #323130; border: 1px solid #8a8886;">Cancelar</button>
+    <button class="ms-btn-secondary" onclick="closeAnexoDrawer()" >Cancelar</button>
     <button class="ms-btn-primary" id="btn-guardar-anexo"><i class="fas fa-save"></i> Guardar Anexo</button>
   </div>
 </div>
