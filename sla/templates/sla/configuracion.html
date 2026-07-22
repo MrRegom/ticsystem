@@ -45,14 +45,14 @@
 
             <!-- TABLA VISUAL MATRIZ SLA -->
             <div class="table-responsive">
-                <table class="fluent-table text-center w-100" id="tabla-matriz-sla" style="font-size: 0.875rem;">
-                    <thead style="background:#f3f2f1; color:#323130;">
+                <table class="text-center w-100" id="tabla-matriz-sla" style="font-size: 0.875rem; border-collapse: separate; border-spacing: 8px;">
+                    <thead style="color:#605e5c;">
                         <tr>
-                            <th style="padding:12px 20px; font-weight: 600; border-bottom: 2px solid #edebe9;" rowspan="2" class="align-middle">
+                            <th style="padding:12px 20px; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;" rowspan="2" class="align-middle">
                                 <i class="fas fa-arrows-alt ms-mr-2"></i>IMPACTO / URGENCIA
                             </th>
                             {% for urgencia_val, urgencia_label in urgencias %}
-                            <th style="padding:12px 20px; font-weight: 600; border-bottom: 2px solid #edebe9;">
+                            <th style="padding:12px 20px; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
                                 {{ urgencia_label }}
                             </th>
                             {% endfor %}

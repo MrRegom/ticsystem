@@ -612,56 +612,61 @@ h5, .h5 { font-size: 0.85rem !important; }
 .ms-detail-label { font-size: 11px; font-weight: 600; color: #605e5c; text-transform: uppercase; letter-spacing: 0.5px; }
 .ms-detail-value { font-size: 14px; color: #201f1e; font-weight: 500; }
 
- 
- / *   F l u e n t   V a l i d a t i o n   S t y l e s   * / 
- 
- . m s - v a l - e r r o r   {   b o r d e r - c o l o r :   # a 4 2 6 2 c   ! i m p o r t a n t ;   b o x - s h a d o w :   0   0   0   1 p x   # a 4 2 6 2 c   ! i m p o r t a n t ;   a n i m a t i o n :   m s - s h a k e   0 . 4 s ;   } 
- 
- . m s - v a l - s u c c e s s   {   b o r d e r - c o l o r :   # 1 0 7 c 1 0   ! i m p o r t a n t ;   b o x - s h a d o w :   0   0   0   1 p x   # 1 0 7 c 1 0   ! i m p o r t a n t ;   } 
- 
- . s e l e c t 2 - c o n t a i n e r . m s - v a l - e r r o r   . s e l e c t 2 - s e l e c t i o n   {   b o r d e r - c o l o r :   # a 4 2 6 2 c   ! i m p o r t a n t ;   b o x - s h a d o w :   0   0   0   1 p x   # a 4 2 6 2 c   ! i m p o r t a n t ;   a n i m a t i o n :   m s - s h a k e   0 . 4 s ;   } 
- 
- . s e l e c t 2 - c o n t a i n e r . m s - v a l - s u c c e s s   . s e l e c t 2 - s e l e c t i o n   {   b o r d e r - c o l o r :   # 1 0 7 c 1 0   ! i m p o r t a n t ;   b o x - s h a d o w :   0   0   0   1 p x   # 1 0 7 c 1 0   ! i m p o r t a n t ;   } 
- 
- @ k e y f r a m e s   m s - s h a k e   {   0 %   {   t r a n s f o r m :   t r a n s l a t e X ( 0 ) ;   }   2 5 %   {   t r a n s f o r m :   t r a n s l a t e X ( - 4 p x ) ;   }   5 0 %   {   t r a n s f o r m :   t r a n s l a t e X ( 4 p x ) ;   }   7 5 %   {   t r a n s f o r m :   t r a n s l a t e X ( - 4 p x ) ;   }   1 0 0 %   {   t r a n s f o r m :   t r a n s l a t e X ( 0 ) ;   }   } 
- 
- 
+
+/* Fluent Validation Styles */
+
+.ms-val-error { border-color: #a4262c !important; box-shadow: 0 0 0 1px #a4262c !important; animation: ms-shake 0.4s; }
+
+.ms-val-success { border-color: #107c10 !important; box-shadow: 0 0 0 1px #107c10 !important; }
+
+.select2-container.ms-val-error .select2-selection { border-color: #a4262c !important; box-shadow: 0 0 0 1px #a4262c !important; animation: ms-shake 0.4s; }
+
+.select2-container.ms-val-success .select2-selection { border-color: #107c10 !important; box-shadow: 0 0 0 1px #107c10 !important; }
+ 
+ / *   F l u e n t   V a l i d a t i o n   S t y l e s   * / 
+ 
+ . m s - v a l - e r r o r   {   b o r d e r - c o l o r :   # a 4 2 6 2 c   ! i m p o r t a n t ;   b o x - s h a d o w :   0   0   0   1 p x   # a 4 2 6 2 c   ! i m p o r t a n t ;   a n i m a t i o n :   m s - s h a k e   0 . 4 s ;   } 
+ 
+ . m s - v a l - s u c c e s s   {   b o r d e r - c o l o r :   # 1 0 7 c 1 0   ! i m p o r t a n t ;   b o x - s h a d o w :   0   0   0   1 p x   # 1 0 7 c 1 0   ! i m p o r t a n t ;   } 
+ 
+ . s e l e c t 2 - c o n t a i n e r . m s - v a l - e r r o r   . s e l e c t 2 - s e l e c t i o n   {   b o r d e r - c o l o r :   # a 4 2 6 2 c   ! i m p o r t a n t ;   b o x - s h a d o w :   0   0   0   1 p x   # a 4 2 6 2 c   ! i m p o r t a n t ;   a n i m a t i o n :   m s - s h a k e   0 . 4 s ;   } 
+ 
+ . s e l e c t 2 - c o n t a i n e r . m s - v a l - s u c c e s s   . s e l e c t 2 - s e l e c t i o n   {   b o r d e r - c o l o r :   # 1 0 7 c 1 0   ! i m p o r t a n t ;   b o x - s h a d o w :   0   0   0   1 p x   # 1 0 7 c 1 0   ! i m p o r t a n t ;   } 
+ 
+ @ k e y f r a m e s   m s - s h a k e   {   0 %   {   t r a n s f o r m :   t r a n s l a t e X ( 0 ) ;   }   2 5 %   {   t r a n s f o r m :   t r a n s l a t e X ( - 4 p x ) ;   }   5 0 %   {   t r a n s f o r m :   t r a n s l a t e X ( 4 p x ) ;   }   7 5 %   {   t r a n s f o r m :   t r a n s l a t e X ( - 4 p x ) ;   }   1 0 0 %   {   t r a n s f o r m :   t r a n s l a t e X ( 0 ) ;   }   } 
+ 
+ 
 
 /* Forzar tipografia */
 body, .modal, .modal-content, .ms-drawer, .ms-drawer-content, .modal-title, .ms-drawer-title, input, select, textarea, button, h1, h2, h3, h4, h5, h6, .ms-title-area h2, .page-title { font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif !important; }
-.modal-title, .ms-drawer-title, .page-title, .ms-title-area h2 { text-transform: uppercase !important; }
+.modal-title, .ms-drawer-title, .page-title { text-transform: uppercase !important; }
 
- / *   S t a n d a r d   P a g e   H e a d e r s   ( F l u e n t   U I )   * / 
- . m s - p a g e - h e a d e r   { 
-         d i s p l a y :   f l e x ;   
-         j u s t i f y - c o n t e n t :   s p a c e - b e t w e e n ;   
-         a l i g n - i t e m s :   c e n t e r ;   
-         m a r g i n - b o t t o m :   2 0 p x ; 
- } 
- . m s - p a g e - t i t l e   { 
-         f o n t - f a m i l y :   ' S e g o e   U I ' ,   s y s t e m - u i ,   s a n s - s e r i f ;   
-         f o n t - s i z e :   2 4 p x ;   
-         f o n t - w e i g h t :   6 0 0 ;   
-         c o l o r :   # 3 2 3 1 3 0 ;   
-         m a r g i n :   0 ;   
-         t e x t - t r a n s f o r m :   u p p e r c a s e ;   
-         l e t t e r - s p a c i n g :   0 . 5 p x ;   
-         l i n e - h e i g h t :   1 ; 
- } 
- . m s - p a g e - s u b t i t l e   { 
-         f o n t - f a m i l y :   ' S e g o e   U I ' ,   s y s t e m - u i ,   s a n s - s e r i f ;   
-         f o n t - s i z e :   1 4 p x ;   
-         c o l o r :   # 6 0 5 e 5 c ;   
-         m a r g i n :   4 p x   0   0   0 ;   
-         l i n e - h e i g h t :   1 ; 
- } 
- . m s - p a g e - a c t i o n s   { 
-         d i s p l a y :   f l e x ;   
-         g a p :   8 p x ;   
-         a l i g n - i t e m s :   c e n t e r ; 
- } 
- 
- 
+    margin-bottom: 20px;
+}
+.ms-page-title {
+    font-family: 'Segoe UI', system-ui, sans-serif; 
+    font-size: 24px; 
+    font-weight: 600; 
+    color: #323130; 
+    margin: 0; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    line-height: 1;
+}
+.ms-page-subtitle {
+    font-family: 'Segoe UI', system-ui, sans-serif; 
+    font-size: 14px; 
+    color: #605e5c; 
+    margin: 4px 0 0 0; 
+    line-height: 1;
+}
+.ms-page-actions {
+    display: flex; 
+    gap: 8px; 
+    align-items: center;
+}
+
+
 /* Fluent Card Container */
 .fluent-card {
     background-color: #ffffff;

@@ -47,8 +47,8 @@ $(document).ready(function() {
             const impVal = imp.val;
             const impLabel = imp.label;
 
-            let row = `<tr class="ms-list-row">
-                <td class="font-weight-bold text-left align-middle" style="background:#faf9f8; color:#323130; padding:14px 16px; min-width:220px; border-bottom:1px solid #edebe9;">
+            let row = `<tr>
+                <td class="font-weight-bold text-left align-middle" style="background:#ffffff; box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108); color:#323130; padding:14px 16px; min-width:220px; border-radius:4px;">
                     <i class="fas fa-circle ms-mr-2" style="font-size:0.6rem; color:#8a8886;"></i>${impLabel}
                 </td>`;
 
@@ -66,11 +66,11 @@ $(document).ready(function() {
                         data-urgencia="${urgVal}"
                         data-imp-label="${impLabel}"
                         data-urg-label="${urg.label}"
-                        style="cursor:pointer; padding:0; border:1px solid #edebe9; transition: transform 0.15s, box-shadow 0.15s; position:relative;"
-                        onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';this.style.zIndex='10';"
-                        onmouseout="this.style.transform='';this.style.boxShadow='';this.style.zIndex='';">
+                        style="cursor:pointer; padding:0; background:#ffffff; border-radius:4px; box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108); transition: transform 0.15s, box-shadow 0.15s; position:relative;"
+                        onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 6.4px 14.4px 0 rgba(0,0,0,0.132), 0 1.2px 3.6px 0 rgba(0,0,0,0.108)';this.style.zIndex='10';"
+                        onmouseout="this.style.transform='';this.style.boxShadow='0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108)';this.style.zIndex='';">
                         
-                        <div style="padding: 14px; background: white; border-top: 4px solid ${color}; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;">
+                        <div style="padding: 14px; background: white; border-top: 4px solid ${color}; border-radius:4px; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;">
                             <span style="background-color: ${color}15; color: ${color}; padding: 3px 12px; border-radius: 12px; font-weight: 700; font-size: 0.75rem;">${celda.prioridad_nombre}</span>
                             <div style="font-size:0.7rem; color:#64748b; line-height:1.4;">
                                 <div><i class="fas fa-bolt text-muted mr-1" style="font-size:0.6rem;"></i>1ª Resp: <strong style="color:#1e293b;">${minutosATexto(celda.tiempo_respuesta_minutos)}</strong></div>
