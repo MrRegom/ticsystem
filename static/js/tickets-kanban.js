@@ -994,17 +994,20 @@ $(document).ready(function() {
         $('#solicitante-select').select2('open');
     });
     
-    // Select2 para activo y categoría
+    // Select2 para activo
     $('#activo-select').select2({
         dropdownParent: $('#modalNuevoTicket'),
         placeholder: '-- Sin equipo específico --',
         allowClear: true
     });
-    
-    $('select[name="categoria_id"]').select2({
+
+    $('select[name="categoria_id"], select[name="impacto"], select[name="urgencia"]').select2({
         dropdownParent: $('#modalNuevoTicket'),
-        placeholder: '-- Seleccionar Categoría --'
-    }).on('change', validateFormProgress);
+        minimumResultsForSearch: Infinity,
+        placeholder: '-- Seleccionar --',
+        width: '100%'
+    });
+    $('select[name="categoria_id"]').on('change', validateFormProgress);
     
     // Validación de texto
     var descInput = document.querySelector('[name="descripcion"]');

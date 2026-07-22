@@ -8,13 +8,14 @@ from mantenedores.models import (
     Proveedor, Institucion, Cargo
 )
 from equipos.models import BitacoraOpcion
-from tickets.models import GrupoResolutor
+from tickets.models import GrupoResolutor, Categoria
 from mantenedores.repositories.mantenedor_repository import MantenedorRepository
 
 
 MODEL_MAP = {
     'articulo': Articulo,
     'area_hospitalaria': AreaHospitalaria,
+    'categoria': Categoria,
     'edificio': Edificio,
     'grupo_resolutor': GrupoResolutor,
     'institucion': Institucion,
