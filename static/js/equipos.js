@@ -115,7 +115,7 @@ function eqRenderRows() {
         html += '<div><span class="ms-status"><span class="ms-status-dot" style="background:' + color + ';"></span><span style="font-size:11px;">' + estado + '</span></span></div>';
         
         // Col 9: Acciones
-        html += '<div class="ms-row-actions" onclick="event.stopPropagation();" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:6px; justify-content:center; align-items:center; width:100%; height:100%;">';
+        html += '<div class="ms-row-actions" onclick="event.stopPropagation();" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:6px; justify-content:center; align-items:center; width:100%; height:100%; transform:none !important;">';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Ver Detalle" onclick="eqOpenView(' + eq.id + ')"><i class="fas fa-eye"></i></button>';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Bitácora" onclick="eqOpenBitacora(' + eq.id + ',\'' + serial + '\')" ><i class="fas fa-history"></i></button>';
         html += '  <button class="ms-icon-btn" style="width:26px; height:26px; font-size: 12px;" title="Editar" onclick="eqEdit(' + eq.id + ')" ><i class="fas fa-edit"></i></button>';
