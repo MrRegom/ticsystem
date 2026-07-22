@@ -95,7 +95,7 @@ $(document).ready(function() {
             }},
             { data: 'encargado' },
             { data: null, orderable: false, render: function(data, type, row) {
-                let html = '<div class="ms-row-actions" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:8px; justify-content:center; align-items:center; margin-top:2px;">';
+                let html = '<div class="ms-row-actions" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:8px; justify-content:center; align-items:center; margin-top:6px;">';
                 if (row.pdf_url) {
                     html += `<a href="${row.pdf_url}" target="_blank" class="ms-icon-btn" style="width:26px; height:26px; font-size:13px; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; color:#8a8886; transition:0.2s;" onmouseover="this.style.color='#0078d4'; this.style.background='#f3f2f1';" onmouseout="this.style.color='#8a8886'; this.style.background='transparent';" title="Ver PDF"><i class="fas fa-file-pdf"></i></a>`;
                 } else {
