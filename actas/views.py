@@ -296,15 +296,14 @@ class ActaDeleteView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                         pass
                         
             # Registrar auditoría
-            AuditoriaService.registrar(
-                usuario=request.user,
-                accion='ELIMINAR',
-                modulo='ACTAS',
-                entidad='Acta',
-                entidad_id=acta.id,
-                ip_address=get_client_ip(request),
-                detalles={'codigo_acta': acta.codigo}
-            )
+            AuditoriaService.registrar_accion(
+                  usuario=request.user.username,
+                  accion='ELIMINAR',
+                  tabla='Acta',
+                  registro_id=str(acta.id),
+                  ip_address=get_client_ip(request),
+                  detalles=f'Acta eliminada: {acta.codigo}'
+              )
             
             acta.delete()
             return JsonResponse({'status': 'success'})
