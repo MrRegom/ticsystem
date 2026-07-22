@@ -183,7 +183,7 @@ $(document).ready(function() {
                 }
                 res.data.forEach(function(p, i) {
                     $tbody.append(`
-                        <tr class="ms-list-row">
+                        <tr>
                             <td>${i + 1}</td>
                             <td>
                                 <span style="background:${p.color_hex}; color:white; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:600;">${p.nombre}</span>

@@ -675,3 +675,13 @@ body, .modal, .modal-content, .ms-drawer, .ms-drawer-content, .modal-title, .ms-
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     padding: 16px;
 }
+
+/* Pivot Navigation / Tabs */
+.ms-header-pivot { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 0; }
+.ms-header-pivot .ms-title-area { padding-bottom: 20px; }
+.ms-pivot { display: flex; gap: 16px; margin-bottom: 0; border-bottom: none; }
+.ms-pivot .nav-item { margin-bottom: 0; }
+.ms-pivot-link { padding: 12px 0; border: none; border-bottom: 3px solid transparent; color: #605e5c; background: transparent; border-radius: 0; font-weight: 600; cursor: pointer; transition: color 0.1s; }
+.ms-pivot-link:hover { color: #323130 !important; border-bottom-color: transparent !important; }
+.ms-pivot-link.active { color: #0078d4 !important; border-bottom: 3px solid #0078d4 !important; background: transparent !important; }
+

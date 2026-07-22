@@ -5,28 +5,28 @@
 {% block content %}
 <div style="padding: 32px 40px; background-color: #faf9f8; min-height: calc(100vh - 48px);" class="animate__animated animate__fadeIn ms-wrap">
   <!-- Encabezado de Página -->
-  <div class="ms-header">
+  <div class="ms-header ms-header-pivot">
     <div class="ms-title-area">
       <h2>Configuración del Sistema</h2>
       <p>Gestión de parámetros de SLA, prioridades y comportamiento del helpdesk</p>
     </div>
-  </div>
-
-    <!-- Pestañas -->
-    <ul class="nav nav-tabs border-bottom ms-fluent-tabs" id="configTab" role="tablist">
+    
+    <!-- Pestañas (Pivot) -->
+    <ul class="nav nav-tabs ms-pivot" id="configTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active font-weight-bold" id="sla-tab" data-toggle="tab" href="#sla" role="tab">
-                <i class="fas fa-table mr-2"></i>Matriz SLA
+            <a class="nav-link active ms-pivot-link" id="sla-tab" data-toggle="tab" href="#sla" role="tab">
+                Matriz SLA
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link font-weight-bold" id="prio-tab" data-toggle="tab" href="#prioridades" role="tab">
-                <i class="fas fa-flag mr-2"></i>Prioridades
+            <a class="nav-link ms-pivot-link" id="prio-tab" data-toggle="tab" href="#prioridades" role="tab">
+                Prioridades
             </a>
         </li>
     </ul>
+  </div>
 
-    <div class="tab-content ms-card p-4" id="configTabContent">
+  <div class="tab-content ms-card p-4" id="configTabContent" style="border-top-left-radius: 0;">
 
         <!-- TAB: MATRIZ SLA -->
         <div class="tab-pane fade show active" id="sla" role="tabpanel">
