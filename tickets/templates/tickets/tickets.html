@@ -274,70 +274,76 @@
             </div>
             
             <div class="form-group col-md-6 mb-3">
-              <label class="form-label-custom">Categoría Principal <span class="text-danger">*</span></label>
-              <select name="categoria_id" class="form-control" required style="width:100%;">
-                <option value="">-- Seleccione Categoría --</option>
-                {% for cat in categorias %}
-                  <option value="{{ cat.id }}">{{ cat.nombre }}</option>
-                {% endfor %}
-              </select>
+                <label class="form-label-custom">Categoría Principal <span class="text-danger">*</span></label>
+                <div class="radio-pill-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  {% for cat in categorias %}
+                  {% if cat.nombre != 'Insumos' %}
+                  <label onclick="document.querySelectorAll('input[name=categoria_id]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
+                    <span>{{ cat.nombre }}</span>
+                    <div class="custom-checkbox"><i class="fas fa-check"></i></div>
+                    <input type="radio" name="categoria_id" value="{{ cat.id }}" {% if forloop.first %}checked{% endif %}>
+                  </label>
+                  {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div class="form-row mb-4">
-            <div class="form-group col-md-4 mb-0">
-              <label class="form-label-custom">Anexo Contacto</label>
-              <input type="text" name="anexo_contacto" class="form-control mb-3" placeholder="Ej: 320891">
-              
-              <label class="form-label-custom">Correo Electrónico <span class="text-muted font-weight-normal" style="font-size:12px;">(Opcional)</span></label>
-              <input type="email" name="correo_contacto" class="form-control" placeholder="Ej: usuario@correo.cl">
-            </div>
-            <div class="form-group col-md-4 mb-0">
+  
+            <div class="form-row mb-4">
+              <div class="form-group col-md-4 mb-0">
+                <label class="form-label-custom">Anexo Contacto</label>
+                <input type="text" name="anexo_contacto" class="form-control" placeholder="Ej: 320891">
+              </div>
+              <div class="form-group col-md-4 mb-0">
+                <label class="form-label-custom">Correo Electrónico <span class="text-muted font-weight-normal" style="font-size:12px;">(Opcional)</span></label>
+                <input type="email" name="correo_contacto" class="form-control" placeholder="Ej: usuario@correo.cl">
+              </div>
+              <div class="form-group col-md-4 mb-0">
                 <label class="form-label-custom">Impacto <span class="text-danger">*</span></label>
                 <div class="radio-pill-group">
                   <label class="active" onclick="document.querySelectorAll('input[name=impacto]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
                     <span>Bajo / Sin Impacto</span>
-                    <i class="fas fa-check check-icon"></i>
+                    <div class="custom-checkbox"><i class="fas fa-check"></i></div>
                     <input type="radio" name="impacto" value="4" checked>
                   </label>
                   <label onclick="document.querySelectorAll('input[name=impacto]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
                     <span>Usuario Único</span>
-                    <i class="fas fa-check check-icon"></i>
+                    <div class="custom-checkbox"><i class="fas fa-check"></i></div>
                     <input type="radio" name="impacto" value="3">
                   </label>
                   <label onclick="document.querySelectorAll('input[name=impacto]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
                     <span>Servicio / Área</span>
-                    <i class="fas fa-check check-icon"></i>
+                    <div class="custom-checkbox"><i class="fas fa-check"></i></div>
                     <input type="radio" name="impacto" value="2">
                   </label>
                   <label onclick="document.querySelectorAll('input[name=impacto]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
                     <span>Alta Criticidad</span>
-                    <i class="fas fa-check check-icon"></i>
+                    <div class="custom-checkbox"><i class="fas fa-check"></i></div>
                     <input type="radio" name="impacto" value="1">
                   </label>
                 </div>
               </div>
-              <div class="form-group col-md-4 mb-0">
+              <div class="form-group col-md-4 mb-0" style="margin-top: 15px;">
                 <label class="form-label-custom">Urgencia <span class="text-danger">*</span></label>
                 <div class="radio-pill-group">
                   <label class="active" onclick="document.querySelectorAll('input[name=urgencia]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
                     <span>Baja / Normal</span>
-                    <i class="fas fa-check check-icon"></i>
+                    <div class="custom-checkbox"><i class="fas fa-check"></i></div>
                     <input type="radio" name="urgencia" value="3" checked>
                   </label>
                   <label onclick="document.querySelectorAll('input[name=urgencia]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
                     <span>Media / Degradada</span>
-                    <i class="fas fa-check check-icon"></i>
+                    <div class="custom-checkbox"><i class="fas fa-check"></i></div>
                     <input type="radio" name="urgencia" value="2">
                   </label>
                   <label onclick="document.querySelectorAll('input[name=urgencia]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
                     <span>Alta / Detenida</span>
-                    <i class="fas fa-check check-icon"></i>
+                    <div class="custom-checkbox"><i class="fas fa-check"></i></div>
                     <input type="radio" name="urgencia" value="1">
                   </label>
                 </div>
               </div>
-          </div>
+            </div>
 
           <!-- SECCION: Detalles -->
           <div class="section-title">
