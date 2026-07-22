@@ -128,7 +128,6 @@ $(document).ready(function() {
             search: "_INPUT_",
             searchPlaceholder: "Buscar..."
         },
-        dom: '<"top">rt<"bottom"ilp><"clear">',
         columns: [
             { data: 'id', orderable: false, className: 'text-center' },
             { 
@@ -193,24 +192,20 @@ $(document).ready(function() {
                 className: 'text-right',
                 render: function(data, type, row) {
                     return `
-                        <button class="action-btn-square text-primary btn-ver-anexo" data-id="${row.id}" title="Ver Anexo">
+                    <div class="ms-row-actions" style="position:static; opacity:1; background:transparent; padding:0; display:flex; gap:8px; justify-content:center; align-items:center; width:100%; transform:none !important; margin-top:0;">
+                        <button class="ms-icon-btn btn-ver-anexo" data-id="${row.id}" title="Ver Anexo" style="width:26px; height:26px; font-size:12px; color:#0078d4;">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="action-btn-square text-success btn-editar-anexo" data-id="${row.id}" title="Editar Anexo">
+                        <button class="ms-icon-btn btn-editar-anexo" data-id="${row.id}" title="Editar Anexo" style="width:26px; height:26px; font-size:12px; color:#0078d4;">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="action-btn-square text-danger btn-eliminar-anexo" data-id="${row.id}" title="Eliminar Anexo">
+                        <button class="ms-icon-btn btn-eliminar-anexo" data-id="${row.id}" title="Eliminar Anexo" style="width:26px; height:26px; font-size:12px; color:#d13438;">
                             <i class="fas fa-trash-alt"></i>
                         </button>
-                    `;
+                    </div>`;
                 }
             }
         ]
-    });
-
-    // Custom Search
-    $('#custom-search-input').on('keyup', function() {
-        tablaAnexos.search(this.value).draw();
     });
 
     // Botón Nuevo Anexo

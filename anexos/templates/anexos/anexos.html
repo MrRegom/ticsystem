@@ -27,6 +27,28 @@
     </div>
   </div>
 
+  <!-- Contenedor Principal (Tabla) -->
+  <div class="card border-0 shadow-sm rounded-lg mt-4">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover w-100 align-middle" id="tabla-anexos">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 50px;">ID</th>
+                    <th>Anexo</th>
+                    <th>Modelo</th>
+                    <th>Serial</th>
+                    <th>Ubicación</th>
+                    <th>IP</th>
+                    <th>Estado</th>
+                    <th class="text-center" style="width: 120px;">Acciones</th>
+                </tr>
+            </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+
 <!-- Modal Detalle del Anexo (Vista Split, igual al de Equipos) -->
 <div class="modal fade" id="modalVerAnexo" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 860px;">
@@ -296,5 +318,5 @@
 
 {% block extra_js %}
 <script src="{% static 'vendor/datatables/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'js/anexos.js' %}"></script>
+<script src="{% static 'js/anexos.js' %}?v=1.0"></script>
 {% endblock %}
