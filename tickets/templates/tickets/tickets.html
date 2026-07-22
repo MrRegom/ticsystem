@@ -293,36 +293,50 @@
               <input type="email" name="correo_contacto" class="form-control" placeholder="Ej: usuario@correo.cl">
             </div>
             <div class="form-group col-md-4 mb-0">
-              <label class="form-label-custom">Impacto</label>
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
-                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
-                  <input type="radio" name="impacto" value="4" checked> Bajo / Sin Impacto
-                </label>
-                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
-                  <input type="radio" name="impacto" value="3"> Usuario Único
-                </label>
-                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
-                  <input type="radio" name="impacto" value="2"> Servicio / Área
-                </label>
-                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
-                  <input type="radio" name="impacto" value="1"> Alta Críticidad
-                </label>
+                <label class="form-label-custom">Impacto <span class="text-danger">*</span></label>
+                <div class="radio-pill-group">
+                  <label class="active" onclick="document.querySelectorAll('input[name=impacto]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
+                    <span>Bajo / Sin Impacto</span>
+                    <i class="fas fa-check check-icon"></i>
+                    <input type="radio" name="impacto" value="4" checked>
+                  </label>
+                  <label onclick="document.querySelectorAll('input[name=impacto]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
+                    <span>Usuario Único</span>
+                    <i class="fas fa-check check-icon"></i>
+                    <input type="radio" name="impacto" value="3">
+                  </label>
+                  <label onclick="document.querySelectorAll('input[name=impacto]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
+                    <span>Servicio / Área</span>
+                    <i class="fas fa-check check-icon"></i>
+                    <input type="radio" name="impacto" value="2">
+                  </label>
+                  <label onclick="document.querySelectorAll('input[name=impacto]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
+                    <span>Alta Criticidad</span>
+                    <i class="fas fa-check check-icon"></i>
+                    <input type="radio" name="impacto" value="1">
+                  </label>
+                </div>
               </div>
-            </div>
-            <div class="form-group col-md-4 mb-0">
-              <label class="form-label-custom">Urgencia</label>
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
-                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
-                  <input type="radio" name="urgencia" value="3" checked> Baja / Normal
-                </label>
-                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
-                  <input type="radio" name="urgencia" value="2"> Media / Degradada
-                </label>
-                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; color: #475569;">
-                  <input type="radio" name="urgencia" value="1"> Alta / Detenida
-                </label>
+              <div class="form-group col-md-4 mb-0">
+                <label class="form-label-custom">Urgencia <span class="text-danger">*</span></label>
+                <div class="radio-pill-group">
+                  <label class="active" onclick="document.querySelectorAll('input[name=urgencia]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
+                    <span>Baja / Normal</span>
+                    <i class="fas fa-check check-icon"></i>
+                    <input type="radio" name="urgencia" value="3" checked>
+                  </label>
+                  <label onclick="document.querySelectorAll('input[name=urgencia]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
+                    <span>Media / Degradada</span>
+                    <i class="fas fa-check check-icon"></i>
+                    <input type="radio" name="urgencia" value="2">
+                  </label>
+                  <label onclick="document.querySelectorAll('input[name=urgencia]').forEach(i=>i.parentElement.classList.remove('active')); this.classList.add('active');">
+                    <span>Alta / Detenida</span>
+                    <i class="fas fa-check check-icon"></i>
+                    <input type="radio" name="urgencia" value="1">
+                  </label>
+                </div>
               </div>
-            </div>
           </div>
 
           <!-- SECCION: Detalles -->

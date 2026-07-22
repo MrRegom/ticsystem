@@ -456,3 +456,11 @@
  . e m p t y - t i t l e   {   f o n t - w e i g h t :   8 0 0 ;   f o n t - s i z e :   1 r e m ;   c o l o r :   # 0 f 1 7 2 a ;   m a r g i n - b o t t o m :   8 p x ;   }  
  . e m p t y - t e x t   {   f o n t - s i z e :   0 . 8 5 r e m ;   l i n e - h e i g h t :   1 . 5 ;   }  
  
+.radio-pill-group { display: flex; flex-direction: column; gap: 4px; }
+.radio-pill-group label { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; transition: all 0.2s; background: #fff; color: #475569; font-size: 13px; font-weight: 500; margin: 0; }
+.radio-pill-group label:hover { border-color: #cbd5e1; background: #f8fafc; }
+.radio-pill-group label.active { border-color: #3b82f6; background: #eff6ff; color: #1e3a8a; font-weight: 600; box-shadow: inset 0 0 0 1px #3b82f6; }
+.radio-pill-group label input { display: none; }
+.radio-pill-group label .check-icon { display: none; color: #3b82f6; }
+.radio-pill-group label.active .check-icon { display: block; }
+

@@ -1005,13 +1005,6 @@ $(document).ready(function() {
         dropdownParent: $('#modalNuevoTicket'),
         placeholder: '-- Seleccionar Categoría --'
     }).on('change', validateFormProgress);
-
-    // Select2 para Impacto y Urgencia
-    $('select[name="impacto"], select[name="urgencia"]').select2({
-        dropdownParent: $('#modalNuevoTicket'),
-        minimumResultsForSearch: Infinity,
-        width: '100%'
-    });
     
     // Validación de texto
     var descInput = document.querySelector('[name="descripcion"]');
