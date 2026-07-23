@@ -244,9 +244,9 @@ function renderList(users) {
     // Status Badge (Fluent UI Dot)
     let statusBadge = '';
     if (u.is_active === "Sí" || u.is_active === true || u.is_active === "Activo") {
-      statusBadge = '<div class="ms-status"><span class="ms-status-dot dot-active"></span>Activo</div>';
+      statusBadge = '<div class="ms-status" style="display:flex; align-items:center; gap:6px;"><i class="fas fa-check-circle" style="color: #107c10; font-size: 14px;"></i> Activo</div>';
     } else {
-      statusBadge = '<div class="ms-status"><span class="ms-status-dot dot-inactive"></span>Inactivo</div>';
+      statusBadge = '<div class="ms-status" style="display:flex; align-items:center; gap:6px;"><i class="fas fa-times-circle" style="color: #a4262c; font-size: 14px;"></i> Inactivo</div>';
     }
     
     // Role Badge (Fluent UI Clean Text)
@@ -264,8 +264,9 @@ function renderList(users) {
       roleDotStyle = '#d13438'; // Rojo
     }
     
+    const roleIcon = u.rol_icono || 'fas fa-user-circle';
     const roleBadge = `<div style="display:flex; align-items:center; gap: 6px;">
-                        <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${roleDotStyle}; display:inline-block;"></span>
+                        <i class="${roleIcon}" style="font-size: 14px; color: ${roleDotStyle};"></i>
                         <span style="font-size: 13px; color: #323130;">${roleText}</span>
                        </div>`;
     
