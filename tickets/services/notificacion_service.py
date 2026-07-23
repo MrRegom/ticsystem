@@ -56,14 +56,16 @@ class NotificacionService:
             detalles_lista=detalles,
             footer_msg="Nuestro equipo técnico revisará su caso a la brevedad posible."
         )
-        
         try:
-            msg = EmailMultiAlternatives(asunto, strip_tags(html_content), settings.DEFAULT_FROM_EMAIL, [correo_destino])
+            from correos.models import ConfiguracionSMTP
+            config = ConfiguracionSMTP.load()
+            from_email = config.remitente_por_defecto or settings.DEFAULT_FROM_EMAIL
+            
+            msg = EmailMultiAlternatives(asunto, strip_tags(html_content), from_email, [correo_destino])
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=True)
         except Exception:
             pass
-
     @staticmethod
     def notificar_resolucion(ticket, comentario):
         correo_destino = ticket.correo_contacto if ticket.correo_contacto else (ticket.solicitante.correo if ticket.solicitante else None)
@@ -84,9 +86,12 @@ class NotificacionService:
             detalles_lista=detalles,
             footer_msg="Si considera que el problema persiste o requiere asistencia adicional, por favor comuníquese con nosotros indicando el número de su ticket."
         )
-        
         try:
-            msg = EmailMultiAlternatives(asunto, strip_tags(html_content), settings.DEFAULT_FROM_EMAIL, [correo_destino])
+            from correos.models import ConfiguracionSMTP
+            config = ConfiguracionSMTP.load()
+            from_email = config.remitente_por_defecto or settings.DEFAULT_FROM_EMAIL
+            
+            msg = EmailMultiAlternatives(asunto, strip_tags(html_content), from_email, [correo_destino])
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=True)
         except Exception:
