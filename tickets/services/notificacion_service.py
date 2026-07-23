@@ -37,7 +37,8 @@ class NotificacionService:
 
     @staticmethod
     def notificar_creacion(ticket):
-        if not ticket.solicitante or not ticket.solicitante.correo:
+        correo_destino = ticket.correo_contacto if ticket.correo_contacto else (ticket.solicitante.correo if ticket.solicitante else None)
+        if not correo_destino:
             return
             
         asunto = f"[Mesa de Ayuda] Ticket Creado: {ticket.correlativo}"
@@ -50,14 +51,14 @@ class NotificacionService:
         
         html_content = NotificacionService._build_html_email(
             titulo="Su Ticket ha sido ingresado con éxito",
-            nombre_usuario=ticket.solicitante.nombre_completo,
+            nombre_usuario=ticket.solicitante.nombre_completo if ticket.solicitante else 'Usuario',
             mensaje_principal="Hemos registrado exitosamente su requerimiento/incidente en nuestro sistema. A continuación los detalles de su solicitud:",
             detalles_lista=detalles,
             footer_msg="Nuestro equipo técnico revisará su caso a la brevedad posible."
         )
         
         try:
-            msg = EmailMultiAlternatives(asunto, strip_tags(html_content), settings.DEFAULT_FROM_EMAIL, [ticket.solicitante.correo])
+            msg = EmailMultiAlternatives(asunto, strip_tags(html_content), settings.DEFAULT_FROM_EMAIL, [correo_destino])
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=True)
         except Exception:
@@ -65,7 +66,8 @@ class NotificacionService:
 
     @staticmethod
     def notificar_resolucion(ticket, comentario):
-        if not ticket.solicitante or not ticket.solicitante.correo:
+        correo_destino = ticket.correo_contacto if ticket.correo_contacto else (ticket.solicitante.correo if ticket.solicitante else None)
+        if not correo_destino:
             return
             
         asunto = f"[Mesa de Ayuda] Ticket Resuelto: {ticket.correlativo}"
@@ -77,14 +79,14 @@ class NotificacionService:
         
         html_content = NotificacionService._build_html_email(
             titulo="Su Ticket ha sido resuelto",
-            nombre_usuario=ticket.solicitante.nombre_completo,
+            nombre_usuario=ticket.solicitante.nombre_completo if ticket.solicitante else 'Usuario',
             mensaje_principal="Le informamos que el equipo técnico ha marcado su ticket como resuelto. Detalles de la solución:",
             detalles_lista=detalles,
             footer_msg="Si considera que el problema persiste o requiere asistencia adicional, por favor comuníquese con nosotros indicando el número de su ticket."
         )
         
         try:
-            msg = EmailMultiAlternatives(asunto, strip_tags(html_content), settings.DEFAULT_FROM_EMAIL, [ticket.solicitante.correo])
+            msg = EmailMultiAlternatives(asunto, strip_tags(html_content), settings.DEFAULT_FROM_EMAIL, [correo_destino])
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=True)
         except Exception:
