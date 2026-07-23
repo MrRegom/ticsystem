@@ -265,9 +265,8 @@ function renderList(users) {
     }
     
     const roleIcon = u.rol_icono || 'fas fa-user-circle';
-    const roleBadge = `<div style="display:flex; align-items:center; gap: 6px;">
-                        <i class="${roleIcon}" style="font-size: 14px; color: ${roleDotStyle};"></i>
-                        <span style="font-size: 13px; color: #323130;">${roleText}</span>
+    const roleBadge = `<div style="display:flex; align-items:center; justify-content:center; cursor: help;" title="${roleText}">
+                        <i class="${roleIcon}" style="font-size: 20px; color: ${roleDotStyle};"></i>
                        </div>`;
     
     // Escapar comillas en JSON
