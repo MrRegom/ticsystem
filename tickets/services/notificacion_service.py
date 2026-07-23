@@ -5,32 +5,57 @@ from django.utils.html import strip_tags
 class NotificacionService:
     @staticmethod
     def _build_html_email(titulo, nombre_usuario, mensaje_principal, detalles_lista, footer_msg):
-        detalles_html = "".join([f"<li style='margin-bottom: 8px;'><strong style='color:#002855;'>{k}:</strong> <span style='color:#334155;'>{v}</span></li>" for k, v in detalles_lista])
+        detalles_html = ""
+        for key, val in detalles_lista:
+            detalles_html += f"<tr><td style='padding: 6px 0;'><strong style='color:#002855;'>{key}:</strong> <span style='color:#334155;'>{val}</span></td></tr>"
+            
         return f"""
+        <!DOCTYPE html>
         <html>
-        <body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f1f5f9; color: #1e293b; margin: 0; padding: 30px 10px;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                <div style="background-color: #002855; color: #ffffff; padding: 24px; text-align: center; border-bottom: 4px solid #3b82f6;">
-                    <h2 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 0.5px;">TicSystem Mesa de Ayuda</h2>
-                </div>
-                <div style="padding: 32px;">
-                    <h3 style="color: #0f172a; margin-top: 0; font-size: 20px;">{titulo}</h3>
-                    <p style="font-size: 16px; line-height: 1.6;">Estimado(a) <strong>{nombre_usuario}</strong>,</p>
-                    <p style="font-size: 16px; line-height: 1.6;">{mensaje_principal}</p>
-                    
-                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6; border-radius: 4px; padding: 20px; margin: 24px 0;">
-                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 15px; line-height: 1.6;">
-                            {detalles_html}
-                        </ul>
-                    </div>
-                    
-                    <p style="font-size: 15px; line-height: 1.6; color: #475569;">{footer_msg}</p>
-                </div>
-                <div style="background-color: #f8fafc; color: #64748b; text-align: center; padding: 20px; font-size: 13px; border-top: 1px solid #e2e8f0;">
-                    Este es un correo generado automáticamente. Por favor no responda a este mensaje.<br>
-                    <strong style="color: #002855; display: inline-block; margin-top: 8px;">Unidad de Tecnologías de la Información</strong>
-                </div>
-            </div>
+        <body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 30px 10px;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#f1f5f9">
+                <tr>
+                    <td align="center">
+                        <!-- Contenedor Principal (Tabla) para Outlook -->
+                        <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
+                            <!-- Header -->
+                            <tr>
+                                <td align="center" style="background-color: #002855; color: #ffffff; padding: 24px; border-bottom: 4px solid #3b82f6;">
+                                    <h2 style="margin: 0; font-size: 24px; font-weight: 600;">TicSystem Mesa de Ayuda</h2>
+                                </td>
+                            </tr>
+                            <!-- Body -->
+                            <tr>
+                                <td style="padding: 32px;">
+                                    <h3 style="color: #0f172a; margin-top: 0; font-size: 20px;">{titulo}</h3>
+                                    <p style="font-size: 16px; line-height: 1.6; color: #1e293b;">Estimado(a) <strong>{nombre_usuario}</strong>,</p>
+                                    <p style="font-size: 16px; line-height: 1.6; color: #1e293b;">{mensaje_principal}</p>
+                                    
+                                    <!-- Detalles Box -->
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="20" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6; margin: 24px 0;">
+                                        <tr>
+                                            <td style="font-size: 15px; line-height: 1.6;">
+                                                <table border="0" cellspacing="0" cellpadding="0">
+                                                    {detalles_html}
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    
+                                    <p style="font-size: 15px; line-height: 1.6; color: #475569;">{footer_msg}</p>
+                                </td>
+                            </tr>
+                            <!-- Footer -->
+                            <tr>
+                                <td align="center" style="background-color: #f8fafc; color: #64748b; padding: 20px; font-size: 13px; border-top: 1px solid #e2e8f0;">
+                                    Este es un correo generado automáticamente. Por favor no responda a este mensaje.<br>
+                                    <strong style="color: #002855;">Unidad de Tecnologías de la Información</strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
         </body>
         </html>
         """
