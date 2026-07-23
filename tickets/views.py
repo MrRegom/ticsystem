@@ -567,41 +567,48 @@ class KEDBSearchApiView(LoginRequiredMixin, View):
 
 class TicketNotificacionesApiView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        from django.db.models import Q
+        from tickets.models import Notificacion
         
-        # Obtenemos los tickets activos que podrian requerir atencion
-        base_query = Ticket.objects.filter(estado__in=[Ticket.Estado.NUEVO, Ticket.Estado.ASIGNADO])
+        todas = Notificacion.objects.filter(usuario=request.user)
+        no_leidas = todas.filter(leida=False)
+        count = no_leidas.count()
         
-        user = request.user
+        recent_notif = list(todas.order_by('-fecha_creacion')[:10])
         
-        # Logica basada en el rol
-        is_dispatcher = False
-        if hasattr(user, 'perfil') and user.perfil.rol:
-            rol_nombre = user.perfil.rol.nombre
-            if rol_nombre in ['Super Administrador', 'Operador de Mesa de Ayuda', 'Mesa de Ayuda']:
-                is_dispatcher = True
+        results = []
+        for n in recent_notif:
+            descripcion_corta = n.mensaje
+            if len(descripcion_corta) > 50:
+                descripcion_corta = descripcion_corta[:47] + "..."
                 
-        if is_dispatcher:
-            # Los dispatcher ven todos los nuevos sin asignar
-            tickets = base_query.filter(responsable__isnull=True, grupo_resolutor__isnull=True)
-        else:
-            # Los tecnicos ven los asignados a ellos o a sus grupos resolutores
-            grupos = user.grupos_resolutores.all() if hasattr(user, 'grupos_resolutores') else []
-            tickets = base_query.filter(
-                Q(responsable=user) | 
-                Q(grupo_resolutor__in=grupos, responsable__isnull=True)
-            ).distinct()
+            results.append({
+                'id': n.id,
+                'correlativo': n.ticket.correlativo if n.ticket else 'Sistema',
+                'ticket_id': n.ticket.id if n.ticket else None,
+                'descripcion': descripcion_corta,
+                'leida': n.leida,
+                'fecha': n.fecha_creacion.strftime('%d/%m/%Y %H:%M')
+            })
             
-        count = tickets.count()
-        recent_tickets = list(tickets.order_by('-fecha_creacion')[:5].values('id', 'correlativo', 'estado', 'descripcion'))
-        
-        # Limitar descripcion para la vista previa
-        for rt in recent_tickets:
-            if len(rt['descripcion']) > 50:
-                rt['descripcion'] = rt['descripcion'][:47] + '...'
-                
         return JsonResponse({
             'success': True,
             'count': count,
-            'tickets': recent_tickets
+            'tickets': results
         })
+
+class NotificacionMarcarLeidaApiView(LoginRequiredMixin, View):
+    def post(self, request, notificacion_id, *args, **kwargs):
+        from tickets.models import Notificacion
+        try:
+            noti = Notificacion.objects.get(id=notificacion_id, usuario=request.user)
+            noti.leida = True
+            noti.save()
+            return JsonResponse({'success': True})
+        except Notificacion.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Notificación no encontrada'}, status=404)
+
+class NotificacionMarcarTodasLeidasApiView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        from tickets.models import Notificacion
+        Notificacion.objects.filter(usuario=request.user, leida=False).update(leida=True)
+        return JsonResponse({'success': True})

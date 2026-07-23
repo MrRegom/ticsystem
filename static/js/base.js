@@ -146,16 +146,30 @@ function checkNotificaciones() {
                 let notifHtml = '';
                 if (response.tickets.length > 0) {
                     response.tickets.forEach(function(t) {
+                        let bgClass = t.leida ? 'bg-white' : 'bg-light';
+                        let fwClass = t.leida ? 'font-weight-normal' : 'font-weight-bold';
+                        let dot = t.leida ? '' : '<span style="height:8px;width:8px;background-color:#007bff;border-radius:50%;display:inline-block;margin-right:5px;"></span>';
+                        let hlParam = t.correlativo !== 'Sistema' ? `?hl=${t.correlativo}` : '';
+                        
                         notifHtml += `
-                            <a class="dropdown-item border-bottom py-2" href="/tickets/">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1 font-weight-bold text-dark" style="font-size: 0.85rem;">${t.correlativo}</h6>
-                                    <span class="badge badge-warning" style="font-size: 0.65rem;">${t.estado}</span>
+                            <div class="dropdown-item border-bottom py-2 ${bgClass}" style="position:relative; white-space: normal; cursor:pointer;" onclick="marcarLeidaAndGo(${t.id}, '/tickets/${hlParam}')">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h6 class="mb-1 ${fwClass} text-dark" style="font-size: 0.85rem;">${dot}${t.correlativo}</h6>
+                                    <span class="text-muted" style="font-size: 0.65rem;">${t.fecha}</span>
                                 </div>
-                                <p class="mb-1 small text-muted text-truncate" style="max-width: 280px;" title="${t.descripcion}">${t.descripcion}</p>
-                            </a>
+                                <p class="mb-1 small ${fwClass} text-muted" style="font-size: 0.8rem;">${t.descripcion}</p>
+                            </div>
                         `;
                     });
+                    // Add mark all as read button at the end
+                    if (newCount > 0) {
+                        notifHtml += `
+                            <div class="dropdown-divider m-0"></div>
+                            <a href="#" class="dropdown-item text-center text-primary py-2 font-weight-bold" onclick="marcarTodasLeidas(event)" style="font-size: 0.85rem;">
+                                Marcar todas como leídas
+                            </a>
+                        `;
+                    }
                 } else {
                     notifHtml = '<span class="dropdown-item-text text-muted small py-3 text-center d-block">No tienes notificaciones nuevas.</span>';
                 }
@@ -168,10 +182,56 @@ function checkNotificaciones() {
     });
 }
 
+function marcarLeidaAndGo(notificacionId, url) {
+    $.ajax({
+        url: `/tickets/api/notificaciones/${notificacionId}/leida/`,
+        type: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        success: function() {
+            window.location.href = url;
+        },
+        error: function() {
+            window.location.href = url;
+        }
+    });
+}
+
+function marcarTodasLeidas(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $.ajax({
+        url: '/tickets/api/notificaciones/todas-leidas/',
+        type: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        success: function() {
+            checkNotificaciones();
+        }
+    });
+}
+
+// Helper to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 $(document).ready(function() {
     // Check inicial
     checkNotificaciones();
     // Polling cada 60 segundos
     setInterval(checkNotificaciones, 60000);
 });
-

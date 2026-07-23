@@ -61,6 +61,21 @@ class NotificacionService:
         """
 
     @staticmethod
+    def crear_notificacion_interna(usuario, ticket, mensaje):
+        from tickets.models import Notificacion
+        # Evitar crear más de 100 notificaciones por usuario y limpiar antiguas
+        if Notificacion.objects.filter(usuario=usuario).count() >= 100:
+            viejas = Notificacion.objects.filter(usuario=usuario).order_by('-fecha_creacion')[99:]
+            for v in viejas:
+                v.delete()
+                
+        Notificacion.objects.create(
+            usuario=usuario,
+            ticket=ticket,
+            mensaje=mensaje
+        )
+
+    @staticmethod
     def notificar_creacion(ticket):
         correo_destino = ticket.correo_contacto if ticket.correo_contacto else (ticket.solicitante.correo if ticket.solicitante else None)
         if not correo_destino:

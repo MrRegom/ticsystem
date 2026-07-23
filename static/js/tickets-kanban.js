@@ -1158,4 +1158,45 @@ $('#tk-descripcion').on('input', function() {
         });
     }
 
+    /* ---- Resaltado Visual (Highlight) de URL ---- */
+    const urlParams = new URLSearchParams(window.location.search);
+    const hlCorrelativo = urlParams.get('hl');
+    if (hlCorrelativo) {
+        // Encontrar la card por correlativo
+        setTimeout(() => {
+            let foundCard = null;
+            document.querySelectorAll('.kanban-card').forEach(card => {
+                const correlativoSpan = card.querySelector('.card-correlativo');
+                if (correlativoSpan && correlativoSpan.textContent.trim() === hlCorrelativo) {
+                    foundCard = card;
+                }
+            });
+            
+            if (foundCard) {
+                // Hacer scroll
+                foundCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Efecto visual
+                const originalBg = foundCard.style.backgroundColor;
+                foundCard.style.transition = 'all 0.5s ease';
+                foundCard.style.backgroundColor = '#fff3cd';
+                foundCard.style.transform = 'scale(1.02)';
+                foundCard.style.boxShadow = '0 0 15px rgba(217, 119, 6, 0.5)';
+                foundCard.style.border = '2px solid #d97706';
+                
+                // Limpiar param de URL sin recargar
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                setTimeout(() => {
+                    foundCard.style.transform = 'scale(1)';
+                    setTimeout(() => {
+                        foundCard.style.backgroundColor = originalBg;
+                        foundCard.style.boxShadow = '';
+                        foundCard.style.border = '';
+                    }, 3000);
+                }, 500);
+            }
+        }, 500); // Dar tiempo al render
+    }
+
 }); // fin DOMContentLoaded

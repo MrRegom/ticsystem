@@ -206,3 +206,18 @@ class ArchivoAdjunto(models.Model):
 
     class Meta:
         verbose_name = "Archivo Adjunto"
+
+class Notificacion(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notificaciones_sistema')
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='notificaciones_sistema', null=True, blank=True)
+    mensaje = models.CharField(max_length=255)
+    leida = models.BooleanField(default=False)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Notificación"
+        verbose_name_plural = "Notificaciones"
+        ordering = ['-fecha_creacion']
+
+    def __str__(self):
+        return f"Notificación para {self.usuario.username}: {self.mensaje}"

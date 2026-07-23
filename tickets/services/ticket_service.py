@@ -91,9 +91,19 @@ class TicketService:
             accion="Ticket Creado vía Mesa de Ayuda",
             comentario=datos.get('descripcion', '')
         )
-        
         # Enviar correo de notificación
         NotificacionService.notificar_creacion(ticket)
+
+        # Notificar internamente en BD
+        from django.contrib.auth.models import User
+        if ticket.grupo_resolutor_id:
+            miembros = User.objects.filter(grupos_resolutores__id=ticket.grupo_resolutor_id)
+            for m in miembros:
+                NotificacionService.crear_notificacion_interna(m, ticket, f"Nuevo ticket asignado al grupo: {ticket.correlativo}")
+        else:
+            dispatchers = User.objects.filter(perfil__rol__nombre__in=['Super Administrador', 'Operador de Mesa de Ayuda', 'Mesa de Ayuda'])
+            for d in dispatchers:
+                NotificacionService.crear_notificacion_interna(d, ticket, f"Nuevo ticket sin asignar: {ticket.correlativo}")
 
         return ticket
 
@@ -182,6 +192,7 @@ class TicketService:
                 valor_nuevo=tecnico.username,
                 comentario=comentario
             )
+            NotificacionService.crear_notificacion_interna(tecnico, ticket, f"Se te ha asignado el ticket: {ticket.correlativo}")
         elif grupo_id:
             grupo = GrupoResolutor.objects.filter(id=grupo_id).first()
             if not grupo:
@@ -211,6 +222,9 @@ class TicketService:
                 valor_nuevo=grupo.nombre,
                 comentario=comentario
             )
+            miembros = User.objects.filter(grupos_resolutores=grupo)
+            for m in miembros:
+                NotificacionService.crear_notificacion_interna(m, ticket, f"Ticket {ticket.correlativo} derivado al grupo {grupo.nombre}")
 
         return ticket
 
@@ -286,8 +300,11 @@ class TicketService:
             accion=f"Ticket Resuelto",
             valor_anterior=estado_anterior,
             valor_nuevo=Ticket.Estado.RESUELTO,
-            comentario=f"Solución: {solucion.strip()}"
+            comentario=solucion.strip()
         )
+        
+        if ticket.creador:
+            NotificacionService.crear_notificacion_interna(ticket.creador, ticket, f"Tu ticket {ticket.correlativo} ha sido resuelto.")
 
         if bitacora_data and ticket.activo:
             from equipos.models import BitacoraEquipo
