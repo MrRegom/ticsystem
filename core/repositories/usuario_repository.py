@@ -59,8 +59,13 @@ class UsuarioRepository:
 
     @classmethod
     def get_paginated_list(cls, start: int, length: int, search_value: str, 
-                            order_column: str, order_dir: str):
+                            order_column: str, order_dir: str, status: str = 'active'):
         queryset = User.objects.select_related('perfil').prefetch_related('groups').all()
+        if status == 'active':
+            queryset = queryset.filter(is_active=True)
+        elif status == 'disabled':
+            queryset = queryset.filter(is_active=False)
+            
         queryset = cls._apply_search_and_filters(queryset, search_value)
 
         # Mapeo seguro de columnas de ordenamiento
@@ -85,11 +90,21 @@ class UsuarioRepository:
         return queryset[start:end]
 
     @classmethod
-    def count_total(cls) -> int:
-        return User.objects.count()
+    def count_total(cls, status: str = 'active') -> int:
+        queryset = User.objects.all()
+        if status == 'active':
+            queryset = queryset.filter(is_active=True)
+        elif status == 'disabled':
+            queryset = queryset.filter(is_active=False)
+        return queryset.count()
 
     @classmethod
-    def count_filtered(cls, search_value: str) -> int:
+    def count_filtered(cls, search_value: str, status: str = 'active') -> int:
         queryset = User.objects.all()
+        if status == 'active':
+            queryset = queryset.filter(is_active=True)
+        elif status == 'disabled':
+            queryset = queryset.filter(is_active=False)
+            
         queryset = cls._apply_search_and_filters(queryset, search_value)
         return queryset.count()

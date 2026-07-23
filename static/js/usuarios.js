@@ -1,3 +1,5 @@
+let currentStatusView = 'active';
+
 document.addEventListener('DOMContentLoaded', () => {
   loadIdentities();
   
@@ -200,6 +202,7 @@ function loadIdentities(searchValue = '') {
   formData.append('start', 0);
   formData.append('length', 100); // Muestra hasta 100 usuarios en la lista
   formData.append('search[value]', searchValue);
+  formData.append('status', currentStatusView);
   
   // Need CSRF token for POST
   const csrfToken = getCookie('csrftoken');
@@ -257,17 +260,38 @@ function renderList(users) {
       roleDotStyle = '#0078d4'; // Azul
     } else if (roleText.includes('Técnico') || roleText.includes('Terreno')) {
       roleDotStyle = '#107c10'; // Verde
-    } else if (roleText !== 'Sin Perfil') {
-      roleDotStyle = '#a4262c'; // Rojo oscuro para otros
+    } else if (roleText.includes('Consulta')) {
+      roleDotStyle = '#d13438'; // Rojo
     }
-    const roleIcon = u.rol_icono || 'fas fa-user-circle';
-    const roleBadge = `<div class="ms-role-text" title="${roleText}" style="cursor: help;"><i class="${roleIcon}" style="font-size: 20px; color: ${roleDotStyle}"></i></div>`;
     
-    const unidad = u.unidad || 'Sin Asignar';
+    const roleBadge = `<div style="display:flex; align-items:center; gap: 6px;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${roleDotStyle}; display:inline-block;"></span>
+                        <span style="font-size: 13px; color: #323130;">${roleText}</span>
+                       </div>`;
     
-    // Convert object to string to pass to edit function
-    const userJson = encodeURIComponent(JSON.stringify(u));
+    // Escapar comillas en JSON
+    const userJson = JSON.stringify(u).replace(/"/g, '&quot;');
+    
+    let actionButtons = `
+      <button class="ms-icon-btn" onclick="event.stopPropagation(); openDrawer('editar', '${userJson}')" title="Modificar Identidad">
+        <i class="fas fa-edit"></i>
+      </button>
+    `;
 
+    if (currentStatusView === 'active') {
+      actionButtons += `
+        <button class="ms-icon-btn" onclick="event.stopPropagation(); disableRestoreUser(${u.id}, 'disable')" title="Deshabilitar Usuario" style="color: #a4262c;">
+          <i class="fas fa-user-times"></i>
+        </button>
+      `;
+    } else {
+      actionButtons += `
+        <button class="ms-icon-btn" onclick="event.stopPropagation(); disableRestoreUser(${u.id}, 'restore')" title="Restaurar Usuario" style="color: #107c10;">
+          <i class="fas fa-user-check"></i>
+        </button>
+      `;
+    }
+    
     html += `
       <div class="ms-list-row" onclick="openViewModal('${userJson}')">
         <div class="ms-identity">
@@ -278,19 +302,82 @@ function renderList(users) {
           </div>
         </div>
         <div style="font-size: 13px; color: #323130; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${u.email || ''}">${u.email || 'Sin correo'}</div>
-        <div style="font-size: 13px; color: #323130;">${unidad}</div>
+        <div style="font-size: 13px; color: #323130;">${u.unidad || 'Sin Asignar'}</div>
         <div>${roleBadge}</div>
         <div>${statusBadge}</div>
         <div class="ms-row-actions">
-          <button class="ms-icon-btn" onclick="event.stopPropagation(); openDrawer('editar', '${userJson}')" title="Modificar Identidad">
-            <i class="fas fa-edit"></i>
-          </button>
+          ${actionButtons}
         </div>
       </div>
     `;
   });
 
   container.innerHTML = html;
+}
+
+function toggleStatusView() {
+  const btn = document.getElementById('btn-toggle-status');
+  if (currentStatusView === 'active') {
+    currentStatusView = 'disabled';
+    btn.innerHTML = '<i class="fas fa-user-check"></i> Ver Activos';
+    btn.style.color = '#107c10';
+    btn.style.borderColor = '#107c10';
+  } else {
+    currentStatusView = 'active';
+    btn.innerHTML = '<i class="fas fa-user-times"></i> Usuarios Eliminados';
+    btn.style.color = '#a4262c';
+    btn.style.borderColor = '#a4262c';
+  }
+  loadIdentities(document.getElementById('search-input').value);
+}
+
+function disableRestoreUser(userId, action) {
+  const actionText = action === 'disable' ? 'deshabilitar' : 'restaurar';
+  const confirmColor = action === 'disable' ? '#a4262c' : '#107c10';
+  
+  if (typeof Swal !== 'undefined') {
+    Swal.fire({
+      title: `¿Estás seguro?`,
+      text: `Vas a ${actionText} a este usuario.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: confirmColor,
+      cancelButtonColor: '#8a8886',
+      confirmButtonText: `Sí, ${actionText}`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        executeDisableRestore(userId, action);
+      }
+    });
+  } else {
+    if (confirm(`¿Vas a ${actionText} a este usuario. Estás seguro?`)) {
+      executeDisableRestore(userId, action);
+    }
+  }
+}
+
+function executeDisableRestore(userId, action) {
+  fetch('/api/usuarios/disable-restore/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: JSON.stringify({ id: userId, action: action })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showToast(action === 'disable' ? 'Usuario deshabilitado exitosamente' : 'Usuario restaurado exitosamente');
+      loadIdentities(document.getElementById('search-input').value);
+    } else {
+      alert(data.message || 'Ocurrió un error.');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Error de conexión.');
+  });
 }
 
 // ==========================================

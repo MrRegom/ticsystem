@@ -237,7 +237,7 @@ class UsuarioService:
 
     @classmethod
     def obtener_usuarios_para_datatable(cls, start: int, length: int, search_value: str,
-                                        order_column_index: int, order_dir: str, columns_data: list) -> dict:
+                                        order_column_index: int, order_dir: str, columns_data: list, status: str = 'active') -> dict:
         """
         Caso de uso para DataTables Server-side de Usuarios.
         """
@@ -250,11 +250,12 @@ class UsuarioService:
             length=length,
             search_value=search_value,
             order_column=order_column_name,
-            order_dir=order_dir
+            order_dir=order_dir,
+            status=status
         )
 
-        total_records = UsuarioRepository.count_total()
-        filtered_records = UsuarioRepository.count_filtered(search_value)
+        total_records = UsuarioRepository.count_total(status=status)
+        filtered_records = UsuarioRepository.count_filtered(search_value, status=status)
 
         data = []
         for r in records:

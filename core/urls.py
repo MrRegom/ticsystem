@@ -12,6 +12,7 @@ from core.views import (
     UsuarioActionView,
     UsuarioCrearAPIView,
     UsuarioEditarAPIView,
+    UsuarioDisableRestoreAPIView,
     SwitchUserView,
     FuncionarioSearchAPIView,
     FuncionarioCreateAPIView
@@ -40,6 +41,7 @@ urlpatterns = [
     path('api/usuarios/crear/', UsuarioCrearAPIView.as_view(), name='usuario_crear_api'),
     path('api/usuarios/editar/', UsuarioEditarAPIView.as_view(), name='usuario_editar_api'),
     path('api/usuarios/action/', UsuarioActionView.as_view(), name='usuario_action_api'),
+    path('api/usuarios/disable-restore/', UsuarioDisableRestoreAPIView.as_view(), name='usuario_disable_restore_api'),
     path('api/funcionarios/search/', FuncionarioSearchAPIView.as_view(), name='funcionario_search_api'),
     path('api/funcionarios/crear/', FuncionarioCreateAPIView.as_view(), name='funcionario_create_api'),
 ]

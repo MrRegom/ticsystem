@@ -206,11 +206,12 @@ class UsuarioListView(PermisoRequeridoMixin, LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         dt = parse_datatables_params(request)
         dt['length'] = int(request.POST.get('length', 10))
+        status = request.POST.get('status', 'active')
 
         from core.services.usuario_service import UsuarioService
         result = UsuarioService.obtener_usuarios_para_datatable(
             dt['start'], dt['length'], dt['search_value'],
-            dt['order_column_index'], dt['order_dir'], dt['columns_data']
+            dt['order_column_index'], dt['order_dir'], dt['columns_data'], status=status
         )
 
         response = {
@@ -254,6 +255,29 @@ class RolesDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView
         context['roles_json'] = json.dumps(roles_list)
         context['permisos_json'] = json.dumps(RolService.obtener_permisos_disponibles())
         return context
+
+class UsuarioDisableRestoreAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    permiso_requerido = 'GESTIONAR_USUARIOS'
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            user_id = data.get('id')
+            action = data.get('action') # 'disable' or 'restore'
+            
+            from django.contrib.auth.models import User
+            user = User.objects.get(pk=user_id)
+            if action == 'disable':
+                user.is_active = False
+            elif action == 'restore':
+                user.is_active = True
+            user.save()
+            
+            return JsonResponse({'success': True})
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Usuario no encontrado.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=400)
 
 class RolesDetailAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
     permiso_requerido = 'GESTIONAR_ROLES'
