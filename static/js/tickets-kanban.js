@@ -64,8 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
         card.innerHTML =
             '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">' +
                 '<div style="display: flex; flex-direction: column; gap: 2px;">' +
-                    '<span style="font-size: 0.65rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' ' + (t.fecha_creacion_hora || '') + '</span>' +
-                    '<span class="card-correlativo" style="color: #0f172a; font-size: 0.8rem; font-weight: 700;">' + t.correlativo + '</span>' +
+                    '<span class="card-correlativo" style="color: #0f172a; font-size: 0.7rem; font-weight: 700;">' + t.correlativo + '</span>' +
+                    '<span style="font-size: 0.6rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' <span style="color: #3b82f6;">' + (t.fecha_creacion_hora || '') + '</span></span>' +
                 '</div>' +
                 '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 4px; font-size: 0.55rem; font-weight: 700; border-radius: 3px; text-transform: uppercase;">' + t.prioridad + '</span>' +
             '</div>' +
