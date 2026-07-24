@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'redes.apps.RedesConfig',
     'conocimiento.apps.ConocimientoConfig',
     'reportes.apps.ReportesConfig',
+    'auditoria.apps.AuditoriaConfig',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,9 @@ MIDDLEWARE = [
 
     # Custom Middleware para no cachear páginas autenticadas
     'core.middlewares.NoCacheMiddleware',
+    
+    # Middleware de Auditoría y Trazabilidad (Enterprise Tracking)
+    'core.middlewares.auditoria_middleware.AuditoriaMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

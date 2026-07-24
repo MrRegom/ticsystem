@@ -1,0 +1,144 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<!-- DataTables & Select2 CSS -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<style>
+  /* Enterprise UI - Fluent Design Inherited */
+  .auditoria-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi-card {
+    background: #fff; padding: 20px; border-radius: 0; 
+    border-top: 4px solid #0078d4;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+  }
+  .kpi-card h4 { font-size: 13px; color: #605e5c; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+  .kpi-card .value { font-size: 32px; font-weight: 400; color: #201f1e; }
+  
+  .filter-bar {
+    background: #fff; padding: 16px; margin-bottom: 24px;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 200px; }
+  .filter-group label { font-size: 12px; font-weight: 600; color: #323130; }
+  .filter-group input, .filter-group select { 
+    padding: 6px 12px; border: 1px solid #8a8886; border-radius: 0; font-size: 14px; outline: none;
+  }
+  .filter-group input:focus, .filter-group select:focus { border-color: #0078d4; }
+  
+  /* Datatable Fluent Overrides */
+  .dataTable { font-size: 13px; width: 100% !important; }
+  .dataTable thead th { background: #f3f2f1; color: #323130; border-bottom: 2px solid #edebe9; font-weight: 600; }
+  .dataTable tbody td { vertical-align: middle; border-bottom: 1px solid #edebe9; }
+  
+  .badge-action { padding: 4px 8px; font-size: 11px; font-weight: 600; border-radius: 12px; }
+  .badge-accion-acceso { background: #e1dfdd; color: #323130; }
+  .badge-accion-crear { background: #dff6dd; color: #107c10; }
+  .badge-accion-modificar { background: #fff4ce; color: #797775; }
+  .badge-accion-eliminar { background: #fde7e9; color: #a4262c; }
+  .badge-accion-login { background: #c7e0f4; color: #005a9e; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ms-wrap" style="padding: 24px 32px;">
+  
+  <div style="margin-bottom: 24px;">
+    <h2 style="font-size: 24px; font-weight: 600; color: #201f1e; margin: 0;">Auditoría y Trazabilidad</h2>
+    <p style="font-size: 14px; color: #605e5c; margin-top: 4px;">Monitorización continua y registro de actividad (Enterprise Audit Log)</p>
+  </div>
+
+  <div class="auditoria-kpi-grid">
+    <div class="kpi-card" style="border-top-color: #0078d4;">
+      <h4>Total Movimientos (Hoy)</h4>
+      <div class="value">{{ kpis.total_movimientos }}</div>
+    </div>
+    <div class="kpi-card" style="border-top-color: #107c10;">
+      <h4>Creaciones de Datos</h4>
+      <div class="value">{{ kpis.total_creaciones }}</div>
+    </div>
+    <div class="kpi-card" style="border-top-color: #a4262c;">
+      <h4>Eliminaciones</h4>
+      <div class="value">{{ kpis.total_eliminaciones }}</div>
+    </div>
+    <div class="kpi-card" style="border-top-color: #5c2d91;">
+      <h4>Inicios de Sesión</h4>
+      <div class="value">{{ kpis.total_logins }}</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>Módulo</label>
+      <select id="filterModulo">
+        <option value="">Todos</option>
+        <option value="Tickets">Tickets</option>
+        <option value="Equipos">Equipos (Inventario)</option>
+        <option value="Usuarios">Usuarios / Perfiles</option>
+        <option value="Roles">Roles (RBAC)</option>
+        <option value="Anexos">Anexos IP</option>
+        <option value="Actas">Actas de Entrega</option>
+        <option value="Reportes">Reportes</option>
+        <option value="Sistema">Sistema (Configuración)</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Acción</label>
+      <select id="filterAccion">
+        <option value="">Todas</option>
+        <option value="ACCESO">Visualización (Acceso)</option>
+        <option value="CREAR">Creación</option>
+        <option value="MODIFICAR">Modificación</option>
+        <option value="ELIMINAR">Eliminación</option>
+        <option value="LOGIN_OK">Login Exitoso</option>
+        <option value="LOGIN_FAIL">Login Fallido</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Usuario (Username/RUT)</label>
+      <input type="text" id="filterUsuario" placeholder="Ej: 17944996-K">
+    </div>
+    <div class="filter-group">
+      <label>Desde</label>
+      <input type="date" id="filterDesde">
+    </div>
+    <div class="filter-group">
+      <label>Hasta</label>
+      <input type="date" id="filterHasta">
+    </div>
+    <button type="button" class="ms-btn ms-btn-primary" id="btnFiltrar" style="height: 36px;">Filtrar / Actualizar</button>
+  </div>
+
+  <div style="background: #fff; padding: 24px; box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);">
+    <table id="auditoriaTable" class="table dataTable">
+      <thead>
+        <tr>
+          <th style="width: 140px;">Fecha y Hora</th>
+          <th style="width: 150px;">Usuario</th>
+          <th style="width: 120px;">Acción</th>
+          <th style="width: 150px;">Módulo / Tabla</th>
+          <th>Detalles de la Operación</th>
+          <th style="width: 120px;">Dirección IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- DataTables Server-Side Processing -->
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+  const API_URL = "{% url 'auditoria:logs_api' %}";
+</script>
+<script src="{% static 'js/auditoria.js' %}"></script>
+{% endblock %}

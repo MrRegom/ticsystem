@@ -17,6 +17,7 @@ urlpatterns = [
     path('reportes/', include('reportes.urls')),
     path('sla/', include('sla.urls')),
     path('correos/', include('correos.urls')),
+    path('auditoria/', include('auditoria.urls')),
 ]
 
 if settings.DEBUG:
