@@ -153,6 +153,8 @@ class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateVi
                 Q(grupo_resolutor__miembros=self.request.user) |
                 Q(creador=self.request.user)
             ).distinct()
+        elif grupo_filtro == 'mis_tickets':
+            base_query = base_query.filter(responsable=self.request.user)
         elif grupo_filtro.isdigit():
             if not is_dispatcher and not self.request.user.grupos_resolutores.filter(id=int(grupo_filtro)).exists():
                 grupo_filtro = 'mis_grupos'

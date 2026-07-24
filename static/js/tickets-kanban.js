@@ -16,6 +16,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 order: [[6, 'desc']], pageLength: 25,
             });
         }
+        if (view === 'listado') {
+            renderListado();
+        }
+    };
+
+    window.filterTickets = function() {
+        var input = document.getElementById('kanban-search');
+        if (!input) return;
+        var filter = input.value.toLowerCase();
+        
+        // Filtrar tarjetas de Kanban
+        var cards = document.querySelectorAll('.kanban-card');
+        cards.forEach(function(card) {
+            var text = card.textContent || card.innerText;
+            if (text.toLowerCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        });
+        
+        // Filtrar filas del Listado
+        var rows = document.querySelectorAll('.listado-row');
+        rows.forEach(function(row) {
+            var text = row.textContent || row.innerText;
+            if (text.toLowerCase().indexOf(filter) > -1) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
     };
 
     /* ---- Construir tarjeta ---- */
@@ -74,6 +105,59 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    function renderListado() {
+        var container = document.getElementById('listado-container');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        var estados = [
+            { id: 'NUEVO', label: 'Nuevo', color: '#3b82f6', icon: 'fa-inbox' },
+            { id: 'ASIGNADO', label: 'Asignado', color: '#ca8a04', icon: 'fa-user' },
+            { id: 'EN_PROCESO', label: 'En Proceso', color: '#10b981', icon: 'fa-cogs' },
+            { id: 'ESCALADO', label: 'Escalado', color: '#ef4444', icon: 'fa-arrow-up' }
+        ];
+
+        estados.forEach(function(estado) {
+            var tickets = kanbanData[estado.id] || [];
+            
+            var tableHtml = '<div style="margin-bottom: 10px; border: 1px solid #e2e8f0;">' +
+                            '<div style="background: ' + estado.color + '15; padding: 10px 15px; border-bottom: 2px solid ' + estado.color + '; display: flex; justify-content: space-between; align-items: center;">' +
+                            '<h4 style="margin: 0; font-size: 14px; font-weight: 700; color: ' + estado.color + ';"><i class="fas ' + estado.icon + ' mr-2"></i>' + estado.label + '</h4>' +
+                            '<span style="background: ' + estado.color + '; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">' + tickets.length + '</span>' +
+                            '</div>';
+            
+            if (tickets.length === 0) {
+                tableHtml += '<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 13px;">No hay tickets en este estado.</div></div>';
+                container.innerHTML += tableHtml;
+                return;
+            }
+
+            tableHtml += '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">' +
+                         '<thead><tr style="background: #f8fafc; color: #475569; text-align: left; border-bottom: 1px solid #e2e8f0;">' +
+                         '<th style="padding: 8px 12px;">Ticket</th>' +
+                         '<th style="padding: 8px 12px;">Prioridad</th>' +
+                         '<th style="padding: 8px 12px;">Fecha</th>' +
+                         '<th style="padding: 8px 12px;">Grupo</th>' +
+                         '<th style="padding: 8px 12px;">Técnico</th>' +
+                         '<th style="padding: 8px 12px; text-align: right;">Acción</th>' +
+                         '</tr></thead><tbody>';
+
+            tickets.forEach(function(t) {
+                tableHtml += '<tr class="listado-row" style="border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background=\'#f1f5f9\'" onmouseout="this.style.background=\'#fff\'" onclick="openOffcanvas(' + t.id + ')">' +
+                             '<td style="padding: 10px 12px;"><span style="font-weight: 700; color: #0f172a;">' + t.correlativo + '</span></td>' +
+                             '<td style="padding: 10px 12px;"><span style="background: ' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 6px; font-size: 11px; font-weight: 700;">' + t.prioridad + '</span></td>' +
+                             '<td style="padding: 10px 12px; color: #475569;">' + t.fecha_creacion_corta + '</td>' +
+                             '<td style="padding: 10px 12px; color: #475569;">' + (t.grupo || 'Mesa de Ayuda') + '</td>' +
+                             '<td style="padding: 10px 12px; color: ' + (t.tecnico === 'Sin asignar' ? '#94a3b8' : '#3b82f6') + ';">' + t.tecnico + '</td>' +
+                             '<td style="padding: 10px 12px; text-align: right;"><button class="ms-btn-primary" style="padding: 4px 8px; font-size: 11px; border-radius: 0; background: #3b82f6; border: none;">Ver Detalles</button></td>' +
+                             '</tr>';
+            });
+            tableHtml += '</tbody></table></div>';
+            container.innerHTML += tableHtml;
+        });
+        window.filterTickets(); // Apply current search filter
+    }
 
     function getEmptyStateHtml(estadoId) {
         var icons = {
