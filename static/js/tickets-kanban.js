@@ -38,7 +38,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 '</div>' +
                 '<span style="font-size:0.65rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' ' + (t.fecha_creacion_hora || '') + '</span>' +
             '</div>' +
-            '<div class="card-desc" style="font-weight: 800; color: #0f172a; margin-bottom: 4px; font-size: 0.8rem; line-height: 1.2;">' + t.descripcion + '</div>' +
+            (function() {
+                var parts = t.descripcion.split('\\n');
+                var subject = parts[0].replace(/^ASUNTO:\\s*/i, '');
+                var detail = parts.length > 1 ? parts.slice(1).join(' ').replace(/DETALLE:\\s*/i, '').trim() : '';
+                return '<div class="card-desc" style="margin-bottom: 6px; line-height: 1.3;">' +
+                       '<div style="font-weight: 700; color: #0f172a; font-size: 0.8rem;">' + subject + '</div>' +
+                       (detail ? '<div style="font-weight: 400; color: #475569; font-size: 0.75rem; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">' + detail + '</div>' : '') +
+                       '</div>';
+            })() +
             '<div class="sla-timer-display" style="font-size:0.7rem; font-weight:600; margin-bottom:6px;"></div>' +
             (t.pma ? '<div class="card-pma" style="font-size:0.7rem; color:#64748b; margin-bottom:6px;"><i class="fas fa-map-marker-alt"></i> ' + t.pma + '</div>' : '') +
             '<div class="card-meta" style="font-size: 0.7rem; color: #64748b; display: flex; justify-content: space-between; align-items: center;">' +
@@ -349,7 +357,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('oc-tk-solicitante').textContent = t.solicitante;
                 document.getElementById('oc-tk-activo').textContent = t.activo;
                 document.getElementById('oc-tk-pma').textContent = t.pma;
-                document.getElementById('oc-tk-desc').textContent = t.descripcion;
+                var parts = t.descripcion.split('\\n');
+                var subject = parts[0].replace(/^ASUNTO:\\s*/i, '');
+                var detail = parts.length > 1 ? parts.slice(1).join('<br>').replace(/DETALLE:\\s*/i, '').trim() : '';
+                document.getElementById('oc-tk-desc').innerHTML = '<div style="font-weight: 700; color: #0f172a; margin-bottom: 6px;">' + subject + '</div>' + 
+                                                                  (detail ? '<div style="font-weight: 400; color: #475569;">' + detail + '</div>' : '');
                 
                 // Guardar si tiene equipo en data attribute para el resolver
                 document.getElementById('btn-resolver-tk').dataset.tieneEquipo = (t.activo !== 'Ninguno') ? 'true' : 'false';
