@@ -118,29 +118,29 @@ class ExportadorCSVService:
         
         # Cabeceras
         writer.writerow([
-            'ID Ticket', 'Asunto', 'Estado', 'Prioridad', 'Categoría',
-            'Equipo Asociado', 'Serie Equipo', 'Servicio / Unidad',
-            'Creador', 'Técnico Asignado', 'Fecha Creación', 'Fecha Cierre'
+            'N° Ticket', 'Descripción', 'Estado', 'Prioridad', 'Categoría',
+            'Equipo Asociado', 'Serie Equipo', 'Ubicación / PMA',
+            'Creador', 'Técnico Responsable', 'Fecha Creación', 'Fecha Cierre'
         ])
         
         # Evitar N+1 queries con select_related
         tickets = Ticket.objects.select_related(
-            'estado', 'prioridad', 'categoria', 'equipo', 
-            'equipo__id_unidad', 'creador', 'tecnico_asignado'
+            'prioridad', 'categoria', 'activo', 
+            'activo__pma', 'creador', 'responsable'
         ).all().order_by('-id')
         
         for t in tickets:
             writer.writerow([
-                f"T-{t.id:04d}",
-                t.asunto,
-                t.estado.nombre if t.estado else '',
+                t.correlativo,
+                t.descripcion.replace('\n', ' ').replace('\r', '') if t.descripcion else '',
+                t.get_estado_display() if hasattr(t, 'get_estado_display') else t.estado,
                 t.prioridad.nombre if t.prioridad else '',
                 t.categoria.nombre if t.categoria else '',
-                t.equipo.id_articulo.nombre if t.equipo and t.equipo.id_articulo else 'Sin Equipo',
-                t.equipo.serial_number if t.equipo else '',
-                t.equipo.id_unidad.nombre if t.equipo and t.equipo.id_unidad else '',
+                t.activo.articulo.nombre if t.activo and t.activo.articulo else 'Sin Equipo',
+                t.activo.serial_number if t.activo else '',
+                t.activo.pma.nombre if t.activo and t.activo.pma else '',
                 t.creador.get_full_name() or t.creador.username if t.creador else '',
-                t.tecnico_asignado.get_full_name() or t.tecnico_asignado.username if t.tecnico_asignado else 'Sin Asignar',
+                t.responsable.get_full_name() or t.responsable.username if t.responsable else 'Sin Asignar',
                 t.fecha_creacion.strftime('%Y-%m-%d %H:%M') if t.fecha_creacion else '',
                 t.fecha_cierre.strftime('%Y-%m-%d %H:%M') if t.fecha_cierre else ''
             ])
@@ -153,31 +153,26 @@ class ExportadorCSVService:
         writer = csv.writer(response, delimiter=';')
         
         writer.writerow([
-            'ID', 'Número de Serie', 'Artículo', 'Marca', 'Modelo',
-            'Estado', 'Unidad / Servicio', 'Ubicación Física',
-            'IP', 'Sistema Operativo', 'Fecha de Compra'
+            'N° Inventario', 'Número de Serie', 'Artículo', 'Marca', 'Modelo',
+            'Estado', 'PMA (Ubicación)', 'IP', 'Sistema Operativo'
         ])
         
         equipos = Equipo.objects.select_related(
-            'id_articulo', 'id_marca', 'id_modelo', 'id_estado',
-            'id_unidad', 'id_edificio', 'id_piso', 'id_so'
+            'articulo', 'marca', 'modelo', 'estado',
+            'pma', 'so'
         ).all().order_by('id')
         
         for e in equipos:
-            ubicacion = f"{e.id_edificio.nombre if e.id_edificio else ''} - {e.id_piso.nombre if e.id_piso else ''}".strip(' -')
-            
             writer.writerow([
-                e.id,
-                e.serial_number,
-                e.id_articulo.nombre if e.id_articulo else '',
-                e.id_marca.nombre if e.id_marca else '',
-                e.id_modelo.nombre if e.id_modelo else '',
-                e.id_estado.nombre if e.id_estado else '',
-                e.id_unidad.nombre if e.id_unidad else '',
-                ubicacion,
+                e.num_inventario or '',
+                e.serial_number or '',
+                e.articulo.nombre if e.articulo else '',
+                e.marca.nombre if e.marca else '',
+                e.modelo.nombre if e.modelo else '',
+                e.estado.nombre if e.estado else '',
+                e.pma.nombre if e.pma else '',
                 e.ip or '',
-                e.id_so.nombre if e.id_so else '',
-                e.fecha_compra.strftime('%Y-%m-%d') if e.fecha_compra else ''
+                e.so.nombre if e.so else ''
             ])
             
         return response
