@@ -62,27 +62,27 @@ document.addEventListener('DOMContentLoaded', function() {
         card.dataset.estado = t.estado || ''; // We might need state if it's passed
 
         card.innerHTML =
-            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">' +
-                '<div style="display: flex; gap: 6px; align-items: center;">' +
-                    '<span class="card-correlativo" style="background: #f1f5f9; color: #475569; padding: 2px 6px; font-size: 0.7rem; font-weight: 700;">' + t.correlativo + '</span>' +
-                    '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 6px; font-size: 0.65rem; font-weight: 700;">' + t.prioridad + '</span>' +
+            '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">' +
+                '<div style="display: flex; flex-direction: column; gap: 2px;">' +
+                    '<span style="font-size: 0.65rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' ' + (t.fecha_creacion_hora || '') + '</span>' +
+                    '<span class="card-correlativo" style="color: #0f172a; font-size: 0.8rem; font-weight: 700;">' + t.correlativo + '</span>' +
                 '</div>' +
-                '<span style="font-size:0.65rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' ' + (t.fecha_creacion_hora || '') + '</span>' +
+                '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 4px; font-size: 0.55rem; font-weight: 700; border-radius: 3px; text-transform: uppercase;">' + t.prioridad + '</span>' +
             '</div>' +
             (function() {
                 var parts = t.descripcion.split('\n');
-                var subject = parts[0].replace(/^ASUNTO:\\s*/i, '');
-                var detail = parts.length > 1 ? parts.slice(1).join(' ').replace(/DETALLE:\\s*/i, '').trim() : '';
-                return '<div class="card-desc" style="margin-bottom: 6px; line-height: 1.3; font-size: 0.75rem;">' +
+                var subject = parts[0].replace(/(ASUNTO:\s*)+/ig, '').trim();
+                var detail = parts.length > 1 ? parts.slice(1).join(' ').replace(/(DETALLE:\s*)+/ig, '').trim() : '';
+                return '<div class="card-desc" style="margin-bottom: 8px; line-height: 1.3; font-size: 0.75rem;">' +
                        '<div style="color: #0f172a;"><strong style="font-weight:700;">ASUNTO:</strong> ' + subject + '</div>' +
                        (detail ? '<div style="color: #475569; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><strong style="font-weight:600;">DETALLE:</strong> ' + detail + '</div>' : '') +
                        '</div>';
             })() +
             '<div class="sla-timer-display" style="font-size:0.7rem; font-weight:600; margin-bottom:6px;"></div>' +
-            (t.pma ? '<div class="card-pma" style="font-size:0.7rem; color:#64748b; margin-bottom:6px;"><i class="fas fa-map-marker-alt"></i> ' + t.pma + '</div>' : '') +
-            '<div class="card-meta" style="font-size: 0.7rem; color: #64748b; display: flex; justify-content: space-between; align-items: center;">' +
-                '<span style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: 600;"><i class="fas fa-layer-group"></i> ' + (t.grupo || 'Mesa de Ayuda') + '</span>' +
-                '<span style="' + (t.tecnico === 'Sin asignar' ? 'color: #94a3b8;' : 'color: #3b82f6; font-weight: 600;') + '"><i class="fas ' + (t.tecnico === 'Sin asignar' ? 'fa-user-times' : 'fa-user-check') + '"></i> ' + t.tecnico + '</span>' +
+            (t.pma ? '<div class="card-pma" style="font-size:0.65rem; color:#64748b; margin-bottom:6px;"><i class="fas fa-map-marker-alt"></i> ' + t.pma + '</div>' : '') +
+            '<div class="card-meta" style="font-size: 0.65rem; color: #64748b; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 6px;">' +
+                '<span style="font-weight: 600;"><i class="fas fa-layer-group"></i> ' + (t.grupo || 'Mesa de Ayuda') + '</span>' +
+                '<span style="' + (t.tecnico === 'Sin asignar' ? 'color: #94a3b8;' : 'color: #3b82f6; font-weight: 600;') + ' text-align: right; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="' + t.tecnico + '"><i class="fas ' + (t.tecnico === 'Sin asignar' ? 'fa-user-times' : 'fa-user-check') + '"></i> ' + t.tecnico + '</span>' +
             '</div>';
         return card;
     }
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             tickets.forEach(function(t) {
                 var parts = t.descripcion.split('\n');
-                var subject = parts[0].replace(/^ASUNTO:\s*/i, '');
+                var subject = parts[0].replace(/(ASUNTO:\s*)+/ig, '').trim();
                 
                 tableHtml += '<tr class="listado-row" style="border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background=\'#f1f5f9\'" onmouseout="this.style.background=\'#fff\'" onclick="openOffcanvas(' + t.id + ')">' +
                              '<td style="padding: 10px 12px;"><span style="font-weight: 700; color: #0f172a;">' + t.correlativo + '</span></td>' +
