@@ -1,4 +1,4 @@
-$(document.ready(function() {
+$(document).ready(function() {
     let table = $('#auditoriaTable').DataTable({
         serverSide: true,
         processing: true,
