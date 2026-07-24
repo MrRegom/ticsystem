@@ -220,6 +220,17 @@
 
   <!-- Contenido Principal -->
   <main class="with-fixed-navbar" style="padding-bottom: 60px;">
+    {% if user.is_authenticated %}
+    <!-- Banner de Advertencia de Demo (Estilo Fluent MessageBar) -->
+    <div style="background-color: #fff4ce; border-bottom: 1px solid #edebe9; padding: 12px 24px; display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0;">
+      <i class="fas fa-exclamation-triangle" style="color: #797775; margin-top: 2px;"></i>
+      <div style="font-size: 13px; color: #323130; line-height: 1.4;">
+        <strong>VERSIÓN DEMO:</strong> Plataforma a la espera de la infraestructura del Hospital para su despliegue y puesta en marcha. 
+        El buen funcionamiento de los mantenedores y los módulos de Tickets/Inventario depende de la previa parametrización de la estructura organizacional 
+        y física del hospital para normalizar la base de datos.
+      </div>
+    </div>
+    {% endif %}
     <div class="container-fluid p-0">
       {% block content %}{% endblock %}
     </div>
