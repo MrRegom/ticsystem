@@ -33,6 +33,38 @@
 
   <!-- Driver.js para Onboarding/Tutorials -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+  <style>
+    /* Fix para Driver.js que puede heredar estilos Bootstrap/Globales */
+    .driver-popover {
+      background-color: #ffffff !important;
+      color: #323130 !important;
+      border: 1px solid #edebe9 !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    }
+    .driver-popover-title {
+      color: #0078d4 !important;
+      font-weight: 600 !important;
+      font-size: 16px !important;
+      margin-bottom: 8px !important;
+      display: block !important;
+    }
+    .driver-popover-description {
+      color: #323130 !important;
+      font-size: 14px !important;
+      line-height: 1.5 !important;
+    }
+    .driver-popover-footer button {
+      text-shadow: none !important;
+      color: #323130 !important;
+      background: #f3f2f1 !important;
+      border: 1px solid #8a8886 !important;
+    }
+    .driver-popover-footer button.driver-next-btn {
+      background: #0078d4 !important;
+      color: #ffffff !important;
+      border-color: #0078d4 !important;
+    }
+  </style>
 
   {% block extra_css %}{% endblock %}
 </head>
