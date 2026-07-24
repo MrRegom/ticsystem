@@ -31,6 +31,9 @@
   <link rel="stylesheet" href="{% static 'vendor/select2/css/select2.min.css' %}">
   <link rel="stylesheet" href="{% static 'vendor/select2/css/select2-bootstrap4.min.css' %}">
 
+  <!-- Driver.js para Onboarding/Tutorials -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+
   {% block extra_css %}{% endblock %}
 </head>
 <body class="contingency-closed {% if not user.is_authenticated %}no-sidebar{% endif %}">
@@ -226,7 +229,7 @@
   <main class="with-fixed-navbar" style="padding-bottom: 60px;">
     {% if user.is_authenticated %}
     <!-- Banner de Advertencia de Demo (Estilo Fluent MessageBar) -->
-    <div style="background-color: #fff4ce; border-bottom: 1px solid #edebe9; padding: 12px 24px; display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0;">
+    <div id="demo-banner" style="background-color: #fff4ce; border-bottom: 1px solid #edebe9; padding: 12px 24px; display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0;">
       <i class="fas fa-exclamation-triangle" style="color: #797775; margin-top: 2px;"></i>
       <div style="font-size: 13px; color: #323130; line-height: 1.4;">
         <strong>VERSIÓN DEMO:</strong> Plataforma a la espera de la infraestructura del Hospital para su despliegue y puesta en marcha. 
@@ -278,6 +281,9 @@
   <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
   <script src="{% static 'vendor/datatables/js/dataTables.bootstrap4.min.js' %}"></script>
   <script src="/static/js/datatables-config.js?v=1"></script>
+
+  <!-- Driver.js JS -->
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
 
   {% block extra_js %}{% endblock %}
 </body>
