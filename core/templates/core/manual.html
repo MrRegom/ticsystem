@@ -1,240 +1,239 @@
 {% extends "core/base.html" %}
 {% load static %}
 
+{% block title %}Manual de Usuario - Hospital Marga Marga{% endblock %}
+
 {% block extra_css %}
 <style>
-  /* Diseño Institucional / Gubernamental */
+  /* Diseño Institucional Gubernamental (Estilo Ministerio de Salud / Gob.cl) */
   body {
     background-color: #f4f6f9;
   }
   
-  .doc-container {
+  .manual-wrapper {
     max-width: 900px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 60px 80px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    border-top: 5px solid #006FB3; /* Azul Institucional Minsal/Hospital */
-    font-family: Arial, Helvetica, sans-serif;
-    color: #333333;
+    margin: 20px auto 60px auto;
+    background-color: #ffffff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    border: 1px solid #d2d6de;
   }
 
-  /* Encabezado del Documento Oficial */
-  .doc-header {
-    border-bottom: 2px solid #333333;
-    padding-bottom: 20px;
+  .manual-institucional-header {
+    border-top: 6px solid #0f4281; /* Azul institucional */
+    padding: 30px 40px;
+    border-bottom: 2px solid #e11624; /* Rojo institucional */
+    background: url('/static/img/gob-pattern.png') top right no-repeat;
+    background-size: contain;
+  }
+
+  .min-salud-text {
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+  
+  .hospital-text {
+    font-size: 16px;
+    color: #0f4281;
+    font-weight: 700;
+    margin-bottom: 25px;
+  }
+
+  .manual-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 10px 0;
+    font-family: 'Roboto', 'Arial', sans-serif;
+  }
+
+  .manual-subtitle {
+    font-size: 15px;
+    color: #555;
+    margin: 0;
+    font-style: italic;
+  }
+
+  .manual-body {
+    padding: 40px;
+    font-family: 'Roboto', 'Arial', sans-serif;
+    color: #333;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .doc-section {
     margin-bottom: 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
   }
 
-  .doc-header-left h1 {
-    font-size: 22px;
-    font-weight: bold;
-    color: #006FB3;
-    margin: 0 0 5px 0;
+  .doc-section h2 {
+    font-size: 20px;
+    color: #0f4281;
+    font-weight: 700;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
     text-transform: uppercase;
   }
 
-  .doc-header-left p {
-    font-size: 13px;
-    margin: 0;
-    color: #555555;
-    font-weight: bold;
-  }
-
-  .doc-meta {
-    text-align: right;
-    font-size: 12px;
-    color: #666666;
-  }
-
-  .doc-meta table {
-    border-collapse: collapse;
-    margin-left: auto;
-  }
-  
-  .doc-meta td {
-    padding: 3px 10px;
-    border: 1px solid #dddddd;
-    text-align: left;
-  }
-  
-  .doc-meta td.label {
-    background-color: #f9f9f9;
-    font-weight: bold;
-  }
-
-  /* Cuerpo del Documento */
-  .doc-content h2 {
-    font-size: 16px;
-    font-weight: bold;
-    color: #000000;
-    border-bottom: 1px solid #cccccc;
-    padding-bottom: 5px;
-    margin-top: 30px;
+  .doc-section h3 {
+    font-size: 17px;
+    color: #333;
+    font-weight: 600;
+    margin-top: 25px;
     margin-bottom: 15px;
   }
 
-  .doc-content h3 {
-    font-size: 14px;
-    font-weight: bold;
-    color: #333333;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    text-decoration: underline;
-  }
-
-  .doc-content p, .doc-content li {
-    font-size: 13px;
-    line-height: 1.6;
+  .doc-section p {
+    margin-bottom: 15px;
     text-align: justify;
-    margin-bottom: 12px;
   }
 
-  .doc-content ul, .doc-content ol {
-    margin-bottom: 15px;
-    padding-left: 30px;
+  .doc-list {
+    margin-bottom: 20px;
+    padding-left: 20px;
+  }
+  
+  .doc-list li {
+    margin-bottom: 8px;
   }
 
-  /* Tablas Formales */
-  .formal-table {
+  .doc-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
     margin-bottom: 25px;
-    font-size: 12px;
+    font-size: 14px;
   }
-
-  .formal-table th {
-    background-color: #006FB3;
-    color: #ffffff;
-    font-weight: bold;
-    padding: 8px;
-    border: 1px solid #005a92;
+  
+  .doc-table th, .doc-table td {
+    border: 1px solid #ddd;
+    padding: 10px 15px;
     text-align: left;
   }
-
-  .formal-table td {
-    padding: 8px;
-    border: 1px solid #dddddd;
+  
+  .doc-table th {
+    background-color: #f9f9f9;
+    color: #0f4281;
+    font-weight: 700;
   }
 
-  .formal-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+  .doc-alert {
+    background-color: #fdf5e6;
+    border-left: 4px solid #e11624;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
   }
   
   .doc-footer {
-    margin-top: 60px;
-    border-top: 1px solid #cccccc;
-    padding-top: 15px;
     text-align: center;
-    font-size: 11px;
-    color: #777777;
+    padding: 20px;
+    font-size: 12px;
+    color: #777;
+    border-top: 1px solid #eee;
+    background-color: #fcfcfc;
   }
-
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="ms-wrap" style="padding: 30px 15px;">
-  <div class="doc-container">
+<div class="manual-wrapper">
+  
+  <!-- Encabezado Oficial -->
+  <div class="manual-institucional-header">
+    <div class="min-salud-text">Ministerio de Salud • Servicio de Salud Viña del Mar - Quillota</div>
+    <div class="hospital-text">Hospital Provincial Marga Marga</div>
+    <h1 class="manual-title">Manual de Usuario - Plataforma de Gestión TIC</h1>
+    <p class="manual-subtitle">Documento Oficial de Inducción al Sistema (Versión Demo - Evaluación)</p>
+  </div>
+
+  <!-- Cuerpo del Documento -->
+  <div class="manual-body">
     
-    <!-- Encabezado -->
-    <div class="doc-header">
-      <div class="doc-header-left">
-        <h1>Manual Operativo y Funcional</h1>
-        <p>Sistema de Gestión de Infraestructura TIC</p>
-        <p style="font-weight: normal; font-size: 12px; margin-top: 4px;">Hospital Provincial Marga Marga</p>
-      </div>
-      <div class="doc-meta">
-        <table>
-          <tr><td class="label">Código Documento</td><td>MNL-TIC-001</td></tr>
-          <tr><td class="label">Versión</td><td>1.0 (Demo)</td></tr>
-          <tr><td class="label">Fecha Emisión</td><td>Julio 2026</td></tr>
-          <tr><td class="label">Departamento</td><td>Tecnologías de la Información</td></tr>
-        </table>
-      </div>
+    <div class="doc-alert">
+      <strong>IMPORTANTE:</strong> La plataforma se encuentra en fase de pre-producción. El módulo de Inventario y Mesa de Ayuda requieren la parametrización de la infraestructura organizacional y física oficial del recinto para su correcta operación.
     </div>
 
-    <!-- Contenido -->
-    <div class="doc-content">
-      
-      <h2>1. OBJETIVO DEL DOCUMENTO</h2>
+    <!-- SECCIÓN 1: INTRODUCCIÓN -->
+    <div class="doc-section">
+      <h2>1. Introducción al Sistema</h2>
       <p>
-        El presente documento tiene por objetivo establecer las directrices operativas y describir el flujo funcional de la Plataforma Tecnológica Hospitalaria (TicSystem). Su estricto cumplimiento garantizará la trazabilidad, control y resolución oportuna de los incidentes que afecten a la continuidad operativa del Hospital Provincial Marga Marga.
+        El Sistema de Gestión TIC del Hospital Provincial Marga Marga es una plataforma de grado empresarial (Enterprise) desarrollada para centralizar la gobernanza de la tecnología hospitalaria. Su diseño integra principios ITIL para la mesa de ayuda, trazabilidad completa de activos y un motor de auditoría riguroso.
       </p>
+    </div>
 
-      <h2>2. REQUISITOS PREVIOS (PARAMETRIZACIÓN)</h2>
+    <!-- SECCIÓN 2: MESA DE AYUDA (TICKETS) -->
+    <div class="doc-section">
+      <h2>2. Gestión de Mesa de Ayuda (Tickets)</h2>
       <p>
-        Para la correcta puesta en marcha del sistema en su entorno productivo, es imperativo que la Unidad de Infraestructura provea la información oficial para normalizar las bases de datos maestras. El sistema depende de dos jerarquías fundamentales:
+        El flujo de resolución de incidentes técnicos se estructura mediante un tablero de control (Kanban) que asigna automáticamente las solicitudes a los Grupos Resolutores correspondientes.
       </p>
-      <table class="formal-table">
+      
+      <h3>2.1. Flujo de un Requerimiento</h3>
+      <table class="doc-table">
         <thead>
           <tr>
-            <th style="width: 30%;">Tipo de Jerarquía</th>
-            <th>Estructura Requerida</th>
-            <th>Propósito en el Sistema</th>
+            <th style="width: 20%;">Fase</th>
+            <th>Descripción del Proceso</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Organizacional</strong></td>
-            <td>Área &rarr; Unidades &rarr; Recintos &rarr; PMAs</td>
-            <td>Asignación de responsabilidad, costeo y ubicación lógica de los activos y usuarios.</td>
+            <td><strong>Levantamiento</strong></td>
+            <td>El usuario o técnico registra el incidente, especificando la prioridad y la categoría. El sistema asocia la solicitud directamente al activo físico afectado.</td>
           </tr>
           <tr>
-            <td><strong>Física</strong></td>
-            <td>Instituciones &rarr; Edificios &rarr; Pisos &rarr; Sectores</td>
-            <td>Localización geográfica exacta de incidentes y equipamiento para el despliegue técnico.</td>
+            <td><strong>Asignación</strong></td>
+            <td>El ticket es enrutado de manera automática al Grupo Resolutor pertinente (ej. Redes, Sistemas Médicos, Soporte). El equipo visualiza la solicitud en su tablero.</td>
+          </tr>
+          <tr>
+            <td><strong>Resolución (SLA)</strong></td>
+            <td>Un técnico toma la responsabilidad y cambia el estado a "En Proceso", iniciando la contabilización del Acuerdo de Nivel de Servicio (SLA). El técnico documenta el diagnóstico y la solución aplicada.</td>
           </tr>
         </tbody>
       </table>
+    </div>
 
-      <h2>3. MÓDULO DE GESTIÓN DE INCIDENTES (TICKETS)</h2>
+    <!-- SECCIÓN 3: INVENTARIO Y BITÁCORA -->
+    <div class="doc-section">
+      <h2>3. Inventario y Trazabilidad Físico/Lógica</h2>
       <p>
-        El proceso de gestión de incidentes se fundamenta en un modelo de Mesa de Ayuda estructurado (HelpDesk), orientado a mantener los Acuerdos de Nivel de Servicio (SLA) de la institución.
+        El control patrimonial tecnológico requiere de una ubicación exacta de los activos dentro del recinto hospitalario. Para esto, el sistema utiliza dos modelos jerárquicos de ubicación que cruzan la dependencia administrativa con la ubicación física.
       </p>
       
-      <h3>3.1. Levantamiento y Enrutamiento</h3>
-      <p>
-        Todo requerimiento o incidente debe ser ingresado a través de la plataforma, categorizando su naturaleza (ej. Falla de Hardware, Problema de Red, Soporte Clínico). El sistema, mediante reglas predefinidas, enrutará automáticamente el ticket al <strong>Grupo Resolutor</strong> correspondiente, evitando demoras en la asignación manual.
-      </p>
-
-      <h3>3.2. Asignación y Ciclo de Vida</h3>
-      <ol>
-        <li><strong>Pendiente:</strong> Estado inicial. Visible en el tablero Kanban del Grupo Resolutor.</li>
-        <li><strong>En Proceso:</strong> Un técnico informático asume la responsabilidad del ticket. Inicia el reloj de SLA operativo.</li>
-        <li><strong>Pendiente Proveedor / Usuario:</strong> Estado de pausa justificada cuando la resolución depende de un agente externo (ej. Garantía de equipo o respuesta de jefatura).</li>
-        <li><strong>Resuelto:</strong> El técnico registra el diagnóstico oficial y la acción correctiva realizada, cerrando el requerimiento.</li>
-      </ol>
-
-      <h2>4. INVENTARIO Y BITÁCORA DE EQUIPAMIENTO</h2>
-      <p>
-        El módulo de Equipamiento actúa como el repositorio central (CMDB) de los activos tecnológicos del recinto hospitalario.
-      </p>
-      <ul>
-        <li><strong>Actas de Entrega:</strong> Todo movimiento, asignación o retiro de un equipo informático hacia un funcionario genera un acta foliada que certifica la custodia del bien fiscal.</li>
-        <li><strong>Bitácora Histórica:</strong> El sistema enlaza automáticamente las resoluciones de tickets con el equipo afectado. De esta forma, cada activo posee una bitácora o "Historia Clínica" que detalla sus fallas pasadas, mantenimientos preventivos realizados y cambios de partes (ej. aumentos de memoria, cambio de discos).</li>
+      <h3>3.1. Requerimientos de Parametrización</h3>
+      <p>Para la correcta puesta en marcha, se requiere que la Unidad de Infraestructura valide la siguiente taxonomía estructural:</p>
+      <ul class="doc-list">
+        <li><strong>Jerarquía Organizacional:</strong> Área &rarr; Unidades &rarr; Recintos &rarr; Puntos de Montaje (PMAs).</li>
+        <li><strong>Jerarquía Física:</strong> Instituciones &rarr; Edificios &rarr; Pisos &rarr; Sectores.</li>
       </ul>
 
-      <h2>5. AUDITORÍA Y TRAZABILIDAD (LOGS)</h2>
+      <h3>3.2. Bitácora Clínica del Activo</h3>
       <p>
-        En cumplimiento con los estándares de probidad y seguridad de la información gubernamental, la plataforma incorpora un motor de auditoría (Enterprise Tracking) que opera de forma silenciosa en segundo plano.
+        Cada equipo tecnológico posee una "Bitácora" inmutable. Cada vez que un ticket asociado al equipo es resuelto, el sistema inyecta automáticamente el diagnóstico y la solución en el historial del activo. Esto permite detectar de forma proactiva hardware defectuoso recurrente o con vida útil expirada.
       </p>
-      <p>
-        Este módulo registra la dirección IP, fecha, hora, usuario y el detalle de cada acción (accesos, modificaciones, creaciones y eliminaciones de registros), asegurando la total transparencia y permitiendo a las autoridades realizar investigaciones retrospectivas en caso de vulneraciones o mal uso del sistema.
-      </p>
-
     </div>
 
-    <!-- Pie de Página del Documento -->
-    <div class="doc-footer">
-      Documento generado automáticamente por el Sistema de Gestión de Infraestructura TIC.<br>
-      Copia Controlada - Prohibida su reproducción sin autorización de la Jefatura TIC.
+    <!-- SECCIÓN 4: AUDITORÍA -->
+    <div class="doc-section">
+      <h2>4. Auditoría de Sistemas (Enterprise Logging)</h2>
+      <p>
+        Como sistema de clase gubernamental, la plataforma registra una huella digital inalterable de cada transacción ejecutada. 
+      </p>
+      <ul class="doc-list">
+        <li>Registro automático de todas las altas, bajas y modificaciones (Creación/Edición/Eliminación).</li>
+        <li>Monitorización de acceso a módulos con captura de fecha, hora y Dirección IP.</li>
+        <li>Tablero de control en tiempo real para el Oficial de Seguridad de la Información.</li>
+      </ul>
     </div>
 
+  </div>
+  
+  <div class="doc-footer">
+    Documento Generado por TicSystem v2.0 - División TIC Hospital Provincial Marga Marga
   </div>
 </div>
 {% endblock %}

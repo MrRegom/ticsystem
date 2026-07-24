@@ -678,16 +678,17 @@ document.getElementById('imageModal').addEventListener('click', function(e) {
 {% block extra_js %}
 <script>
 $(document).ready(function() {
-  // Inicializar Tour Interactivo si no lo ha visto
+  // Inicializar Tour Interactivo en cada nueva sesión
   const driver = window.driver.js.driver;
   
-  if (!localStorage.getItem('ticsystem_tour_seen_v1')) {
+  if (!sessionStorage.getItem('ticsystem_tour_seen_v1')) {
     const tour = driver({
       showProgress: true,
       nextBtnText: 'Siguiente',
       prevBtnText: 'Anterior',
       doneBtnText: 'Entendido',
-      allowClose: false,
+      allowClose: true,
+      showButtons: ['next', 'previous', 'close'],
       overlayColor: 'rgba(0, 0, 0, 0.75)',
       steps: [
         {
@@ -728,10 +729,8 @@ $(document).ready(function() {
         }
       ],
       onDestroyStarted: () => {
-        if (!driver().hasNextStep() || confirm("¿Seguro que quieres saltar el tutorial?")) {
-          localStorage.setItem('ticsystem_tour_seen_v1', 'true');
-          driver().destroy();
-        }
+        sessionStorage.setItem('ticsystem_tour_seen_v1', 'true');
+        driver().destroy();
       },
     });
     
