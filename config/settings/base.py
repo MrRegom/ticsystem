@@ -68,7 +68,7 @@ MIDDLEWARE = [
     'core.middlewares.NoCacheMiddleware',
     
     # Middleware de Auditoría y Trazabilidad (Enterprise Tracking)
-    'core.middlewares.auditoria_middleware.AuditoriaMiddleware',
+    'core.middlewares.AuditoriaMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
