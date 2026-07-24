@@ -70,12 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 '<span style="font-size:0.65rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' ' + (t.fecha_creacion_hora || '') + '</span>' +
             '</div>' +
             (function() {
-                var parts = t.descripcion.split('\\n');
+                var parts = t.descripcion.split('\n');
                 var subject = parts[0].replace(/^ASUNTO:\\s*/i, '');
                 var detail = parts.length > 1 ? parts.slice(1).join(' ').replace(/DETALLE:\\s*/i, '').trim() : '';
-                return '<div class="card-desc" style="margin-bottom: 6px; line-height: 1.3;">' +
-                       '<div style="font-weight: 700; color: #0f172a; font-size: 0.8rem;">' + subject + '</div>' +
-                       (detail ? '<div style="font-weight: 400; color: #475569; font-size: 0.75rem; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">' + detail + '</div>' : '') +
+                return '<div class="card-desc" style="margin-bottom: 6px; line-height: 1.3; font-size: 0.75rem;">' +
+                       '<div style="color: #0f172a;"><strong style="font-weight:700;">ASUNTO:</strong> ' + subject + '</div>' +
+                       (detail ? '<div style="color: #475569; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><strong style="font-weight:600;">DETALLE:</strong> ' + detail + '</div>' : '') +
                        '</div>';
             })() +
             '<div class="sla-timer-display" style="font-size:0.7rem; font-weight:600; margin-bottom:6px;"></div>' +
@@ -135,17 +135,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             tableHtml += '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">' +
                          '<thead><tr style="background: #f8fafc; color: #475569; text-align: left; border-bottom: 1px solid #e2e8f0;">' +
-                         '<th style="padding: 8px 12px;">Ticket</th>' +
-                         '<th style="padding: 8px 12px;">Prioridad</th>' +
-                         '<th style="padding: 8px 12px;">Fecha</th>' +
-                         '<th style="padding: 8px 12px;">Grupo</th>' +
-                         '<th style="padding: 8px 12px;">Técnico</th>' +
-                         '<th style="padding: 8px 12px; text-align: right;">Acción</th>' +
+                         '<th style="padding: 8px 12px; width: 10%;">Ticket</th>' +
+                         '<th style="padding: 8px 12px; width: 35%;">Asunto</th>' +
+                         '<th style="padding: 8px 12px; width: 10%;">Prioridad</th>' +
+                         '<th style="padding: 8px 12px; width: 10%;">Fecha</th>' +
+                         '<th style="padding: 8px 12px; width: 15%;">Grupo</th>' +
+                         '<th style="padding: 8px 12px; width: 10%;">Técnico</th>' +
+                         '<th style="padding: 8px 12px; text-align: right; width: 10%;">Acción</th>' +
                          '</tr></thead><tbody>';
 
             tickets.forEach(function(t) {
+                var parts = t.descripcion.split('\n');
+                var subject = parts[0].replace(/^ASUNTO:\s*/i, '');
+                
                 tableHtml += '<tr class="listado-row" style="border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background=\'#f1f5f9\'" onmouseout="this.style.background=\'#fff\'" onclick="openOffcanvas(' + t.id + ')">' +
                              '<td style="padding: 10px 12px;"><span style="font-weight: 700; color: #0f172a;">' + t.correlativo + '</span></td>' +
+                             '<td style="padding: 10px 12px;"><div style="color: #0f172a; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;">' + subject + '</div></td>' +
                              '<td style="padding: 10px 12px;"><span style="background: ' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 6px; font-size: 11px; font-weight: 700;">' + t.prioridad + '</span></td>' +
                              '<td style="padding: 10px 12px; color: #475569;">' + t.fecha_creacion_corta + '</td>' +
                              '<td style="padding: 10px 12px; color: #475569;">' + (t.grupo || 'Mesa de Ayuda') + '</td>' +
