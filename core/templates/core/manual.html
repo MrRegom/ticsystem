@@ -1,0 +1,168 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  /* Enterprise UI - Fluent Design Inherited */
+  .manual-header {
+    background-color: #0078d4;
+    color: white;
+    padding: 32px 40px;
+    margin: -24px -32px 24px -32px; /* Pull it out to edge of container */
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  }
+  .manual-header h1 { font-size: 28px; font-weight: 600; margin: 0 0 8px 0; }
+  .manual-header p { font-size: 15px; opacity: 0.9; margin: 0; max-width: 800px; }
+  
+  .manual-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .manual-section {
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    border-left: 4px solid #0078d4;
+  }
+  
+  .manual-section h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #201f1e;
+    border-bottom: 1px solid #edebe9;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .manual-section h2 i { color: #0078d4; }
+  
+  .manual-content {
+    font-size: 14px;
+    color: #323130;
+    line-height: 1.6;
+  }
+  
+  .manual-content h3 { font-size: 16px; font-weight: 600; color: #323130; margin-top: 24px; margin-bottom: 12px; }
+  .manual-content p { margin-bottom: 16px; }
+  
+  .manual-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    background: #faf9f8;
+    padding: 16px;
+    border-radius: 4px;
+  }
+  
+  .step-number {
+    width: 32px; height: 32px;
+    background: #0078d4; color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 14px; flex-shrink: 0;
+  }
+  
+  .step-text { flex: 1; }
+  .step-text h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px 0; color: #201f1e; }
+  .step-text p { margin: 0; font-size: 13px; color: #605e5c; }
+  
+  .feature-pill {
+    display: inline-block; padding: 4px 10px; background: #e1dfdd; color: #323130;
+    border-radius: 16px; font-size: 12px; font-weight: 600; margin-right: 6px; margin-bottom: 6px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ms-wrap" style="padding: 24px 32px;">
+  
+  <div class="manual-header">
+    <h1><i class="fas fa-book-open mr-2"></i> Manual Explicativo del Sistema (Versión Demo)</h1>
+    <p>Bienvenido al Sistema de Gestión de Infraestructura TIC del Hospital Provincial Marga Marga. Esta guía explica el ciclo de vida de los principales procesos de la plataforma y su arquitectura subyacente.</p>
+  </div>
+
+  <div class="manual-container">
+    
+    <!-- Módulo 1: TICKETS -->
+    <div class="manual-section" style="border-left-color: #d83b01;">
+      <h2><i class="fas fa-ticket-alt" style="color: #d83b01;"></i> Gestión de Incidentes y Requerimientos (Tickets)</h2>
+      <div class="manual-content">
+        <p>El módulo de Mesa de Ayuda implementa una versión ágil de ITIL para la resolución estructurada de problemas en la infraestructura hospitalaria.</p>
+        
+        <div class="manual-step">
+          <div class="step-number" style="background: #d83b01;">1</div>
+          <div class="step-text">
+            <h4>Creación y Enrutamiento</h4>
+            <p>El operador levanta el Ticket en el sistema, lo categoriza (Software, Hardware, etc.) e indica la prioridad. El sistema automáticamente vincula el ticket con un equipo (Activo) y <strong>lo enruta directamente al Grupo Resolutor pertinente</strong> (ej. Sistemas Clínicos, Redes, Hardware).</p>
+          </div>
+        </div>
+        
+        <div class="manual-step">
+          <div class="step-number" style="background: #d83b01;">2</div>
+          <div class="step-text">
+            <h4>Recepción y Asignación</h4>
+            <p>Los técnicos que pertenecen al "Grupo Resolutor" ven el ticket en su tablero Kanban. Un técnico toma la responsabilidad del ticket y lo pasa a estado <strong>"En Proceso"</strong>, iniciando el conteo del SLA (Nivel de Servicio).</p>
+          </div>
+        </div>
+        
+        <div class="manual-step">
+          <div class="step-number" style="background: #d83b01;">3</div>
+          <div class="step-text">
+            <h4>Resolución y Cierre</h4>
+            <p>El técnico ingresa el Diagnóstico y la Solución. En caso de depender de un tercero o del usuario, puede pausar el reloj cambiando el estado a "Pendiente Proveedor". Una vez finalizado, el ticket se cierra, actualizando automáticamente el historial de fallas del Activo afectado.</p>
+          </div>
+        </div>
+        
+        <div class="mt-3">
+          <span class="feature-pill">SLA Dinámico</span>
+          <span class="feature-pill">Enrutamiento Automático</span>
+          <span class="feature-pill">Tablero Kanban Kanban</span>
+          <span class="feature-pill">Exportación a CSV</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Módulo 2: INVENTARIO Y BITACORA -->
+    <div class="manual-section" style="border-left-color: #107c10;">
+      <h2><i class="fas fa-laptop-medical" style="color: #107c10;"></i> Equipamiento y Bitácora de Mantenciones</h2>
+      <div class="manual-content">
+        <p>Este módulo centraliza todo el hardware y software de la institución. Su correcta operación depende estrictamente de la normalización de la estructura física y organizacional de la base de datos.</p>
+        
+        <h3>Organización de la Base de Datos</h3>
+        <p>Para asignar un equipo a una ubicación exacta, el sistema utiliza dos jerarquías principales que <strong>deben ser parametrizadas y enviadas por la infraestructura del Hospital</strong>:</p>
+        <ul style="margin-bottom: 20px;">
+          <li><strong>Jerarquía Organizacional:</strong> Área &rarr; Unidades &rarr; Recintos &rarr; Puntos de Montaje (PMA)</li>
+          <li><strong>Jerarquía Física:</strong> Instituciones &rarr; Edificios &rarr; Pisos &rarr; Sectores</li>
+        </ul>
+        
+        <h3>La Bitácora de Mantenciones</h3>
+        <p>Es el "Historial Clínico" de cada activo tecnológico. Guarda cada evento en la vida de un equipo:</p>
+        <ul>
+          <li><strong>Ingreso y Despliegue:</strong> Cuando se firma un Acta de Entrega, el sistema registra a quién y cuándo se le entregó.</li>
+          <li><strong>Mantenimientos Preventivos:</strong> Registros automáticos de limpiezas, cambios de pasta térmica y actualizaciones.</li>
+          <li><strong>Tickets de Falla:</strong> Cuando un técnico cierra un ticket, el diagnóstico y solución se ligan a la bitácora del equipo, permitiendo detectar hardware defectuoso recurrente.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Módulo 3: AUDITORÍA -->
+    <div class="manual-section" style="border-left-color: #5c2d91;">
+      <h2><i class="fas fa-user-secret" style="color: #5c2d91;"></i> Auditoría y Trazabilidad (Enterprise Tracking)</h2>
+      <div class="manual-content">
+        <p>TicSystem cuenta con un motor silencioso de auditoría nivel corporativo. Todo movimiento dentro de la aplicación es registrado para cumplir con estándares de seguridad.</p>
+        <ul>
+          <li>Registra accesos a módulos, creaciones de datos, modificaciones y eliminaciones.</li>
+          <li>Almacena la Dirección IP y marca de tiempo exacta de cada acción.</li>
+          <li>Permite a los administradores filtrar movimientos dudosos a través de un panel de inteligencia en tiempo real.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

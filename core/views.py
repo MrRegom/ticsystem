@@ -748,3 +748,10 @@ class UsuarioEditarAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                 if hasattr(e, 'messages'):
                     err_msg = e.messages[0]
             return JsonResponse({'success': False, 'error': err_msg}, status=400)
+
+
+class ManualUsuarioView(LoginRequiredMixin, TemplateView):
+    """
+    Vista estática para el Manual Explicativo del Sistema (Documentación Enterprise).
+    """
+    template_name = 'core/manual.html'

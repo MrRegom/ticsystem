@@ -15,7 +15,8 @@ from core.views import (
     UsuarioDisableRestoreAPIView,
     SwitchUserView,
     FuncionarioSearchAPIView,
-    FuncionarioCreateAPIView
+    FuncionarioCreateAPIView,
+    ManualUsuarioView
 )
 
 urlpatterns = [
@@ -29,6 +30,7 @@ urlpatterns = [
     # Vistas de aplicación
     path('dashboard/', DashboardGeneralView.as_view(), name='dashboard'),
     path('switch_user/', SwitchUserView.as_view(), name='switch_user'),
+    path('manual/', ManualUsuarioView.as_view(), name='manual_usuario'),
 
     path('usuarios/', UsuariosDashboardView.as_view(), name='usuarios_dashboard'),
     path('roles/', RolesDashboardView.as_view(), name='roles_dashboard'),
