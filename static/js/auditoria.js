@@ -24,7 +24,7 @@ $(document).ready(function() {
                 if (data === 'Creación' || data === 'CREAR') badgeClass = 'badge-accion-crear';
                 else if (data === 'Modificación' || data === 'MODIFICAR') badgeClass = 'badge-accion-modificar';
                 else if (data === 'Eliminación' || data === 'ELIMINAR') badgeClass = 'badge-accion-eliminar';
-                else if (data.includes('Login') || data.includes('LOGIN')) badgeClass = 'badge-accion-login';
+                else if (data.includes('Login') || data.includes('LOGIN') || data.includes('Sesi')) badgeClass = 'badge-accion-login';
                 
                 return `<span class="badge-action ${badgeClass}">${data}</span>`;
             }},

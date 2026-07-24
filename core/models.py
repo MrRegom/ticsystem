@@ -12,17 +12,17 @@ class LogAuditoria(models.Model):
 
     class Accion(models.TextChoices):
 
-        CREAR = 'CREAR', 'CreaciÃ³n'
+        CREAR = 'CREAR', 'Creación'
 
-        MODIFICAR = 'MODIFICAR', 'ModificaciÃ³n'
+        MODIFICAR = 'MODIFICAR', 'Modificación'
 
-        ELIMINAR = 'ELIMINAR', 'EliminaciÃ³n'
+        ELIMINAR = 'ELIMINAR', 'Eliminación'
 
-        LOGIN_EXITOSO = 'LOGIN_OK', 'Inicio SesiÃ³n Exitoso'
+        LOGIN_EXITOSO = 'LOGIN_OK', 'Inicio Sesión Exitoso'
 
-        LOGIN_FALLIDO = 'LOGIN_FAIL', 'Inicio SesiÃ³n Fallido'
+        LOGIN_FALLIDO = 'LOGIN_FAIL', 'Inicio Sesión Fallido'
 
-        LOGOUT = 'LOGOUT', 'Cierre de SesiÃ³n'
+        LOGOUT = 'LOGOUT', 'Cierre de Sesión'
 
 
 
