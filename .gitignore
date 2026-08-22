@@ -47,7 +47,8 @@ Thumbs.db
 *.tmp
 *.rar
 
-# Scripts de desarrollo e IA
+# Scripts de desarrollo e IA (internos, nunca al repo público)
 scripts_dev/
 graphify-out/
 .agents/
+deploy/
