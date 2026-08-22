@@ -284,19 +284,7 @@
 
   <!-- Contenido Principal -->
   <main class="with-fixed-navbar" style="padding-bottom: 60px;">
-    {% if user.is_authenticated %}
-    <!-- Banner de Advertencia de Demo (Estilo Fluent MessageBar) -->
-    <div id="demo-banner" style="background-color: #fff4ce; border-bottom: 1px solid #edebe9; padding: 12px 24px; display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0;">
-      <i class="fas fa-exclamation-triangle" style="color: #797775; margin-top: 2px;"></i>
-      <div style="font-size: 13px; color: #323130; line-height: 1.4;">
-        <strong>VERSIÓN DEMO:</strong> Plataforma a la espera de la infraestructura del Hospital para su despliegue y puesta en marcha. 
-        El buen funcionamiento de los módulos (Mantenedores, Tickets, Inventario) depende de parametrizar la BD según la estructura actual:<br>
-        <strong>• Organizacional:</strong> Área &rarr; Unidades &rarr; Recintos &rarr; PMAs <br>
-        <strong>• Física:</strong> Instituciones &rarr; Edificios &rarr; Pisos &rarr; Sectores <br>
-        <em>* Favor rectificar esta información y enviar el listado correspondiente para normalizar la base de datos.</em>
-      </div>
-    </div>
-    {% endif %}
+
     <div class="container-fluid p-0">
       {% block content %}{% endblock %}
     </div>
@@ -312,7 +300,7 @@
       </strong> 
       <span class="ml-1 d-none d-sm-inline">| Plataforma Tecnológica Hospitalaria</span>
       </span>
-      <span class="badge badge-warning ml-3" style="background-color: #ffb900; color: #000; font-size: 0.65rem; border: 1px solid #eab308; padding: 4px 8px; font-weight: 700; letter-spacing: 0.5px; border-radius: 4px; box-shadow: 0 2px 4px rgba(255,185,0,0.2);">VERSIÓN DEMO</span>
+
     </div>
   </footer>
 
