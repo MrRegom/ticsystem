@@ -46,3 +46,8 @@ Thumbs.db
 *.bak
 *.tmp
 *.rar
+
+# Scripts de desarrollo e IA
+scripts_dev/
+graphify-out/
+.agents/
