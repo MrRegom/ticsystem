@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('btn-view-' + view).classList.add('active');
         if (view === 'historial' && typeof $ !== 'undefined' && !$.fn.DataTable.isDataTable('#tabla-historial')) {
             $('#tabla-historial').DataTable({
-                language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
+                language: { url: window.TICKET_CONFIG.datatablesLanguageUrl },
                 order: [[6, 'desc']], pageLength: 25,
             });
         }

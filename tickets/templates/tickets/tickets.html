@@ -524,7 +524,8 @@
         kanbanData: {{ kanban_data|safe }},
         urls: {
             apiSearchUsers: '{% url "tickets:api_search_users" %}',
-            apiSearchKedb: '{% url "tickets:api_search_kedb" %}'
+            apiSearchKedb: '{% url "tickets:api_search_kedb" %}',
+            datatablesLanguageUrl: '{% static "vendor/datatables/i18n/es-ES.json" %}'
         }
     };
 </script>
