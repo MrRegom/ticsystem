@@ -760,6 +760,14 @@ var EquiposApp = (function($) {
         // Reset chips de estado
         $('input[name="e-estado"]').prop('checked', false);
         $('#e-estado-container label').css({'border-color': '#edebe9', 'background': '#faf9f8', 'color': '#323130', 'font-weight': '500'});
+        // Pre-seleccionar "Operativo" por defecto en formulario nuevo
+        var $radioOperativo = $('input[name="e-estado"]').filter(function() {
+            return $(this).closest('label').text().trim() === 'Operativo';
+        });
+        if ($radioOperativo.length) {
+            $radioOperativo.prop('checked', true);
+            eqEstadoChipSelect($radioOperativo[0]);
+        }
         // Disable cascadas
         $(f.modelo).prop('disabled', true);
         $(f.unidad).prop('disabled', true);

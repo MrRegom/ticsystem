@@ -295,6 +295,7 @@
             <input type="radio" name="e-estado" value="{{ es.id }}"
               data-color="{% if es.nombre == 'Operativo' %}#107c10{% elif es.nombre == 'Baja' %}#a4262c{% else %}#797775{% endif %}"
               style="display:none;"
+              {% if es.nombre == 'Operativo' %}checked{% endif %}
               onchange="eqEstadoChipSelect(this)">
             <span class="estado-chip-dot" style="
               width:10px; height:10px; border-radius:50%; flex-shrink:0;
