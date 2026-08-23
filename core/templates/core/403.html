@@ -4,13 +4,22 @@
 
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-    <div class="text-center">
-        <i class="ms-Icon ms-Icon--ShieldAlert" style="font-size: 80px; color: #d13438;"></i>
-        <h1 class="mt-4" style="font-weight: 700; color: #323130;">Acceso Denegado (403)</h1>
-        <p class="lead" style="color: #605e5c;">No tienes los permisos necesarios para acceder a esta sección.</p>
-        <p style="color: #605e5c;">Si crees que esto es un error, por favor contacta al administrador del sistema.</p>
-        <a href="{% url 'dashboard' %}" class="btn btn-primary mt-4" style="background-color: #0078d4; border-color: #0078d4; border-radius: 2px;">
-            <i class="fas fa-arrow-left mr-2"></i> Volver al Inicio
+    <div class="text-center" style="max-width: 500px; padding: 50px 40px; background: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-radius: 8px; border-top: 5px solid #d13438;">
+        <div style="width: 80px; height: 80px; background-color: #fdf3f4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+            <i class="fas fa-lock" style="font-size: 32px; color: #d13438;"></i>
+        </div>
+        
+        <h2 style="font-weight: 600; color: #323130; margin-bottom: 12px; font-size: 24px;">Lo sentimos, no tienes acceso</h2>
+        
+        <p style="color: #605e5c; font-size: 15px; margin-bottom: 8px;">
+            Tu perfil actual no cuenta con los permisos necesarios para ver o modificar esta sección.
+        </p>
+        <p style="color: #a19f9d; font-size: 13px; margin-bottom: 35px;">
+            Si crees que deberías tener acceso, por favor contacta al Administrador.
+        </p>
+        
+        <a href="{% url 'dashboard' %}" class="ms-btn-primary" style="text-decoration: none !important; display: inline-block; padding: 10px 32px; font-weight: 500;">
+            Volver al Inicio
         </a>
     </div>
 </div>
