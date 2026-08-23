@@ -48,9 +48,11 @@
         <option value="mes" {% if rango_filtro == 'mes' %}selected{% endif %}>Últimos 30 Días</option>
         <option value="todos" {% if rango_filtro == 'todos' %}selected{% endif %}>Todos (Histórico)</option>
       </select>
-      <button class="ms-btn-primary" data-toggle="modal" data-target="#modalNuevoTicket" style="border-radius: 0; height: 36px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; padding: 0 16px; margin: 0;">
+      {% if user|has_permiso:'GESTIONAR_TICKETS' %}
+      <button class="ms-btn-primary" data-toggle="modal" data-target="#modalNuevoTicket" style="border-radius: 0; height: 36px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; padding: 0 16px; margin: 0; white-space: nowrap;">
         <i class="fas fa-plus" style="margin-right: 6px;"></i> Nuevo Ticket
       </button>
+      {% endif %}
     </div>
   </div>
 

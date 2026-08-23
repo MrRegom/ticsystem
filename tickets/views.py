@@ -232,6 +232,10 @@ class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateVi
 class TicketActionView(PermisoRequeridoMixin, LoginRequiredMixin, View):
     permiso_requerido = 'VER_TICKETS'
     def post(self, request, *args, **kwargs):
+        # Validación extra de seguridad: solo quienes gestionan pueden crear
+        if not request.user.is_superuser and not (hasattr(request.user, 'perfil') and request.user.perfil.rol and request.user.perfil.rol.tiene_permiso('GESTIONAR_TICKETS')):
+            return JsonResponse({'success': False, 'message': 'No tiene permisos para crear tickets.'}, status=403)
+            
         try:
             data = json.loads(request.body)
             # El solicitante lo elige el operador en el frontend
