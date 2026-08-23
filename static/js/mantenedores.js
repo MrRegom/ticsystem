@@ -749,13 +749,14 @@ var MantenedoresApp = (function ($) {
                 var idField = document.getElementById('m-id');
                 var isNew = !idField || !idField.value;
                 if (isNew) {
-                    var cleanRut = rut; // already uppercase, no formatting characters except K
-                    fetch('/api/funcionarios/search/?q=' + cleanRut)
+                    var formattedRut = input.value; 
+                    fetch('/api/funcionarios/search/?q=' + formattedRut)
                         .then(res => res.json())
                         .then(data => {
                             if (data.results && data.results.length > 0) {
-                                // Check for exact match
-                                var exists = data.results.some(f => f.rut && f.rut.replace(/[^0-9Kk]/g, '').toUpperCase() === cleanRut);
+                                // Check for exact match ignoring non-alphanumeric chars
+                                var cleanInputRut = formattedRut.replace(/[^0-9Kk]/g, '').toUpperCase();
+                                var exists = data.results.some(f => f.rut && f.rut.replace(/[^0-9Kk]/g, '').toUpperCase() === cleanInputRut);
                                 if (exists) {
                                     feedback.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ¡El RUT ya está registrado!';
                                     feedback.className = 'form-text mt-1 font-weight-bold text-danger';
