@@ -21,6 +21,9 @@ class DynamicSMTPEmailBackend(EmailBackend):
                 kwargs['use_ssl'] = False
                 kwargs['use_tls'] = config.use_tls
 
+            # Set a hard timeout to prevent Gunicorn worker death
+            kwargs.setdefault('timeout', 5)
+
             # Set default from email globally if not overridden
             from django.conf import settings
             if config.remitente_por_defecto:
