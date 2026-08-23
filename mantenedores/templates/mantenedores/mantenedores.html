@@ -333,6 +333,13 @@
                 <input type="text" class="form-control form-control-sm" id="m-alias" maxlength="50">
               </div>
 
+              <!-- RUT (Proveedor / Funcionario) -->
+              <div class="col-md-6 form-group" id="field-rut" style="display:none;">
+                <label id="label-rut">RUT *</label>
+                <input type="text" class="form-control form-control-sm" id="m-rut" maxlength="20" placeholder="Ej. 12345678-9" oninput="formatRut(this)">
+                <small id="rut-feedback" class="form-text mt-1 font-weight-bold"></small>
+              </div>
+
               <!-- Funcionario Fields -->
 
               <div class="col-md-6 form-group" id="field-nombres" style="display:none;">
@@ -425,12 +432,6 @@
                 <input type="number" class="form-control form-control-sm" id="m-orden" value="10" min="0">
               </div>
 
-              <!-- RUT (Proveedor / Funcionario) -->
-              <div class="col-md-6 form-group" id="field-rut" style="display:none;">
-                <label id="label-rut">RUT</label>
-                <input type="text" class="form-control form-control-sm" id="m-rut" maxlength="20" placeholder="Ej. 12345678-9" oninput="formatRut(this)">
-                <small id="rut-feedback" class="form-text mt-1 font-weight-bold"></small>
-              </div>
 
               <!-- Contacto (Proveedor) -->
               <div class="col-md-6 form-group" id="field-contacto" style="display:none;">
