@@ -206,104 +206,8 @@
           <input type="hidden" id="mantenedor-id" value="">
           <input type="hidden" id="mantenedor-modelo" value="">
 
-          <!-- SECCIÓN 1: UBICACIÓN Y RELACIONES (Jerarquía Padre) -->
-          <div id="section-relaciones" class="mb-3 p-3 bg-white shadow-sm" style="border-radius: 8px; border: 1px solid #e2e8f0; display: none;">
-            <h6 style="font-size: 0.75rem; font-weight: 700; color: #002a54; text-transform: uppercase; margin-bottom: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">
-              <i class="fas fa-sitemap mr-1"></i> Dependencias / Ubicación
-            </h6>
-            <div class="row">
-              <!-- Institución (Edificio) -->
-              <div class="col-md-6 form-group" id="field-institucion" style="display:none;">
-                <label>Institución a la que pertenece</label>
-                <select class="form-control form-control-sm" id="m-institucion">
-                  <option value="">-- Seleccione Institución --</option>
-                  {% for i in instituciones %}
-                  <option value="{{ i.id }}">{{ i.nombre }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Edificio (Piso) -->
-              <div class="col-md-6 form-group" id="field-edificio" style="display:none;">
-                <label>Edificio</label>
-                <select class="form-control form-control-sm" id="m-edificio">
-                  <option value="">-- Seleccione Edificio --</option>
-                  {% for e in edificios %}
-                  <option value="{{ e.id }}" data-institucion="{{ e.institucion__nombre }}">{{ e.nombre }}{% if e.institucion__nombre %} – {{ e.institucion__nombre }}{% endif %}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Marca (Modelo) -->
-              <div class="col-md-6 form-group" id="field-marca" style="display:none;">
-                <label>Marca del Equipo</label>
-                <select class="form-control form-control-sm" id="m-marca">
-                  <option value="">-- Seleccione Marca --</option>
-                  {% for ma in marcas %}
-                  <option value="{{ ma.id }}">{{ ma.nombre }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Piso (Sector / Recinto) -->
-              <div class="col-md-6 form-group" id="field-piso" style="display:none;">
-                <label>Piso Físico</label>
-                <select class="form-control form-control-sm" id="m-piso">
-                  <option value="">-- Seleccione Piso --</option>
-                  {% for p in pisos %}
-                  <option value="{{ p.id }}" data-edificio="{{ p.edificio__nombre }}">{{ p.edificio__nombre }} – Piso {{ p.nombre }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Sector (Recinto) -->
-              <div class="col-md-6 form-group" id="field-sector" style="display:none;">
-                <label>Sector / Ala</label>
-                <select class="form-control form-control-sm" id="m-sector">
-                  <option value="">-- Seleccione Sector --</option>
-                  {% for s in sectores %}
-                  <option value="{{ s.id }}" data-piso="{{ s.piso__nombre }}">{{ s.nombre }}{% if s.piso__nombre %} (Piso {{ s.piso__nombre }}){% endif %}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Área Hospitalaria (Unidad) -->
-              <div class="col-md-6 form-group" id="field-area_hospitalaria" style="display:none;">
-                <label>Área Hospitalaria</label>
-                <select class="form-control form-control-sm" id="m-area_hospitalaria">
-                  <option value="">-- Seleccione Área --</option>
-                  {% for a in areas %}
-                  <option value="{{ a.id }}">{{ a.nombre }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Unidad (Recinto) -->
-              <div class="col-md-6 form-group" id="field-unidad" style="display:none;">
-                <label>Unidad Clínica / Servicio</label>
-                <select class="form-control form-control-sm" id="m-unidad">
-                  <option value="">-- Seleccione Unidad --</option>
-                  {% for u in unidades %}
-                  <option value="{{ u.id }}" data-area="{{ u.area_hospitalaria__nombre }}">{{ u.nombre }}{% if u.area_hospitalaria__nombre %} – {{ u.area_hospitalaria__nombre }}{% endif %}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Recinto (PMA) -->
-              <div class="col-md-12 form-group" id="field-recinto" style="display:none;">
-                <label>Recinto Físico</label>
-                <select class="form-control form-control-sm" id="m-recinto">
-                  <option value="">-- Seleccione Recinto --</option>
-                  {% for r in recintos %}
-                  <option value="{{ r.id }}" data-unidad="{{ r.unidad__nombre }}" data-piso="{{ r.piso__nombre }}">{{ r.nombre }}{% if r.unidad__nombre %} – {{ r.unidad__nombre }}{% endif %}{% if r.piso__nombre %} [Piso {{ r.piso__nombre }}]{% endif %}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-          </div>
-
           <!-- SECCIÓN 2: DATOS DEL REGISTRO (Hijo) -->
-          <div class="p-3 bg-white shadow-sm" style="border-radius: 8px; border: 1px solid #e2e8f0;">
+          <div class="p-3 bg-white shadow-sm mb-3" style="border-radius: 8px; border: 1px solid #e2e8f0;">
             <h6 style="font-size: 0.75rem; font-weight: 700; color: #0f766e; text-transform: uppercase; margin-bottom: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">
               <i class="fas fa-info-circle mr-1"></i> Identificación del Registro
             </h6>
@@ -354,15 +258,7 @@
                 <label>Correo Electrónico</label>
                 <input type="email" class="form-control form-control-sm" id="m-correo" maxlength="150">
               </div>
-              <div class="col-md-6 form-group" id="field-cargo" style="display:none;">
-                <label>Cargo</label>
-                <select class="form-control form-control-sm" id="m-cargo">
-                  <option value="">-- Seleccione Cargo --</option>
-                  {% for c in cargos %}
-                  <option value="{{ c.id }}">{{ c.nombre }}</option>
-                  {% endfor %}
-                </select>
-              </div>
+
 
               <!-- Tipo (Bitácora) -->
               <div class="col-md-6 form-group" id="field-tipo" style="display:none;">
@@ -461,7 +357,114 @@
               </div>
             </div>
           </div>
-        </div>
+        <!-- SECCIÓN 1: UBICACIÓN Y RELACIONES (Jerarquía Padre) -->
+          <div id="section-relaciones" class="p-3 bg-white shadow-sm mt-3" style="border-radius: 8px; border: 1px solid #e2e8f0; display: none;">
+            <h6 style="font-size: 0.75rem; font-weight: 700; color: #002a54; text-transform: uppercase; margin-bottom: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">
+              <i class="fas fa-sitemap mr-1"></i> Dependencias / Ubicación
+            </h6>
+            <div class="row">
+              <!-- Institución (Edificio) -->
+              <div class="col-md-6 form-group" id="field-institucion" style="display:none;">
+                <label>Institución a la que pertenece</label>
+                <select class="form-control form-control-sm" id="m-institucion">
+                  <option value="">-- Seleccione Institución --</option>
+                  {% for i in instituciones %}
+                  <option value="{{ i.id }}">{{ i.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Edificio (Piso) -->
+              <div class="col-md-6 form-group" id="field-edificio" style="display:none;">
+                <label>Edificio</label>
+                <select class="form-control form-control-sm" id="m-edificio">
+                  <option value="">-- Seleccione Edificio --</option>
+                  {% for e in edificios %}
+                  <option value="{{ e.id }}" data-institucion="{{ e.institucion__nombre }}">{{ e.nombre }}{% if e.institucion__nombre %} – {{ e.institucion__nombre }}{% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Marca (Modelo) -->
+              <div class="col-md-6 form-group" id="field-marca" style="display:none;">
+                <label>Marca del Equipo</label>
+                <select class="form-control form-control-sm" id="m-marca">
+                  <option value="">-- Seleccione Marca --</option>
+                  {% for ma in marcas %}
+                  <option value="{{ ma.id }}">{{ ma.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Piso (Sector / Recinto) -->
+              <div class="col-md-6 form-group" id="field-piso" style="display:none;">
+                <label>Piso Físico</label>
+                <select class="form-control form-control-sm" id="m-piso">
+                  <option value="">-- Seleccione Piso --</option>
+                  {% for p in pisos %}
+                  <option value="{{ p.id }}" data-edificio="{{ p.edificio__nombre }}">{{ p.edificio__nombre }} – Piso {{ p.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Sector (Recinto) -->
+              <div class="col-md-6 form-group" id="field-sector" style="display:none;">
+                <label>Sector / Ala</label>
+                <select class="form-control form-control-sm" id="m-sector">
+                  <option value="">-- Seleccione Sector --</option>
+                  {% for s in sectores %}
+                  <option value="{{ s.id }}" data-piso="{{ s.piso__nombre }}">{{ s.nombre }}{% if s.piso__nombre %} (Piso {{ s.piso__nombre }}){% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Área Hospitalaria (Unidad) -->
+              <div class="col-md-6 form-group" id="field-area_hospitalaria" style="display:none;">
+                <label>Área Hospitalaria</label>
+                <select class="form-control form-control-sm" id="m-area_hospitalaria">
+                  <option value="">-- Seleccione Área --</option>
+                  {% for a in areas %}
+                  <option value="{{ a.id }}">{{ a.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Unidad (Recinto) -->
+              <div class="col-md-6 form-group" id="field-unidad" style="display:none;">
+                <label>Unidad Clínica / Servicio</label>
+                <select class="form-control form-control-sm" id="m-unidad">
+                  <option value="">-- Seleccione Unidad --</option>
+                  {% for u in unidades %}
+                  <option value="{{ u.id }}" data-area="{{ u.area_hospitalaria__nombre }}">{{ u.nombre }}{% if u.area_hospitalaria__nombre %} – {{ u.area_hospitalaria__nombre }}{% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Cargo (Funcionario) -->
+              <div class="col-md-6 form-group" id="field-cargo" style="display:none;">
+                <label>Cargo</label>
+                <select class="form-control form-control-sm" id="m-cargo">
+                  <option value="">-- Seleccione Cargo --</option>
+                  {% for c in cargos %}
+                  <option value="{{ c.id }}">{{ c.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Recinto (PMA) -->
+              <div class="col-md-12 form-group" id="field-recinto" style="display:none;">
+                <label>Recinto Físico</label>
+                <select class="form-control form-control-sm" id="m-recinto">
+                  <option value="">-- Seleccione Recinto --</option>
+                  {% for r in recintos %}
+                  <option value="{{ r.id }}" data-unidad="{{ r.unidad__nombre }}" data-piso="{{ r.piso__nombre }}">{{ r.nombre }}{% if r.unidad__nombre %} – {{ r.unidad__nombre }}{% endif %}{% if r.piso__nombre %} [Piso {{ r.piso__nombre }}]{% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          </div>
         <div class="modal-footer" style="background:#f8f9fa;">
           <button type="button" class="ms-btn-secondary" data-dismiss="modal">Cancelar</button>
           <button type="submit" class="ms-btn-primary" id="btn-guardar">
