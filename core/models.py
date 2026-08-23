@@ -463,6 +463,15 @@ class Funcionario(models.Model):
         if self.rut:
             self.rut = self.rut.strip().upper()
 
+    def save(self, *args, **kwargs):
+        if self.nombres:
+            self.nombres = self.nombres.strip().upper()
+        if self.apellidos:
+            self.apellidos = self.apellidos.strip().upper()
+        if self.rut:
+            self.rut = self.rut.strip().upper()
+        super().save(*args, **kwargs)
+
     @property
     def nombre_completo(self):
         return f"{self.nombres} {self.apellidos}"
@@ -482,3 +491,13 @@ class Funcionario(models.Model):
     def __str__(self):
         return f"{self.nombre_completo} ({self.rut})"
 
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+
+@receiver(pre_save, sender=User)
+def force_uppercase_user_names(sender, instance, **kwargs):
+    if instance.first_name:
+        instance.first_name = instance.first_name.strip().upper()
+    if instance.last_name:
+        instance.last_name = instance.last_name.strip().upper()
