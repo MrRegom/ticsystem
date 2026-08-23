@@ -69,7 +69,15 @@ $(document).ready(function() {
             success: function(resp) {
                 if(resp.success) {
                     closeDrawer();
-                    window.location.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Guardado!',
+                        text: resp.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
                 } else {
                     alert('Error: ' + (resp.message || 'No se pudo guardar el rol.'));
                 }
