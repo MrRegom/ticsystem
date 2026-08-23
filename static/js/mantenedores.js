@@ -750,7 +750,8 @@ var MantenedoresApp = (function ($) {
                 var isNew = !idField || !idField.value;
                 if (isNew) {
                     var formattedRut = input.value; 
-                    fetch('/api/funcionarios/search/?q=' + formattedRut)
+                    var searchRut = formattedRut.replace(/\./g, '');
+                    fetch('/api/funcionarios/search/?q=' + searchRut)
                         .then(res => res.json())
                         .then(data => {
                             if (data.results && data.results.length > 0) {
