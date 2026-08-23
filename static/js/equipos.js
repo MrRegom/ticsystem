@@ -82,7 +82,7 @@ function eqRenderRows() {
         var inv = eq.num_inventario || '-';
         var serial = eq.serial_number || 'N/A';
         var ip = eq.ip || 'N/A';
-        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="display: grid; gap: 16px; grid-template-columns: 200px 1fr 120px 70px 120px 120px 110px 110px 100px; font-size: 11px;">';
+        html += '<div class="ms-list-row" onclick="eqOpenView(' + eq.id + ')" style="display: grid; gap: 16px; grid-template-columns: 200px minmax(150px, 1fr) 120px 70px 120px 120px 110px 110px 100px; font-size: 11px;">';
         
         // Col 1: Artículo / Modelo
         html += '<div class="ms-identity">';
