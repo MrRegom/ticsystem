@@ -712,3 +712,118 @@ body, .modal, .modal-content, .ms-drawer, .ms-drawer-content, .modal-title, .ms-
 ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
 ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
 .kanban-items::-webkit-scrollbar { width: 6px; }
+
+/* ============================================================
+   RESPONSIVE — Breakpoints globales para todos los módulos
+   ============================================================ */
+
+/* Tablets y laptops pequeñas (< 992px) */
+@media (max-width: 992px) {
+  /* El sidebar se oculta → el contenido ocupa todo el ancho */
+  .ms-wrap { padding: 16px 16px; }
+
+  /* Header apila título y command bar */
+  .ms-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  /* La barra de comandos se expande al 100% y se envuelve */
+  .ms-command-bar {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  /* El buscador se expande */
+  .ms-search-input,
+  .ms-input[type="text"],
+  #search-input,
+  #kanban-search {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Los botones se compactan */
+  .ms-btn-primary,
+  .ms-btn-secondary {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    height: 34px !important;
+    white-space: nowrap;
+  }
+
+  /* Selectores en el command bar */
+  .ms-command-bar select.ms-input {
+    width: auto !important;
+    min-width: 120px;
+    font-size: 12px !important;
+    height: 34px !important;
+    padding: 4px 8px !important;
+  }
+}
+
+/* Móviles (< 768px) */
+@media (max-width: 768px) {
+  .ms-wrap { padding: 12px 10px; }
+
+  /* Título más compacto */
+  .ms-title-area h2 {
+    font-size: 16px !important;
+  }
+  .ms-title-area p {
+    font-size: 12px !important;
+  }
+
+  /* Botones ocupan el ancho disponible en pares */
+  .ms-btn-primary,
+  .ms-btn-secondary {
+    flex: 1 1 auto;
+    min-width: 120px;
+    justify-content: center;
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+    height: 32px !important;
+  }
+
+  /* Ocultar texto de botones secundarios, dejar solo ícono */
+  .ms-btn-secondary .btn-label-text { display: none; }
+
+  /* Tabla/Lista: scroll horizontal */
+  .ms-list-container { overflow-x: auto; }
+  .ms-list-header,
+  .ms-list-row {
+    min-width: 600px;
+  }
+
+  /* Tickets kanban: ver-toggle compacto */
+  .view-toggle-btn {
+    padding: 5px 8px !important;
+    font-size: 11px !important;
+    gap: 4px !important;
+  }
+  .view-toggle-btn i { margin: 0 !important; }
+
+  /* Navbar breadcrumb ocultamos parte del texto en móvil */
+  .navbar-breadcrumb { display: none; }
+}
+
+/* Pantallas muy pequeñas (< 480px) */
+@media (max-width: 480px) {
+  .ms-command-bar { gap: 6px; }
+
+  .ms-btn-primary,
+  .ms-btn-secondary {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    height: 30px !important;
+  }
+
+  /* Ocultar columnas menos importantes en tablas */
+  .ms-list-header > div:nth-child(3),
+  .ms-list-row > div:nth-child(3) { display: none; }
+}
+

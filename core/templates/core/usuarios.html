@@ -24,12 +24,16 @@
       <p>Administración de funcionarios y roles del Hospital Provincial Marga Marga</p>
     </div>
     <div class="ms-command-bar">
-      <input type="text" class="ms-search-input" id="search-input" placeholder="Buscar por nombre, RUT o correo...">
-      <button class="ms-btn-secondary" id="btn-toggle-status" onclick="toggleStatusView()" style="background: transparent; color: #a4262c; border: 1px solid #a4262c; margin-right: 10px;">
-        <i class="fas fa-user-times"></i> Usuarios Eliminados
+      <input type="text" class="ms-search-input" id="search-input" placeholder="Buscar por nombre, RUT o correo..."
+             style="max-width: 320px; flex: 1 1 180px;">
+      <button class="ms-btn-secondary" id="btn-toggle-status" onclick="toggleStatusView()"
+              style="background: transparent; color: #a4262c; border: 1px solid #a4262c; white-space: nowrap;">
+        <i class="fas fa-user-times"></i>
+        <span class="btn-label-text" style="margin-left:5px;">Usuarios Eliminados</span>
       </button>
-      <button class="ms-btn-primary" onclick="openDrawer('crear')">
-        <i class="fas fa-plus"></i> Nuevo Funcionario
+      <button class="ms-btn-primary" onclick="openDrawer('crear')" style="white-space: nowrap;">
+        <i class="fas fa-plus"></i>
+        <span style="margin-left:5px;">Nuevo Funcionario</span>
       </button>
     </div>
   </div>
