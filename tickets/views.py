@@ -337,7 +337,7 @@ class TicketDetailApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
 
 
 class TicketAssignApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
-    permiso_requerido = 'GESTIONAR_TICKETS'
+    permiso_requerido = ('GESTIONAR_TICKETS', 'DESPACHAR_TICKETS', 'RECIBIR_TICKETS')
     def post(self, request, ticket_id, *args, **kwargs):
         try:
             data = json.loads(request.body)
