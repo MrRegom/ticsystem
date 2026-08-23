@@ -109,10 +109,6 @@ class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateVi
         context['todos_usuarios'] = list(User.objects.filter(is_active=True).values('id', 'username', 'first_name', 'last_name'))
         context['unidades'] = list(Unidad.objects.filter(activo=True).order_by('nombre').values('id', 'nombre'))
         context['cargos'] = list(Cargo.objects.filter(activo=True).order_by('nombre').values('id', 'nombre'))
-        context['equipos'] = [
-            {'id': eq.id, 'label': f"{eq.articulo.nombre} {eq.marca.nombre} - {eq.serial_number or 'Sin Serie'}"}
-            for eq in Equipo.objects.select_related('articulo', 'marca').all()[:1000]
-        ]
 
         # Tickets activos agrupados por estado para el Kanban
         from django.db.models import Q

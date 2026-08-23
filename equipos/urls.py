@@ -15,6 +15,7 @@ from equipos.views import (
     EquipoExportExcelView,
     EquipoQRView,
     EquipoFichaPublicaView,
+    EquipoSearchApiView,
 )
 
 app_name = 'equipos'
@@ -26,6 +27,7 @@ urlpatterns = [
     path('<int:equipo_id>/qr/', EquipoQRView.as_view(), name='qr'),
     path('<int:equipo_id>/ficha/', EquipoFichaPublicaView.as_view(), name='ficha_publica'),
     path('api/', EquipoListView.as_view(), name='list_api'),
+    path('api/search/', EquipoSearchApiView.as_view(), name='search_api'),
     path('api/action/', EquipoActionView.as_view(), name='action_api'),
     path('api/<int:equipo_id>/', EquipoDetailView.as_view(), name='detail_api'),
     path('api/<int:equipo_id>/ver/', EquipoDetailReadView.as_view(), name='detail_read'),

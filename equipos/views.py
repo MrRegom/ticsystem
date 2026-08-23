@@ -857,3 +857,33 @@ class EquipoFichaPublicaView(View):
             'equipo': equipo
         }
         return render(request, 'equipos/ficha_publica.html', context)
+
+
+class EquipoSearchApiView(LoginRequiredMixin, View):
+    """Búsqueda AJAX de equipos para select2 u otros selectores."""
+    def get(self, request, *args, **kwargs):
+        from django.db.models import Q
+        from equipos.models import Equipo
+        q = request.GET.get('q', '').strip()
+        if len(q) < 2:
+            return JsonResponse({'results': []})
+            
+        # Buscar por serial, inventario o modelo/marca
+        qs = Equipo.objects.select_related('articulo', 'marca').filter(
+            Q(serial_number__icontains=q) | 
+            Q(num_inventario__icontains=q) | 
+            Q(articulo__nombre__icontains=q) |
+            Q(marca__nombre__icontains=q)
+        )[:30]
+        
+        results = []
+        for eq in qs:
+            label = f"{eq.articulo.nombre if eq.articulo else ''} {eq.marca.nombre if eq.marca else ''} - {eq.serial_number or 'Sin Serie'}"
+            if eq.num_inventario:
+                label += f" (Inv: {eq.num_inventario})"
+            results.append({
+                'id': eq.id,
+                'text': label.strip()
+            })
+            
+        return JsonResponse({'results': results})

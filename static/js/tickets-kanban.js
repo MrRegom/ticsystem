@@ -1098,8 +1098,25 @@ $(document).ready(function() {
     // Select2 para activo
     $('#activo-select').select2({
         dropdownParent: $('#modalNuevoTicket'),
-        placeholder: '-- Sin equipo específico --',
-        allowClear: true
+        ajax: {
+            url: window.TICKET_CONFIG && window.TICKET_CONFIG.urls ? window.TICKET_CONFIG.urls.apiSearchEquipos : '',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return { q: params.term };
+            },
+            processResults: function (data) {
+                return { results: data.results };
+            }
+        },
+        placeholder: '-- Buscar activo (Serie, Inventario o Modelo) --',
+        minimumInputLength: 2,
+        allowClear: true,
+        language: {
+            inputTooShort: function() { return "Ingrese 2 o más caracteres"; },
+            noResults: function() { return "No se encontraron equipos"; },
+            searching: function() { return "Buscando..."; }
+        }
     });
 
     $('select[name="categoria_id"], select[name="impacto"], select[name="urgencia"]').select2({
