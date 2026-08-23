@@ -389,6 +389,8 @@ var MantenedoresApp = (function ($) {
     $('#mantenedor-id').val('');
     $('#mantenedor-error-alert').addClass('d-none').empty();
     $('#m-activo').prop('checked', true);
+    $('#m-rut').prop('readonly', false).removeClass('bg-light is-valid is-invalid');
+    $('#rut-feedback').empty();
     $('#label-nombre').text('Nombre');
     $('#color-swatch-preview').css('background', '#17a2b8');
     $('#modalMantenedorLabel').html('<i class="fas fa-edit mr-2"></i>Nuevo Registro');
@@ -474,6 +476,12 @@ var MantenedoresApp = (function ($) {
     if (modeloActual === 'estados' && d.color_hex) {
       $('#m-color_hex').val(d.color_hex);
       $('#color-swatch-preview').css('background', d.color_hex);
+    }
+
+    if (d.id) {
+        $('#m-rut').prop('readonly', true).addClass('bg-light');
+        $('#rut-feedback').empty();
+        $('#m-rut').removeClass('is-valid is-invalid');
     }
 
     $('#modalMantenedorLabel').html('<i class="fas fa-edit mr-2"></i>Editar Registro');
