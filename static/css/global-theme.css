@@ -178,6 +178,11 @@
   }
   .action-btn-square:hover { background: #f8fafc; color: #0f172a; border-color: #94a3b8; }
   
+  /* Ocultar opciones desactivadas en Select2 (Filtros en cascada) */
+  .select2-results__option[aria-disabled="true"] {
+      display: none !important;
+  }
+
   /* Ocultar elementos por defecto de DataTables para usar los custom */
   .dataTables_info { margin: 15px 16px; font-size: 0.8rem; color: #64748b; }
     .dataTables_paginate { margin: 15px 16px; font-size: 0.8rem; }
