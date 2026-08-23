@@ -141,7 +141,8 @@ class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateVi
         
         is_dispatcher = False
         if hasattr(self.request.user, 'perfil') and self.request.user.perfil.rol:
-            if self.request.user.perfil.rol.tiene_permiso('DESPACHAR_TICKETS'):
+            # Mesa de Ayuda o Coordinadores suelen tener GESTIONAR o DESPACHAR
+            if self.request.user.perfil.rol.tiene_permiso('DESPACHAR_TICKETS') or self.request.user.perfil.rol.tiene_permiso('GESTIONAR_TICKETS'):
                 is_dispatcher = True
         if self.request.user.is_superuser:
             is_dispatcher = True
