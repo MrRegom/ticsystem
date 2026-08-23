@@ -205,12 +205,9 @@ class TicketService:
             ticket.grupo_resolutor = grupo
             ticket.responsable = None # Quitamos el técnico individual al reasignar al grupo general
             
-            # Resetear estado para que el nuevo grupo lo vea en su bandeja de entrada (ASIGNADO o ESCALADO)
-            if ticket.estado == Ticket.Estado.NUEVO:
-                ticket.estado = Ticket.Estado.ASIGNADO
-            elif ticket.estado == Ticket.Estado.EN_PROCESO:
-                ticket.estado = Ticket.Estado.ESCALADO
-                
+            # Al reasignar a otro grupo, siempre vuelve a ASIGNADO (bandeja del nuevo grupo).
+            # El historial inmutable registra el cambio, por lo que no se pierde trazabilidad.
+            ticket.estado = Ticket.Estado.ASIGNADO
             ticket.fecha_asignacion = timezone.now()
             ticket.save()
 
@@ -229,10 +226,54 @@ class TicketService:
         return ticket
 
     @staticmethod
-    @transaction.atomic
-    def tomar_ticket(ticket_id: int, usuario: User) -> Ticket:
+    def validar_puede_resolver(ticket, usuario: User) -> tuple:
         """
-        Un técnico (miembro de un grupo o en general) se auto-asigna el ticket.
+        Valida si el usuario puede resolver el ticket en su estado actual.
+        Retorna (puede_resolver: bool, mensaje_error: str).
+        Implementa las reglas de negocio ITIL Enterprise:
+        - Solo se puede resolver si está EN_PROCESO.
+        - Solo el responsable actual (o gestor/superuser) puede resolver.
+        """
+        estados_no_resolvibles = [
+            Ticket.Estado.NUEVO,
+            Ticket.Estado.ASIGNADO,
+        ]
+        if ticket.estado in estados_no_resolvibles:
+            return False, (
+                f"El ticket está en estado '{ticket.get_estado_display()}'. "
+                "Debe tomar el ticket primero para iniciar el proceso antes de resolverlo."
+            )
+        if ticket.estado == Ticket.Estado.RESUELTO:
+            return False, "El ticket ya está resuelto."
+        if ticket.estado == Ticket.Estado.CERRADO:
+            return False, "El ticket ya está cerrado."
+        if ticket.estado == Ticket.Estado.PENDIENTE_PROVEEDOR:
+            return False, (
+                "El ticket está pausado esperando al proveedor. "
+                "Reactive el ticket antes de resolverlo."
+            )
+        # En estado EN_PROCESO: solo el responsable, un gestor o superusuario puede resolver.
+        if ticket.responsable and ticket.responsable.id != usuario.id:
+            if not usuario.is_superuser:
+                has_gestionar = (
+                    hasattr(usuario, 'perfil')
+                    and usuario.perfil.rol
+                    and usuario.perfil.rol.tiene_permiso('GESTIONAR_TICKETS')
+                )
+                if not has_gestionar:
+                    return False, (
+                        f"Solo el técnico responsable "
+                        f"({ticket.responsable.get_full_name() or ticket.responsable.username}) "
+                        "puede resolver este ticket."
+                    )
+        return True, ""
+
+    @staticmethod
+    @transaction.atomic
+    def tomar_ticket(ticket_id: int, usuario: User):
+        """
+        Un técnico se auto-asigna el ticket y lo mueve directamente a EN_PROCESO.
+        Implementa la regla ITIL: 'Tomar Ticket' significa empezar a trabajar.
         """
         ticket = TicketRepository.get_ticket_by_id(ticket_id)
         if not ticket:
@@ -240,22 +281,33 @@ class TicketService:
 
         if ticket.responsable and ticket.responsable.id == usuario.id:
             raise ValueError("Ya tienes asignado este ticket.")
-            
+
+        if ticket.estado in [Ticket.Estado.RESUELTO, Ticket.Estado.CERRADO, Ticket.Estado.CANCELADO]:
+            raise ValueError("No se puede tomar un ticket en estado terminal.")
+
         tecnico_anterior = ticket.responsable.username if ticket.responsable else "Ninguno"
         ticket.responsable = usuario
-        
-        if ticket.estado == Ticket.Estado.NUEVO or ticket.estado == Ticket.Estado.ESCALADO:
-            ticket.estado = Ticket.Estado.ASIGNADO
+
+        # Al tomar, el ticket pasa directamente a EN_PROCESO (el técnico está trabajando)
+        if ticket.estado in [
+            Ticket.Estado.NUEVO,
+            Ticket.Estado.ASIGNADO,
+            Ticket.Estado.ESCALADO,
+        ]:
+            ticket.estado = Ticket.Estado.EN_PROCESO
+
+        if not ticket.fecha_asignacion:
             ticket.fecha_asignacion = timezone.now()
-            
+
         ticket.save()
 
         TicketHistorial.objects.create(
             ticket=ticket,
             usuario=usuario,
-            accion="Ticket Tomado (Self-Assign)",
+            accion="Ticket Tomado → En Proceso",
             valor_anterior=tecnico_anterior,
-            valor_nuevo=usuario.username
+            valor_nuevo=usuario.username,
+            comentario="El técnico tomó el ticket e inició el proceso de resolución."
         )
 
         return ticket
@@ -280,11 +332,16 @@ class TicketService:
 
     @staticmethod
     @transaction.atomic
-    def resolver_ticket(ticket_id: int, usuario: User, solucion: str, bitacora_data: dict = None) -> Ticket:
+    def resolver_ticket(ticket_id: int, usuario: User, solucion: str, bitacora_data: dict = None):
         ticket = TicketRepository.get_ticket_by_id(ticket_id)
         if not ticket:
             raise ValueError("Ticket no encontrado.")
-            
+
+        # Validar reglas de negocio ITIL antes de proceder
+        puede, mensaje_error = TicketService.validar_puede_resolver(ticket, usuario)
+        if not puede:
+            raise ValueError(mensaje_error)
+
         if not solucion or not solucion.strip():
             raise ValueError("La solución no puede estar vacía.")
 

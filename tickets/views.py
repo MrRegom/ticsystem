@@ -20,7 +20,14 @@ class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateVi
         Ticket.Estado.NUEVO,
         Ticket.Estado.ASIGNADO,
         Ticket.Estado.EN_PROCESO,
-        Ticket.Estado.ESCALADO,
+        # ESCALADO eliminado: al reasignar siempre vuelve a ASIGNADO
+    ]
+    # Los PENDIENTE_PROVEEDOR se consultan por separado y se muestran en columna EN_PROCESO
+    ESTADOS_ACTIVOS_DB = [
+        Ticket.Estado.NUEVO,
+        Ticket.Estado.ASIGNADO,
+        Ticket.Estado.EN_PROCESO,
+        Ticket.Estado.PENDIENTE_PROVEEDOR,
     ]
     # Estados terminales — van a la vista Historial
     ESTADOS_TERMINALES = [
@@ -115,7 +122,7 @@ class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateVi
         from django.utils import timezone
         from datetime import timedelta
         
-        base_query = Ticket.objects.filter(estado__in=self.ESTADOS_ACTIVOS)
+        base_query = Ticket.objects.filter(estado__in=self.ESTADOS_ACTIVOS_DB)
         
         # Filtro de fecha
         rango = self.request.GET.get('rango', 'semana')
@@ -176,8 +183,10 @@ class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateVi
 
         kanban = {e: [] for e in self.ESTADOS_ACTIVOS}
         for t in tickets_db:
-            if t.estado in kanban:
-                kanban[t.estado].append({
+            # Los tickets PENDIENTE_PROVEEDOR se muestran dentro de la columna EN_PROCESO
+            kanban_key = Ticket.Estado.EN_PROCESO if t.estado == Ticket.Estado.PENDIENTE_PROVEEDOR else t.estado
+            if kanban_key in kanban:
+                kanban[kanban_key].append({
                     'id': t.id,
                     'correlativo': t.correlativo,
                     'descripcion': t.descripcion,
@@ -300,6 +309,9 @@ class TicketDetailApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                 'fecha': h.fecha.strftime('%d/%m/%Y %H:%M')
             } for h in historial_db]
             
+            puede_resolver, _ = TicketService.validar_puede_resolver(ticket, request.user)
+            es_responsable = bool(ticket.responsable and ticket.responsable.id == request.user.id)
+
             data = {
                 'id': ticket.id,
                 'correlativo': ticket.correlativo,
@@ -317,7 +329,10 @@ class TicketDetailApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                 'fecha_creacion': ticket.fecha_creacion.strftime('%d/%m/%Y %H:%M'),
                 'fecha_vencimiento_iso': ticket.fecha_vencimiento_sla.isoformat() if ticket.fecha_vencimiento_sla else None,
                 'en_pausa_sla': ticket.en_pausa_sla,
-                'historial': historial
+                'historial': historial,
+                # Flags para el frontend — controlan visibilidad de botones
+                'puede_resolver': puede_resolver,
+                'es_responsable': es_responsable,
             }
 
             # CMDB Intelligence
@@ -397,13 +412,28 @@ class TicketResolveApiView(LoginRequiredMixin, View):
 
 
 class TicketTakeApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
-    permiso_requerido = 'VER_TICKETS'
+    permiso_requerido = ('GESTIONAR_TICKETS', 'DESPACHAR_TICKETS', 'RECIBIR_TICKETS', 'VER_TICKETS')
     def post(self, request, ticket_id, *args, **kwargs):
         try:
             ticket = TicketService.tomar_ticket(ticket_id, request.user)
-            # Automáticamente mover a EN_PROCESO cuando lo toman, según solicitud del hospital
-            if ticket.estado in [Ticket.Estado.ASIGNADO, Ticket.Estado.ESCALADO, Ticket.Estado.NUEVO]:
-                TicketService.cambiar_estado(ticket_id, Ticket.Estado.EN_PROCESO, request.user, "Inicio de trabajos in-situ")
+            return JsonResponse({'success': True, 'nuevo_estado': ticket.get_estado_display()})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=400)
+
+
+class TicketReactivateApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    """Reactiva un ticket PENDIENTE_PROVEEDOR devolviendolo a EN_PROCESO."""
+    permiso_requerido = ('GESTIONAR_TICKETS', 'RECIBIR_TICKETS', 'VER_TICKETS')
+    def post(self, request, ticket_id, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            comentario = data.get('comentario', '').strip() or 'Proveedor atendido. Reanudando proceso.'
+            ticket = TicketService.cambiar_estado(
+                ticket_id,
+                Ticket.Estado.EN_PROCESO,
+                usuario=request.user,
+                comentario=comentario
+            )
             return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)

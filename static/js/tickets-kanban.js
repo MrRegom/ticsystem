@@ -54,12 +54,18 @@ document.addEventListener('DOMContentLoaded', function() {
         var card = document.createElement('div');
         card.className = 'kanban-card';
         card.dataset.id = t.id;
-        card.style.borderLeftColor = t.prioridad_color || '#cbd5e1';
+        // Los tickets pausados se muestran con fondo diferenciado
+        if (t.en_pausa_sla) {
+            card.style.borderLeftColor = '#94a3b8';
+            card.style.opacity = '0.85';
+        } else {
+            card.style.borderLeftColor = t.prioridad_color || '#cbd5e1';
+        }
         card.setAttribute('onclick', 'openOffcanvas(' + t.id + ')');
         
         card.dataset.vencimiento = t.fecha_vencimiento_iso || '';
         card.dataset.enPausa = t.en_pausa_sla ? '1' : '';
-        card.dataset.estado = t.estado || ''; // We might need state if it's passed
+        card.dataset.estado = t.estado || '';
 
         card.innerHTML =
             '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">' +
@@ -67,7 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     '<span class="card-correlativo" style="color: #0f172a; font-size: 0.7rem; font-weight: 700;">' + t.correlativo + '</span>' +
                     '<span style="font-size: 0.6rem; color:#64748b; font-weight:600;"><i class="far fa-calendar-alt"></i> ' + (t.fecha_creacion_corta || '') + ' <span style="color: #3b82f6;">' + (t.fecha_creacion_hora || '') + '</span></span>' +
                 '</div>' +
-                '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 4px; font-size: 0.55rem; font-weight: 700; border-radius: 3px; text-transform: uppercase;">' + t.prioridad + '</span>' +
+                '<div style="display:flex; gap:4px; align-items:center;">' +
+                    (t.en_pausa_sla ? '<span style="background:#64748b; color:#fff; padding:1px 5px; font-size:0.5rem; font-weight:700; border-radius:3px; white-space:nowrap;">&#9208; EN PAUSA</span>' : '') +
+                    '<span class="card-prio-badge" style="background:' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 4px; font-size: 0.55rem; font-weight: 700; border-radius: 3px; text-transform: uppercase;">' + t.prioridad + '</span>' +
+                '</div>' +
             '</div>' +
             (function() {
                 var parts = t.descripcion.split('\n');
@@ -114,8 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var estados = [
             { id: 'NUEVO', label: 'Nuevo', color: '#3b82f6', icon: 'fa-inbox' },
             { id: 'ASIGNADO', label: 'Asignado', color: '#ca8a04', icon: 'fa-user' },
-            { id: 'EN_PROCESO', label: 'En Proceso', color: '#10b981', icon: 'fa-cogs' },
-            { id: 'ESCALADO', label: 'Escalado', color: '#ef4444', icon: 'fa-arrow-up' }
+            { id: 'EN_PROCESO', label: 'En Proceso', color: '#10b981', icon: 'fa-cogs' }
         ];
 
         estados.forEach(function(estado) {
@@ -168,20 +176,17 @@ document.addEventListener('DOMContentLoaded', function() {
         var icons = {
             'NUEVO': '<i class="fas fa-inbox"></i>',
             'ASIGNADO': '<i class="fas fa-user"></i>',
-            'EN_PROCESO': '<i class="fas fa-cogs"></i>',
-            'ESCALADO': '<i class="fas fa-arrow-up"></i>'
+            'EN_PROCESO': '<i class="fas fa-cogs"></i>'
         };
         var colors = {
             'NUEVO': '#3b82f6',
             'ASIGNADO': '#ca8a04',
-            'EN_PROCESO': '#10b981',
-            'ESCALADO': '#ef4444'
+            'EN_PROCESO': '#10b981'
         };
         var texts = {
             'NUEVO': 'Cuando se creen nuevos tickets,<br>aparecerán aquí.',
-            'ASIGNADO': 'Tickets asignados a técnicos.',
-            'EN_PROCESO': 'Arrastra un ticket aquí<br>para marcarlo como en proceso.',
-            'ESCALADO': 'Arrastra un ticket aquí<br>si requiere escalamiento.'
+            'ASIGNADO': 'Tickets esperando que un técnico<br>diga <strong>"Tomar Ticket"</strong>.',
+            'EN_PROCESO': 'Tickets activos en trabajo.<br>Los pausados también aparecen aquí.'
         };
         
         var icon = icons[estadoId] || '<i class="fas fa-box-open"></i>';
@@ -473,29 +478,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 var btnResolver = document.getElementById('btn-resolver-tk');
                 var btnTomar = document.getElementById('btn-tomar-tk');
                 var btnPausar = document.getElementById('btn-pausar-tk');
+                var btnReactivar = document.getElementById('btn-reactivar-tk');
                 var asignacionSection = document.getElementById('oc-section-asignacion');
                 var formComentario = document.getElementById('form-comentario');
                 
-                var isClosed = (t.estado_id === 'RESUELTO' || t.estado_id === 'CERRADO');
+                var estadoId = t.estado_id;
+                var isClosed = (estadoId === 'RESUELTO' || estadoId === 'CERRADO');
+                var isPaused = (estadoId === 'PENDIENTE_PROVEEDOR');
+                var esResponsable = t.es_responsable;
+                var puedeResolver = t.puede_resolver;
 
-                // Lógica de visibilidad
+                // Secciones generales
                 if (asignacionSection) asignacionSection.style.display = isClosed ? 'none' : 'block';
                 if (formComentario) formComentario.style.display = isClosed ? 'none' : 'block';
-                
-                btnResolver.style.display = (!isClosed) ? 'inline-block' : 'none';
-                if (btnPausar) {
-                    btnPausar.style.display = (!isClosed && t.estado_id !== 'PENDIENTE_PROVEEDOR') ? 'inline-block' : 'none';
-                }
+
+                // TOMAR TICKET: visible si está NUEVO o ASIGNADO (cualquier técnico puede tomar)
+                // O si está EN_PROCESO y el usuario no es el responsable (reasignarse)
                 if (btnTomar) {
-                    if (t.estado_id === 'NUEVO' || t.estado_id === 'ESCALADO') {
+                    if (['NUEVO', 'ASIGNADO'].includes(estadoId)) {
                         btnTomar.style.display = 'inline-block';
                         btnTomar.innerHTML = '<i class="fas fa-hand-paper"></i> Tomar Ticket';
-                    } else if ((t.estado_id === 'ASIGNADO' || t.estado_id === 'EN_PROCESO') && t.responsable_id != CURRENT_USER_ID) {
+                        btnTomar.title = 'Tomar este ticket e iniciar el proceso de resolución';
+                    } else if (estadoId === 'EN_PROCESO' && !esResponsable && !isClosed) {
                         btnTomar.style.display = 'inline-block';
-                        btnTomar.innerHTML = '<i class="fas fa-user-plus"></i> Reasignarme Ticket';
+                        btnTomar.innerHTML = '<i class="fas fa-user-plus"></i> Reasignarme';
+                        btnTomar.title = 'Tomar la responsabilidad de este ticket';
                     } else {
                         btnTomar.style.display = 'none';
                     }
+                }
+
+                // RESOLVER: solo si puede_resolver = true (en EN_PROCESO y es el responsable o gestor)
+                if (btnResolver) {
+                    btnResolver.style.display = puedeResolver ? 'inline-block' : 'none';
+                }
+
+                // PAUSAR / PROVEEDOR: solo si está EN_PROCESO (activo, no pausado)
+                if (btnPausar) {
+                    btnPausar.style.display = (estadoId === 'EN_PROCESO') ? 'inline-block' : 'none';
+                }
+
+                // REACTIVAR: visible solo cuando está PENDIENTE_PROVEEDOR (pausado)
+                if (btnReactivar) {
+                    btnReactivar.style.display = isPaused ? 'inline-block' : 'none';
                 }
                 
                 var sel = document.getElementById('oc-select-tecnico');
@@ -705,6 +730,41 @@ document.addEventListener('DOMContentLoaded', function() {
             var tkId = document.getElementById('oc-tk-id').value;
             document.getElementById('pau_ticket_id').value = tkId;
             document.getElementById('form-pausar-ticket').reset();
+        });
+    }
+
+    // Reactivar Ticket (sacar de PENDIENTE_PROVEEDOR de vuelta a EN_PROCESO)
+    var btnReactivar = document.getElementById('btn-reactivar-tk');
+    if (btnReactivar) {
+        btnReactivar.addEventListener('click', function() {
+            var tkId = document.getElementById('oc-tk-id').value;
+            Swal.fire({
+                title: 'Reactivar Ticket',
+                text: '¿El proveedor ya atendió? El SLA se reanudará y el ticket volverá a En Proceso.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#107c10',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'Sí, Reactivar',
+                cancelButtonText: 'Cancelar'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    fetch('/tickets/api/ticket/' + tkId + '/reactivate/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+                        body: JSON.stringify({ comentario: 'Proveedor atendió. Reanudando proceso.' })
+                    })
+                    .then(function(r) { return r.json(); })
+                    .then(function(res) {
+                        if (res.success) {
+                            Swal.fire({ icon: 'success', title: 'Ticket Reactivado', timer: 1500, showConfirmButton: false });
+                            setTimeout(function() { window.location.reload(); }, 1500);
+                        } else {
+                            Swal.fire('Error', res.message, 'error');
+                        }
+                    });
+                }
+            });
         });
     }
 

@@ -162,14 +162,21 @@
   <div class="oc-header">
     <div>
       <h5 class="oc-title" id="oc-tk-correlativo">Cargando...</h5>
-      <div style="display:flex; gap:10px; margin-top:8px;">
-        <button class="ms-btn-primary" id="btn-tomar-tk" style="display:none; font-size:12px; font-weight:600; border-radius:0; border:none; padding:4px 10px;">
+      <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+        <!-- Tomar Ticket: visible en NUEVO / ASIGNADO -->
+        <button class="ms-btn-primary" id="btn-tomar-tk" style="display:none; font-size:12px; font-weight:600; border-radius:0; border:none; padding:4px 10px; background:#002855;">
           <i class="fas fa-hand-paper"></i> Tomar Ticket
         </button>
-        <button class="ms-btn-primary" id="btn-pausar-tk" data-toggle="modal" data-target="#modalPausarTicket" style="display:none; font-size:12px; font-weight:600; border-radius:0; background:#d97706; border-color:#d97706; padding:4px 10px;">
-          <i class="fas fa-pause-circle"></i> Pausar
+        <!-- Pausar / Proveedor: visible solo en EN_PROCESO (no pausado) -->
+        <button class="ms-btn-primary" id="btn-pausar-tk" data-toggle="modal" data-target="#modalPausarTicket" style="display:none; font-size:12px; font-weight:600; border-radius:0; background:#d97706; border:none; padding:4px 10px;">
+          <i class="fas fa-pause-circle"></i> Pausar / Proveedor
         </button>
-        <button class="ms-btn-primary" id="btn-resolver-tk" style="display:none; font-size:12px; font-weight:600; border-radius:0; background:#107c10; padding:4px 10px;">
+        <!-- Reactivar: visible solo en PENDIENTE_PROVEEDOR (ticket pausado) -->
+        <button class="ms-btn-primary" id="btn-reactivar-tk" style="display:none; font-size:12px; font-weight:600; border-radius:0; background:#0891b2; border:none; padding:4px 10px;">
+          <i class="fas fa-play-circle"></i> Reactivar Ticket
+        </button>
+        <!-- Resolver: visible solo si puede_resolver = true (EN_PROCESO y es responsable) -->
+        <button class="ms-btn-primary" id="btn-resolver-tk" style="display:none; font-size:12px; font-weight:600; border-radius:0; background:#107c10; border:none; padding:4px 10px;">
           <i class="fas fa-check-circle"></i> Resolver Incidente
         </button>
       </div>
