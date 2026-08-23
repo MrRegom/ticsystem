@@ -227,6 +227,9 @@
               <label style="font-weight:600; font-size:0.85rem; color:#334155;">Cargo / Rol</label>
               <select id="cargo_nuevo" name="cargo_nuevo" class="form-control">
                 <option value="">-- Seleccionar Cargo --</option>
+                {% for c in cargos %}
+                  <option value="{{ c.nombre }}">{{ c.nombre }}</option>
+                {% endfor %}
               </select>
             </div>
             <div class="form-group col-md-6">
