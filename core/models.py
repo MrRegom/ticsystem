@@ -469,7 +469,11 @@ class Funcionario(models.Model):
         if self.apellidos:
             self.apellidos = self.apellidos.strip().upper()
         if self.rut:
-            self.rut = self.rut.strip().upper()
+            clean_rut = "".join([c for c in self.rut.upper() if c.isdigit() or c == 'K'])
+            if len(clean_rut) > 1:
+                self.rut = f"{clean_rut[:-1]}-{clean_rut[-1]}"
+            else:
+                self.rut = clean_rut
         super().save(*args, **kwargs)
 
     @property
