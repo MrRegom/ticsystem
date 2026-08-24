@@ -289,3 +289,19 @@ docker compose down -v
     *   *Identidades (Usuarios):* Interfaz Fluent UI con consultas directas a API restringidas y paginadas.
     *   *Protección de Trazabilidad:* La arquitectura se apoya en `on_delete=models.PROTECT`. No existe pérdida de datos al "eliminar"; el sistema obliga a un apagado lógico (Soft Delete mediante el switch "Activo") si el funcionario ya tiene historial (tickets, equipos).
 *   **Envío de Correos Asíncrono (Enterprise Async con Celery + Redis):** Para evitar bloqueos de la UI de 3 a 5 segundos al crear/modificar un ticket, se migró el envío de emails a tareas en segundo plano. Se agregó el servicio `redis` como broker de mensajería y `celery_worker` para consumir la cola. Además, se construyó un "Panel de Trazabilidad de Correos" en el frontend para monitorear el historial, reenviar correos en caso de que el SMTP falle y gestionar logs de entregas, soportando robustamente la operación del hospital aún sin configuración de correos activa (estado `SIN_SMTP`).
+
+---
+
+## 13. Estado Actual del Proyecto (Fase de Reconstrucción y Pruebas)
+
+Debido a una desincronización de la base de datos en producción (Limpieza de volumen Docker), el sistema se encuentra en un estado base y limpio:
+*   **Usuarios:** Solo existe el usuario administrador principal (`16233406-9`). El resto fue eliminado para permitir una recreación limpia.
+*   **Mantenedores (Infraestructura):** Se inyectó un dump base con toda la estructura de Edificios, Pisos, Sectores, Áreas y Unidades (aprox. 800 registros listos para usar).
+*   **Inventario y Tickets:** En blanco, listos para pruebas.
+*   **Arquitectura:** Funcionando al 100% con las últimas actualizaciones (Celery, Redis, Trazabilidad de Correos, Validaciones de RUT).
+
+**Próximos Pasos (To-Do del Usuario):**
+1. Crear los perfiles de los técnicos e ingenieros.
+2. Formar los Grupos Resolutores y asignarles técnicos.
+3. Crear Equipos de prueba en el Inventario.
+4. Simular el flujo completo de vida de un Ticket (Creación → Asignación → Resolución) para validar los tiempos de respuesta y la cola de correos asíncronos.
