@@ -44,28 +44,33 @@
   .view-panel { display: none; flex-grow: 1; overflow: hidden; flex-direction: column; }
   .view-panel.active { display: flex; }
 
-  /* KANBAN */
+  /* KANBAN BOARD — Responsive Enterprise Layout */
   .kanban-board {
     display: flex;
     gap: 16px;
-    padding: 16px 20px;
+    padding: 20px 24px;
     flex-grow: 1;
     overflow-x: auto;
     overflow-y: hidden;
     background: #f1f5f9;
     align-items: stretch;
+    box-sizing: border-box;
+    /* Distribución uniforme: las columnas crecen para llenar toda la pantalla */
+    min-height: 0;
   }
   .kanban-column {
-    flex: 1;
-    min-width: 180px;
-    max-width: 450px;
+    /* flex-basis calculado para que 3 columnas llenen la pantalla con gap de 16px */
+    flex: 1 1 0;
+    min-width: 280px;       /* mínimo en pantalla chica antes de scroll horizontal */
+    max-width: none;         /* sin límite: crece para llenar espacio disponible */
     background: #ffffff;
     border-radius: 0;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     height: 100%;
     border-top: 3px solid transparent;
+    overflow: hidden;
   }
   .kanban-col-header {
     padding: 14px 16px;
@@ -465,4 +470,73 @@
 .radio-pill-group label.active .custom-checkbox { background: #3b82f6; border-color: #3b82f6; color: #fff; }
 .radio-pill-group label .custom-checkbox i { display: none; font-size: 10px; }
 .radio-pill-group label.active .custom-checkbox i { display: block; }
+
+/* =============================================
+   KANBAN — RESPONSIVE MEDIA QUERIES Enterprise
+   ============================================= */
+
+/* Pantalla extra grande (≥1400px): columnas con un mínimo más generoso */
+@media (min-width: 1400px) {
+  .kanban-board { gap: 20px; padding: 24px 32px; }
+  .kanban-column { min-width: 300px; }
+  .kanban-card { padding: 12px 14px; }
+  .card-desc { font-size: 0.82rem; }
+}
+
+/* Pantalla grande (≥1200px): layout normal — ocupa todo el ancho */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .kanban-board { gap: 16px; padding: 20px 24px; }
+  .kanban-column { min-width: 260px; }
+}
+
+/* Pantalla mediana / tableta apaisada (768px–1199px): scroll horizontal cuando necesario */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .kanban-board { gap: 12px; padding: 16px; }
+  .kanban-column { min-width: 240px; flex: 1 1 240px; }
+  .kanban-card { padding: 10px 12px; }
+  .card-desc { -webkit-line-clamp: 1; }
+}
+
+/* Pantalla pequeña / móvil (<768px): columnas en carrusel horizontal, cards más compactas */
+@media (max-width: 767px) {
+  .helpdesk-wrapper { height: auto; overflow: visible; }
+  .kanban-board {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px;
+    gap: 10px;
+    /* Snap scrolling para mobile (carrusel suave) */
+    scroll-snap-type: x mandatory;
+    height: auto;
+    min-height: 400px;
+  }
+  .kanban-column {
+    flex: 0 0 85vw;       /* Ocupa 85% del ancho de la pantalla */
+    min-width: 0;
+    max-width: 340px;
+    height: 70vh;
+    scroll-snap-align: start;
+  }
+  .view-panel { overflow: visible; }
+  .kanban-items { max-height: calc(70vh - 60px); }
+  .card-desc { -webkit-line-clamp: 2; }
+  /* Header compacto en mobile */
+  .ms-command-bar { flex-wrap: wrap; gap: 6px; }
+  #kanban-search { width: 100% !important; }
+}
+
+/* Scroll invisible en kanban-board para look premium */
+.kanban-board::-webkit-scrollbar { height: 5px; }
+.kanban-board::-webkit-scrollbar-track { background: #e2e8f0; }
+.kanban-board::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+.kanban-board::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Scroll invisible en kanban-items (columna) */
+.kanban-items::-webkit-scrollbar { width: 4px; }
+.kanban-items::-webkit-scrollbar-track { background: transparent; }
+.kanban-items::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 2px; }
+.kanban-items::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
 
