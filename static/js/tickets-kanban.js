@@ -13,7 +13,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (view === 'historial' && typeof $ !== 'undefined' && !$.fn.DataTable.isDataTable('#tabla-historial')) {
             $('#tabla-historial').DataTable({
                 language: { url: window.TICKET_CONFIG.datatablesLanguageUrl },
-                order: [[6, 'desc']], pageLength: 25,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: '/tickets/api/historial/dt/',
+                    type: 'GET'
+                },
+                columns: [
+                    { data: 'correlativo' },
+                    { data: 'descripcion' },
+                    { data: 'estado' },
+                    { data: 'prioridad' },
+                    { data: 'solicitante' },
+                    { data: 'tecnico' },
+                    { data: 'fecha_creacion' },
+                    { data: 'fecha_cierre' }
+                ],
+                order: [[6, 'desc']], 
+                pageLength: 25,
+                createdRow: function(row, data, dataIndex) {
+                    $(row).addClass('historial-row').css('cursor', 'pointer');
+                    $(row).attr('onclick', 'openOffcanvas(' + data.id + ')');
+                }
             });
         }
         if (view === 'listado') {
@@ -118,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderListado() {
         var container = document.getElementById('listado-container');
         if (!container) return;
-        container.innerHTML = '';
         
         var estados = [
             { id: 'NUEVO', label: 'Nuevo', color: '#3b82f6', icon: 'fa-inbox' },
@@ -126,50 +146,68 @@ document.addEventListener('DOMContentLoaded', function() {
             { id: 'EN_PROCESO', label: 'En Proceso', color: '#10b981', icon: 'fa-cogs' }
         ];
 
-        estados.forEach(function(estado) {
+        // Generate Nav Tabs
+        var html = '<ul class="nav nav-tabs" id="listadoTabs" role="tablist" style="border-bottom: 2px solid #e2e8f0; margin-bottom: 20px;">';
+        estados.forEach(function(estado, index) {
+            var active = index === 0 ? 'active' : '';
+            var count = (kanbanData[estado.id] || []).length;
+            html += '<li class="nav-item" role="presentation">' +
+                    '<button class="nav-link ' + active + '" id="tab-' + estado.id + '" data-toggle="tab" data-target="#pane-' + estado.id + '" type="button" role="tab" style="font-weight: 600; color: #475569; border: none; border-bottom: 3px solid transparent; background: transparent;">' +
+                    '<i class="fas ' + estado.icon + ' mr-2" style="color: ' + estado.color + ';"></i>' + estado.label + ' <span class="badge badge-secondary ml-1" style="background: ' + estado.color + ';">' + count + '</span>' +
+                    '</button></li>';
+        });
+        html += '</ul>';
+
+        // Generate Tab Panes
+        html += '<div class="tab-content" id="listadoTabsContent">';
+        estados.forEach(function(estado, index) {
+            var active = index === 0 ? 'show active' : '';
             var tickets = kanbanData[estado.id] || [];
-            
-            var tableHtml = '<div style="margin-bottom: 10px; border: 1px solid #e2e8f0;">' +
-                            '<div style="background: ' + estado.color + '15; padding: 10px 15px; border-bottom: 2px solid ' + estado.color + '; display: flex; justify-content: space-between; align-items: center;">' +
-                            '<h4 style="margin: 0; font-size: 14px; font-weight: 700; color: ' + estado.color + ';"><i class="fas ' + estado.icon + ' mr-2"></i>' + estado.label + '</h4>' +
-                            '<span style="background: ' + estado.color + '; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">' + tickets.length + '</span>' +
-                            '</div>';
+            html += '<div class="tab-pane fade ' + active + '" id="pane-' + estado.id + '" role="tabpanel">';
             
             if (tickets.length === 0) {
-                tableHtml += '<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 13px;">No hay tickets en este estado.</div></div>';
-                container.innerHTML += tableHtml;
-                return;
+                html += '<div style="padding: 30px; text-align: center; color: #94a3b8; font-size: 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">No hay tickets en este estado.</div>';
+            } else {
+                html += '<div class="table-responsive"><table style="width: 100%; border-collapse: collapse; font-size: 13px;">' +
+                        '<thead><tr style="background: #f8fafc; color: #475569; text-align: left; border-bottom: 1px solid #e2e8f0;">' +
+                        '<th style="padding: 8px 12px; width: 10%;">Ticket</th>' +
+                        '<th style="padding: 8px 12px; width: 35%;">Asunto</th>' +
+                        '<th style="padding: 8px 12px; width: 10%;">Prioridad</th>' +
+                        '<th style="padding: 8px 12px; width: 10%;">Fecha</th>' +
+                        '<th style="padding: 8px 12px; width: 15%;">Grupo</th>' +
+                        '<th style="padding: 8px 12px; width: 10%;">Técnico</th>' +
+                        '<th style="padding: 8px 12px; text-align: right; width: 10%;">Acción</th>' +
+                        '</tr></thead><tbody>';
+
+                tickets.forEach(function(t) {
+                    var parts = t.descripcion.split('\n');
+                    var subject = parts[0].replace(/(ASUNTO:\s*)+/ig, '').trim();
+                    
+                    html += '<tr class="listado-row" style="border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background=\'#f1f5f9\'" onmouseout="this.style.background=\'#fff\'" onclick="openOffcanvas(' + t.id + ')">' +
+                            '<td style="padding: 10px 12px;"><span style="font-weight: 700; color: #0f172a;">' + t.correlativo + '</span></td>' +
+                            '<td style="padding: 10px 12px;"><div style="color: #0f172a; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;">' + subject + '</div></td>' +
+                            '<td style="padding: 10px 12px;"><span style="background: ' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 6px; font-size: 11px; font-weight: 700;">' + t.prioridad + '</span></td>' +
+                            '<td style="padding: 10px 12px; color: #475569;">' + t.fecha_creacion_corta + '</td>' +
+                            '<td style="padding: 10px 12px; color: #475569;">' + (t.grupo || 'Mesa de Ayuda') + '</td>' +
+                            '<td style="padding: 10px 12px; color: ' + (t.tecnico === 'Sin asignar' ? '#94a3b8' : '#3b82f6') + ';">' + t.tecnico + '</td>' +
+                            '<td style="padding: 10px 12px; text-align: right;"><button class="ms-btn-primary" style="padding: 4px 8px; font-size: 11px; border-radius: 0; background: #3b82f6; border: none;">Ver Detalles</button></td>' +
+                            '</tr>';
+                });
+                html += '</tbody></table></div>';
             }
-
-            tableHtml += '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">' +
-                         '<thead><tr style="background: #f8fafc; color: #475569; text-align: left; border-bottom: 1px solid #e2e8f0;">' +
-                         '<th style="padding: 8px 12px; width: 10%;">Ticket</th>' +
-                         '<th style="padding: 8px 12px; width: 35%;">Asunto</th>' +
-                         '<th style="padding: 8px 12px; width: 10%;">Prioridad</th>' +
-                         '<th style="padding: 8px 12px; width: 10%;">Fecha</th>' +
-                         '<th style="padding: 8px 12px; width: 15%;">Grupo</th>' +
-                         '<th style="padding: 8px 12px; width: 10%;">Técnico</th>' +
-                         '<th style="padding: 8px 12px; text-align: right; width: 10%;">Acción</th>' +
-                         '</tr></thead><tbody>';
-
-            tickets.forEach(function(t) {
-                var parts = t.descripcion.split('\n');
-                var subject = parts[0].replace(/(ASUNTO:\s*)+/ig, '').trim();
-                
-                tableHtml += '<tr class="listado-row" style="border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background=\'#f1f5f9\'" onmouseout="this.style.background=\'#fff\'" onclick="openOffcanvas(' + t.id + ')">' +
-                             '<td style="padding: 10px 12px;"><span style="font-weight: 700; color: #0f172a;">' + t.correlativo + '</span></td>' +
-                             '<td style="padding: 10px 12px;"><div style="color: #0f172a; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;">' + subject + '</div></td>' +
-                             '<td style="padding: 10px 12px;"><span style="background: ' + (t.prioridad_color || '#94a3b8') + '; color: #fff; padding: 2px 6px; font-size: 11px; font-weight: 700;">' + t.prioridad + '</span></td>' +
-                             '<td style="padding: 10px 12px; color: #475569;">' + t.fecha_creacion_corta + '</td>' +
-                             '<td style="padding: 10px 12px; color: #475569;">' + (t.grupo || 'Mesa de Ayuda') + '</td>' +
-                             '<td style="padding: 10px 12px; color: ' + (t.tecnico === 'Sin asignar' ? '#94a3b8' : '#3b82f6') + ';">' + t.tecnico + '</td>' +
-                             '<td style="padding: 10px 12px; text-align: right;"><button class="ms-btn-primary" style="padding: 4px 8px; font-size: 11px; border-radius: 0; background: #3b82f6; border: none;">Ver Detalles</button></td>' +
-                             '</tr>';
-            });
-            tableHtml += '</tbody></table></div>';
-            container.innerHTML += tableHtml;
+            html += '</div>';
         });
+        html += '</div>'; // end tab-content
+        
+        container.innerHTML = html;
         window.filterTickets(); // Apply current search filter
+        
+        // Estilos activos para las pestañas
+        $('#listadoTabs .nav-link').on('shown.bs.tab', function (e) {
+            $('#listadoTabs .nav-link').css('border-bottom', '3px solid transparent').css('color', '#475569');
+            $(e.target).css('border-bottom', '3px solid #3b82f6').css('color', '#0f172a');
+        });
+        $('#listadoTabs .nav-link.active').css('border-bottom', '3px solid #3b82f6').css('color', '#0f172a');
     }
 
     function getEmptyStateHtml(estadoId) {

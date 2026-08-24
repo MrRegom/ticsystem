@@ -208,30 +208,14 @@ class TicketsDashboardView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateVi
         import json
         context['kanban_data'] = json.dumps(kanban)
 
-        # Tickets terminales para la vista Historial (DataTables)
+        # Solo enviamos el conteo para no saturar la memoria
+        # El historial se cargará vía AJAX con DataTables
         historial_query = Ticket.objects.filter(estado__in=self.ESTADOS_TERMINALES)
         if not is_dispatcher:
-            # Filtrar historial a los grupos del usuario actual si no es despachador
             user_groups = self.request.user.grupos_resolutores.filter(activo=True)
             historial_query = historial_query.filter(grupo_resolutor__in=user_groups)
             
-        tickets_historial = historial_query.select_related(
-            'solicitante', 'responsable', 'activo', 'prioridad', 'grupo_resolutor'
-        ).order_by('-fecha_creacion')
-
-        context['historial'] = [{
-            'id': t.id,
-            'correlativo': t.correlativo,
-            'descripcion': t.descripcion[:60] + ('...' if len(t.descripcion) > 60 else ''),
-            'estado': t.get_estado_display(),
-            'estado_id': t.estado,
-            'solicitante': t.solicitante.nombre_completo if t.solicitante else '-',
-            'tecnico': t.responsable.username if t.responsable else '-',
-            'prioridad': t.prioridad.nombre if t.prioridad else 'Normal',
-            'prioridad_color': t.prioridad.color_hex if t.prioridad else '#64748b',
-            'fecha_creacion': t.fecha_creacion.strftime('%d/%m/%Y'),
-            'fecha_cierre': t.fecha_cierre.strftime('%d/%m/%Y') if t.fecha_cierre else '-',
-        } for t in tickets_historial]
+        context['historial_count'] = historial_query.count()
 
         return context
 
@@ -645,3 +629,96 @@ class NotificacionMarcarTodasLeidasApiView(LoginRequiredMixin, View):
         from tickets.models import Notificacion
         Notificacion.objects.filter(usuario=request.user, leida=False).update(leida=True)
         return JsonResponse({'success': True})
+
+
+from django.db.models import Q
+
+class TicketHistorialDataTablesView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    """
+    Endpoint AJAX para cargar el historial de tickets cerrados en DataTables Server-Side.
+    Soporta paginación, búsqueda global y ordenamiento nativo en la base de datos para manejar millones de registros.
+    """
+    permiso_requerido = 'VER_TICKETS'
+
+    def get(self, request, *args, **kwargs):
+        # Determinar si el usuario tiene visión global (is_dispatcher)
+        is_dispatcher = False
+        if hasattr(request.user, 'perfil') and request.user.perfil.rol:
+            if request.user.perfil.rol.tiene_permiso('DESPACHAR_TICKETS') or request.user.perfil.rol.tiene_permiso('GESTIONAR_TICKETS'):
+                is_dispatcher = True
+        if request.user.is_superuser:
+            is_dispatcher = True
+
+        # Query base: Solo tickets terminales
+        query = Ticket.objects.filter(estado__in=[Ticket.Estado.RESUELTO, Ticket.Estado.CERRADO, Ticket.Estado.CANCELADO])
+        
+        if not is_dispatcher:
+            user_groups = request.user.grupos_resolutores.filter(activo=True)
+            query = query.filter(grupo_resolutor__in=user_groups)
+
+        total_records = query.count()
+
+        # Búsqueda (Search)
+        search_value = request.GET.get('search[value]', '').strip()
+        if search_value:
+            query = query.filter(
+                Q(correlativo__icontains=search_value) |
+                Q(descripcion__icontains=search_value) |
+                Q(solicitante__nombres__icontains=search_value) |
+                Q(solicitante__apellidos__icontains=search_value) |
+                Q(responsable__first_name__icontains=search_value) |
+                Q(responsable__last_name__icontains=search_value)
+            )
+
+        records_filtered = query.count()
+
+        # Ordenamiento (Ordering)
+        order_column_index = request.GET.get('order[0][column]', '6') # Por defecto Fecha Creación
+        order_dir = request.GET.get('order[0][dir]', 'desc')
+
+        # Mapeo de columnas de DataTables al modelo Django
+        columns_mapping = {
+            '0': 'correlativo',
+            '1': 'descripcion',
+            '2': 'estado',
+            '3': 'prioridad__nombre',
+            '4': 'solicitante__nombres',
+            '5': 'responsable__first_name',
+            '6': 'fecha_creacion',
+            '7': 'fecha_cierre',
+        }
+
+        order_by = columns_mapping.get(order_column_index, 'fecha_creacion')
+        if order_dir == 'desc':
+            order_by = f'-{order_by}'
+
+        query = query.order_by(order_by)
+
+        # Paginación (Pagination)
+        start = int(request.GET.get('start', 0))
+        length = int(request.GET.get('length', 25))
+        
+        if length > 0:
+            query = query[start:start + length]
+
+        # Serialización
+        data = []
+        for t in query.select_related('solicitante', 'responsable', 'prioridad'):
+            data.append({
+                'id': t.id, # Para abrir el offcanvas
+                'correlativo': f'<strong>{t.correlativo}</strong>',
+                'descripcion': t.descripcion[:60] + ('...' if len(t.descripcion) > 60 else ''),
+                'estado': f'<span class="badge-estado badge-{t.estado}">{t.get_estado_display()}</span>',
+                'prioridad': f'<span class="card-prio-badge" style="background:{t.prioridad.color_hex if t.prioridad else "#64748b"}">{t.prioridad.nombre if t.prioridad else "Normal"}</span>',
+                'solicitante': t.solicitante.nombre_completo if t.solicitante else '-',
+                'tecnico': t.responsable.get_full_name() or t.responsable.username if t.responsable else '-',
+                'fecha_creacion': t.fecha_creacion.strftime('%d/%m/%Y'),
+                'fecha_cierre': t.fecha_cierre.strftime('%d/%m/%Y') if t.fecha_cierre else '-',
+            })
+
+        return JsonResponse({
+            'draw': int(request.GET.get('draw', 1)),
+            'recordsTotal': total_records,
+            'recordsFiltered': records_filtered,
+            'data': data
+        })

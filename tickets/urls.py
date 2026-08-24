@@ -20,4 +20,5 @@ urlpatterns = [
     path('api/notificaciones/', views.TicketNotificacionesApiView.as_view(), name='api_ticket_notificaciones'),
     path('api/notificaciones/<int:notificacion_id>/leida/', views.NotificacionMarcarLeidaApiView.as_view(), name='api_notificacion_leida'),
     path('api/notificaciones/todas-leidas/', views.NotificacionMarcarTodasLeidasApiView.as_view(), name='api_notificacion_todas_leidas'),
+    path('api/historial/dt/', views.TicketHistorialDataTablesView.as_view(), name='api_historial_dt'),
 ]
