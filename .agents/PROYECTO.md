@@ -30,18 +30,19 @@ Reemplaza procesos manuales (papel, Excel) con un sistema centralizado:
 ```
 Backend:      Django 6.0 + Python 3.12
 WSGI:         Gunicorn
+Colas / Async: Celery + Redis 7 (Enterprise Async Task Queue)
 Base de datos: PostgreSQL 15 (Docker) / SQLite (desarrollo local)
 Frontend:     HTML5 + Bootstrap 4 + Vanilla CSS (Fluent Design)
 JS:           jQuery + DataTables + Select2 + SweetAlert2 + ApexCharts
 PDF:          WeasyPrint
 Excel:        openpyxl
 QR:           qrcode[pil]
-Auth:         Django Auth + django-axes (bloqueo por IP)
+Auth:         Django Auth + django-axes (bloqueo por IP/Usuario)
 Servidor web: Nginx (reverse proxy)
-Contenedores: Docker + Docker Compose
+Contenedores: Docker + Docker Compose (web, db, nginx, redis, celery_worker)
 ```
 
-**IMPORTANTE:** Todas las librerías JS/CSS están en `static/vendor/` (sin CDN). La app funciona **100% sin internet**.
+**IMPORTANTE:** Todas las librerías JS/CSS están en `static/vendor/` (sin CDN). La app funciona **100% sin internet** (incluyendo el worker de Redis y Celery).
 
 ---
 
@@ -287,3 +288,4 @@ docker compose down -v
 *   **Buscador AJAX de Activos en Tickets:** Se eliminó la ineficiente carga estática (primeros 1000 registros) del selector de equipos en el Kanban de Tickets. Se reemplazó por una conexión Select2 con AJAX apuntando al nuevo endpoint `apiSearchEquipos`, asegurando que cualquier activo recién ingresado por otro usuario sea localizable de inmediato, cumpliendo estándares empresariales (Enterprise grade).
     *   *Identidades (Usuarios):* Interfaz Fluent UI con consultas directas a API restringidas y paginadas.
     *   *Protección de Trazabilidad:* La arquitectura se apoya en `on_delete=models.PROTECT`. No existe pérdida de datos al "eliminar"; el sistema obliga a un apagado lógico (Soft Delete mediante el switch "Activo") si el funcionario ya tiene historial (tickets, equipos).
+*   **Envío de Correos Asíncrono (Enterprise Async con Celery + Redis):** Para evitar bloqueos de la UI de 3 a 5 segundos al crear/modificar un ticket, se migró el envío de emails a tareas en segundo plano. Se agregó el servicio `redis` como broker de mensajería y `celery_worker` para consumir la cola. Además, se construyó un "Panel de Trazabilidad de Correos" en el frontend para monitorear el historial, reenviar correos en caso de que el SMTP falle y gestionar logs de entregas, soportando robustamente la operación del hospital aún sin configuración de correos activa (estado `SIN_SMTP`).
