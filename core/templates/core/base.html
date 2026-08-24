@@ -151,18 +151,30 @@
           </div>
           
           <div class="dropdown">
-            <a class="dropdown-toggle text-white font-weight-bold" href="#" id="navbarUserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; font-size: 0.9rem;">
-              <i class="fas fa-user-circle mr-1"></i> {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
+            <a class="dropdown-toggle text-white font-weight-bold" href="#" id="navbarUserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-user-circle" style="font-size: 1.1rem;"></i>
+              <span class="d-flex flex-column" style="line-height: 1.2;">
+                <span style="font-size: 0.85rem; font-weight: 600;">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</span>
+                {% if user.perfil.rol %}
+                <span style="font-size: 0.65rem; font-weight: 600; color: #f59e0b; letter-spacing: 0.5px; text-transform: uppercase;">{{ user.perfil.rol.nombre }}</span>
+                {% endif %}
+              </span>
             </a>
-            <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="navbarUserDropdown">
-              <span class="dropdown-item-text text-muted small">Hospital Provincial Marga Marga</span>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item text-info font-weight-bold" href="{% url 'manual_usuario' %}">
-                <i class="fas fa-book-open mr-2"></i> Manual Explicativo
+            <div class="dropdown-menu dropdown-menu-right shadow border-0" aria-labelledby="navbarUserDropdown" style="min-width: 220px; border-radius: 0; padding: 0; overflow: hidden;">
+              <!-- Header del menú de usuario -->
+              <div style="background: #002855; padding: 14px 16px;">
+                <div style="color: #fff; font-size: 0.85rem; font-weight: 700;">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</div>
+                {% if user.perfil.rol %}
+                <div style="display: inline-block; margin-top: 4px; background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #f59e0b; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; padding: 2px 8px;">{{ user.perfil.rol.nombre }}</div>
+                {% endif %}
+                <div style="color: rgba(255,255,255,0.5); font-size: 0.72rem; margin-top: 4px;">Hospital Provincial Marga Marga</div>
+              </div>
+              <a class="dropdown-item" href="{% url 'manual_usuario' %}" style="font-size: 0.85rem; padding: 10px 16px; color: #334155;">
+                <i class="fas fa-book-open mr-2 text-info"></i> Manual Explicativo
               </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item text-danger" href="#" id="logout-button">
-                <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+              <div class="dropdown-divider m-0"></div>
+              <a class="dropdown-item text-danger" href="#" id="logout-button" style="font-size: 0.85rem; padding: 10px 16px;">
+                <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
               </a>
             </div>
           </div>
