@@ -128,3 +128,133 @@ class TestSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             return JsonResponse({'success': True, 'message': 'Correo de prueba enviado con éxito a tu bandeja.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Fallo la conexión SMTP: {str(e)}'}, status=400)
+
+
+# =============================================================================
+# PANEL DE CORREOS — Trazabilidad y Reenvío Manual
+# =============================================================================
+
+class CorreoLogPanelView(PermisoRequeridoMixin, LoginRequiredMixin, TemplateView):
+    """
+    Panel de administración de logs de correos.
+    Permite filtrar, visualizar estado y reenviar correos fallidos manualmente.
+    Solo accesible para Super Administrador.
+    """
+    permiso_requerido = 'GESTIONAR_ROLES'
+    template_name = 'correos/log_correos.html'
+
+    def get_context_data(self, **kwargs):
+        from .models import CorreoLog
+        ctx = super().get_context_data(**kwargs)
+
+        estado_filtro = self.request.GET.get('estado', '')
+        fecha_desde   = self.request.GET.get('fecha_desde', '')
+        fecha_hasta   = self.request.GET.get('fecha_hasta', '')
+
+        qs = CorreoLog.objects.all()
+        if estado_filtro:
+            qs = qs.filter(estado=estado_filtro)
+        if fecha_desde:
+            qs = qs.filter(fecha_creacion__date__gte=fecha_desde)
+        if fecha_hasta:
+            qs = qs.filter(fecha_creacion__date__lte=fecha_hasta)
+
+        ctx['logs']          = qs[:500]   # Límite de seguridad
+        ctx['total']         = CorreoLog.objects.count()
+        ctx['total_enviados'] = CorreoLog.objects.filter(estado=CorreoLog.Estado.ENVIADO).count()
+        ctx['total_fallidos'] = CorreoLog.objects.filter(estado=CorreoLog.Estado.FALLIDO).count()
+        ctx['total_sin_smtp'] = CorreoLog.objects.filter(estado=CorreoLog.Estado.SIN_SMTP).count()
+        ctx['estado_filtro'] = estado_filtro
+        ctx['fecha_desde']   = fecha_desde
+        ctx['fecha_hasta']   = fecha_hasta
+        ctx['estados']       = CorreoLog.Estado.choices
+        return ctx
+
+
+class CorreoReenviarAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    """
+    API para reenvío MANUAL de un correo fallido.
+    
+    Reglas:
+    - Solo acepta correos con estado FALLIDO o SIN_SMTP.
+    - SIN_SMTP: muestra advertencia en el frontend antes de llamar este endpoint.
+    - Crea un NUEVO CorreoLog (no modifica el histórico original) para preservar la trazabilidad.
+    - El admin queda registrado en el campo reenviado_manualmente.
+    """
+    permiso_requerido = 'GESTIONAR_ROLES'
+
+    def post(self, request, correo_log_id, *args, **kwargs):
+        from .models import CorreoLog, ConfiguracionSMTP
+        from correos.tasks import enviar_correo_task
+
+        try:
+            log_original = CorreoLog.objects.get(id=correo_log_id)
+        except CorreoLog.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Registro no encontrado.'}, status=404)
+
+        # Solo se permite reenviar FALLIDO o SIN_SMTP
+        if log_original.estado == CorreoLog.Estado.ENVIADO:
+            return JsonResponse({'success': False, 'message': 'Este correo ya fue enviado exitosamente.'})
+        if log_original.estado == CorreoLog.Estado.PENDIENTE:
+            return JsonResponse({'success': False, 'message': 'Este correo ya está en cola pendiente.'})
+
+        # Verificar SMTP antes de encolar
+        try:
+            smtp = ConfiguracionSMTP.load()
+            smtp_activo = bool(smtp.host and smtp.activo)
+        except Exception:
+            smtp_activo = False
+
+        if not smtp_activo:
+            return JsonResponse({
+                'success': False,
+                'message': 'No hay SMTP configurado. Configure el servidor de correo primero.'
+            }, status=400)
+
+        # Crear nuevo log (el histórico original se preserva intacto)
+        nuevo_log = CorreoLog.objects.create(
+            ticket=log_original.ticket,
+            tipo=log_original.tipo,
+            destinatario=log_original.destinatario,
+            asunto=f"[REENVÍO] {log_original.asunto}",
+            estado=CorreoLog.Estado.PENDIENTE,
+            reenviado_manualmente=True,
+        )
+
+        try:
+            enviar_correo_task.delay(nuevo_log.id)
+            return JsonResponse({
+                'success': True,
+                'message': f'Correo encolado para reenvío (nuevo log #{nuevo_log.id}).'
+            })
+        except Exception as e:
+            nuevo_log.estado = CorreoLog.Estado.FALLIDO
+            nuevo_log.error_detalle = f'Error al encolar: {str(e)}'
+            nuevo_log.save(update_fields=['estado', 'error_detalle'])
+            return JsonResponse({'success': False, 'message': f'No se pudo encolar: {str(e)}'}, status=500)
+
+
+class CorreoLimpiarAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
+    """Elimina logs antiguos de correos enviados (limpieza de histórico)."""
+    permiso_requerido = 'GESTIONAR_ROLES'
+
+    def post(self, request, *args, **kwargs):
+        from .models import CorreoLog
+        from django.utils import timezone
+        from datetime import timedelta
+        import json as _json
+
+        data = _json.loads(request.body or '{}')
+        dias = int(data.get('dias', 30))
+
+        fecha_corte = timezone.now() - timedelta(days=dias)
+        eliminados, _ = CorreoLog.objects.filter(
+            estado=CorreoLog.Estado.ENVIADO,
+            fecha_creacion__lt=fecha_corte
+        ).delete()
+
+        return JsonResponse({
+            'success': True,
+            'message': f'Se eliminaron {eliminados} registros enviados con más de {dias} días.'
+        })
+

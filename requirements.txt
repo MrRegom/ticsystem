@@ -38,3 +38,12 @@ PyMySQL>=1.2,<2
 python-dateutil==2.9.0
 reportlab
 qrcode[pil]>=7.4.2
+
+# ===== Cola de Tareas Asíncronas (Correos Enterprise) =====
+# Celery: orquestador de tareas en background
+celery>=5.3,<6
+# Cliente Redis: broker de mensajes para Celery
+redis>=5.0,<6
+# Persiste resultados de tareas en PostgreSQL (no en Redis RAM)
+django-celery-results>=2.5,<3
+

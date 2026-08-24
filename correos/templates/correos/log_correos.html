@@ -1,0 +1,249 @@
+﻿{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Trazabilidad de Correos{% endblock %}
+{% block module_title %}Trazabilidad de Correos{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="padding: 24px; font-family: 'Segoe UI', system-ui, sans-serif;">
+    
+    <div class="ms-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div class="ms-title-area">
+            <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;">Correos Enviados</h2>
+            <p style="margin: 0; color: #64748b; font-size: 0.85rem;">Historial y estado de notificaciones automáticas del sistema.</p>
+        </div>
+        <div class="ms-actions">
+            <button class="btn btn-outline-danger btn-sm" onclick="confirmarLimpieza()" style="border-radius: 0;">
+                <i class="fas fa-trash"></i> Limpiar Histórico
+            </button>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4" style="border-radius: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+        <div class="card-body py-3">
+            <form method="get" class="form-inline">
+                <div class="form-group mr-3">
+                    <label class="mr-2" style="font-size: 0.85rem; font-weight: 600;">Estado:</label>
+                    <select name="estado" class="form-control form-control-sm" style="border-radius: 0;">
+                        <option value="">Todos</option>
+                        {% for valor, nombre in estados %}
+                        <option value="{{ valor }}" {% if estado_filtro == valor %}selected{% endif %}>{{ nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mr-3">
+                    <label class="mr-2" style="font-size: 0.85rem; font-weight: 600;">Desde:</label>
+                    <input type="date" name="fecha_desde" class="form-control form-control-sm" value="{{ fecha_desde }}" style="border-radius: 0;">
+                </div>
+                <div class="form-group mr-3">
+                    <label class="mr-2" style="font-size: 0.85rem; font-weight: 600;">Hasta:</label>
+                    <input type="date" name="fecha_hasta" class="form-control form-control-sm" value="{{ fecha_hasta }}" style="border-radius: 0;">
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 0; background-color: #002855; border-color: #002855;">Filtrar</button>
+                <a href="{% url 'correos:log_correos' %}" class="btn btn-secondary btn-sm ml-2" style="border-radius: 0;">Limpiar Filtros</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Indicadores -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center" style="border-radius: 0; border: 1px solid #e2e8f0; border-top: 3px solid #3b82f6;">
+                <div class="card-body py-3">
+                    <h5 style="margin: 0; font-weight: 700;">{{ total }}</h5>
+                    <span style="font-size: 0.8rem; color: #64748b; text-transform: uppercase;">Total Registros</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center" style="border-radius: 0; border: 1px solid #e2e8f0; border-top: 3px solid #10b981;">
+                <div class="card-body py-3">
+                    <h5 style="margin: 0; font-weight: 700; color: #10b981;">{{ total_enviados }}</h5>
+                    <span style="font-size: 0.8rem; color: #64748b; text-transform: uppercase;">Enviados con Éxito</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center" style="border-radius: 0; border: 1px solid #e2e8f0; border-top: 3px solid #ef4444;">
+                <div class="card-body py-3">
+                    <h5 style="margin: 0; font-weight: 700; color: #ef4444;">{{ total_fallidos }}</h5>
+                    <span style="font-size: 0.8rem; color: #64748b; text-transform: uppercase;">Fallidos Definitivos</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center" style="border-radius: 0; border: 1px solid #e2e8f0; border-top: 3px solid #64748b;">
+                <div class="card-body py-3">
+                    <h5 style="margin: 0; font-weight: 700; color: #64748b;">{{ total_sin_smtp }}</h5>
+                    <span style="font-size: 0.8rem; color: #64748b; text-transform: uppercase;">Sin Configuración SMTP</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card" style="border-radius: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0" style="font-size: 0.85rem;">
+                <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                    <tr>
+                        <th style="padding: 12px 16px; color: #475569;">TICKET</th>
+                        <th style="padding: 12px 16px; color: #475569;">TIPO / ASUNTO</th>
+                        <th style="padding: 12px 16px; color: #475569;">DESTINATARIO</th>
+                        <th style="padding: 12px 16px; color: #475569;">FECHA</th>
+                        <th style="padding: 12px 16px; color: #475569;">ESTADO</th>
+                        <th style="padding: 12px 16px; color: #475569; text-align: center;">ACCIÓN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td style="padding: 12px 16px; font-weight: 600;">
+                            {% if log.ticket %}
+                            <a href="#" class="text-primary">{{ log.ticket.correlativo }}</a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td style="padding: 12px 16px;">
+                            <span style="display: block; font-weight: 600; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">{{ log.get_tipo_display }}</span>
+                            {{ log.asunto }}
+                            {% if log.error_detalle %}
+                            <div style="font-size: 0.75rem; color: #ef4444; margin-top: 4px;">Error: {{ log.error_detalle }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 12px 16px;">{{ log.destinatario }}</td>
+                        <td style="padding: 12px 16px;">
+                            {{ log.fecha_creacion|date:"d/m/Y H:i" }}
+                            {% if log.intentos > 0 %}
+                            <br><small class="text-muted">Intentos: {{ log.intentos }}/3</small>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 12px 16px;">
+                            {% if log.estado == 'ENVIADO' %}
+                                <span class="badge" style="background-color: #10b981; color: white; border-radius: 0; padding: 4px 8px;">ENVIADO</span>
+                            {% elif log.estado == 'PENDIENTE' %}
+                                <span class="badge" style="background-color: #f59e0b; color: white; border-radius: 0; padding: 4px 8px;">EN COLA</span>
+                            {% elif log.estado == 'FALLIDO' %}
+                                <span class="badge" style="background-color: #ef4444; color: white; border-radius: 0; padding: 4px 8px;">FALLIDO</span>
+                            {% elif log.estado == 'SIN_SMTP' %}
+                                <span class="badge" style="background-color: #64748b; color: white; border-radius: 0; padding: 4px 8px;" title="No había SMTP configurado">SIN SMTP</span>
+                            {% endif %}
+                            
+                            {% if log.reenviado_manualmente %}
+                                <br><small class="text-primary"><i class="fas fa-redo-alt"></i> Reenvío manual</small>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 12px 16px; text-align: center;">
+                            {% if log.estado == 'FALLIDO' %}
+                                <button class="btn btn-sm btn-outline-primary" style="border-radius: 0;" onclick="reenviarCorreo({{ log.id }}, 'FALLIDO')">
+                                    <i class="fas fa-paper-plane"></i> Reenviar
+                                </button>
+                            {% elif log.estado == 'SIN_SMTP' %}
+                                <button class="btn btn-sm btn-outline-secondary" style="border-radius: 0;" onclick="reenviarCorreo({{ log.id }}, 'SIN_SMTP')">
+                                    <i class="fas fa-paper-plane"></i> Reenviar
+                                </button>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No hay registros de correos.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function csrfToken() {
+        return '{{ csrf_token }}';
+    }
+
+    function reenviarCorreo(logId, estado) {
+        let advertencia = "";
+        if (estado === 'SIN_SMTP') {
+            advertencia = "<br><br><b>Aviso:</b> Este correo no se envió originalmente porque no había servidor SMTP configurado. Asegúrese de que ahora esté correctamente configurado en el panel.";
+        }
+
+        Swal.fire({
+            title: '¿Reenviar correo?',
+            html: `Se encolará nuevamente este correo para su envío. ${advertencia}`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#002855',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Sí, reenviar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`{% url 'correos:api_reenviar_correo' 0 %}`.replace('0', logId), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken(),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: '¡Encolado!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonColor: '#002855'
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    Swal.fire('Error', 'Hubo un error de red.', 'error');
+                });
+            }
+        });
+    }
+
+    function confirmarLimpieza() {
+        Swal.fire({
+            title: 'Limpiar Histórico',
+            html: 'Se eliminarán todos los registros de correos <b>enviados con éxito</b> que tengan más de 30 días.<br><br>Los registros fallidos se conservan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Sí, limpiar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`{% url 'correos:api_limpiar_correos' %}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({dias: 30})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: '¡Limpiado!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonColor: '#002855'
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                });
+            }
+        });
+    }
+</script>
+{% endblock %}

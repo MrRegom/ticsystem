@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     
     # Aplicaciones de terceros
     'axes',
+    # Resultados de tareas Celery persistidos en PostgreSQL
+    'django_celery_results',
     
     # Aplicaciones propias del proyecto
     'core.apps.CoreConfig',
@@ -156,3 +158,32 @@ AXES_RESET_ON_SUCCESS = True                # Resetear contador al ingresar con 
 AXES_LOCKOUT_TEMPLATE = 'core/lockout.html'  # Template personalizado de bloqueo
 AXES_IP_LOOKUP_HEADER = 'HTTP_X_FORWARDED_FOR'  # Cabecera para IP real detrás de Nginx
 EMAIL_BACKEND = 'correos.backends.DynamicSMTPEmailBackend'
+
+# =============================================================================
+# CELERY — Cola de Tareas Asíncronas (Enterprise Async)
+# =============================================================================
+# Broker: Redis (en el mismo docker-compose, servicio 'redis')
+# En producción docker: redis://redis:6379/0
+# En desarrollo local: redis://localhost:6379/0
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://redis:6379/0')
+
+# Backend de resultados: PostgreSQL (via django-celery-results)
+# Los resultados de cada tarea quedan trazados en la misma BD del sistema.
+CELERY_RESULT_BACKEND = 'django-db'
+
+# Serialización segura en JSON
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+
+# Zona horaria (debe coincidir con TIME_ZONE del proyecto)
+CELERY_TIMEZONE = 'America/Santiago'
+
+# Limite de tiempo por tarea: 60 segundos (si el SMTP no responde, se cancela)
+CELERY_TASK_TIME_LIMIT = 60
+
+# Prefetch: procesar de a 1 tarea a la vez por worker para mayor control
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+
+# Reintentar la conexión al broker al inicio (robusto ante arranques desordenados)
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

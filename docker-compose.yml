@@ -29,6 +29,28 @@ services:
       - .env
     depends_on:
       - db
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: ticsystem_redis
+    restart: always
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  celery_worker:
+    build: .
+    container_name: ticsystem_celery_worker
+    restart: always
+    command: celery -A config worker --loglevel=info --concurrency=4
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
 
   nginx:
     image: nginx:1.25-alpine
@@ -45,3 +67,4 @@ services:
 
 volumes:
   static_volume:
+  redis_data:

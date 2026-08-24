@@ -145,3 +145,76 @@ class ConfiguracionSMTP(models.Model):
         """Devuelve la única instancia de configuración o la crea si no existe (Patrón Singleton)"""
         obj, created = cls.objects.get_or_create(id=1)
         return obj
+
+
+class CorreoLog(models.Model):
+    """
+    Registro inmutable de cada correo generado por el sistema.
+    
+    Ciclo de vida:
+    - SIN_SMTP: No había SMTP configurado. Nunca se encoló en Celery.
+                El reenvío manual es posible solo con confirmación explícita del admin.
+    - PENDIENTE: Fue encolado en Celery, esperando al worker.
+    - ENVIADO:   El worker lo envió con éxito.
+    - FALLIDO:   El worker lo intentó N veces y falló definitivamente. Dead-letter.
+    
+    Regla crítica: NUNCA se reenvía automáticamente. Todo reenvío es acción manual del admin.
+    """
+    class Estado(models.TextChoices):
+        SIN_SMTP  = 'SIN_SMTP',  'Sin SMTP Configurado'
+        PENDIENTE = 'PENDIENTE', 'Pendiente'
+        ENVIADO   = 'ENVIADO',   'Enviado'
+        FALLIDO   = 'FALLIDO',   'Fallido'
+
+    class Tipo(models.TextChoices):
+        CREACION     = 'CREACION',     'Creación de Ticket'
+        RESOLUCION   = 'RESOLUCION',   'Resolución de Ticket'
+        ASIGNACION   = 'ASIGNACION',   'Asignación de Ticket'
+        PAUSA        = 'PAUSA',        'Ticket Pausado'
+        REACTIVACION = 'REACTIVACION', 'Ticket Reactivado'
+        OTRO         = 'OTRO',         'Otro'
+
+    # Referencia al ticket (nullable: puede haber correos sin ticket)
+    ticket = models.ForeignKey(
+        'tickets.Ticket',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='correo_logs',
+        verbose_name="Ticket"
+    )
+    tipo = models.CharField(
+        max_length=20,
+        choices=Tipo.choices,
+        default=Tipo.OTRO,
+        verbose_name="Tipo de Notificación"
+    )
+    destinatario = models.EmailField(verbose_name="Destinatario")
+    asunto       = models.CharField(max_length=255, verbose_name="Asunto")
+    estado = models.CharField(
+        max_length=10,
+        choices=Estado.choices,
+        default=Estado.PENDIENTE,
+        verbose_name="Estado"
+    )
+    # Contador de intentos del worker (máx 3)
+    intentos = models.PositiveSmallIntegerField(default=0, verbose_name="Intentos")
+    # Detalle técnico del error SMTP si falló
+    error_detalle = models.TextField(blank=True, default='', verbose_name="Detalle del Error")
+    # Flag: indica si fue reenviado manualmente por un administrador
+    reenviado_manualmente = models.BooleanField(default=False, verbose_name="Reenviado Manualmente")
+
+    fecha_creacion      = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
+    fecha_ultimo_intento = models.DateTimeField(null=True, blank=True, verbose_name="Último Intento")
+
+    class Meta:
+        verbose_name = "Log de Correo"
+        verbose_name_plural = "Logs de Correo"
+        ordering = ['-fecha_creacion']
+        indexes = [
+            models.Index(fields=['estado', 'fecha_creacion']),
+            models.Index(fields=['ticket']),
+        ]
+
+    def __str__(self):
+        return f"[{self.estado}] {self.asunto} → {self.destinatario}"
+

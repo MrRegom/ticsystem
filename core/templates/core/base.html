@@ -271,8 +271,13 @@
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="{% url 'correos:configuracion_smtp' %}" class="sidebar-link {% if '/correos/' in request.path %}active{% endif %}">
+          <a href="{% url 'correos:configuracion_smtp' %}" class="sidebar-link {% if '/correos/config' in request.path %}active{% endif %}">
             <i class="fas fa-envelope-open-text"></i> Correos SMTP
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{% url 'correos:log_correos' %}" class="sidebar-link {% if '/correos/logs' in request.path %}active{% endif %}">
+            <i class="fas fa-mail-bulk"></i> Trazabilidad Correos
           </a>
         </li>
         <li class="sidebar-item">
