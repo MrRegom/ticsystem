@@ -61,6 +61,18 @@ class NotificacionService:
     @staticmethod
     def generar_html_ticket(ticket, tipo, comentario=""):
         """Genera el HTML dinámico inyectando los datos del ticket."""
+        if not comentario:
+            if tipo == 'RESOLUCION' and getattr(ticket, 'solucion', None):
+                comentario = ticket.solucion
+            elif tipo in ['ESCALADO', 'ESPERA_APROBACION', 'PENDIENTE']:
+                try:
+                    from tickets.models import TicketHistorial
+                    hist = TicketHistorial.objects.filter(ticket=ticket).exclude(comentario__isnull=True).exclude(comentario="").order_by('-fecha').first()
+                    if hist:
+                        comentario = hist.comentario
+                except Exception:
+                    pass
+
         solicitante_nombre = "Usuario"
         if ticket.solicitante:
             if hasattr(ticket.solicitante, 'nombres'):
