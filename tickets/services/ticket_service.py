@@ -152,6 +152,13 @@ class TicketService:
                     actividades_realizadas=comentario if comentario else f"Ticket {nuevo_estado.lower()}"
                 )
 
+        # Enviar Notificaciones de cambio de estado
+        from tickets.services.notificacion_service import NotificacionService
+        if nuevo_estado == Ticket.Estado.ESCALADO and estado_anterior != Ticket.Estado.ESCALADO:
+            NotificacionService.notificar_escalamiento(ticket, comentario)
+        elif nuevo_estado in [Ticket.Estado.ESPERA_APROBACION, Ticket.Estado.PENDIENTE_USUARIO, Ticket.Estado.PENDIENTE_PROVEEDOR] and estado_anterior not in [Ticket.Estado.ESPERA_APROBACION, Ticket.Estado.PENDIENTE_USUARIO, Ticket.Estado.PENDIENTE_PROVEEDOR]:
+            NotificacionService.notificar_espera(ticket, comentario)
+
         return ticket
 
     @staticmethod

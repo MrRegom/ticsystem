@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tareas Celery del módulo de Correos.
 
 Arquitectura de reintentos (Enterprise Dead-Letter):
@@ -57,7 +57,7 @@ def enviar_correo_task(self, correo_log_id: int) -> dict:
     # Verificar que SMTP esté activo ahora (puede haber cambiado desde que se encoló)
     try:
         smtp_config = ConfiguracionSMTP.load()
-        if not smtp_config.host or not smtp_config.activo:
+        if not smtp_config.host:
             # El SMTP se desconfiguró después de encolar. Marcar como FALLIDO definitivo.
             log.estado = CorreoLog.Estado.FALLIDO
             log.error_detalle = 'SMTP desconfigurado o inactivo al momento del envío.'
@@ -81,8 +81,13 @@ def enviar_correo_task(self, correo_log_id: int) -> dict:
             from_email=from_email,
             to=[log.destinatario],
         )
-        # El HTML se guarda en el campo cuerpo_html si lo implementamos;
-        # por ahora usamos el asunto como body de emergencia.
+        
+        # Generar HTML hermoso sobre la marcha usando la fábrica
+        if log.ticket:
+            from tickets.services.notificacion_service import NotificacionService
+            html_content = NotificacionService.generar_html_ticket(log.ticket, log.tipo)
+            msg.attach_alternative(html_content, "text/html")
+        
         msg.send(fail_silently=False)
 
         # Éxito
