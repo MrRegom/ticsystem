@@ -77,9 +77,9 @@ class NotificacionService:
         
         # Añadir ubicación y equipo si existen
         if ticket.activo:
-            detalles_lista.append(("Equipo", ticket.activo.nombre))
+            detalles_lista.append(("Equipo Afectado", ticket.activo.nombre))
         
-        detalles_lista.append(("Descripción del Problema", ticket.descripcion))
+        detalles_lista.append(("Motivo Original (Problema Reportado)", ticket.descripcion))
         
         if tipo == 'CREACION':
             titulo_email = "Registro de Nuevo Ticket"
@@ -87,20 +87,20 @@ class NotificacionService:
             
         elif tipo == 'RESOLUCION':
             titulo_email = "Resolución de Ticket"
-            mensaje_principal = f"Su solicitud ha sido marcada como <strong>RESUELTA</strong>."
+            mensaje_principal = f"Nos complace informarle que su solicitud ha sido analizada y marcada como <strong>RESUELTA</strong>."
             if comentario:
-                detalles_lista.append(("Comentario de Resolución", comentario))
-            footer_msg = "Si considera que el problema persiste, por favor responda o reabra el ticket a través de la plataforma."
+                detalles_lista.append(("Solución Aplicada / Resolución", comentario))
+            footer_msg = "Si considera que el inconveniente persiste, por favor responda a este correo o reabra el ticket a través de la plataforma."
             
         elif tipo == 'ESCALADO':
-            titulo_email = "Ticket Escalamiento"
-            mensaje_principal = f"Su ticket ha requerido la atención de especialistas y ha sido <strong>REASIGNADO</strong>."
+            titulo_email = "Reasignación / Escalamiento de Ticket"
+            mensaje_principal = f"Su ticket ha requerido la intervención de otros especialistas y ha sido <strong>REASIGNADO</strong> para asegurar una correcta solución."
             if comentario:
-                detalles_lista.append(("Motivo", comentario))
+                detalles_lista.append(("Motivo del Escalamiento", comentario))
                 
         elif tipo == 'ESPERA_APROBACION' or tipo == 'PENDIENTE':
             titulo_email = "Ticket en Espera"
-            mensaje_principal = f"Su ticket se encuentra temporalmente en <strong>ESPERA</strong> debido a que requiere acciones adicionales (como aprobación o compra de repuestos)."
+            mensaje_principal = f"Su ticket se encuentra temporalmente en <strong>ESPERA</strong> debido a que requiere acciones administrativas o técnicas adicionales (ej. aprobación o adquisición de insumos)."
             if comentario:
                 detalles_lista.append(("Detalle de la Espera", comentario))
 
