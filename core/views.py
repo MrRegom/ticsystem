@@ -755,3 +755,15 @@ class ManualUsuarioView(LoginRequiredMixin, TemplateView):
     Vista estática para el Manual Explicativo del Sistema (Documentación Enterprise).
     """
     template_name = 'core/manual.html'
+
+class DocumentacionView(View):
+    def get(self, request):
+        if request.session.get('docs_auth') == 'Doc2027Tixsystem##':
+            return render(request, 'core/documentacion.html', {'autenticado': True})
+        return render(request, 'core/documentacion.html', {'autenticado': False})
+
+    def post(self, request):
+        if request.POST.get('password') == 'Doc2027Tixsystem##':
+            request.session['docs_auth'] = 'Doc2027Tixsystem##'
+            return render(request, 'core/documentacion.html', {'autenticado': True})
+        return render(request, 'core/documentacion.html', {'autenticado': False, 'error': 'Contraseña incorrecta'})
