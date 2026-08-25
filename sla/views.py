@@ -168,5 +168,7 @@ class PrioridadApiView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             return JsonResponse({'success': True, 'message': 'Prioridad eliminada.'})
         except Prioridad.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Prioridad no encontrada.'}, status=404)
+        except models.ProtectedError:
+            return JsonResponse({'success': False, 'message': 'No se puede eliminar porque esta prioridad está en uso en la Matriz SLA o en tickets.'}, status=400)
         except Exception as e:
-            return JsonResponse({'success': False, 'message': f'No se puede eliminar: {str(e)}'}, status=400)
+            return JsonResponse({'success': False, 'message': f'Error interno: {str(e)}'}, status=500)
