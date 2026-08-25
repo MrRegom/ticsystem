@@ -16,25 +16,25 @@ print("Prioridades listas.")
 # Urgencias: 4 (Alta), 3 (Media), 2 (Baja)
 
 configuracion = [
-    # Impacto Hospital (4)
-    (4, 4, p_critica, 15, 2), # Alta urgencia
-    (4, 3, p_critica, 30, 4), # Media urgencia
-    (4, 2, p_alta, 60, 8),    # Baja urgencia
+    # Impacto Hospital (1)
+    (1, 1, p_critica, 15, 2), # Urgencia Alta (1)
+    (1, 2, p_critica, 30, 4), # Urgencia Media (2)
+    (1, 3, p_alta, 60, 8),    # Urgencia Baja (3)
     
-    # Impacto Servicio/Area (3)
-    (3, 4, p_critica, 30, 4),
-    (3, 3, p_alta, 60, 8),
-    (3, 2, p_media, 120, 24),
-    
-    # Impacto Usuario (2)
-    (2, 4, p_alta, 60, 8),
+    # Impacto Servicio/Area (2)
+    (2, 1, p_critica, 30, 4),
+    (2, 2, p_alta, 60, 8),
     (2, 3, p_media, 120, 24),
-    (2, 2, p_baja, 240, 48),
     
-    # Impacto Bajo (1)
-    (1, 4, p_media, 120, 24),
-    (1, 3, p_baja, 240, 48),
-    (1, 2, p_baja, 480, 72)
+    # Impacto Paciente (3)
+    (3, 1, p_alta, 60, 8),
+    (3, 2, p_media, 120, 24),
+    (3, 3, p_baja, 240, 48),
+    
+    # Impacto Bajo (4)
+    (4, 1, p_media, 120, 24),
+    (4, 2, p_baja, 240, 48),
+    (4, 3, p_baja, 480, 72)
 ]
 
 for imp, urg, prio, t_resp, t_res in configuracion:
