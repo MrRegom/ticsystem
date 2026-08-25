@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  db_test:
+    image: postgres:15-alpine
+    container_name: ticsystem_db_test
+    restart: always
+    volumes:
+      - ./datos_db_test:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+
+  web_test:
+    build: .
+    container_name: ticsystem_web_test
+    restart: always
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    volumes:
+      - .:/app
+      - static_volume_test:/app/staticfiles
+    env_file:
+      - .env
+    depends_on:
+      - db_test
+      - redis_test
+
+  redis_test:
+    image: redis:7-alpine
+    container_name: ticsystem_redis_test
+    restart: always
+    volumes:
+      - redis_data_test:/data
+    command: redis-server --appendonly yes
+
+  celery_worker_test:
+    build: .
+    container_name: ticsystem_celery_worker_test
+    restart: always
+    command: celery -A config worker --loglevel=info --concurrency=4
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db_test
+      - redis_test
+
+  nginx_test:
+    image: nginx:1.25-alpine
+    container_name: ticsystem_nginx_test
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_volume_test:/app/staticfiles
+      - ./media_test:/app/media:ro
+    depends_on:
+      - web_test
+
+volumes:
+  static_volume_test:
+  redis_data_test:
