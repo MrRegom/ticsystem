@@ -9,6 +9,7 @@ class NotificacionService:
         for key, val in detalles_lista:
             detalles_html += f"<tr><td style='padding: 6px 0;'><strong style='color:#002855;'>{key}:</strong> <span style='color:#334155;'>{val}</span></td></tr>"
             
+        return f"""
         <!DOCTYPE html>
         <html>
         <head>
