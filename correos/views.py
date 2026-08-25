@@ -29,7 +29,9 @@ class ConfiguracionSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
                 'usuario': config.usuario or '',
                 'password': config.password or '',
                 'use_tls': config.use_tls,
-                'remitente_por_defecto': config.remitente_por_defecto or ''
+                'remitente_por_defecto': config.remitente_por_defecto or '',
+                'nombre_sistema': config.nombre_sistema or 'TicSystem Mesa de Ayuda',
+                'pie_correo': config.pie_correo or 'Mesa de Ayuda - Plataforma Tecnológica'
             }
         })
 
@@ -47,7 +49,8 @@ class ConfiguracionSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             config.password = data.get('password', '')
             config.use_tls = bool(data.get('use_tls', True))
             config.remitente_por_defecto = data.get('remitente_por_defecto', '')
-            
+            config.nombre_sistema = data.get('nombre_sistema', 'TicSystem Mesa de Ayuda')
+            config.pie_correo = data.get('pie_correo', 'Mesa de Ayuda - Plataforma Tecnológica')
             
             config.save()
             return JsonResponse({'success': True, 'message': 'Configuración guardada correctamente.'})

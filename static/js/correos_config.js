@@ -14,6 +14,8 @@ function getPayload() {
     password: document.getElementById('smtp-pass').value.trim(),
     remitente_por_defecto: document.getElementById('smtp-sender').value.trim(),
     use_tls: document.getElementById('smtp-tls').checked,
+    nombre_sistema: document.getElementById('smtp-nombre-sistema').value.trim(),
+    pie_correo: document.getElementById('smtp-pie-correo').value.trim(),
     test_email_to: document.getElementById('test-email-to') ? document.getElementById('test-email-to').value.trim() : ''
   };
 }
@@ -29,6 +31,8 @@ function loadConfig() {
         document.getElementById('smtp-pass').value = data.data.password || '';
         document.getElementById('smtp-sender').value = data.data.remitente_por_defecto || '';
         document.getElementById('smtp-tls').checked = data.data.use_tls;
+        document.getElementById('smtp-nombre-sistema').value = data.data.nombre_sistema || '';
+        document.getElementById('smtp-pie-correo').value = data.data.pie_correo || '';
       }
     })
     .catch(err => console.error("Error cargando config:", err));

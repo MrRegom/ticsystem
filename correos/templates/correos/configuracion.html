@@ -60,6 +60,24 @@
         <label class="ms-form-label" style="margin:0; font-weight:normal;">Usar seguridad TLS (Recomendado)</label>
       </div>
     </div>
+  </div>
+
+  <!-- Personalización del Correo -->
+  <div class="ms-card" style="margin-top: 20px;">
+    <h3 class="ms-card-title"><i class="fas fa-paint-brush" style="color:#002855; margin-right:8px;"></i> Personalización del Correo</h3>
+    <p style="font-size:13px; color:#64748b; margin-bottom:16px;">Textos que aparecerán en el encabezado y pie de página de todos los correos enviados por el sistema.</p>
+    <div class="ms-form-grid">
+      <div class="ms-form-group" style="grid-column: span 2;">
+        <label class="ms-form-label">Nombre del Sistema (Encabezado del Correo)</label>
+        <input type="text" class="ms-input" id="smtp-nombre-sistema" placeholder="ej: Mesa de Ayuda TI - Hospital Provincial Marga Marga">
+        <small style="color:#64748b; font-size:12px;">Texto en negrita del encabezado azul de todos los correos.</small>
+      </div>
+      <div class="ms-form-group" style="grid-column: span 2;">
+        <label class="ms-form-label">Pie de Correo (Footer)</label>
+        <input type="text" class="ms-input" id="smtp-pie-correo" placeholder="ej: Unidad de TI - Hospital Provincial Marga Marga">
+        <small style="color:#64748b; font-size:12px;">Texto institucional al pie de todos los correos.</small>
+      </div>
+    </div>
 
     <div class="ms-command-bar" style="display: flex; justify-content: space-between; align-items: center;">
       <div style="display: flex; gap: 10px; align-items: center;">

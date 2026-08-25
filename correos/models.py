@@ -131,6 +131,20 @@ class ConfiguracionSMTP(models.Model):
     use_tls = models.BooleanField(default=True, verbose_name="Usar TLS")
     remitente_por_defecto = models.EmailField(verbose_name="Remitente por Defecto (From)", blank=True, null=True)
     
+    # Personalización visual del correo
+    nombre_sistema = models.CharField(
+        max_length=150,
+        default='TicSystem Mesa de Ayuda',
+        verbose_name="Nombre del Sistema (Encabezado del Correo)",
+        help_text="Texto que aparecerá en el encabezado azul de todos los correos."
+    )
+    pie_correo = models.CharField(
+        max_length=200,
+        default='Mesa de Ayuda - Plataforma Tecnológica',
+        verbose_name="Pie de Correo (Footer)",
+        help_text="Texto institucional que aparecerá al pie de todos los correos."
+    )
+    
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     class Meta:
