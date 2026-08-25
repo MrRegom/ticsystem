@@ -104,10 +104,17 @@ sudo docker compose up -d --no-build
 ```
 
 ## 7. Inicialización de Base de Datos (Producción)
-Inyección de la base de datos maestra con todos los roles, perfiles, grupos resolutores y mantenedores corporativos.
+Inyección de la estructura, tablas, roles, perfiles, y mantenedores corporativos utilizando el entorno de Django.
 ```bash
-# Inyecta el respaldo completo de la base de datos (Incluye el Super Administrador y Roles pre-configurados)
-cat deploy/base_datos_produccion.sql | sudo docker compose exec -T db psql -U ticsystem_admin -d ticsystem_db
+# Ejecuta las migraciones estructurales de la base de datos
+sudo docker compose exec -it web python manage.py migrate --settings=config.settings.production
+
+# Carga la data base de mantenedores (hospital, edificios, unidades)
+sudo docker compose exec -it web python manage.py loaddata mantenedores_dump_utf8.json --settings=config.settings.production
+
+# Configura los SLA por defecto y crea los roles de sistema
+sudo docker compose exec -it web python seed_sla.py
+sudo docker compose exec -it web python crear_rol.py
 ```
 
 ## 8. Verificación
