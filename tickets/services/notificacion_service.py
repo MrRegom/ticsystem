@@ -106,12 +106,24 @@ class NotificacionService:
             if comentario:
                 detalles_lista.append(("Detalle de la Espera", comentario))
 
+        # Leer branding personalizado desde la configuración SMTP
+        try:
+            from correos.models import ConfiguracionSMTP
+            smtp = ConfiguracionSMTP.load()
+            nombre_sistema = smtp.nombre_sistema or 'TicSystem Mesa de Ayuda'
+            pie_correo = smtp.pie_correo or 'Mesa de Ayuda - Plataforma Tecnológica'
+        except Exception:
+            nombre_sistema = 'TicSystem Mesa de Ayuda'
+            pie_correo = 'Mesa de Ayuda - Plataforma Tecnológica'
+
         return NotificacionService._build_html_email(
             titulo=titulo_email,
             nombre_usuario=solicitante_nombre,
             mensaje_principal=mensaje_principal,
             detalles_lista=detalles_lista,
-            footer_msg=footer_msg
+            footer_msg=footer_msg,
+            nombre_sistema=nombre_sistema,
+            pie_correo=pie_correo
         )
 
     @staticmethod
