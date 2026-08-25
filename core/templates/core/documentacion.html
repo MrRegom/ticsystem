@@ -1,3 +1,4 @@
+{% if autenticado %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -211,14 +212,57 @@
         /* Mermaid Diagram Container */
         .diagram-container {
             width: 100%;
-            overflow-x: auto;
-            background: white;
-            padding: 2rem;
+            background: #ffffff;
+            padding: 0;
             border-radius: 12px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             display: flex;
             justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* SVG Pan Zoom controls */
+        #mermaid-svg-container {
+            width: 100%;
+            height: 800px;
+            cursor: grab;
+        }
+        #mermaid-svg-container:active {
+            cursor: grabbing;
+        }
+        
+        .diagram-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .diagram-controls button {
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .diagram-controls button:hover {
+            background: var(--primary);
+            color: white;
         }
         
         /* Architecture Grid */
@@ -273,7 +317,7 @@
         <section id="objetivo" class="section">
             <h2 class="section-title"><i class="fas fa-bullseye"></i> 1. Descripción General del Sistema</h2>
             <div class="card">
-                <p><strong>TicSystem</strong> es una plataforma de Mesa de Ayuda de nivel empresarial, diseñada específicamente para entornos hospitalarios y clínicos. Su objetivo principal es centralizar, gestionar y resolver las solicitudes de soporte técnico e incidentes reportados por los funcionarios.</p>
+                <p><strong>TicSystem</strong> es una plataforma de Mesa de Ayuda de nivel empresarial, <strong>diseñada específicamente para la gestión de inventarios y tickets</strong>. Su objetivo principal es centralizar, gestionar y resolver las solicitudes de soporte técnico e incidentes reportados por los usuarios.</p>
                 <p>El sistema abarca el ciclo de vida completo de un ticket, integrando la gestión de inventario tecnológico (activos), niveles de servicio (SLA), notificaciones automáticas por correo electrónico vía SMTP y métricas de resolución (Business Intelligence).</p>
             </div>
         </section>
@@ -392,11 +436,16 @@ sudo docker compose down</pre>
         <!-- Sección: Modelo de Base de Datos -->
         <section id="modelo-bd" class="section">
             <h2 class="section-title"><i class="fas fa-project-diagram"></i> 5. Modelo de Base de Datos</h2>
-            <div class="card">
+            <div class="card" style="padding-bottom: 0;">
                 <p>Diagrama Entidad-Relación (ERD) que ilustra las tablas centrales que soportan la trazabilidad de los tickets, los niveles de servicio y la gestión del inventario tecnológico. <i>(Generado automáticamente)</i></p>
                 
                 <div class="diagram-container">
-                    <div class="mermaid">
+                    <div class="diagram-controls">
+                        <button id="zoom-in" title="Acercar"><i class="fas fa-plus"></i></button>
+                        <button id="zoom-out" title="Alejar"><i class="fas fa-minus"></i></button>
+                        <button id="zoom-reset" title="Centrar"><i class="fas fa-expand"></i></button>
+                    </div>
+                    <div id="mermaid-svg-container" class="mermaid">
                         erDiagram
                             %% Gestión de Tickets
                             Ticket {
@@ -510,20 +559,24 @@ sudo docker compose down</pre>
 
     </main>
 
-    <!-- Mermaid.js para los diagramas -->
+    <!-- Librerías -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar Mermaid
             mermaid.initialize({
                 startOnLoad: true,
                 theme: 'base',
                 themeVariables: {
-                    primaryColor: '#f1f5f9',
+                    primaryColor: '#f8fafc',
                     primaryTextColor: '#1e293b',
-                    primaryBorderColor: '#3b82f6',
-                    lineColor: '#64748b',
+                    primaryBorderColor: '#002855',
+                    lineColor: '#3b82f6',
                     secondaryColor: '#e0e7ff',
-                    tertiaryColor: '#fff'
+                    tertiaryColor: '#fff',
+                    fontSize: '14px'
                 },
                 securityLevel: 'loose'
             });
@@ -536,7 +589,155 @@ sudo docker compose down</pre>
                     this.classList.add('active');
                 });
             });
+
+            // Darle tiempo a Mermaid para renderizar y luego inicializar el Pan/Zoom
+            setTimeout(() => {
+                const svgElement = document.querySelector('#mermaid-svg-container svg');
+                if (svgElement) {
+                    // Remover max-width forzado
+                    svgElement.style.maxWidth = 'none';
+                    svgElement.style.width = '100%';
+                    svgElement.style.height = '100%';
+                    
+                    const panZoomInstance = svgPanZoom(svgElement, {
+                        zoomEnabled: true,
+                        controlIconsEnabled: false,
+                        fit: true,
+                        center: true,
+                        minZoom: 0.5,
+                        maxZoom: 5
+                    });
+                    
+                    document.getElementById('zoom-in').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        panZoomInstance.zoomIn();
+                    });
+                    
+                    document.getElementById('zoom-out').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        panZoomInstance.zoomOut();
+                    });
+                    
+                    document.getElementById('zoom-reset').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        panZoomInstance.resetZoom();
+                        panZoomInstance.center();
+                    });
+                }
+            }, 1000);
         });
     </script>
 </body>
 </html>
+{% else %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Restringido - Documentación Técnica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        .login-card {
+            background: #1e293b;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border-top: 5px solid #3b82f6;
+        }
+        .login-card h2 {
+            margin-top: 0;
+            margin-bottom: 2rem;
+            color: #f8fafc;
+        }
+        .login-card i.lock-icon {
+            font-size: 3rem;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #3b82f6;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #2563eb;
+        }
+        .error {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            background: rgba(239,68,68,0.1);
+            padding: 10px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <i class="fas fa-lock lock-icon"></i>
+        <h2>Acceso Confidencial</h2>
+        <p style="color: #94a3b8; margin-bottom: 2rem; font-size: 0.95rem;">Documentación Técnica Oficial. Por favor ingrese la clave de seguridad para continuar.</p>
+        
+        {% if error %}
+            <div class="error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <label for="password">Contraseña de Acceso</label>
+                <input type="password" id="password" name="password" required autofocus autocomplete="off">
+            </div>
+            <button type="submit" class="btn-submit">Ingresar</button>
+        </form>
+    </div>
+</body>
+</html>
+{% endif %}
