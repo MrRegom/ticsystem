@@ -75,7 +75,6 @@ class NotificacionService:
         detalles_lista = [
             ("Código", ticket.correlativo),
             ("Usuario Notificador", solicitante_nombre),
-            ("Título", ticket.titulo),
         ]
         
         # Añadir ubicación y equipo si existen
