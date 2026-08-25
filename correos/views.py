@@ -47,7 +47,7 @@ class ConfiguracionSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             config.password = data.get('password', '')
             config.use_tls = bool(data.get('use_tls', True))
             config.remitente_por_defecto = data.get('remitente_por_defecto', '')
-            config.activo = True  # Siempre activar al guardar explícitamente desde el UI
+            
             
             config.save()
             return JsonResponse({'success': True, 'message': 'Configuración guardada correctamente.'})
@@ -202,7 +202,7 @@ class CorreoReenviarAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
         # Verificar SMTP antes de encolar
         try:
             smtp = ConfiguracionSMTP.load()
-            smtp_activo = bool(smtp.host and smtp.activo)
+            smtp_activo = bool(smtp.host)
         except Exception:
             smtp_activo = False
 

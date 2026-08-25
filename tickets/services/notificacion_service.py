@@ -93,7 +93,7 @@ class NotificacionService:
         smtp_activo = False
         try:
             smtp = ConfiguracionSMTP.load()
-            smtp_activo = bool(smtp.host and smtp.activo)
+            smtp_activo = bool(smtp.host)
         except Exception:
             smtp_activo = False
 
