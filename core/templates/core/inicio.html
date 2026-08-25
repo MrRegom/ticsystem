@@ -54,12 +54,19 @@
   .kpi-value { font-size: 32px; font-weight: 400; color: #201f1e; line-height: 1; margin-bottom: 4px; }
   .kpi-desc { font-size: 12px; color: #a19f9d; }
 
-  /* Dense Layout Grid */
-  .dashboard-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; }
+  /* Dense Layout Grid (Responsive) */
+  .dashboard-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr)); 
+    gap: 24px; 
+  }
 
-  /* Fluent Tables */
-  .fluent-table-wrapper { margin: 0 -20px; }
-  .fluent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  /* Responsive Fix for Tables */
+  .fluent-table-wrapper { 
+    margin: 0 -20px; 
+    overflow-x: auto; /* Permite scroll en móvil */
+  }
+  .fluent-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
   .fluent-table th {
     padding: 12px 20px; text-align: left; font-weight: 600; color: #605e5c;
     border-bottom: 2px solid #edebe9; font-size: 12px;
@@ -89,8 +96,12 @@
   .ms-progress-fill.green { background-color: #107c10; }
   .ms-progress-fill.orange { background-color: #d83b01; }
 
-  /* Issue Grid */
-  .fluent-issue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  /* Issue Grid (Responsive) */
+  .fluent-issue-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); 
+    gap: 16px; 
+  }
   .fluent-issue-item {
     padding: 16px; background-color: #ffffff; border: 1px solid #edebe9; border-radius: 4px;
     display: flex; justify-content: space-between; align-items: center;
@@ -156,10 +167,10 @@
     <div>
       
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 24px; margin-bottom: 24px;">
           <div class="fluent-card" style="height: 100%;">
         <div class="fluent-card-header">
-          <span>Últimos Anexos Registrados</span>
+          <span><i class="fas fa-network-wired" style="color:#5c2d91; margin-right:8px;"></i> Últimos Anexos Registrados</span>
           <a href="/anexos/" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver todos</a>
         </div>
         <div class="fluent-table-wrapper">
@@ -200,7 +211,7 @@
       </div>
           <div class="fluent-card" style="height: 100%;">
         <div class="fluent-card-header">
-          <span>Últimos Tickets Pendientes</span>
+          <span><i class="fas fa-ticket-alt" style="color:#0078d4; margin-right:8px;"></i> Últimos Tickets Pendientes</span>
           <a href="/tickets/" style="font-size: 13px; font-weight: 400; color: #0078d4; text-decoration: none;">Ver tickets</a>
         </div>
         <div class="fluent-table-wrapper">
