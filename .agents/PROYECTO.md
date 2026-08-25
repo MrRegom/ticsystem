@@ -188,9 +188,21 @@ scp deploy/mantenedores_dump_utf8.json root@[IP-SERVIDOR]:/root/
 
 # Volver al servidor:
 docker cp /root/mantenedores_dump_utf8.json ticsystem_web:/app/mantenedores_dump_utf8.json
-docker exec ticsystem_web python manage.py loaddata mantenedores_dump_utf8.json --settings=config.settings.production
 
-# 8. Abrir navegador: http://[IP-DEL-SERVIDOR]
+# 8. Ejecutar migraciones y poblar base de datos inicial:
+docker exec -it ticsystem_web bash
+python manage.py migrate --settings=config.settings.production
+python manage.py loaddata mantenedores_dump_utf8.json --settings=config.settings.production
+python seed_sla.py
+python crear_rol.py
+exit
+
+# 9. Configurar Correos (SMTP):
+# Editar el archivo .env con las credenciales SMTP proporcionadas por el hospital.
+# Una vez modificado el .env, reiniciar los workers para que tomen las variables:
+docker compose restart celery_worker web
+
+# 10. Abrir navegador: http://[IP-DEL-SERVIDOR]
 # → Debe aparecer pantalla de Login de TICsystem
 ```
 
@@ -289,6 +301,9 @@ docker compose down -v
     *   *Identidades (Usuarios):* Interfaz Fluent UI con consultas directas a API restringidas y paginadas.
     *   *Protección de Trazabilidad:* La arquitectura se apoya en `on_delete=models.PROTECT`. No existe pérdida de datos al "eliminar"; el sistema obliga a un apagado lógico (Soft Delete mediante el switch "Activo") si el funcionario ya tiene historial (tickets, equipos).
 *   **Envío de Correos Asíncrono (Enterprise Async con Celery + Redis):** Para evitar bloqueos de la UI de 3 a 5 segundos al crear/modificar un ticket, se migró el envío de emails a tareas en segundo plano. Se agregó el servicio `redis` como broker de mensajería y `celery_worker` para consumir la cola. Además, se construyó un "Panel de Trazabilidad de Correos" en el frontend para monitorear el historial, reenviar correos en caso de que el SMTP falle y gestionar logs de entregas, soportando robustamente la operación del hospital aún sin configuración de correos activa (estado `SIN_SMTP`).
+*   **Flujo de Autogestión de Contraseñas (Auth Override):** Se desarrolló un flujo nativo e inmersivo para la recuperación de contraseñas. Se sobrescribieron las vistas de `django.contrib.auth` en `core/urls.py` y se configuró explícitamente `TEMPLATES` en `base.py` priorizando las plantillas de `core` sobre las de `django.contrib.admin`, impidiendo que se rompa el estilo corporativo del portal al redirigir al panel de administración base de Django.
+*   **Documentación Interactiva (ERD & Knowledge Graph):** Se creó una sección protegida (mediante la clave embebida requerida por seguridad) para mostrar la documentación técnica animada y moderna de la arquitectura de la base de datos a administradores externos, con zoom y relaciones dinámicas.
+*   **Dashboard Fluido y Real-Time:** Se reemplazó el `grid-template-columns` rígido por un sistema responsivo usando `CSS Grid auto-fit` (`repeat(auto-fit, minmax(...))`) permitiendo escalabilidad automática a dispositivos móviles, junto con un rediseño de UI/UX de las tablas "Últimos Anexos" y "Últimos Tickets" para que no recorten información en resoluciones pequeñas, consolidando las métricas en tiempo real.
 
 ---
 
@@ -298,7 +313,7 @@ Debido a una desincronización de la base de datos en producción (Limpieza de v
 *   **Usuarios:** Solo existe el usuario administrador principal (`16233406-9`). El resto fue eliminado para permitir una recreación limpia.
 *   **Mantenedores (Infraestructura):** Se inyectó un dump base con toda la estructura de Edificios, Pisos, Sectores, Áreas y Unidades (aprox. 800 registros listos para usar).
 *   **Inventario y Tickets:** En blanco, listos para pruebas.
-*   **Arquitectura:** Funcionando al 100% con las últimas actualizaciones (Celery, Redis, Trazabilidad de Correos, Validaciones de RUT).
+*   **Arquitectura:** Funcionando al 100% con las últimas actualizaciones (Celery, Redis, Trazabilidad de Correos, Validaciones de RUT, Flujo Auth Password Reset, Documentación Interactiva y Dashboard Responsivo).
 
 **Próximos Pasos (To-Do del Usuario):**
 1. Crear los perfiles de los técnicos e ingenieros.
