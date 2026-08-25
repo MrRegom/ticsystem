@@ -67,6 +67,9 @@ class UsuarioService:
         if not correo or "@" not in correo:
             raise ValidationError("Debe proporcionar un correo electrónico válido.")
 
+        if User.objects.filter(email__iexact=correo).exists():
+            raise ValidationError("El correo electrónico ya se encuentra registrado en el sistema. Ingrese uno diferente.")
+
         if not contrasena or len(contrasena) < 8:
             raise ValidationError("La contraseña debe tener un mínimo de 8 caracteres.")
 
@@ -142,6 +145,9 @@ class UsuarioService:
 
         if not correo or "@" not in correo:
             raise ValidationError("Debe proporcionar un correo electrónico válido.")
+
+        if User.objects.filter(email__iexact=correo).exclude(id=user_id).exists():
+            raise ValidationError("El correo electrónico ya se encuentra registrado por otro usuario. Ingrese uno diferente.")
 
         # Manejar cambio de RUT / username
         rut_clean = None
