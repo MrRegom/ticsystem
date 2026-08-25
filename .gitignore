@@ -59,3 +59,5 @@ scratch/
 staticfiles/
 media/
 temp_extract/
+paquetes_docker/
+*.tar
