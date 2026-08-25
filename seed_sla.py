@@ -1,7 +1,4 @@
-import django
-import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ticsystem.settings')
-django.setup()
+# Ejecutar vía manage.py shell para usar el entorno de producción
 
 from tickets.models import Prioridad, Ticket
 from sla.models import SLAMatrix
