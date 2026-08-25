@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación Técnica Oficial - TicSystem</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #002855;
+            --primary-light: #004080;
+            --accent: #3b82f6;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 12px 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background-color: var(--primary-light);
+            color: white;
+            border-left: 4px solid var(--accent);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 3rem 4rem;
+            max-width: 1200px;
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Sections & Cards */
+        .section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--accent);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        code {
+            font-family: 'Consolas', monospace;
+            background: #f1f5f9;
+            color: #b91c1c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        /* Tables for Credentials & Variables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        
+        .badge.docker {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        /* Mermaid Diagram Container */
+        .diagram-container {
+            width: 100%;
+            overflow-x: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+        }
+        
+        /* Architecture Grid */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .arch-node {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+        }
+        .arch-node h4 {
+            margin-top: 0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-hospital-user"></i> TicSystem</h2>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="#objetivo"><i class="fas fa-bullseye"></i> Objetivo</a></li>
+            <li><a href="#arquitectura"><i class="fas fa-network-wired"></i> Arquitectura</a></li>
+            <li><a href="#instalacion"><i class="fas fa-terminal"></i> Instalación y Despliegue</a></li>
+            <li><a href="#credenciales"><i class="fas fa-key"></i> Credenciales Base de Datos</a></li>
+            <li><a href="#modelo-bd"><i class="fas fa-database"></i> Modelo de Base de Datos</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <header class="page-header">
+            <h1>Documentación Técnica Oficial</h1>
+            <p>Arquitectura, Despliegue y Modelo de Datos - TicSystem (Mesa de Ayuda)</p>
+        </header>
+
+        <!-- Sección: Objetivo -->
+        <section id="objetivo" class="section">
+            <h2 class="section-title"><i class="fas fa-bullseye"></i> 1. Descripción General del Sistema</h2>
+            <div class="card">
+                <p><strong>TicSystem</strong> es una plataforma de Mesa de Ayuda de nivel empresarial, diseñada específicamente para entornos hospitalarios y clínicos. Su objetivo principal es centralizar, gestionar y resolver las solicitudes de soporte técnico e incidentes reportados por los funcionarios.</p>
+                <p>El sistema abarca el ciclo de vida completo de un ticket, integrando la gestión de inventario tecnológico (activos), niveles de servicio (SLA), notificaciones automáticas por correo electrónico vía SMTP y métricas de resolución (Business Intelligence).</p>
+            </div>
+        </section>
+
+        <!-- Sección: Arquitectura -->
+        <section id="arquitectura" class="section">
+            <h2 class="section-title"><i class="fas fa-network-wired"></i> 2. Arquitectura del Sistema</h2>
+            <div class="card">
+                <p>La aplicación está diseñada bajo una arquitectura moderna de microservicios contenerizados utilizando <strong>Docker y Docker Compose</strong>. Esto garantiza la portabilidad, escalabilidad y un entorno de ejecución idéntico tanto en desarrollo como en producción.</p>
+                
+                <p><strong>¿Cómo se comunican los componentes?</strong></p>
+                <p>Todas las comunicaciones ocurren dentro de una red privada de Docker aislada del exterior. Nginx recibe las peticiones web y actúa como Proxy Inverso, enviándolas al contenedor Web (Gunicorn). El contenedor Web, así como el Worker de Celery, se conectan directamente al contenedor de PostgreSQL para la persistencia de datos y al contenedor Redis para la cola de mensajes en segundo plano.</p>
+
+                <div class="arch-grid">
+                    <div class="arch-node" style="border-top-color: #0284c7;">
+                        <h4><i class="fab fa-python"></i> Contenedor Web (Django/Gunicorn)</h4>
+                        <p>Contiene la lógica de negocio principal y las API. Expone la aplicación en el puerto 8000 internamente.</p>
+                    </div>
+                    <div class="arch-node" style="border-top-color: #16a34a;">
+                        <h4><i class="fas fa-cogs"></i> Celery Worker</h4>
+                        <p>Procesa tareas asíncronas pesadas en segundo plano (como el envío de notificaciones y cálculo de SLAs) para no bloquear la interfaz del usuario.</p>
+                    </div>
+                    <div class="arch-node" style="border-top-color: #336791;">
+                        <h4><i class="fas fa-database"></i> PostgreSQL (db)</h4>
+                        <p>Motor de base de datos relacional ejecutándose en la versión 15-alpine. Sus datos están persistidos en un volumen local.</p>
+                    </div>
+                    <div class="arch-node" style="border-top-color: #dc2626;">
+                        <h4><i class="fas fa-layer-group"></i> Redis</h4>
+                        <p>Actúa como Message Broker para la comunicación asíncrona entre Django y Celery.</p>
+                    </div>
+                    <div class="arch-node" style="border-top-color: #009639;">
+                        <h4><i class="fas fa-server"></i> Nginx</h4>
+                        <p>Servidor web y Proxy Inverso que sirve los archivos estáticos y enruta el tráfico HTTP (Puerto 80).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección: Instalación -->
+        <section id="instalacion" class="section">
+            <h2 class="section-title"><i class="fas fa-terminal"></i> 3. Instalación y Despliegue</h2>
+            <div class="card">
+                <h3>Configuración de Variables de Entorno</h3>
+                <p>Toda la configuración de conexión y seguridad reside en el archivo oculto <code>.env</code> en la raíz del proyecto. El motor Docker Compose lee automáticamente este archivo al iniciarse.</p>
+                
+                <h3>Comandos de Control (Docker Compose)</h3>
+                <p>Para administrar el ciclo de vida de la aplicación, utilice los siguientes comandos en el servidor de producción (ubicado en el directorio del proyecto):</p>
+                
+                <pre># Levantar todo el proyecto en segundo plano
+sudo docker compose up -d
+
+# Ver los logs en tiempo real (todos los contenedores)
+sudo docker compose logs -f
+
+# Aplicar nuevas migraciones a la Base de Datos
+sudo docker compose exec web python manage.py migrate
+
+# Reiniciar únicamente los motores de procesamiento (Web y Tareas) tras un pase a producción
+sudo docker compose restart web celery_worker
+
+# Detener completamente la aplicación
+sudo docker compose down</pre>
+            </div>
+        </section>
+
+        <!-- Sección: Credenciales -->
+        <section id="credenciales" class="section">
+            <h2 class="section-title"><i class="fas fa-key"></i> 4. Credenciales de Base de Datos</h2>
+            <div class="card">
+                <p>La base de datos se ejecuta <strong>completamente aislada dentro del contenedor Docker</strong> <code>ticsystem_db</code>. Por estrictas normas de seguridad, el puerto no está expuesto directamente al host físico ni a internet, por lo que toda conexión externa debe realizarse a través de un túnel SSH o modificando temporalmente el <code>docker-compose.yml</code>.</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parámetro</th>
+                            <th>Valor de Configuración</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Motor</strong></td>
+                            <td>PostgreSQL 15 (Alpine)</td>
+                            <td><span class="badge docker">Contenedor Docker</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Host Interno (Docker)</strong></td>
+                            <td><code>db</code></td>
+                            <td>Nombre del servicio en la red Docker</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Puerto Interno</strong></td>
+                            <td><code>5432</code></td>
+                            <td>Solo accesible por otros contenedores</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nombre Base de Datos</strong></td>
+                            <td><code>ticsystem</code></td>
+                            <td>Definido en el archivo .env</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Usuario</strong></td>
+                            <td><code>ticsystem</code></td>
+                            <td>Definido en el archivo .env</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Contraseña</strong></td>
+                            <td><i>[Oculta por Seguridad]</i></td>
+                            <td>Revisar archivo físico .env en servidor</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sección: Modelo de Base de Datos -->
+        <section id="modelo-bd" class="section">
+            <h2 class="section-title"><i class="fas fa-project-diagram"></i> 5. Modelo de Base de Datos</h2>
+            <div class="card">
+                <p>Diagrama Entidad-Relación (ERD) que ilustra las tablas centrales que soportan la trazabilidad de los tickets, los niveles de servicio y la gestión del inventario tecnológico. <i>(Generado automáticamente)</i></p>
+                
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        erDiagram
+                            %% Gestión de Tickets
+                            Ticket {
+                                int id PK
+                                string correlativo "N° Ticket"
+                                string tipo "Incidente/Req"
+                                string estado
+                                string descripcion
+                                string solucion
+                                datetime fecha_creacion
+                                datetime fecha_asignacion
+                                datetime fecha_cierre
+                            }
+                            TicketHistorial {
+                                int id PK
+                                string accion
+                                string valor_anterior
+                                string valor_nuevo
+                                string comentario
+                                datetime fecha
+                            }
+                            ArchivoAdjunto {
+                                int id PK
+                                file archivo
+                                datetime fecha_subida
+                            }
+                            
+                            %% Usuarios y Roles
+                            User {
+                                int id PK
+                                string username
+                                string email
+                            }
+                            Funcionario {
+                                int id PK
+                                string rut
+                                string nombres
+                                string apellidos
+                            }
+                            GrupoResolutor {
+                                int id PK
+                                string nombre
+                                bool is_system
+                            }
+
+                            %% SLA
+                            Prioridad {
+                                int id PK
+                                string nombre
+                                int sla_horas
+                            }
+                            Categoria {
+                                int id PK
+                                string nombre
+                            }
+
+                            %% Equipamiento (Inventario)
+                            Equipo {
+                                int id PK
+                                string num_inventario
+                                string serial_number
+                                string ip
+                                string mac_address
+                                date vencimiento_garantia
+                            }
+                            Marca {
+                                int id PK
+                                string nombre
+                            }
+                            Modelo {
+                                int id PK
+                                string nombre
+                            }
+                            Proveedor {
+                                int id PK
+                                string nombre
+                                string rut
+                            }
+                            BitacoraEquipo {
+                                int id PK
+                                string tipo_registro
+                                string falla_reportada
+                                string actividades_realizadas
+                            }
+
+                            %% Relaciones Core Tickets
+                            Ticket ||--o{ TicketHistorial : "posee historial"
+                            Ticket ||--o{ ArchivoAdjunto : "adjunta"
+                            Ticket }o--|| Funcionario : "solicitado por"
+                            Ticket }o--|| User : "asignado a (tecnico)"
+                            Ticket }o--|| User : "creado por (operador)"
+                            Ticket }o--|| GrupoResolutor : "enrutado a"
+                            
+                            %% Relaciones Clasificación
+                            Ticket }o--|| Prioridad : "clasificado en"
+                            Ticket }o--|| Categoria : "pertenece a"
+                            Categoria }o--|| GrupoResolutor : "asociada a"
+
+                            %% Relaciones Inventario
+                            Ticket }o--|| Equipo : "reportado sobre"
+                            Equipo ||--o{ BitacoraEquipo : "registra mantenciones"
+                            Equipo }o--|| Marca : "es marca"
+                            Equipo }o--|| Modelo : "es modelo"
+                            Equipo }o--|| Proveedor : "adquirido de"
+                            BitacoraEquipo }o--|| User : "realizada por (tecnico)"
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Mermaid.js para los diagramas -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'base',
+                themeVariables: {
+                    primaryColor: '#f1f5f9',
+                    primaryTextColor: '#1e293b',
+                    primaryBorderColor: '#3b82f6',
+                    lineColor: '#64748b',
+                    secondaryColor: '#e0e7ff',
+                    tertiaryColor: '#fff'
+                },
+                securityLevel: 'loose'
+            });
+            
+            // Highlight activo en sidebar
+            const links = document.querySelectorAll('.sidebar-nav a');
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    links.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

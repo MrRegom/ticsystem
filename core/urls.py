@@ -1,5 +1,5 @@
 from django.urls import path
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 from core.views import (
     CustomLoginView, 
     CustomLogoutView, 
@@ -31,6 +31,7 @@ urlpatterns = [
     path('dashboard/', DashboardGeneralView.as_view(), name='dashboard'),
     path('switch_user/', SwitchUserView.as_view(), name='switch_user'),
     path('manual/', ManualUsuarioView.as_view(), name='manual_usuario'),
+    path('documentacion/docs/', TemplateView.as_view(template_name='core/documentacion.html'), name='documentacion_docs'),
 
     path('usuarios/', UsuariosDashboardView.as_view(), name='usuarios_dashboard'),
     path('roles/', RolesDashboardView.as_view(), name='roles_dashboard'),
