@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict kl6gpaCcvscOtvyCykTRz3q27oK5i6xmmenyIMvZblcYlCBixnUTDbxf24Up1eR
+\restrict JqIvyqe5UYDsHoOjGQuzPLBrPElcFo8IfX7Vtv4wMAKm9XVJEGDtOP3xbOdn0fI
 
 -- Dumped from database version 15.19
 -- Dumped by pg_dump version 15.19
@@ -3254,7 +3254,9 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-2	pbkdf2_sha256$1200000$7HNyAQvfxLA9GkbPp8dWV2$5JRNlllNrYvfXM4oA1CAma0McK1RkMDAIBQ++PPALP4=	2026-08-25 01:14:32.15206+00	t	16233406-9	REINALDO	GOMEZ	mr.reinaldo.g@redsalud.gob.cl	t	t	2026-07-09 01:03:15.143+00
+34	pbkdf2_sha256$1200000$z0NUbZczgot2ofYb8hUqmq$biL2B/ywwA0KAo1Opa8OV+UkfMIUUxRZHd3gsjOsy1M=	\N	f	13549881-5	LEON	PEREZ SANTIBAÑEZ	mr.reinaldo.g@gmail.com	f	t	2026-08-25 01:42:02.649385+00
+33	pbkdf2_sha256$1200000$i0LjVUgdjTMz8v0rBHhkf3$j7bGlZGdII9MvOKJ+5p9oAQpaiAszARsa3bFfOqytmw=	2026-08-25 01:53:46.799114+00	f	24028352-2	MINDY	PALACIOS BAZAN	mr.reinaldo.g@gmail.com	f	t	2026-08-25 01:41:06.860787+00
+2	pbkdf2_sha256$1200000$7HNyAQvfxLA9GkbPp8dWV2$5JRNlllNrYvfXM4oA1CAma0McK1RkMDAIBQ++PPALP4=	2026-08-25 01:53:28.158909+00	t	16233406-9	REINALDO	GOMEZ	mr.reinaldo.g@redsalud.gob.cl	t	t	2026-07-09 01:03:15.143+00
 \.
 
 
@@ -3385,6 +3387,11 @@ COPY public.axes_accesslog (id, user_agent, ip_address, username, http_accept, p
 79	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36	172.18.0.4	24028352-2	application/json, text/javascript, */*; q=0.01	/login/	2026-08-24 14:39:34.593449+00	2026-08-24 14:40:38.832736+00	3ca1213ebc51b3215f87dcb513d3cefdc5786b9ab3fe9eb46c8a93b093ec23b8
 80	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36	172.18.0.4	16233406-9	application/json, text/javascript, */*; q=0.01	/login/	2026-08-24 14:40:48.61885+00	\N	8343a6f9cb35465f18e322effa08d54e430f50964bca529c9dd6cd7a8f7721bb
 81	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36	172.18.0.4	16233406-9	application/json, text/javascript, */*; q=0.01	/login/	2026-08-25 01:14:32.134301+00	\N	70493bbf55a9c23eacbf1b393329ab6656e65ca4c4fda50c32fefdfd501ce852
+82	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36	172.19.0.6	16233406-9	application/json, text/javascript, */*; q=0.01	/login/	2026-08-25 01:27:09.804645+00	\N	daad65617f65ef1a7a1d8fce2d8f4a1f9497820adaeeefb9209d2a53a2df357f
+83	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0	172.19.0.6	24028352-2	application/json, text/javascript, */*; q=0.01	/login/	2026-08-25 01:42:27.398003+00	2026-08-25 01:43:53.137463+00	984a4a97f1d88f0f6fd920968f461781dccad1ce9dedec527c771c321b84973f
+84	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0	172.19.0.6	24028352-2	application/json, text/javascript, */*; q=0.01	/login/	2026-08-25 01:44:35.539046+00	2026-08-25 01:53:18.753597+00	49e54ba8d9d5e22f1f8beee82fb7e2e44d4c269d0ba48912af578ee3083cae22
+85	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0	172.19.0.6	16233406-9	application/json, text/javascript, */*; q=0.01	/login/	2026-08-25 01:53:28.153787+00	2026-08-25 01:53:39.685878+00	5e946f7e33e137998f5ec19ce39201e4b851ce3447f614fb0ff3110f115b8134
+86	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0	172.19.0.6	24028352-2	application/json, text/javascript, */*; q=0.01	/login/	2026-08-25 01:53:46.796932+00	\N	fe7f695f05e748339c35abc630ea2831be50c1b96ebc450401204f118491a753
 \.
 
 
@@ -3409,6 +3416,10 @@ COPY public.conocimiento_categoriaconocimiento (id, nombre) FROM stdin;
 --
 
 COPY public.core_funcionario (id, rut, nombres, apellidos, correo, cargo_id, fecha_registro, unidad_id, cargo_old) FROM stdin;
+23	24028352-2	MINDY	PALACIOS BAZAN	mr.reinaldo.g@gmail.com	10	2026-08-25 01:40:53.345106+00	77	\N
+24	13549881-5	LEON	PEREZ SANTIBAÑEZ	mr.reinaldo.g@gmail.com	11	2026-08-25 01:41:39.526582+00	54	\N
+26	17944996-K	ALEJANDRO	GUEVARA	mr.reinaldo.g@gmail.com	3	2026-08-25 02:08:32.517383+00	77	\N
+25	16233406-9	REINALDO	GOMEZ	mr.reinaldo.g@redsalud.gob.cl	13	2026-08-25 01:45:08.977004+00	59	\N
 \.
 
 
@@ -3470,6 +3481,333 @@ COPY public.core_logauditoria (id, usuario, accion, tabla, registro_id, detalles
 679	16233406-9	ACCESO	Roles	\N	El usuario accedió al módulo: Roles	200.39.136.193	2026-08-25 01:14:51.83089+00
 680	16233406-9	ACCESO	Correos/configuracion	\N	El usuario accedió al módulo: Correos/configuracion	200.39.136.193	2026-08-25 01:15:07.268858+00
 681	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	200.39.136.193	2026-08-25 01:17:19.233212+00
+682	16233406-9	LOGIN_OK	User	2	Inicio de sesión exitoso mediante AJAX	10.20.14.97	2026-08-25 01:27:09.811327+00
+683	16233406-9	ACCESO	Dashboard	\N	El usuario accedió al módulo: Dashboard	10.20.14.97	2026-08-25 01:27:09.864971+00
+684	16233406-9	ACCESO	Usuarios	\N	El usuario accedió al módulo: Usuarios	10.20.14.97	2026-08-25 01:27:12.94824+00
+685	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/	10.20.14.97	2026-08-25 01:27:13.052666+00
+686	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 01:27:15.332685+00
+687	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 01:27:17.302932+00
+688	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 01:27:17.505931+00
+689	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 01:27:18.197095+00
+690	16233406-9	ACCESO	Actas	\N	El usuario accedió al módulo: Actas	10.20.14.97	2026-08-25 01:27:19.906632+00
+691	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 01:27:20.105012+00
+692	16233406-9	CREAR	Actas	\N	Petición POST a /actas/api/	10.20.14.97	2026-08-25 01:27:20.106641+00
+694	16233406-9	ACCESO	Usuarios	\N	El usuario accedió al módulo: Usuarios	10.20.14.97	2026-08-25 01:27:21.210928+00
+693	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 01:27:20.10799+00
+696	16233406-9	ACCESO	Roles	\N	El usuario accedió al módulo: Roles	10.20.14.97	2026-08-25 01:27:22.333191+00
+695	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/	10.20.14.97	2026-08-25 01:27:21.283793+00
+697	16233406-9	ACCESO	Anexos	\N	El usuario accedió al módulo: Anexos	10.20.14.97	2026-08-25 01:33:34.056363+00
+698	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 01:33:34.284211+00
+699	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 01:33:38.666912+00
+700	16233406-9	ACCESO	Correos/configuracion	\N	El usuario accedió al módulo: Correos/configuracion	10.20.14.97	2026-08-25 01:33:40.3456+00
+701	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:34:37.964336+00
+702	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:34:38.945377+00
+703	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:35:00.281476+00
+704	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:35:01.127176+00
+705	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:35:35.95922+00
+706	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:35:36.81997+00
+707	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:35:55.25103+00
+708	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:35:56.136403+00
+709	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:36:16.536287+00
+710	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:36:17.335877+00
+711	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:36:39.271568+00
+712	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:36:40.205296+00
+713	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:36:52.033168+00
+714	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:36:53.171751+00
+715	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:37:09.596485+00
+716	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:37:10.44913+00
+717	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:38:36.613193+00
+718	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:38:38.166991+00
+719	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:38:57.599304+00
+720	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:38:58.35206+00
+721	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:39:37.596583+00
+722	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:39:38.492838+00
+723	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/config/	10.20.14.97	2026-08-25 01:39:53.367409+00
+724	16233406-9	CREAR	Correos	\N	Petición POST a /correos/api/test/	10.20.14.97	2026-08-25 01:39:54.218197+00
+725	16233406-9	ACCESO	Usuarios	\N	El usuario accedió al módulo: Usuarios	10.20.14.97	2026-08-25 01:40:21.855093+00
+726	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/	10.20.14.97	2026-08-25 01:40:21.984475+00
+727	16233406-9	CREAR	Funcionarios	\N	Petición POST a /api/funcionarios/crear/	10.20.14.97	2026-08-25 01:40:53.339185+00
+728	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/crear/	10.20.14.97	2026-08-25 01:41:06.855622+00
+729	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/	10.20.14.97	2026-08-25 01:41:07.742924+00
+730	16233406-9	CREAR	Funcionarios	\N	Petición POST a /api/funcionarios/crear/	10.20.14.97	2026-08-25 01:41:39.520959+00
+731	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/crear/	10.20.14.97	2026-08-25 01:42:02.646382+00
+732	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/	10.20.14.97	2026-08-25 01:42:03.514899+00
+733	24028352-2	LOGIN_OK	User	33	Inicio de sesión exitoso mediante AJAX	10.20.14.97	2026-08-25 01:42:27.402511+00
+734	24028352-2	ACCESO	Dashboard	\N	El usuario accedió al módulo: Dashboard	10.20.14.97	2026-08-25 01:42:27.433171+00
+735	24028352-2	CREAR	Logout	\N	Petición POST a /logout/	10.20.14.97	2026-08-25 01:43:53.136203+00
+736	24028352-2	LOGOUT	User	\N	Cierre de sesión exitoso (POST)	10.20.14.97	2026-08-25 01:43:53.14506+00
+737	24028352-2	LOGIN_OK	User	33	Inicio de sesión exitoso mediante AJAX	10.20.14.97	2026-08-25 01:44:35.543307+00
+738	24028352-2	ACCESO	Dashboard	\N	El usuario accedió al módulo: Dashboard	10.20.14.97	2026-08-25 01:44:35.573557+00
+739	24028352-2	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 01:44:37.469058+00
+740	24028352-2	CREAR	Tickets	\N	Petición POST a /tickets/api/search/users/create/	10.20.14.97	2026-08-25 01:45:08.972565+00
+741	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 01:45:13.814263+00
+742	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 01:45:14.018139+00
+743	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:45:23.990461+00
+744	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:45:26.156222+00
+745	16233406-9	ELIMINAR	Mantenedores	\N	Petición DELETE a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:45:32.294477+00
+746	16233406-9	ELIMINAR	Proveedor	1	Proveedor eliminado: Telefonica	10.20.14.97	2026-08-25 01:45:32.302574+00
+747	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:45:32.332571+00
+748	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:45:50.910462+00
+749	16233406-9	CREAR	Proveedor	2	Proveedor creado: Telefonica	10.20.14.97	2026-08-25 01:45:50.981986+00
+750	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:45:51.011041+00
+751	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:45:56.143704+00
+752	16233406-9	MODIFICAR	Proveedor	2	Proveedor modificado: Telefonicasss	10.20.14.97	2026-08-25 01:45:56.217863+00
+753	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:45:56.246839+00
+754	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:46:02.188812+00
+755	16233406-9	MODIFICAR	Proveedor	2	Proveedor modificado: Telefonica	10.20.14.97	2026-08-25 01:46:02.19535+00
+756	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:46:02.223564+00
+757	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:46:04.030303+00
+758	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:46:16.496525+00
+759	16233406-9	CREAR	Articulo	6	Articulo creado: Huellero	10.20.14.97	2026-08-25 01:46:16.501949+00
+760	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:46:16.527912+00
+761	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:46:21.12803+00
+762	16233406-9	MODIFICAR	Articulo	6	Articulo modificado: Huelleros	10.20.14.97	2026-08-25 01:46:21.134691+00
+763	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:46:21.161132+00
+764	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:46:43.094938+00
+765	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:46:46.889667+00
+766	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:46:47.896009+00
+767	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:46:49.70386+00
+768	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:49:49.460804+00
+769	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:49:51.68134+00
+770	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:49:56.274363+00
+771	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:49:56.429219+00
+772	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:49:56.567112+00
+773	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:49:56.722009+00
+774	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:49:59.051352+00
+775	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:39.482478+00
+776	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:51:42.289216+00
+777	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:48.609172+00
+778	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:48.800151+00
+779	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:48.953574+00
+780	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:49.100108+00
+781	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:49.257788+00
+782	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:49.417085+00
+783	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:49.568021+00
+784	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:49.733579+00
+785	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:49.882524+00
+786	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:51:50.008088+00
+787	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:51:52.613393+00
+788	24028352-2	CREAR	Logout	\N	Petición POST a /logout/	10.20.14.97	2026-08-25 01:53:18.752248+00
+789	24028352-2	LOGOUT	User	\N	Cierre de sesión exitoso (POST)	10.20.14.97	2026-08-25 01:53:18.761682+00
+790	16233406-9	LOGIN_FAIL	User	\N	Intento fallido de inicio de sesión para el usuario: 16233406-9	10.20.14.97	2026-08-25 01:53:24.386229+00
+791	16233406-9	LOGIN_OK	User	2	Inicio de sesión exitoso mediante AJAX	10.20.14.97	2026-08-25 01:53:28.160695+00
+792	16233406-9	ACCESO	Dashboard	\N	El usuario accedió al módulo: Dashboard	10.20.14.97	2026-08-25 01:53:28.188738+00
+793	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:53:30.211402+00
+794	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:53:32.9556+00
+795	16233406-9	CREAR	Logout	\N	Petición POST a /logout/	10.20.14.97	2026-08-25 01:53:39.684612+00
+796	16233406-9	LOGOUT	User	\N	Cierre de sesión exitoso (POST)	10.20.14.97	2026-08-25 01:53:39.693648+00
+797	24028352-2	LOGIN_OK	User	33	Inicio de sesión exitoso mediante AJAX	10.20.14.97	2026-08-25 01:53:46.800991+00
+798	24028352-2	ACCESO	Dashboard	\N	El usuario accedió al módulo: Dashboard	10.20.14.97	2026-08-25 01:53:46.831646+00
+799	24028352-2	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 01:53:57.352955+00
+800	16233406-9	ACCESO	Roles	\N	El usuario accedió al módulo: Roles	10.20.14.97	2026-08-25 01:54:15.733601+00
+801	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:54:16.674317+00
+802	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 01:54:18.798563+00
+803	16233406-9	ACCESO	Correos/configuracion	\N	El usuario accedió al módulo: Correos/configuracion	10.20.14.97	2026-08-25 01:54:20.744539+00
+804	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 01:54:22.241443+00
+805	16233406-9	ACCESO	Correos/configuracion	\N	El usuario accedió al módulo: Correos/configuracion	10.20.14.97	2026-08-25 01:54:39.452677+00
+806	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 01:54:41.019198+00
+807	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 01:55:28.477758+00
+808	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 01:55:29.278209+00
+809	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 01:55:29.635933+00
+810	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 01:55:31.954319+00
+811	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 01:55:32.145888+00
+812	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:55:35.170557+00
+813	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:55:37.199751+00
+814	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:56:02.520381+00
+815	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:56:02.689069+00
+816	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:56:02.855485+00
+817	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:56:03.034985+00
+818	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:56:04.513076+00
+819	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:56:09.963311+00
+820	16233406-9	CREAR	Articulo	7	Articulo creado: Okai	10.20.14.97	2026-08-25 01:56:09.969085+00
+821	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:56:09.998187+00
+822	16233406-9	ELIMINAR	Mantenedores	\N	Petición DELETE a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:56:13.045129+00
+823	16233406-9	ELIMINAR	Articulo	7	Articulo eliminado: Okai	10.20.14.97	2026-08-25 01:56:13.052517+00
+824	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:56:13.081987+00
+825	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:56:42.451828+00
+826	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:56:45.908912+00
+827	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:56:51.437555+00
+828	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:57:39.691768+00
+829	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:57:43.914418+00
+830	16233406-9	CREAR	Modeloanexo	6	Modeloanexo creado: CP-39052	10.20.14.97	2026-08-25 01:57:43.922582+00
+831	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:57:43.952695+00
+832	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:57:51.778631+00
+833	16233406-9	MODIFICAR	Modeloanexo	6	Modeloanexo modificado: CP-39052AA	10.20.14.97	2026-08-25 01:57:51.787205+00
+834	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:57:51.814104+00
+835	16233406-9	ELIMINAR	Mantenedores	\N	Petición DELETE a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:57:55.018502+00
+836	16233406-9	ELIMINAR	Modeloanexo	6	Modeloanexo eliminado: CP-39052AA	10.20.14.97	2026-08-25 01:57:55.029805+00
+837	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:57:55.058304+00
+838	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:57:58.367624+00
+839	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:58:08.603073+00
+840	16233406-9	CREAR	Sistemaoperativo	2	Sistemaoperativo creado: Windows 10	10.20.14.97	2026-08-25 01:58:08.609205+00
+841	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:08.636672+00
+842	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:58:16.312141+00
+843	16233406-9	MODIFICAR	Sistemaoperativo	2	Sistemaoperativo modificado: Windows 10 Pro	10.20.14.97	2026-08-25 01:58:16.319255+00
+844	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:16.346478+00
+845	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:21.051799+00
+846	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:58:28.666944+00
+847	16233406-9	MODIFICAR	Categoria	7	Categoria modificado: Hardware 2	10.20.14.97	2026-08-25 01:58:28.673135+00
+848	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:28.699266+00
+849	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:58:33.461053+00
+850	16233406-9	MODIFICAR	Categoria	7	Categoria modificado: Hardware	10.20.14.97	2026-08-25 01:58:33.465553+00
+851	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:33.493878+00
+852	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:35.013821+00
+853	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:39.562413+00
+854	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:47.459269+00
+855	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:58:52.137941+00
+856	16233406-9	MODIFICAR	Institucion	2	Institucion modificado: Hospital Marga Marga A	10.20.14.97	2026-08-25 01:58:52.145827+00
+857	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:52.172224+00
+858	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:58:55.657837+00
+859	16233406-9	MODIFICAR	Institucion	2	Institucion modificado: Hospital Marga Marga	10.20.14.97	2026-08-25 01:58:55.664263+00
+860	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:58:55.691722+00
+861	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:59:38.778754+00
+862	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:59:38.92237+00
+863	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 01:59:39.072112+00
+864	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:59:41.001239+00
+865	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:59:47.149099+00
+866	16233406-9	MODIFICAR	Articulo	4	Articulo modificado: Impresorase	10.20.14.97	2026-08-25 01:59:47.155315+00
+867	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:59:47.184179+00
+868	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 01:59:52.175395+00
+869	16233406-9	MODIFICAR	Articulo	4	Articulo modificado: Impresoras	10.20.14.97	2026-08-25 01:59:52.180995+00
+870	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 01:59:52.207068+00
+871	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:16.806982+00
+872	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:18.909845+00
+873	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:20.057474+00
+874	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:21.164388+00
+875	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 02:01:36.22629+00
+876	16233406-9	CREAR	Pma	1013	Pma creado: Pma 1	10.20.14.97	2026-08-25 02:01:36.234495+00
+877	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:36.263621+00
+878	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:40.225113+00
+879	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:40.744743+00
+880	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:41.39416+00
+881	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:45.008178+00
+882	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:45.675359+00
+883	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 02:01:50.248391+00
+884	16233406-9	MODIFICAR	Pma	1013	Pma modificado: Pma 1aa	10.20.14.97	2026-08-25 02:01:50.258728+00
+885	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:50.287316+00
+886	16233406-9	ELIMINAR	Mantenedores	\N	Petición DELETE a /mantenedores/api/action/	10.20.14.97	2026-08-25 02:01:52.810466+00
+887	16233406-9	ELIMINAR	Pma	1013	Pma eliminado: Pma 1aa	10.20.14.97	2026-08-25 02:01:52.832587+00
+888	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:01:52.861455+00
+889	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:02:37.044294+00
+890	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:02:37.260721+00
+891	16233406-9	ACCESO	Anexos	\N	El usuario accedió al módulo: Anexos	10.20.14.97	2026-08-25 02:02:38.452739+00
+892	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:02:38.634774+00
+893	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 02:02:44.585479+00
+894	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:02:49.42737+00
+895	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 02:04:15.141014+00
+896	16233406-9	MODIFICAR	Modeloanexo	2	Modeloanexo modificado: CP-3905	10.20.14.97	2026-08-25 02:04:15.150569+00
+899	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:04:18.528268+00
+900	16233406-9	ACCESO	Anexos	\N	El usuario accedió al módulo: Anexos	10.20.14.97	2026-08-25 02:04:20.615637+00
+901	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:04:20.758088+00
+897	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:04:15.178662+00
+898	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:04:18.354333+00
+902	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 02:04:35.880468+00
+903	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:04:41.174086+00
+904	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 02:04:46.511203+00
+905	16233406-9	CREAR	Marca	5	Marca creado: Cisco	10.20.14.97	2026-08-25 02:04:46.517544+00
+906	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:04:46.544972+00
+907	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:04:48.43284+00
+908	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:04:48.592726+00
+909	16233406-9	ACCESO	Anexos	\N	El usuario accedió al módulo: Anexos	10.20.14.97	2026-08-25 02:04:51.713432+00
+910	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:04:51.862608+00
+911	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/action/	10.20.14.97	2026-08-25 02:05:32.413929+00
+912	16233406-9	CREAR	Anexo	3	Anexo creado: 320678 (Cisco Cp-3905)	10.20.14.97	2026-08-25 02:05:32.427319+00
+913	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:05:32.459618+00
+914	16233406-9	MODIFICAR	Anexos	\N	Petición PUT a /anexos/api/action/	10.20.14.97	2026-08-25 02:05:41.087181+00
+915	16233406-9	MODIFICAR	Anexo	3	Anexo modificado: 320678	10.20.14.97	2026-08-25 02:05:41.118175+00
+916	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:05:41.150815+00
+917	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:05:47.637502+00
+918	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:05:47.799654+00
+919	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 02:05:50.594568+00
+920	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:05:59.519033+00
+921	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:06:02.706745+00
+922	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:06:03.491964+00
+923	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:06:09.741715+00
+924	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 02:06:15.920107+00
+925	16233406-9	MODIFICAR	Modeloanexo	2	Modeloanexo modificado: CP-3905 TEST	10.20.14.97	2026-08-25 02:06:15.928231+00
+926	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:06:15.957051+00
+927	16233406-9	ACCESO	Anexos	\N	El usuario accedió al módulo: Anexos	10.20.14.97	2026-08-25 02:06:18.432929+00
+928	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:06:18.687112+00
+929	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:06:24.833004+00
+930	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:06:24.987987+00
+931	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 02:06:31.789374+00
+932	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:06:35.220916+00
+933	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/action/	10.20.14.97	2026-08-25 02:06:44.762072+00
+934	16233406-9	MODIFICAR	Modelo	2	Modelo modificado: THINKCENTRE NEO 50A 24 GEN 4	10.20.14.97	2026-08-25 02:06:44.773341+00
+935	16233406-9	CREAR	Mantenedores	\N	Petición POST a /mantenedores/api/	10.20.14.97	2026-08-25 02:06:44.803192+00
+936	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:06:47.223818+00
+937	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:06:47.388734+00
+938	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/action/	10.20.14.97	2026-08-25 02:07:26.623165+00
+939	16233406-9	CREAR	Equipo	3543	Equipo creado: 1S12K9005LCSMP2Z23DS (All In One Lenovo)	10.20.14.97	2026-08-25 02:07:26.650843+00
+940	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:07:26.672059+00
+941	16233406-9	MODIFICAR	Equipos	\N	Petición PUT a /equipos/api/action/	10.20.14.97	2026-08-25 02:07:49.691501+00
+942	16233406-9	MODIFICAR	Equipo	3543	Equipo modificado: 1S12K9005LCSMP2Z23DS	10.20.14.97	2026-08-25 02:07:49.721568+00
+943	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:07:49.743499+00
+944	16233406-9	CREAR	Funcionarios	\N	Petición POST a /api/funcionarios/crear/	10.20.14.97	2026-08-25 02:08:32.512571+00
+945	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/3543/bitacora/	10.20.14.97	2026-08-25 02:08:48.575848+00
+946	16233406-9	CREAR	BitacoraEquipo	30	Nuevo registro de bitácora: Mantención para equipo 1S12K9005LCSMP2Z23DS	10.20.14.97	2026-08-25 02:08:48.594638+00
+947	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:08:48.631418+00
+948	16233406-9	MODIFICAR	Equipos	\N	Petición PUT a /equipos/api/bitacora/30/	10.20.14.97	2026-08-25 02:09:17.664702+00
+949	16233406-9	MODIFICAR	BitacoraEquipo	30	Registro de bitácora actualizado: Mantención	10.20.14.97	2026-08-25 02:09:17.680562+00
+950	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:09:17.719275+00
+951	16233406-9	ACCESO	Anexos	\N	El usuario accedió al módulo: Anexos	10.20.14.97	2026-08-25 02:09:47.598815+00
+952	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:09:47.771258+00
+953	16233406-9	ELIMINAR	Anexos	\N	Petición DELETE a /anexos/api/action/	10.20.14.97	2026-08-25 02:09:51.412474+00
+954	16233406-9	ELIMINAR	Anexo	3	Anexo eliminado: 320678	10.20.14.97	2026-08-25 02:09:51.435537+00
+955	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:09:51.471981+00
+956	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:09:53.411575+00
+957	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:09:53.575068+00
+958	16233406-9	ACCESO	Anexos	\N	El usuario accedió al módulo: Anexos	10.20.14.97	2026-08-25 02:11:05.070732+00
+959	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:11:05.219295+00
+960	16233406-9	ACCESO	Actas	\N	El usuario accedió al módulo: Actas	10.20.14.97	2026-08-25 02:11:05.603884+00
+961	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:11:05.780865+00
+962	16233406-9	CREAR	Actas	\N	Petición POST a /actas/api/	10.20.14.97	2026-08-25 02:11:05.781517+00
+963	16233406-9	CREAR	Anexos	\N	Petición POST a /anexos/api/	10.20.14.97	2026-08-25 02:11:05.795012+00
+964	16233406-9	ACCESO	Roles	\N	El usuario accedió al módulo: Roles	10.20.14.97	2026-08-25 02:11:21.480145+00
+965	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 02:11:22.825543+00
+966	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 02:11:23.344133+00
+967	16233406-9	ACCESO	Usuarios	\N	El usuario accedió al módulo: Usuarios	10.20.14.97	2026-08-25 02:12:22.62802+00
+968	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/	10.20.14.97	2026-08-25 02:12:22.743997+00
+969	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/editar/	10.20.14.97	2026-08-25 02:12:31.940828+00
+970	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/	10.20.14.97	2026-08-25 02:12:31.988989+00
+971	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:12:34.322434+00
+973	16233406-9	ACCESO	Mantenedores	\N	El usuario accedió al módulo: Mantenedores	10.20.14.97	2026-08-25 02:12:37.327286+00
+974	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:13:35.870522+00
+977	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:19:38.816818+00
+979	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:19:41.162082+00
+972	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:12:34.510451+00
+975	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:19:36.045477+00
+976	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:19:36.237306+00
+978	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:19:39.109703+00
+980	16233406-9	ACCESO	Equipos	\N	El usuario accedió al módulo: Equipos	10.20.14.97	2026-08-25 02:19:41.319324+00
+981	16233406-9	CREAR	Equipos	\N	Petición POST a /equipos/api/	10.20.14.97	2026-08-25 02:19:41.608377+00
+982	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:21:40.385473+00
+983	16233406-9	ACCESO	Roles	\N	El usuario accedió al módulo: Roles	10.20.14.97	2026-08-25 02:21:42.645389+00
+984	16233406-9	ACCESO	Usuarios	\N	El usuario accedió al módulo: Usuarios	10.20.14.97	2026-08-25 02:21:43.874718+00
+985	16233406-9	CREAR	Usuarios	\N	Petición POST a /api/usuarios/	10.20.14.97	2026-08-25 02:21:43.969855+00
+986	16233406-9	ACCESO	Correos/configuracion	\N	El usuario accedió al módulo: Correos/configuracion	10.20.14.97	2026-08-25 02:21:56.312367+00
+987	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 02:21:57.086546+00
+988	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 02:22:13.72184+00
+989	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 02:22:13.833293+00
+990	16233406-9	MODIFICAR	Sla	\N	Petición PUT a /sla/api/matrix/	10.20.14.97	2026-08-25 02:22:58.42754+00
+991	16233406-9	ELIMINAR	Sla	\N	Petición DELETE a /sla/api/prioridades/action/	10.20.14.97	2026-08-25 02:23:31.914737+00
+992	16233406-9	ACCESO	Correos/configuracion	\N	El usuario accedió al módulo: Correos/configuracion	10.20.14.97	2026-08-25 02:24:04.204789+00
+993	16233406-9	ACCESO	Sla	\N	El usuario accedió al módulo: Sla	10.20.14.97	2026-08-25 02:24:57.23782+00
+994	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:08.725456+00
+995	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:10.120228+00
+996	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:10.250013+00
+997	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:10.537674+00
+998	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:10.677876+00
+999	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:10.858059+00
+1000	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:11.046578+00
+1001	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:11.223485+00
+1002	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:11.405624+00
+1003	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:11.598955+00
+1004	16233406-9	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:11.783763+00
+1005	24028352-2	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:14.780071+00
+1006	24028352-2	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:14.937557+00
+1007	24028352-2	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:15.085205+00
+1008	24028352-2	ACCESO	Tickets	\N	El usuario accedió al módulo: Tickets	10.20.14.97	2026-08-25 02:27:15.242387+00
 \.
 
 
@@ -3478,6 +3816,9 @@ COPY public.core_logauditoria (id, usuario, accion, tabla, registro_id, detalles
 --
 
 COPY public.core_perfilusuario (id, unidad, cargo, grado, rut, telefono, foto, fecha_registro, user_id, rol_id) FROM stdin;
+20	Equipos Medicos			24028352-2	\N		2026-08-25 01:41:07.696921+00	33	14
+21	Dialisis			13549881-5	\N		2026-08-25 01:42:03.476415+00	34	10
+22	ESCUELA HOSPITALARIA			16233406-9	\N		2026-08-25 02:12:31.950439+00	2	1
 \.
 
 
@@ -3488,7 +3829,7 @@ COPY public.core_perfilusuario (id, unidad, cargo, grado, rut, telefono, foto, f
 COPY public.core_rol (id, nombre, descripcion, permisos, activo, orden, creado_por, actualizado_por, fecha_creacion, fecha_actualizacion, icono, is_system) FROM stdin;
 1	Super Administrador	Acceso total a todos los módulos y configuración	{"VER_ACTAS": true, "VER_ANEXOS": true, "VER_INICIO": true, "VER_EQUIPOS": true, "VER_TICKETS": true, "VER_REPORTES": true, "VER_USUARIOS": true, "GESTIONAR_ACTAS": true, "GESTIONAR_ROLES": true, "GESTIONAR_ANEXOS": true, "VER_MANTENEDORES": true, "GESTIONAR_EQUIPOS": true, "GESTIONAR_TICKETS": true, "GESTIONAR_USUARIOS": true, "GESTIONAR_MANTENEDORES": true}	t	1	\N	\N	2026-07-12 23:39:52.976+00	2026-07-20 01:44:55.828274+00	fas fa-key	t
 14	Mesa de Ayuda	Atención de Nivel 1, creación y derivación de tickets	{"VER_INICIO": true, "VER_TICKETS": true, "GESTIONAR_TICKETS": true}	t	0	\N	\N	2026-07-20 01:44:55.838224+00	2026-07-21 01:06:47.923667+00	fas fa-headset	t
-10	Técnico Nivel 2	Técnico que va a terreno a resolver incidentes y tickets	{"VER_INICIO": true, "VER_EQUIPOS": true, "VER_TICKETS": true, "RECIBIR_TICKETS": true}	t	0	\N	\N	2026-07-19 20:51:32.471176+00	2026-07-19 20:52:09.57434+00	fas fa-tools	f
+10	Técnico Nivel 2	Técnico que va a terreno a resolver incidentes y tickets	{"VER_INICIO": true, "VER_EQUIPOS": true, "VER_TICKETS": true, "RECIBIR_TICKETS": true}	t	0	\N	\N	2026-07-19 20:51:32.471176+00	2026-08-25 01:29:17.598478+00	fas fa-tools	t
 \.
 
 
@@ -3497,7 +3838,7 @@ COPY public.core_rol (id, nombre, descripcion, permisos, activo, orden, creado_p
 --
 
 COPY public.correos_configuracionsmtp (id, host, puerto, usuario, password, use_tls, remitente_por_defecto, fecha_actualizacion) FROM stdin;
-1	servidor SMTP	587	usuario@usuario.cl	123456	t	usuario@usuario.cl	2026-07-24 13:27:36.735379+00
+1	mail.servirec.cl	465	ticsystem@servirec.cl	Servirec.2026	t	TicSystem <ticsystem@servirec.cl>	2026-08-25 01:39:53.369852+00
 \.
 
 
@@ -3744,6 +4085,8 @@ xvxz54jn7uvhqtmqqpemge76ygxebmlv	.eJxVjMEOwiAQRP-FsyGk4Lp49O43kGVZpGogKe2p8d9tkx
 dxads9zxdd7wgks13rkmotfytu3r4cf1	.eJxVjMEOwiAQRP-FsyGk4Lp49O43kGVZpGogKe2p8d9tkx70NMm8N7OqQMtcwtJlCmNSVzWo028XiV9Sd5CeVB9Nc6vzNEa9K_qgXd9bkvftcP8OCvWyrSWzERC0lJ3PsGUUdAiOs8MMTNbDBdkbipzsYPDsEIkkskGEzOrzBQdzOLU:1wmKeP:eUaajVhb9XnKwgJsQAudQEM097GB5CRdutHcyMrCq8I	2026-08-05 00:17:29.96236+00
 vs34wvsbmuz7ttwz37oaci7mvx8m1mx7	.eJxVjDsOwjAQBe_iGlk4jn-U9DmDtfbu4gCypTipEHeHSCmgfTPzXiLCtpa4dVrijOIiBnH63RLkB9Ud4B3qrcnc6rrMSe6KPGiXU0N6Xg_376BAL986cLIuB-PQ-3MwShvUPHifXLaOfSCLeaRRQRhZGe-YMwA4IICgbSLx_gDg1ziR:1wyVqy:G_i9j2sDWpiRw1BzljUZ9MT1zQx4S14Ysn54Ji4BMcA	2026-09-07 14:40:48.64563+00
 vy2j2f2ypbut23lh2jm7fi0ok3fiitc2	.eJxVjDsOwjAQBe_iGlk4jn-U9DmDtfbu4gCypTipEHeHSCmgfTPzXiLCtpa4dVrijOIiBnH63RLkB9Ud4B3qrcnc6rrMSe6KPGiXU0N6Xg_376BAL986cLIuB-PQ-3MwShvUPHifXLaOfSCLeaRRQRhZGe-YMwA4IICgbSLx_gDg1ziR:1wyfkG:ZeQTRFF81Gwvs-nhidbq_F0vbbrL5bzgBgyyYiUUgmY	2026-09-08 01:14:32.165503+00
+2qds8ppx2f0zf3zyl86z4ttm2ajg1nhq	.eJxVjDsOwjAQBe_iGlk4jn-U9DmDtfbu4gCypTipEHeHSCmgfTPzXiLCtpa4dVrijOIiBnH63RLkB9Ud4B3qrcnc6rrMSe6KPGiXU0N6Xg_376BAL986cLIuB-PQ-3MwShvUPHifXLaOfSCLeaRRQRhZGe-YMwA4IICgbSLx_gDg1ziR:1wyfwT:2wX8agqezgHnxgPEZGdl4j-dVurORzvUuKCLnZzz3M4	2026-09-08 01:27:09.814943+00
+t1t63tay55m4wx6eu5njh3d1r7vzwsjl	.eJxVjMsOwiAQRf-FtSHQYWDq0r3fQIYOSNWUpI-V8d-1SRe6veec-1KRt7XGbclzHEWdFYA6_Y6Jh0eediJ3nm5ND21a5zHpXdEHXfS1SX5eDvfvoPJSv3UxFIgMSfBoGHvLgdF0gM4CYvF96UqyfQLxQFaK84UysTEeBiGH6v0B1nI2-g:1wygME:DAeOMwa5zv2vr-ali_cEVkOYWy-AUhrVuTfELItrfJU	2026-09-08 01:53:46.802412+00
 \.
 
 
@@ -3752,6 +4095,8 @@ vy2j2f2ypbut23lh2jm7fi0ok3fiitc2	.eJxVjDsOwjAQBe_iGlk4jn-U9DmDtfbu4gCypTipEHeHSC
 --
 
 COPY public.equipos_bitacoraequipo (id, fecha_mantenimiento, fecha_devolucion, solicitante_id, falla_reportada, actividades_realizadas, servicio_unidad, tipo_registro, fecha_creacion, tecnico_id, equipo_id) FROM stdin;
+29	2026-08-24 04:00:00+00	\N	\N	Alta de equipo en inventario	Creación de equipo por: REINALDO GOMEZ	CONSULTAS Y PROCEDIMIENTOS ADULTO - INFANTIL	MOVIMIENTO	2026-08-25 02:07:26.641908+00	2	3543
+30	2026-08-25 02:07:00+00	2026-08-25 02:09:17.668103+00	26	Disco duro al 100% con 4 GB de RAM.	detalle detectado\n\n[Cierre] reparado	ACCESO ATENCION ABIERTA	MANTENCION	2026-08-25 02:08:48.587771+00	2	3543
 \.
 
 
@@ -3806,6 +4151,7 @@ COPY public.equipos_bitacoraopcion (id, tipo, nombre, activo, orden, fecha_creac
 --
 
 COPY public.equipos_equipo (id, imagen, correlativo, orden_interno, serie_corta, estado_candado, serial_number, ip, anexo, usuario, office, activador, pmalugar, comentario, fecha_creacion, fecha_modificacion, articulo_id, estado_id, marca_id, modelo_id, modificado_por_id, pma_id, proveedor_id, so_id, fecha_compra, mac_address, orden_compra, patch_panel, puerto_red, switch_ip, vencimiento_garantia, num_inventario) FROM stdin;
+3543		\N	\N	\N	\N	1S12K9005LCSMP2Z23DS	10.67.90.123	\N	\N	\N	\N	\N	\N	2026-08-25 02:07:26.635311+00	2026-08-25 02:09:17.67803+00	3	2	2	2	2	534	2	1	\N	\N	\N	\N	\N	\N	\N	3333322
 \.
 
 
@@ -3830,9 +4176,10 @@ COPY public.mantenedores_areahospitalaria (id, activo, fecha_creacion, fecha_act
 --
 
 COPY public.mantenedores_articulo (id, activo, fecha_creacion, fecha_actualizacion, nombre, imagen) FROM stdin;
-4	t	2026-07-15 03:26:49.298886+00	2026-07-15 03:26:49.298907+00	Impresoras	
 3	t	2026-07-10 01:45:28.926+00	2026-07-10 01:45:28.926+00	All In One	
 5	t	2026-07-15 02:50:11.769+00	2026-07-15 02:50:11.769+00	Impresora Laser	
+6	t	2026-08-25 01:46:16.500155+00	2026-08-25 01:46:21.133037+00	Huelleros	
+4	t	2026-07-15 03:26:49.298886+00	2026-08-25 01:59:52.179659+00	Impresoras	
 \.
 
 
@@ -3889,7 +4236,7 @@ COPY public.mantenedores_estadoequipo (id, activo, fecha_creacion, fecha_actuali
 --
 
 COPY public.mantenedores_institucion (id, activo, fecha_creacion, fecha_actualizacion, codigo, nombre) FROM stdin;
-2	t	2026-07-09 01:38:22.624+00	2026-07-09 01:38:22.624+00	HMM	Hospital Marga Marga
+2	t	2026-07-09 01:38:22.624+00	2026-08-25 01:58:55.662902+00	HMM	Hospital Marga Marga
 \.
 
 
@@ -3902,6 +4249,7 @@ COPY public.mantenedores_marca (id, activo, fecha_creacion, fecha_actualizacion,
 1	t	2026-07-09 00:59:19.958+00	2026-07-09 00:59:19.958+00	Genérica
 2	t	2026-07-10 01:22:02.249+00	2026-07-12 03:59:30.414+00	Lenovo
 3	t	2026-07-15 02:50:11.774+00	2026-07-15 02:50:11.774+00	HP
+5	t	2026-08-25 02:04:46.515618+00	2026-08-25 02:04:46.515631+00	Cisco
 \.
 
 
@@ -3911,8 +4259,8 @@ COPY public.mantenedores_marca (id, activo, fecha_creacion, fecha_actualizacion,
 
 COPY public.mantenedores_modelo (id, activo, fecha_creacion, fecha_actualizacion, nombre, imagen, marca_id) FROM stdin;
 1	t	2026-07-09 00:59:19.959+00	2026-07-12 00:47:41.245+00	Genérico	modelos/sinimagen_UbcvfDn.png	1
-2	t	2026-07-10 01:44:47.781+00	2026-07-11 01:17:20.621+00	Thinkcentre Neo 50a 24 Gen 4	modelos/Lenovo.png	2
 4	t	2026-07-15 02:50:11.778+00	2026-07-15 02:50:11.778+00	LaserJet Pro M404n		3
+2	t	2026-07-10 01:44:47.781+00	2026-08-25 02:06:44.770507+00	THINKCENTRE NEO 50A 24 GEN 4	modelos/Lenovo.png	2
 \.
 
 
@@ -3921,10 +4269,10 @@ COPY public.mantenedores_modelo (id, activo, fecha_creacion, fecha_actualizacion
 --
 
 COPY public.mantenedores_modeloanexo (id, activo, fecha_creacion, fecha_actualizacion, nombre, imagen, marca_id) FROM stdin;
-2	t	2026-07-15 00:52:41.852823+00	2026-07-15 00:52:41.852847+00	CP-3905	modelos_anexos/CP-3905.jpg	3
 3	t	2026-07-15 01:17:16.680444+00	2026-07-15 01:17:16.680467+00	CP-7841	modelos_anexos/CP-7841.png	3
 4	t	2026-07-15 01:17:36.457628+00	2026-07-15 01:17:36.457652+00	IP-PHONE7911	modelos_anexos/IPPhone7911.jpg	3
 5	t	2026-07-15 01:17:52.348048+00	2026-07-15 01:17:52.348073+00	IP-PHONE7962	modelos_anexos/IPPhone7962.png	3
+2	t	2026-07-15 00:52:41.852823+00	2026-08-25 02:06:15.926246+00	CP-3905 TEST	modelos_anexos/CP-3905.jpg	3
 \.
 
 
@@ -4463,7 +4811,7 @@ COPY public.mantenedores_pma (id, activo, fecha_creacion, fecha_actualizacion, n
 --
 
 COPY public.mantenedores_proveedor (id, activo, fecha_creacion, fecha_actualizacion, nombre, contacto, telefono, email, direccion, rut) FROM stdin;
-1	t	2026-07-11 01:17:55.935+00	2026-07-11 01:17:55.935+00	Telefonica	Reinaldo Gomez	949253333	reinaldog.gomez@redsaludo.gob.cl	Calle Street 12	\N
+2	t	2026-08-25 01:45:50.979837+00	2026-08-25 01:46:02.193607+00	Telefonica	\N	\N	telefonica@telefonica.cl	\N	\N
 \.
 
 
@@ -4698,6 +5046,7 @@ COPY public.mantenedores_sector (id, activo, fecha_creacion, fecha_actualizacion
 
 COPY public.mantenedores_sistemaoperativo (id, activo, fecha_creacion, fecha_actualizacion, nombre) FROM stdin;
 1	t	2026-07-10 02:26:54.651+00	2026-07-10 02:26:54.651+00	Windows 11 Pro
+2	t	2026-08-25 01:58:08.607288+00	2026-08-25 01:58:16.317638+00	Windows 10 Pro
 \.
 
 
@@ -4797,6 +5146,22 @@ COPY public.redes_slaconfiguracion (id, nombre, horas_objetivo, alerta_porcentaj
 --
 
 COPY public.sla_slamatrix (id, impacto, urgencia, tiempo_respuesta_minutos, tiempo_resolucion_horas, prioridad_id) FROM stdin;
+13	4	4	15	2	4
+16	3	4	30	4	4
+19	2	4	60	8	3
+22	1	4	120	24	2
+25	1	1	15	2	4
+24	1	2	30	4	4
+23	1	3	60	8	3
+26	2	1	30	4	4
+21	2	2	60	8	3
+20	2	3	120	24	2
+27	3	1	60	8	3
+18	3	2	120	24	2
+17	3	3	240	48	1
+28	4	1	120	24	2
+15	4	2	240	48	1
+14	4	3	480	72	1
 \.
 
 
@@ -4813,11 +5178,11 @@ COPY public.tickets_archivoadjunto (id, archivo, fecha_subida, subido_por_id, ti
 --
 
 COPY public.tickets_categoria (id, nombre, activa, grupo_resolutor_id) FROM stdin;
-7	Hardware	t	\N
 8	Software	t	\N
 9	Redes	t	\N
 10	Soporte General	t	\N
 11	Insumos	t	\N
+7	Hardware	t	\N
 \.
 
 
@@ -4844,6 +5209,8 @@ COPY public.tickets_gruporesolutor (id, nombre, descripcion, activo, icono, is_s
 --
 
 COPY public.tickets_gruporesolutor_miembros (id, gruporesolutor_id, user_id) FROM stdin;
+56	16	33
+57	19	34
 \.
 
 
@@ -4864,7 +5231,6 @@ COPY public.tickets_prioridad (id, nombre, sla_horas, color_hex) FROM stdin;
 2	Media	24	#eab308
 3	Alta	8	#f97316
 4	Crítica	2	#ef4444
-5	Media QA	24	#eab308
 \.
 
 
@@ -4942,7 +5308,7 @@ SELECT pg_catalog.setval('public.actas_actadetalle_id_seq', 16, true);
 -- Name: anexos_anexo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.anexos_anexo_id_seq', 2, true);
+SELECT pg_catalog.setval('public.anexos_anexo_id_seq', 3, true);
 
 
 --
@@ -4984,7 +5350,7 @@ SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 4, true);
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.auth_user_id_seq', 32, true);
+SELECT pg_catalog.setval('public.auth_user_id_seq', 34, true);
 
 
 --
@@ -4998,7 +5364,7 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
 -- Name: axes_accessattempt_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.axes_accessattempt_id_seq', 38, true);
+SELECT pg_catalog.setval('public.axes_accessattempt_id_seq', 39, true);
 
 
 --
@@ -5012,7 +5378,7 @@ SELECT pg_catalog.setval('public.axes_accessfailurelog_id_seq', 1, false);
 -- Name: axes_accesslog_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.axes_accesslog_id_seq', 81, true);
+SELECT pg_catalog.setval('public.axes_accesslog_id_seq', 86, true);
 
 
 --
@@ -5033,21 +5399,21 @@ SELECT pg_catalog.setval('public.conocimiento_categoriaconocimiento_id_seq', 1, 
 -- Name: core_funcionario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.core_funcionario_id_seq', 22, true);
+SELECT pg_catalog.setval('public.core_funcionario_id_seq', 26, true);
 
 
 --
 -- Name: core_logauditoria_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.core_logauditoria_id_seq', 681, true);
+SELECT pg_catalog.setval('public.core_logauditoria_id_seq', 1008, true);
 
 
 --
 -- Name: core_perfilusuario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.core_perfilusuario_id_seq', 19, true);
+SELECT pg_catalog.setval('public.core_perfilusuario_id_seq', 22, true);
 
 
 --
@@ -5138,7 +5504,7 @@ SELECT pg_catalog.setval('public.django_migrations_id_seq', 67, true);
 -- Name: equipos_bitacoraequipo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.equipos_bitacoraequipo_id_seq', 28, true);
+SELECT pg_catalog.setval('public.equipos_bitacoraequipo_id_seq', 30, true);
 
 
 --
@@ -5152,7 +5518,7 @@ SELECT pg_catalog.setval('public.equipos_bitacoraopcion_id_seq', 38, true);
 -- Name: equipos_equipo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.equipos_equipo_id_seq', 3542, true);
+SELECT pg_catalog.setval('public.equipos_equipo_id_seq', 3543, true);
 
 
 --
@@ -5166,7 +5532,7 @@ SELECT pg_catalog.setval('public.mantenedores_areahospitalaria_id_seq', 17, true
 -- Name: mantenedores_articulo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.mantenedores_articulo_id_seq', 5, true);
+SELECT pg_catalog.setval('public.mantenedores_articulo_id_seq', 7, true);
 
 
 --
@@ -5201,7 +5567,7 @@ SELECT pg_catalog.setval('public.mantenedores_institucion_id_seq', 2, true);
 -- Name: mantenedores_marca_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.mantenedores_marca_id_seq', 4, true);
+SELECT pg_catalog.setval('public.mantenedores_marca_id_seq', 5, true);
 
 
 --
@@ -5215,7 +5581,7 @@ SELECT pg_catalog.setval('public.mantenedores_modelo_id_seq', 4, true);
 -- Name: mantenedores_modeloanexo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.mantenedores_modeloanexo_id_seq', 5, true);
+SELECT pg_catalog.setval('public.mantenedores_modeloanexo_id_seq', 6, true);
 
 
 --
@@ -5229,14 +5595,14 @@ SELECT pg_catalog.setval('public.mantenedores_piso_id_seq', 16, true);
 -- Name: mantenedores_pma_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.mantenedores_pma_id_seq', 1012, true);
+SELECT pg_catalog.setval('public.mantenedores_pma_id_seq', 1013, true);
 
 
 --
 -- Name: mantenedores_proveedor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.mantenedores_proveedor_id_seq', 1, true);
+SELECT pg_catalog.setval('public.mantenedores_proveedor_id_seq', 2, true);
 
 
 --
@@ -5257,7 +5623,7 @@ SELECT pg_catalog.setval('public.mantenedores_sector_id_seq', 14, true);
 -- Name: mantenedores_sistemaoperativo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.mantenedores_sistemaoperativo_id_seq', 1, true);
+SELECT pg_catalog.setval('public.mantenedores_sistemaoperativo_id_seq', 2, true);
 
 
 --
@@ -5306,7 +5672,7 @@ SELECT pg_catalog.setval('public.redes_slaconfiguracion_id_seq', 1, false);
 -- Name: sla_slamatrix_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.sla_slamatrix_id_seq', 12, true);
+SELECT pg_catalog.setval('public.sla_slamatrix_id_seq', 28, true);
 
 
 --
@@ -5334,7 +5700,7 @@ SELECT pg_catalog.setval('public.tickets_gruporesolutor_id_seq', 19, true);
 -- Name: tickets_gruporesolutor_miembros_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ticsystem_admin
 --
 
-SELECT pg_catalog.setval('public.tickets_gruporesolutor_miembros_id_seq', 55, true);
+SELECT pg_catalog.setval('public.tickets_gruporesolutor_miembros_id_seq', 57, true);
 
 
 --
@@ -8409,5 +8775,5 @@ ALTER TABLE ONLY public.tickets_tickethistorial
 -- PostgreSQL database dump complete
 --
 
-\unrestrict kl6gpaCcvscOtvyCykTRz3q27oK5i6xmmenyIMvZblcYlCBixnUTDbxf24Up1eR
+\unrestrict JqIvyqe5UYDsHoOjGQuzPLBrPElcFo8IfX7Vtv4wMAKm9XVJEGDtOP3xbOdn0fI
 
