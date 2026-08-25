@@ -47,6 +47,7 @@ class ConfiguracionSMTPAPIView(PermisoRequeridoMixin, LoginRequiredMixin, View):
             config.password = data.get('password', '')
             config.use_tls = bool(data.get('use_tls', True))
             config.remitente_por_defecto = data.get('remitente_por_defecto', '')
+            config.activo = True  # Siempre activar al guardar explícitamente desde el UI
             
             config.save()
             return JsonResponse({'success': True, 'message': 'Configuración guardada correctamente.'})
