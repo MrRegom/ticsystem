@@ -4,7 +4,7 @@ from django.utils.html import strip_tags
 
 class NotificacionService:
     @staticmethod
-    def _build_html_email(titulo, nombre_usuario, mensaje_principal, detalles_lista, footer_msg):
+    def _build_html_email(titulo, nombre_usuario, mensaje_principal, detalles_lista, footer_msg, nombre_sistema='TicSystem Mesa de Ayuda', pie_correo='Mesa de Ayuda - Plataforma Tecnológica'):
         detalles_html = ""
         for key, val in detalles_lista:
             detalles_html += f"<tr><td style='padding: 6px 0;'><strong style='color:#002855;'>{key}:</strong> <span style='color:#334155;'>{val}</span></td></tr>"
@@ -22,7 +22,7 @@ class NotificacionService:
                         <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
                             <tr>
                                 <td align="center" style="background-color: #002855; color: #ffffff; padding: 24px; border-bottom: 4px solid #3b82f6;">
-                                    <h2 style="margin: 0; font-size: 24px; font-weight: 600;">TicSystem Mesa de Ayuda</h2>
+                                    <h2 style="margin: 0; font-size: 24px; font-weight: 600;">{nombre_sistema}</h2>
                                 </td>
                             </tr>
                             <tr>
@@ -47,7 +47,7 @@ class NotificacionService:
                             <tr>
                                 <td align="center" style="background-color: #f8fafc; color: #64748b; padding: 20px; font-size: 13px; border-top: 1px solid #e2e8f0;">
                                     Este es un correo generado automáticamente. Por favor no responda a este mensaje.<br>
-                                    <strong style="color: #002855;">Mesa de Ayuda - Plataforma Tecnológica</strong>
+                                    <strong style="color: #002855;">{pie_correo}</strong>
                                 </td>
                             </tr>
                         </table>
