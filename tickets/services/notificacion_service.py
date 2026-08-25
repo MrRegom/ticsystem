@@ -63,7 +63,10 @@ class NotificacionService:
         """Genera el HTML dinámico inyectando los datos del ticket."""
         solicitante_nombre = "Usuario"
         if ticket.solicitante:
-            solicitante_nombre = ticket.solicitante.get_full_name() or ticket.solicitante.username
+            if hasattr(ticket.solicitante, 'nombres'):
+                solicitante_nombre = f"{ticket.solicitante.nombres} {ticket.solicitante.apellidos}".strip()
+            elif hasattr(ticket.solicitante, 'get_full_name'):
+                solicitante_nombre = ticket.solicitante.get_full_name() or ticket.solicitante.username
         
         titulo_email = ""
         mensaje_principal = ""
