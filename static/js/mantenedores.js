@@ -407,7 +407,7 @@ var MantenedoresApp = (function ($) {
     $('#field-nombre-wrapper').show();
     $('#m-nombre').prop('required', true);
 
-    if (modeloActual === 'modelo' || modeloActual === 'modeloanexo' || modeloActual === 'articulo') {
+    if (modeloActual === 'modelo' || modeloActual === 'modeloanexo') {
       $('#field-imagen').show();
     }
     
