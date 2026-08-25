@@ -24,7 +24,7 @@ MODELOS_INFO = [
     # --- Infraestructura Técnica ---
     {'key': 'grupo_resolutor',   'label': 'Equipos Resolutores',   'icon': 'users-cog',     'fields': ['nombre', 'miembros'],                  'grupo': 'rrhh'},
     {'key': 'proveedor',         'label': 'Proveedores',           'icon': 'truck',         'fields': ['nombre'],                              'grupo': 'tecnico'},
-    {'key': 'articulo',          'label': 'Artículos',             'icon': 'tag',           'fields': ['nombre', 'imagen'],                    'grupo': 'tecnico'},
+    {'key': 'articulo',          'label': 'Artículos',             'icon': 'tag',           'fields': ['nombre'],                              'grupo': 'tecnico'},
     {'key': 'marca',             'label': 'Marcas',                'icon': 'trademark',     'fields': ['nombre'],                              'grupo': 'tecnico'},
     {'key': 'modelo',            'label': 'Modelos',               'icon': 'microchip',     'fields': ['nombre', 'marca', 'imagen'],           'grupo': 'tecnico'},
     {'key': 'modeloanexo',       'label': 'Modelos de Anexos',     'icon': 'phone',         'fields': ['nombre', 'marca', 'imagen'],           'grupo': 'tecnico'},
